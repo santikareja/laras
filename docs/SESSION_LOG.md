@@ -1,5 +1,11 @@
 # SESSION LOG
 
+## Sesi #6, 2026-10-18
+- Task: T-103
+- Hasil: Skema Zod inti di `packages/shared` (Zod 4.6.7) sesuai rencana yang disetujui pemilik: `BrandKit`, `ContentPlan`, `CopyDraft`, `LayoutSpec`, `AssetManifest`, `RenderReport`, `VisualQa`, `QaReport`, semuanya strict dengan aturan deterministik. 45 test baru (total repo 57), termasuk validasi contoh `brand.json` langsung dari ARCH 6.1 dan konversi ke JSON Schema.
+- Masalah dan solusinya: typecheck test `shared` gagal karena TypeScript 7 tidak lagi memuat `@types/node` otomatis; dibuat `tsconfig.test.json` dengan tipe Node agar sumber `shared` tetap bebas API Node. Satu helper memakai operator koma ditulis ulang agar lolos Biome.
+- Commit: 02c3786, docs: update status sesi #6
+
 ## Sesi #5, 2026-10-18
 - Task: T-102
 - Hasil: Claude CLI headless terverifikasi dengan 4 dari 6 pemanggilan yang diizinkan (satu ditolak sebelum request). Perintah ARCH 4.5 dengan isolasi `--setting-sources project --strict-mcp-config --disable-slash-commands` hanya memuat tool `Read`, tanpa hook, plugin pengguna, MCP, skill, atau `CLAUDE.md` global; `CLAUDE.md` project tetap terbaca dan login subscription dipakai. `--json-schema` memberi `result.structured_output`; `--permission-prompts none` menolak tanpa menggantung; `rate_limit_event` tersedia untuk deteksi kuota. ARCH 4.5 diperbarui dan ADR-013 ditambahkan; output disimpan sebagai fixture.

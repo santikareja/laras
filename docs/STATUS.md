@@ -1,22 +1,23 @@
 # STATUS
-Terakhir diperbarui: 2026-10-18, sesi #5
+Terakhir diperbarui: 2026-10-18, sesi #6
 
 ## Fase saat ini
-Fase 1: Spike pipeline. Fase 0 selesai. Verifikasi CLI selesai: T-101 (generasi gambar Codex, ADR-012) dan T-102 (Claude headless dan isolasi, ADR-013). Tidak ada task berikutnya yang memakai kuota sampai T-116.
+Fase 1: Spike pipeline. Fase 0 selesai. Verifikasi CLI selesai: T-101 (generasi gambar Codex, ADR-012) dan T-102 (Claude headless dan isolasi, ADR-013). T-103 (skema Zod inti) selesai. Tidak ada task berikutnya yang memakai kuota sampai T-116.
 
 ## Sedang dikerjakan
 Tidak ada.
 
 ## Berikutnya (urut)
-1. T-103 Skema Zod inti.
-2. T-104 Tiga brand fixture (konsep brand dan unduhan font perlu persetujuan pemilik).
-3. T-105 Token brand ke CSS variables.
-4. T-106 Primitives template.
+1. T-104 Tiga brand fixture (konsep brand dan unduhan font perlu persetujuan pemilik).
+2. T-105 Token brand ke CSS variables.
+3. T-106 Primitives template.
+4. T-107 Renderer Playwright, sharp, dan `pnpm render:demo`.
 
 ## Blocker
 - Tidak ada.
 
 ## Menunggu keputusan pemilik
+- T-104: persetujuan tiga konsep brand fiktif dan izin mengunduh font berlisensi terbuka (diusulkan di awal T-104).
 - Penamaan token skala tipografi UI: DESIGN 4 mendefinisikan `--text-caption` … `--text-display` (ukuran), tetapi `tokens.css` di DESIGN 15 tidak memuatnya; prefix `--text-*` juga dipakai untuk warna (`--text-primary`) dan merupakan namespace ukuran font di Tailwind v4. Usulan: ganti nama token ukuran menjadi `--type-*` (dibutuhkan paling lambat E-201).
 
 ## Catatan untuk sesi berikutnya
