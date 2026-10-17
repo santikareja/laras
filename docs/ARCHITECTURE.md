@@ -1,0 +1,429 @@
+# ARCHITECTURE — Laras
+
+| Item | Nilai |
+|---|---|
+| Versi dokumen | 0.2 (draft) |
+| Dokumen terkait | `PRD.md`, `DESIGN.md`, `KNOWLEDGE.md`, `../CLAUDE.md` |
+
+Dokumen ini menjelaskan bagaimana Laras dibangun. Untuk *apa* yang dibangun dan *mengapa*, lihat `PRD.md`. Untuk tampilan dan penulisan UI, lihat `DESIGN.md`.
+
+> **Catatan verifikasi:** flag dan perilaku Claude CLI serta Codex CLI dapat berubah antar versi. Versi CLI yang teruji, flag yang terverifikasi, dan perilaku yang belum terverifikasi dicatat di `docs/KNOWLEDGE.md`. Setelah CLI diperbarui, cek ulang dengan `--help` sebelum mengubah pemanggilan.
+
+---
+
+## 1. Prinsip Arsitektur
+
+1. **Local-first.** Tidak ada server. Semua data di Mac pengguna.
+2. **Kontrak dulu.** Semua data yang melintasi batas proses (UI ↔ sidecar ↔ CLI) didefinisikan sebagai skema Zod di `packages/shared`.
+3. **Rust seminimal mungkin.** Hampir semua logika ditulis dalam TypeScript. Rust di Tauri hanya untuk konfigurasi dan hal yang memang wajib native.
+4. **CLI di balik adapter.** Kode lain tidak boleh memanggil `claude` atau `codex` secara langsung, hanya lewat adapter, agar perubahan CLI cukup diperbaiki di satu tempat.
+5. **Setiap tahap bisa dilanjutkan.** Output setiap tahap pipeline disimpan ke disk, sehingga job bisa diulang dari tahap mana pun.
+6. **Desain deterministik di atas AI.** AI memilih dan mengisi; kode yang menjamin aturan (token brand, QA deterministik, render).
+
+---
+
+## 2. Gambaran Sistem
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                         Laras (.app)                         │
+│                                                              │
+│  ┌──────────────────────┐        ┌────────────────────────┐  │
+│  │   UI (React + TS)    │        │   Tauri 2 core (Rust)  │  │
+│  │   WebView macOS      │◀──────▶│   window, menu, fs     │  │
+│  └──────────┬───────────┘        │   scope, shell plugin  │  │
+│             │ JSON-RPC (stdio)   └────────────────────────┘  │
+│             ▼                                                │
+│  ┌────────────────────────────────────────────────────────┐  │
+│  │              Sidecar (Node.js + TypeScript)            │  │
+│  │                                                        │  │
+│  │  RPC server ─▶ Job queue ─▶ Pipeline engine            │  │
+│  │                               │                        │  │
+│  │      ┌────────────┬───────────┼────────────┬────────┐  │  │
+│  │      ▼            ▼           ▼            ▼        ▼  │  │
+│  │  Claude       Codex      Template      Renderer  Storage│  │
+│  │  adapter      adapter    engine (JSX)  (Playwright      │  │
+│  │                                         + sharp) SQLite │  │
+│  └──────┬────────────┬─────────────────────────────────────┘  │
+└─────────┼────────────┼───────────────────────────────────────┘
+          ▼            ▼
+     `claude` CLI   `codex` CLI      (terinstal & login di Mac)
+```
+
+---
+
+## 3. Struktur Monorepo
+
+```
+laras/
+├── apps/
+│   └── desktop/
+│       ├── src/                  # React UI
+│       │   ├── app/              # routing & layout halaman
+│       │   ├── features/         # per fitur: projects, brand-kit, editor, library, ...
+│       │   ├── components/       # komponen UI bersama (shadcn/ui)
+│       │   ├── lib/rpc.ts        # klien JSON-RPC ke sidecar
+│       │   ├── stores/           # Zustand stores
+│       │   └── styles/           # tokens.css (DESIGN.md bagian 15)
+│       └── src-tauri/            # Tauri 2 (Rust, minimal)
+├── packages/
+│   ├── shared/                   # skema Zod + tipe: RPC, BrandKit, LayoutSpec, Job, QA
+│   ├── sidecar/
+│   │   └── src/
+│   │       ├── rpc/              # server JSON-RPC via stdio
+│   │       ├── queue/            # antrean & penjadwalan job
+│   │       ├── pipeline/         # tahap: plan, copy, layout, assets, render, qa, revise
+│   │       ├── cli/              # adapter claude & codex + deteksi PATH
+│   │       ├── prompts/          # prompt per tahap (file .md dengan placeholder)
+│   │       ├── render/           # Playwright, QA deterministik, sharp
+│   │       ├── storage/          # Drizzle + SQLite, akses folder project
+│   │       └── context/          # generator CLAUDE.md/AGENTS.md per project
+│   └── templates/
+│       ├── feed/                 # template feed 4:5 (komponen JSX)
+│       ├── carousel/             # sistem carousel 4:5
+│       ├── primitives/           # komponen dasar: Text, Logo, Image, Grid, Badge
+│       └── tokens/               # brand.json → CSS variables
+├── scripts/
+│   ├── spike/                    # skrip Fase 1 (pipeline tanpa UI)
+│   └── render-demo.ts            # render template contoh untuk dicek visual
+├── fixtures/brands/              # 3 brand contoh untuk test & demo
+├── docs/                         # PRD, ARCHITECTURE, DESIGN, STATUS, TASKS, KNOWLEDGE, SESSION_LOG
+├── .claude/commands/             # slash command /lanjut dan /selesai
+└── CLAUDE.md
+```
+
+Package manager: **pnpm workspaces**, scope paket `@laras/*`. Lint dan format: **Biome**. Test: **Vitest** dan **Playwright Test**.
+
+---
+
+## 4. Komponen
+
+### 4.1 Desktop shell — Tauri 2
+
+- Mengelola jendela, menu, dialog file, dan izin akses file system.
+- Identifier aplikasi: `id.laras.desktop` (ADR-009).
+- Menjalankan sidecar lewat `@tauri-apps/plugin-shell` dengan scope yang dibatasi (hanya path absolut `node` hasil resolusi ADR-008, dengan argumen ke file sidecar).
+- Tidak berisi logika bisnis.
+
+### 4.2 UI — React + TypeScript + Vite
+
+- **Styling:** Tailwind CSS v4 (konfigurasi `@theme` di CSS, ADR-010) + shadcn/ui, ikon Lucide. Token UI di `apps/desktop/src/styles/tokens.css`, dipetakan ke Tailwind dan shadcn/ui sesuai `DESIGN.md` bagian 15.
+- **Font:** teks UI memakai font sistem; Plus Jakarta Sans dibundel lokal untuk momen identitas (`DESIGN.md` bagian 4).
+- **State lokal:** Zustand (project aktif, konten yang dibuka, status panel).
+- **Data dari sidecar:** TanStack Query untuk request/response; event job di-push ke store.
+- **Halaman utama:**
+  - Daftar project
+  - Workspace project: item sidebar Konten, Brand Kit, Knowledge, Copy Guide, Referensi (`DESIGN.md` bagian 6)
+  - Studio: brief, grid varian, preview, chat revisi, editor teks, riwayat versi
+  - Library
+  - Pengaturan: path CLI, konkurensi, ambang QA
+- **Preview desain:** HTML hasil template ditampilkan di `<iframe>` dengan skala yang sesuai, sehingga yang dilihat pengguna identik dengan yang dirender Playwright. PNG dipakai untuk thumbnail dan export.
+
+### 4.3 Komunikasi UI ↔ Sidecar
+
+- Protokol: **JSON-RPC 2.0 lewat stdin/stdout**, satu pesan JSON per baris (NDJSON).
+- Request dari UI: misalnya `project.create`, `brandKit.update`, `job.start`, `job.resume`, `content.revise`, `export.run`.
+- Notifikasi dari sidecar: `job.event` (perubahan tahap, log progres, hasil parsial), `cli.status`.
+- Semua method dan payload didefinisikan di `packages/shared/src/rpc.ts` dan divalidasi di kedua sisi.
+- Log sidecar ditulis ke **stderr dan file log**, tidak pernah ke stdout (stdout khusus RPC).
+- Bila proses sidecar mati, UI menampilkan status "Menyambung ulang", menjalankan ulang sidecar, lalu job yang berjalan ditandai `interrupted` dan dapat dilanjutkan.
+
+### 4.4 Sidecar — Node.js + TypeScript
+
+- Runtime: **Node.js LTS yang terinstal di Mac pengguna** untuk MVP (lihat ADR-004).
+- Menemukan Node (ADR-008): aplikasi GUI tidak mewarisi PATH terminal, jadi `node` tidak bisa dipanggil dengan nama saja. Sebelum sidecar dijalankan, path absolut Node di-resolve lewat login shell (`/bin/zsh -lic 'command -v node'`), dengan fallback `~/.local/share/fnm/aliases/default/bin/node`, `/opt/homebrew/bin/node`, dan `/usr/local/bin/node`. Hasilnya disimpan di pengaturan dan bisa diubah manual. Path fnm "multishell" tidak dipakai karena berubah setiap shell.
+- Bundling: kode TypeScript dibundel menjadi satu file JS (tsup) yang disertakan sebagai resource aplikasi.
+- Tanggung jawab: antrean job, pipeline, adapter CLI, template engine, renderer, QA, storage.
+
+### 4.5 Adapter CLI
+
+#### Deteksi CLI dan PATH
+
+Aplikasi GUI macOS tidak mewarisi PATH dari terminal. Saat start, sidecar:
+
+1. Membaca PATH dari login shell: `/bin/zsh -lic 'echo $PATH'`.
+2. Mencari `claude` dan `codex` di PATH tersebut, lalu di lokasi umum (`~/.local/bin` — lokasi installer resmi Claude dan Codex, `/opt/homebrew/bin`, `/usr/local/bin`, `~/.npm-global/bin`, `~/.bun/bin`, `~/.local/share/fnm/aliases/default/bin`).
+3. Memakai path manual dari Pengaturan bila diisi.
+4. Memeriksa versi (`--version`) dan status login (`claude auth status --json`, `codex login status`; keduanya tanpa kuota), lalu mengirim `cli.status` ke UI.
+
+Salinan CLI bawaan Claude desktop app atau ekstensi editor (VS Code, Kiro) sengaja tidak dipakai, karena path-nya berubah setiap update dan versinya bisa alpha.
+
+#### Claude adapter
+
+Pemanggilan dasar (flag ada di `--help` Claude Code 2.1.302; perilakunya diuji di Fase 1, lihat `KNOWLEDGE.md`):
+
+```bash
+claude -p "<prompt>" \
+  --model claude-opus-5-5 \
+  --output-format stream-json --verbose \
+  --tools "Read" \
+  --permission-prompts none \
+  --no-session-persistence
+# cwd = folder project (ADR-011)
+```
+
+- Prompt disusun dari file di `packages/sidecar/src/prompts/` ditambah data job.
+- Proses dijalankan dengan `cwd` di folder project (ADR-011), sehingga `CLAUDE.md` project (konteks brand) otomatis terbaca dan `Read` menjangkau `references/` serta `jobs/<job-id>/`. Output tahap ditulis oleh sidecar, bukan oleh Claude.
+- Tool dibatasi dengan `--tools` (membatasi tool yang tersedia). `--allowedTools` hanya menyetujui tool secara otomatis dan tidak membatasi, jadi tidak dipakai untuk tujuan ini. Tahap yang butuh melihat gambar (QA visual) memakai `Read` pada file PNG di folder job.
+- `--permission-prompts none`: aksi yang butuh izin langsung ditolak, sehingga proses headless tidak menggantung.
+- Output akhir diambil sebagai JSON, divalidasi dengan skema Zod tahap tersebut. Bila tidak valid, adapter mengirim ulang dengan pesan error validasi (maksimal 2 kali). `--json-schema` dievaluasi di Fase 1 sebagai lapis validasi pertama.
+- Isolasi dari konfigurasi global pengguna (hook, plugin, server MCP, `~/.claude/CLAUDE.md`) supaya tidak mencemari prompt dan memboroskan kuota. Kandidat: `--setting-sources`, `--strict-mcp-config`, `--disable-slash-commands`, `--restricted`; kombinasinya ditetapkan di Fase 1. `--bare` dan `--safe-mode` tidak dipakai (lihat `KNOWLEDGE.md`).
+- Event stream di-parse baris per baris dan diteruskan ke UI sebagai progres.
+
+#### Codex adapter (aset gambar)
+
+Pemanggilan dasar (flag ada di `codex exec --help` Codex 0.163.0; perilakunya diuji di Fase 1, lihat `KNOWLEDGE.md`):
+
+```bash
+codex exec "<prompt aset>" \
+  --cd <folder assets job> \
+  --sandbox workspace-write \
+  --skip-git-repo-check \
+  --json \
+  --ephemeral \
+  --ignore-user-config
+```
+
+- Gambar dibuat oleh tool bawaan Codex `image_gen` (fitur `image_generation`, memakai login ChatGPT, tanpa `OPENAI_API_KEY`). Tidak ada flag khusus: prompt yang meminta gambar. Mode cadangan Codex yang memakai API key tidak dipakai.
+- `--skip-git-repo-check` wajib karena folder job bukan repo git. `--ignore-user-config` dan `--ephemeral` menjaga job dari konfigurasi global pengguna dan riwayat sesi.
+- Prompt aset selalu menyertakan: deskripsi visual, palet brand, gaya dari referensi, rasio target, serta larangan eksplisit **tanpa teks, huruf, logo, atau watermark**. Gambar referensi dapat dilampirkan dengan `-i <file>`.
+- `image_gen` tidak menerima path tujuan; hasilnya tersimpan di `~/.codex/generated_images/…`. Adapter menyalin file dari sana ke folder job (path sumber dibaca dari event `--json`), setelah memvalidasi path sumber berada di dalam `generated_images`.
+- Ukuran tidak bisa diatur di mode bawaan; rasio hanya diminta lewat prompt, lalu renderer (sharp) melakukan crop dan resize ke ukuran slot.
+- Adapter memastikan file gambar benar-benar tercipta di folder job; bila tidak, tahap dianggap gagal.
+- `AGENTS.md` project memberi Codex konteks gaya visual brand. Codex mencari `AGENTS.md` dari root repo git sampai cwd; karena folder project bukan repo git, apakah file itu terbaca dari `jobs/<job-id>/assets` wajib diverifikasi di Fase 1. Bila tidak terbaca, adapter menyisipkan isinya ke prompt.
+- Bila generasi gambar via Codex tidak tersedia, adapter aset dapat diganti dengan sumber lain (foto pengguna, library lokal) tanpa mengubah pipeline (lihat `AssetProvider` di 5.3).
+
+#### Deteksi rate limit
+
+- Adapter mengenali pola pesan batas kuota dan kode exit tertentu dari masing-masing CLI (pola dicatat di `cli/limits.ts` dan diperbarui bila berubah).
+- Hasilnya `LimitReachedError`, yang membuat queue menjeda job dengan status `waiting_quota` dan mencoba lagi dengan backoff (5 menit, 15 menit, 60 menit) atau menunggu pengguna menekan "Lanjutkan".
+
+---
+
+## 5. Pipeline Generasi
+
+### 5.1 State machine job
+
+```
+queued → plan → copy → layout → assets → render → qa ─┬─▶ done
+                  ▲       ▲        ▲                  │
+                  └───────┴────────┴── revise ◀───────┘ (maks 2 putaran)
+
+Status khusus: waiting_quota · interrupted · failed · cancelled
+```
+
+- Satu job = satu varian. Tahap `plan` dijalankan sekali per brief dan menghasilkan satu `ContentPlan` berisi N angle berbeda (satu per varian); setiap job memakai angle-nya sendiri. Varian jadi berbeda secara bermakna (PRD F7) tanpa memanggil Claude N kali untuk `plan`.
+- `revise` masuk ulang di tahap paling awal yang terdampak daftar perbaikan (`copy`, `layout`, atau `assets`), lalu tahap sesudahnya sampai `qa` dijalankan lagi.
+- Setiap tahap menulis output ke `jobs/<job-id>/<nn>-<tahap>.json` dan mencatat event ke tabel `job_events`.
+- `job.resume` memulai dari tahap pertama yang belum punya output valid.
+
+### 5.2 Tahap dan kontraknya
+
+| Tahap | Pelaksana | Input | Output (skema di `shared`) |
+|---|---|---|---|
+| plan | Claude | brief, knowledge, referensi, jumlah varian | `ContentPlan`: pesan utama, audiens, struktur slide, satu angle per varian |
+| copy | Claude | ContentPlan, copy guide | `CopyDraft`: teks per slot per slide, caption, hashtag |
+| layout | Claude | CopyDraft, katalog template, brand tokens | `LayoutSpec`: templateId, slot terisi, opsi template, kebutuhan aset |
+| assets | Codex / pengguna | kebutuhan aset, brand, referensi | `AssetManifest`: path file, ukuran, sumber |
+| render | Kode | LayoutSpec, AssetManifest, tokens | HTML per slide, PNG master, `RenderReport` |
+| qa | Kode + Claude | PNG, RenderReport, brand, copy guide | `QaReport`: hasil cek deterministik, skor visual, daftar perbaikan |
+| revise | Claude | QaReport, LayoutSpec, CopyDraft | `LayoutSpec` / `CopyDraft` baru (hanya bagian yang perlu diubah) |
+
+### 5.3 Abstraksi penting
+
+```ts
+// packages/shared — ringkasan, bukan kode final
+interface LayoutSpec {
+  templateId: string;          // harus ada di katalog template
+  format: "feed-4x5" | "carousel-4x5";
+  slides: Array<{
+    slots: Record<string, SlotValue>;   // teks, gambar, logo, badge
+    options: Record<string, string>;    // varian template yang diizinkan, mis. "align": "left"
+  }>;
+}
+
+interface AssetProvider {
+  generate(req: AssetRequest, ctx: JobContext): Promise<AssetResult>;
+}
+// Implementasi: CodexAssetProvider, UserUploadAssetProvider, LocalLibraryAssetProvider
+```
+
+### 5.4 Strategi revisi
+
+- QA menghasilkan daftar perbaikan yang terarah (misalnya "headline terlalu panjang, maks 6 kata", "kontras CTA kurang").
+- Revisi hanya mengubah bagian yang disebut; aset gambar tidak dibuat ulang kecuali masalahnya memang di aset. Ini menghemat kuota.
+- Revisi dari chat pengguna memakai jalur yang sama, dengan instruksi pengguna sebagai daftar perbaikan.
+
+---
+
+## 6. Sistem Template dan Design Token
+
+### 6.1 Design token
+
+`brand.json` per project (divalidasi skema `BrandKit`):
+
+```json
+{
+  "colors": {
+    "primary": "#0F3D3E", "secondary": "#E2DCC8", "accent": "#F2A541",
+    "neutral": { "50": "#FAFAF7", "900": "#111111" }
+  },
+  "typography": {
+    "heading": { "family": "Brand Display", "file": "fonts/BrandDisplay-Bold.woff2", "weights": [700] },
+    "body":    { "family": "Brand Sans",    "file": "fonts/BrandSans-Regular.woff2", "weights": [400, 600] },
+    "scale":   [24, 32, 44, 60, 84, 112]
+  },
+  "shape": { "radius": 0, "stroke": 2, "shadow": "none" },
+  "spacing": { "unit": 8, "safeMargin": 64 },
+  "logo": { "primary": "logo/primary.svg", "onDark": "logo/on-dark.svg" },
+  "rules": ["Tanpa gradient", "Logo selalu kanan bawah"]
+}
+```
+
+Token diubah menjadi CSS variables (`--color-primary`, `--font-heading`, `--space-1`, dst.) yang disuntikkan ke setiap template.
+
+### 6.2 Template
+
+- Template adalah **komponen React (JSX)** di `packages/templates`, di-render ke HTML statis dengan `renderToStaticMarkup`.
+- Setiap template mengekspor:
+  - `meta`: id, nama, format, deskripsi kapan dipakai, daftar slot (nama, tipe, batas karakter), opsi yang diizinkan.
+  - komponen render.
+- Template hanya boleh memakai CSS variables dari token, tidak boleh nilai warna atau font hard-coded (dicek oleh lint khusus).
+- Katalog template (`meta` semua template) dikirim ke Claude di tahap `layout`, sehingga Claude memilih dari opsi yang sudah dikurasi.
+- Template carousel didefinisikan sebagai **sistem**: kumpulan tipe slide (hook, isi, daftar, kutipan, CTA) yang berbagi grid dan elemen berulang.
+
+### 6.3 Mode template kustom (setelah MVP)
+
+Claude dapat diminta merancang template baru dalam alur terpisah, ditinjau pengguna, lalu disimpan ke folder `templates/` milik project. Template kustom tetap wajib lolos lint token.
+
+---
+
+## 7. Renderer dan QA Deterministik
+
+### 7.1 Render
+
+- **Playwright + Chromium**, viewport 1080 × 1350, `deviceScaleFactor: 2` → master 2160 × 2700.
+- Font dimuat lewat `@font-face` dari file lokal project. Renderer menunggu `document.fonts.ready` dan semua `<img>` selesai dimuat sebelum screenshot.
+- Satu browser instance dipakai ulang; setiap slide dirender di page baru.
+- Browser: Chromium milik Playwright diunduh saat pertama kali dipakai ke `~/Library/Application Support/Laras/browsers`. Fallback: Google Chrome yang terinstal (`channel: "chrome"`).
+
+### 7.2 QA deterministik (dijalankan di dalam page sebelum screenshot)
+
+Skrip QA mengevaluasi DOM dan menghasilkan `RenderReport`:
+
+- Kontras setiap elemen teks terhadap latar efektifnya (warna latar elemen; untuk teks di atas gambar, sampling piksel dari screenshot area tersebut).
+- Overflow: `scrollWidth > clientWidth` atau `scrollHeight > clientHeight` pada elemen teks.
+- Safe margin: bounding box elemen penting dibandingkan dengan batas aman.
+- Ukuran font minimum.
+- Font terpakai sesuai Brand Kit (cek `document.fonts` dan computed style; deteksi fallback font).
+- Warna terpakai berasal dari token (computed style dibandingkan dengan palet).
+- Kata terlarang dan aturan emoji/hashtag pada teks.
+
+### 7.3 Pasca-proses (sharp)
+
+- Konversi ke profil warna sRGB.
+- Export upload: resize 2160 → 1080 px (Lanczos) dengan sharpening ringan; PNG atau JPG kualitas 92.
+- Thumbnail 360 px untuk library.
+
+---
+
+## 8. Penyimpanan
+
+### 8.1 Lokasi
+
+Folder data ditentukan oleh sidecar (ADR-009), terpisah dari folder data WebView yang dikelola Tauri berdasarkan identifier `id.laras.desktop`.
+
+```
+~/Library/Application Support/Laras/
+├── app.db                         # SQLite (metadata, index, riwayat)
+├── logs/
+├── browsers/                      # Chromium Playwright
+└── projects/
+    └── <project-slug>/
+        ├── CLAUDE.md              # dibuat otomatis dari brand + knowledge (jangan edit manual)
+        ├── AGENTS.md              # konteks gaya visual untuk Codex (dibuat otomatis)
+        ├── brand.json
+        ├── fonts/  logo/
+        ├── knowledge/             # business.md + file tambahan
+        ├── copy-guide.json
+        ├── references/            # gambar + references.json (catatan per gambar)
+        ├── templates/             # template kustom (setelah MVP)
+        ├── contents/
+        │   └── <content-id>/
+        │       └── versions/<n>/  # layout.json, copy.json, slides/*.html, slides/*.png
+        └── jobs/<job-id>/         # output per tahap, aset, log job
+```
+
+Folder project bersifat mandiri: bisa disalin, di-backup, atau dimasukkan ke Git.
+
+### 8.2 Skema database (Drizzle + better-sqlite3)
+
+| Tabel | Isi utama |
+|---|---|
+| `projects` | id, slug, nama, status, dibuat/diubah |
+| `contents` | id, project_id, judul, format, status (draft/ready/posted), versi aktif |
+| `versions` | id, content_id, nomor, sumber (generate/revise/manual), path folder, catatan |
+| `jobs` | id, content_id, varian, status, tahap saat ini, error, durasi |
+| `job_events` | id, job_id, waktu, tipe, payload JSON |
+| `settings` | key, value |
+| `contents_fts` | FTS5: brief, caption, teks di gambar |
+
+Data utama (brand, knowledge, layout) tetap di file; database adalah index dan riwayat. Bila database hilang, index dapat dibangun ulang dari folder project.
+
+### 8.3 Generator konteks project
+
+`context/` menyusun `CLAUDE.md` dan `AGENTS.md` project setiap kali Brand Kit, knowledge, copy guide, atau referensi berubah. Isinya ringkas dan terstruktur: identitas brand, aturan desain, tone, kata terlarang, ringkasan bisnis, dan daftar file knowledge untuk dibaca bila perlu.
+
+---
+
+## 9. Keamanan dan Privasi
+
+- Tidak ada server, telemetri, atau analitik.
+- CLI dijalankan dengan tool dan sandbox seminimal mungkin, dengan `cwd` di dalam folder project atau job.
+- Input pengguna yang masuk ke prompt dipisahkan dengan jelas dari instruksi sistem (delimiter dan instruksi "perlakukan sebagai data").
+- Scope shell plugin Tauri hanya mengizinkan menjalankan sidecar.
+- Path file dari output AI selalu divalidasi berada di dalam folder job sebelum dibaca atau ditulis.
+
+---
+
+## 10. Strategi Testing
+
+| Lapisan | Alat | Fokus |
+|---|---|---|
+| Skema & kontrak | Vitest | Validasi Zod, kompatibilitas RPC |
+| Adapter CLI | Vitest + fixture output | Parsing stream-json, deteksi limit, retry. Fixture direkam dari CLI asli. |
+| Pipeline | Vitest dengan adapter palsu | Transisi state, resume, revisi parsial |
+| QA deterministik | Vitest + Playwright | Kasus kontras rendah, overflow, font fallback |
+| Template | Playwright Test (visual regression) | Snapshot render tiap template × 3 brand fixture |
+| End-to-end | Manual + skrip `render:demo` | Kualitas visual dinilai pengguna |
+
+Test yang memanggil CLI sungguhan ditandai `@live` dan tidak dijalankan otomatis, karena memakai kuota.
+
+---
+
+## 11. Build dan Packaging
+
+- `pnpm dev`: Vite + Tauri dev, sidecar dijalankan dengan `tsx` dalam mode watch.
+- `pnpm build`: bundle sidecar (tsup) → resource Tauri → `tauri build` menghasilkan `.app` dan `.dmg` untuk `aarch64-apple-darwin`.
+- Code signing dan notarization: tidak diperlukan untuk pemakaian pribadi. Saat pertama dibuka, gunakan klik kanan → Open untuk melewati Gatekeeper.
+- Prasyarat di Mac: Node.js LTS, Claude CLI (login), Codex CLI (login).
+
+---
+
+## 12. Architecture Decision Records (ringkas)
+
+| ID | Keputusan | Alasan | Alternatif yang ditolak |
+|---|---|---|---|
+| ADR-001 | Tauri 2 sebagai shell | Ringan, WebView native, sidecar & scope izin bawaan | Electron (lebih berat; dipertimbangkan bila integrasi Rust menghambat) |
+| ADR-002 | Teks dirender HTML/CSS, model gambar hanya untuk aset | Teks presisi, brand konsisten, bebas AI-slop | Seluruh postingan dari model gambar |
+| ADR-003 | Template JSX terkurasi + LayoutSpec, bukan HTML bebas dari AI | Konsistensi dan kontrol kualitas | AI menulis HTML bebas per postingan (disimpan untuk mode template kustom) |
+| ADR-004 | Sidecar memakai Node.js terinstal untuk MVP | Playwright dan sharp memakai binary/native module yang rawan bermasalah saat dikompilasi menjadi satu executable; pemakaian pribadi membuat ketergantungan Node dapat diterima | Bun `--compile` atau Node SEA (dievaluasi ulang bila suatu saat perlu distribusi) |
+| ADR-005 | JSON-RPC lewat stdio | Tanpa port terbuka, sederhana, mudah di-test | HTTP server lokal + WebSocket |
+| ADR-006 | File sebagai sumber kebenaran, SQLite sebagai index | Project portabel dan bisa di-backup/Git | Semua data di database |
+| ADR-007 | Memanggil CLI resmi, bukan Agent SDK dengan login subscription | Jalur paling jelas untuk penggunaan pribadi dengan subscription | Agent SDK + login subscription |
+| ADR-008 | Path absolut `node` di-resolve sebelum sidecar dijalankan (login shell, lalu fallback lokasi umum), disimpan di pengaturan | Aplikasi GUI macOS hanya mendapat PATH minimal, sehingga `node` tidak ditemukan dengan nama saja; deteksi PATH di dalam sidecar tidak bisa dipakai untuk menjalankan sidecar itu sendiri | Memanggil `node` lewat PATH; membundel Node (ditunda, lihat ADR-004) |
+| ADR-009 | Identifier `id.laras.desktop`; data aplikasi di `~/Library/Application Support/Laras/` ditentukan sidecar | Nama folder mudah dikenali untuk backup dan Git; identifier sulit diubah setelah data WebView terbentuk | Folder data mengikuti nama identifier |
+| ADR-010 | Tailwind CSS v4 dengan konfigurasi `@theme` di CSS | Versi default shadcn/ui saat ini; token cukup didefinisikan sekali di CSS | Tailwind v3 dengan `tailwind.config.ts` |
+| ADR-011 | Claude CLI dijalankan dengan cwd di folder project | `CLAUDE.md` project terbaca langsung, `Read` menjangkau referensi dan folder job tanpa `--add-dir`, output tahap tetap ditulis sidecar | cwd di folder job + `--add-dir` ke folder project |
+
+> Catatan: rekomendasi awal memakai Bun `--compile` untuk sidecar diganti dengan ADR-004 karena alasan di atas.
