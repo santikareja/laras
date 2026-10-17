@@ -136,6 +136,8 @@ Versi teruji: **0.163.0** (standalone). Diverifikasi dari `codex --help`, `codex
 - **`@theme inline` tidak membuat variabel `--color-*` di `:root`**; nilainya langsung disisipkan ke utility yang dipakai. Jadi `getPropertyValue("--color-primary")` kosong, dan itu normal.
 - **Spacing Tailwind v4 berbasis rem** (`--spacing: .25rem`): `h-11` = 44 px selama ukuran font root 16 px.
 
+- **Membaca isi WebView Tauri tanpa screenshot:** jalankan Vite dengan config diagnostik sementara yang menyuntik skrip lewat `transformIndexHtml` dan menerima laporan di middleware `/__diag` (ditulis ke file), lalu `pnpm tauri dev --config '{"build":{"beforeDevCommand":""}}'` agar Tauri memakai server itu. User agent WebView: `AppleWebKit/605.1.15`, `window.__TAURI_INTERNALS__` ada. Config diagnostik tidak di-commit.
+
 ## Keputusan kecil (tanggal, keputusan, alasan)
 
 | Tanggal | Keputusan | Alasan |

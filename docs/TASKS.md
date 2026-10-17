@@ -43,11 +43,11 @@ Target: struktur monorepo sesuai ARCH 3, token DESIGN 15 terpasang, `pnpm dev` m
   - Verifikasi: `pnpm --filter @laras/desktop build` sukses; `pnpm typecheck && pnpm lint && pnpm test` lolos.
   - Catatan: belum memakai Tailwind dan shadcn/ui (T-008 dan Fase 2). Selesai 2026-10-18: Vite 8.3.4, React 19.3.1, @vitejs/plugin-react 6.1.2; tsconfig terpisah untuk kode UI (DOM) dan `vite.config.ts` (Node).
 
-- [~] T-007 Shell Tauri 2 untuk `apps/desktop`
+- [x] T-007 Shell Tauri 2 untuk `apps/desktop`
   - Rujukan: ARCH 4.1, ADR-001, ADR-009, DESIGN 5 (Ukuran tetap), DESIGN 2 (prinsip 4)
   - AC: `apps/desktop/src-tauri` dengan identifier `id.laras.desktop`, productName "Laras"; jendela minimum 1100 × 700, title bar overlay dengan judul tersembunyi, tema mengikuti sistem; Rust hanya konfigurasi (tanpa command bisnis); capability minimal tanpa plugin shell; skrip root `pnpm dev` menjalankan `tauri dev`.
   - Verifikasi: `pnpm dev` membuka jendela Laras (screenshot); `cargo check` di `src-tauri` lolos; `pnpm typecheck && pnpm lint && pnpm test` lolos.
-  - Catatan: bergantung T-005 dan T-006. Nilai `titleBarStyle` di Tauri 2 ditulis "Overlay"; cek dokumentasi Tauri dan catat di KNOWLEDGE.md. Status 2026-10-18: `cargo check` dan pemeriksaan JS lolos; `pnpm dev` menjalankan proses `laras` dengan jendela 1280 × 800 (dicek lewat CGWindowList). Screenshot tidak bisa diambil karena sesi agent tidak punya izin Screen Recording, jadi **menunggu konfirmasi visual pemilik** sebelum [x]. Ditambahkan area seret 44 px + izin `core:window:allow-start-dragging` karena title bar Overlay menutup area seret bawaan. Ikon masih ikon bawaan Tauri (diganti di E-402).
+  - Catatan: bergantung T-005 dan T-006. Nilai `titleBarStyle` di Tauri 2 ditulis "Overlay"; cek dokumentasi Tauri dan catat di KNOWLEDGE.md. Status 2026-10-18: `cargo check` dan pemeriksaan JS lolos; `pnpm dev` menjalankan proses `laras` dengan jendela 1280 × 800 (dicek lewat CGWindowList). Screenshot tidak bisa diambil karena sesi agent tidak punya izin Screen Recording. Selesai 2026-10-18: pemilik mengonfirmasi secara visual title bar tanpa judul dengan traffic lights, jendela bisa digeser lewat area atas, dan tidak bisa diperkecil di bawah 1100 × 700; diagnostik WebView memastikan halaman berjalan di WebView Tauri (React ter-mount, latar `#F3F5F6`, tanpa error JS). Ditambahkan area seret 44 px + izin `core:window:allow-start-dragging` karena title bar Overlay menutup area seret bawaan. Ikon masih ikon bawaan Tauri (diganti di E-402).
 
 - [~] T-008 Token UI DESIGN 15, Tailwind v4, dan light/dark mode
   - Rujukan: DESIGN 3, DESIGN 4, DESIGN 15, ADR-010
