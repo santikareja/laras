@@ -176,6 +176,10 @@ Panggilan yang dipakai (fixture di `packages/sidecar/test/fixtures/codex/`):
 - **Diagnostik WebView tidak merekam peralihan Appearance saat jendela Laras di belakang.** Saat pemilik mengganti Appearance di System Settings (Laras tidak di depan), tidak ada event `change` dari `matchMedia` maupun hasil polling 1 detik yang terkirim, padahal latar terlihat berubah gelap. Dugaan (belum diuji): WebKit/macOS memperlambat timer dan fetch WebView aplikasi latar belakang. Untuk mengukur dark di jendela native: ganti ke Dark, lalu klik jendela Laras agar event `focus` mengirim laporan.
 - **Jendela kosong di Fase 0 itu disengaja** (PRD 11). Latar `#F3F5F6` sangat terang dan mudah dikira "blank"; jelaskan ke pemilik sebelum verifikasi visual.
 
+- **TypeScript 6+/7: `types` default `[]`.** `@types/node` tidak lagi dimuat otomatis; paket yang butuh tipe Node wajib menulis `"types": ["node"]`. `packages/shared` sengaja tanpa tipe Node (dipakai UI juga); test-nya memakai `tsconfig.test.json`.
+- **Impor relatif memakai ekstensi `.ts`** di seluruh workspace (`allowImportingTsExtensions` di `tsconfig.base.json`), sehingga paket bisa diimpor langsung oleh Node 22 dengan type stripping (dicek: `import("packages/shared/src/index.ts")` berhasil) dan oleh Vite/Vitest.
+- **Zod 4.6.7:** `z.strictObject` menghasilkan `additionalProperties: false` di `z.toJSONSchema`; `.refine`/`.superRefine` tidak ikut ke JSON Schema (validasinya tetap di Zod); `discriminatedUnion` menjadi union dengan `"const"` per tipe; `z.string().trim()` tidak membuat konversi gagal. Belum diuji: apakah tool `StructuredOutput` Claude menerima kata kunci seperti `propertyNames` (dari `z.record` dengan skema key) — diuji di T-112.
+
 ## Keputusan kecil (tanggal, keputusan, alasan)
 
 | Tanggal | Keputusan | Alasan |

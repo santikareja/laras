@@ -83,11 +83,11 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Verifikasi: temuan tertulis di KNOWLEDGE.md; fixture ada di `packages/sidecar/test/fixtures/claude/`.
   - Catatan: MEMAKAI KUOTA. Minta izin pemilik dan sebutkan jumlah panggilan sebelum mulai (target ≤ 6, prompt sangat pendek). Selesai 2026-10-18 dengan 4 dari 6 pemanggilan (satu ditolak sebelum request): stream-json wajib `--verbose`; isolasi `--setting-sources project --strict-mcp-config --disable-slash-commands` terbukti; `--tools Read` membatasi; `--permission-prompts none` menolak tanpa menggantung; `--json-schema` memberi `result.structured_output`; `rate_limit_event` tersedia. ARCH 4.5 dan ADR-013 disesuaikan; `--restricted` tidak diuji karena tidak dibutuhkan.
 
-- [ ] T-103 Skema Zod inti di `packages/shared`
+- [x] T-103 Skema Zod inti di `packages/shared`
   - Rujukan: ARCH 5.2, ARCH 5.3, ARCH 6.1, PRD F2
   - AC: skema `BrandKit`, `ContentPlan` (satu angle per varian), `CopyDraft`, `LayoutSpec`, `AssetManifest`, `RenderReport`, `QaReport` beserta tipe `z.infer`; contoh `brand.json` di ARCH 6.1 lolos validasi.
   - Verifikasi: test Vitest untuk contoh valid dan tidak valid per skema; `pnpm typecheck && pnpm lint && pnpm test` lolos.
-  - Catatan:
+  - Catatan: Selesai 2026-10-18 (rencana dan 4 keputusan desain disetujui pemilik): Zod 4.6.7; skema `common`, `BrandKit`, `ContentPlan`, `CopyDraft`, `LayoutSpec`, `AssetManifest`, `RenderReport`, `VisualQa`, `QaReport`, semuanya objek strict; aturan deterministik (jumlah slide per format, skala tipografi ≥ 24 px dan naik, slot gambar merujuk `assetRequests`, path relatif tanpa `..`); 45 test di `packages/shared` termasuk contoh `brand.json` yang dibaca langsung dari ARCH 6.1 dan konversi `z.toJSONSchema`. Test `shared` memakai `tsconfig.test.json` (dengan tipe Node) agar sumber `shared` tetap bebas API Node.
 
 - [ ] T-104 Tiga brand fixture
   - Rujukan: PRD F2–F5, ARCH 6.1, ARCH 8.1
