@@ -71,11 +71,11 @@ Target: struktur monorepo sesuai ARCH 3, token DESIGN 15 terpasang, `pnpm dev` m
 
 Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Gerbang: 3 brand × 3 brief menghasilkan PNG yang menurut pemilik layak publikasi pada ≥ 6 dari 9 percobaan (PRD 11).
 
-- [ ] T-101 Verifikasi generasi gambar Codex
+- [x] T-101 Verifikasi generasi gambar Codex
   - Rujukan: PRD 10 (risiko Codex), ARCH 4.5 (Codex adapter), KNOWLEDGE (Codex CLI)
   - AC: satu gambar tanpa teks dibuat lewat `codex exec` di folder non-git dengan flag ARCH 4.5; diketahui lokasi file di `~/.codex/generated_images/`, event `--json` yang memuat path-nya, perilaku rasio 4:5 lewat prompt, apakah `AGENTS.md` di folder induk terbaca, efek `--ignore-user-config`, dan durasi per gambar; event `--json` disimpan sebagai fixture.
   - Verifikasi: temuan tertulis di KNOWLEDGE.md; fixture ada di `packages/sidecar/test/fixtures/codex/`.
-  - Catatan: MEMAKAI KUOTA. Minta izin pemilik dan sebutkan jumlah panggilan sebelum mulai (target ≤ 3).
+  - Catatan: MEMAKAI KUOTA. Minta izin pemilik dan sebutkan jumlah panggilan sebelum mulai (target ≤ 3). Selesai 2026-10-18 dengan 2 dari 3 panggilan yang diizinkan: gambar ada di `~/.codex/generated_images/<thread_id>/` (tidak ada event gambar di `--json`); 4:5 menghasilkan 1122 × 1402; `AGENTS.md` hanya terbaca dari cwd; sandbox `read-only` cukup; sekitar 45 detik per gambar. ARCH 4.5 dan ADR-012 disesuaikan.
 
 - [ ] T-102 Verifikasi perilaku Claude CLI headless
   - Rujukan: ARCH 4.5 (Claude adapter), ADR-011, KNOWLEDGE (Claude CLI)

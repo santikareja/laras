@@ -102,13 +102,28 @@ Versi teruji: **0.163.0** (standalone). Diverifikasi dari `codex --help`, `codex
 - Background transparan didukung oleh tool bawaan.
 - Sumber: teks instruksi skill `$imagegen` di dalam binary Codex (`strings`), diperiksa pada 0.162.0-alpha dan 0.163.0, ditambah `codex features list`.
 
-**Belum diuji (T-101)**
-- Event `--json` yang memuat path gambar di `generated_images`.
-- Apakah `AGENTS.md` di folder induk terbaca saat cwd bukan repo git.
-- Apakah `~/.codex/AGENTS.md` global ikut terbaca walau `--ignore-user-config` dipakai (file ini ada, saat ini kosong).
-- Perilaku daemon app-server bersama (`daemon_auto_start` aktif) saat `exec`; `--no-daemon` hanya ada di level atas, tidak di `exec --help`.
-- Durasi per gambar dan pola pesan batas kuota.
-- `~/.codex/generated_images/` belum ada di Mac ini, artinya `image_gen` belum pernah dipakai.
+**Hasil uji generasi gambar (T-101, 2026-10-18, 2 panggilan `codex exec`, Codex 0.163.0)**
+
+Panggilan yang dipakai (fixture di `packages/sidecar/test/fixtures/codex/`):
+1. `codex exec --cd <proyek>/jobs/job-1/assets --sandbox workspace-write --skip-git-repo-check --json --ephemeral --ignore-user-config "<prompt>"`
+2. `codex exec --cd <proyek> --sandbox read-only --skip-git-repo-check --json --ephemeral --ignore-user-config "<prompt>" < /dev/null`
+
+- **Generasi gambar berhasil di kedua panggilan**, exit 0, tanpa `OPENAI_API_KEY`. Prompt cukup meminta "use your built-in image generation tool"; di panggilan 2 agent menyebut memakai skill `imagegen`.
+- **Lokasi file:** `~/.codex/generated_images/<thread_id>/exec-<uuid>.png`. `<thread_id>` sama dengan nilai `thread_id` di event pertama `{"type":"thread.started","thread_id":...}`. Adapter bisa menemukan gambar secara deterministik dari folder itu, tanpa membaca teks jawaban model.
+- **Stream `--json` tidak memuat event gambar.** Isinya hanya `thread.started`, `turn.started`, `item.completed` (tipe `agent_message`), dan `turn.completed` (berisi `usage`: `input_tokens`, `cached_input_tokens`, `output_tokens`, `reasoning_output_tokens`). Model yang dipakai tidak tercantum di event.
+- **Ukuran:** permintaan "portrait, aspect ratio 4:5" menghasilkan 1122 × 1402 px (rasio 0.8003) di kedua panggilan; PNG RGB tanpa alpha, sekitar 2.5 MB. Cukup di-resize ke 1080 × 1350 dengan crop yang dapat diabaikan.
+- **Teks di gambar:** kedua gambar bebas teks, huruf, logo, dan watermark dengan larangan eksplisit di prompt (dilihat langsung).
+- **`AGENTS.md`:** tanpa repo git, hanya `AGENTS.md` di cwd yang terbaca. Dengan cwd `jobs/job-1/assets`, `AGENTS.md` di folder project (dua tingkat di atas) tidak terbaca; dengan cwd folder project, terbaca (penanda `AGENTS-OK` muncul) dan palet brand di dalamnya dipakai pada gambar. `--ignore-user-config` tidak mematikan pembacaan `AGENTS.md` project.
+- **Sandbox `read-only` cukup** untuk generasi gambar, karena file ditulis Codex ke `CODEX_HOME`, bukan oleh agent ke workspace.
+- **Durasi:** 43 dan 45 detik per gambar (satu gambar per panggilan).
+- **Konsumsi token:** 52.5k input (32k cached) dan 79k input (55k cached) per panggilan, walau `--ignore-user-config`. Konteks dasar Codex besar; ini relevan untuk kuota.
+- **stdin:** `codex exec` mencetak "Reading additional input from stdin..." ke stderr ketika stdin bukan TTY, termasuk dengan `< /dev/null` (langsung EOF). Adapter wajib menutup stdin (`stdio: ["ignore", ...]`). Belum diuji: proses menggantung bila stdin berupa pipe yang tidak pernah ditutup.
+
+**Belum diuji**
+- Apakah `~/.codex/AGENTS.md` global ikut terbaca walau `--ignore-user-config` dipakai (file ini ada, saat ini kosong; tidak diubah agar tidak menyentuh konfigurasi pemilik).
+- Perilaku daemon app-server bersama (`daemon_auto_start` aktif) saat `exec`. Tidak ada masalah terlihat di dua panggilan; `--no-daemon` hanya ada di level atas.
+- Pola pesan batas kuota (tidak terpicu).
+- Permintaan ukuran selain 4:5 dan background transparan.
 
 ## Gotcha dan pelajaran
 

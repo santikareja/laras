@@ -172,25 +172,27 @@ claude -p "<prompt>" \
 
 #### Codex adapter (aset gambar)
 
-Pemanggilan dasar (flag ada di `codex exec --help` Codex 0.163.0; perilakunya diuji di Fase 1, lihat `KNOWLEDGE.md`):
+Pemanggilan dasar (diuji di T-101 dengan Codex 0.163.0, lihat `KNOWLEDGE.md`):
 
 ```bash
 codex exec "<prompt aset>" \
-  --cd <folder assets job> \
-  --sandbox workspace-write \
+  --cd <folder project> \
+  --sandbox read-only \
   --skip-git-repo-check \
   --json \
   --ephemeral \
   --ignore-user-config
+# stdin ditutup (ADR-012)
 ```
 
 - Gambar dibuat oleh tool bawaan Codex `image_gen` (fitur `image_generation`, memakai login ChatGPT, tanpa `OPENAI_API_KEY`). Tidak ada flag khusus: prompt yang meminta gambar. Mode cadangan Codex yang memakai API key tidak dipakai.
-- `--skip-git-repo-check` wajib karena folder job bukan repo git. `--ignore-user-config` dan `--ephemeral` menjaga job dari konfigurasi global pengguna dan riwayat sesi.
+- cwd adalah folder project (ADR-012). Tanpa repo git, Codex hanya membaca `AGENTS.md` di cwd, jadi dari folder job `AGENTS.md` project tidak terbaca. Sandbox `read-only` cukup karena file gambar ditulis Codex ke `CODEX_HOME`, bukan oleh agent ke workspace.
+- `--skip-git-repo-check` wajib karena folder project bukan repo git. `--ignore-user-config` dan `--ephemeral` menjaga job dari konfigurasi global pengguna dan riwayat sesi. stdin wajib ditutup: bila stdin bukan TTY, `codex exec` membacanya sebagai tambahan prompt.
 - Prompt aset selalu menyertakan: deskripsi visual, palet brand, gaya dari referensi, rasio target, serta larangan eksplisit **tanpa teks, huruf, logo, atau watermark**. Gambar referensi dapat dilampirkan dengan `-i <file>`.
-- `image_gen` tidak menerima path tujuan; hasilnya tersimpan di `~/.codex/generated_images/…`. Adapter menyalin file dari sana ke folder job (path sumber dibaca dari event `--json`), setelah memvalidasi path sumber berada di dalam `generated_images`.
-- Ukuran tidak bisa diatur di mode bawaan; rasio hanya diminta lewat prompt, lalu renderer (sharp) melakukan crop dan resize ke ukuran slot.
-- Adapter memastikan file gambar benar-benar tercipta di folder job; bila tidak, tahap dianggap gagal.
-- `AGENTS.md` project memberi Codex konteks gaya visual brand. Codex mencari `AGENTS.md` dari root repo git sampai cwd; karena folder project bukan repo git, apakah file itu terbaca dari `jobs/<job-id>/assets` wajib diverifikasi di Fase 1. Bila tidak terbaca, adapter menyisipkan isinya ke prompt.
+- `image_gen` tidak menerima path tujuan; hasilnya tersimpan di `~/.codex/generated_images/<thread_id>/exec-<uuid>.png`, dengan `<thread_id>` dari event `thread.started` di stream `--json` (stream ini tidak memuat event khusus gambar). Adapter mencari file di folder itu, memvalidasi path-nya berada di dalam `generated_images/<thread_id>/`, lalu menyalinnya ke `jobs/<job-id>/assets/`.
+- Ukuran tidak bisa diatur di mode bawaan; rasio diminta lewat prompt. Permintaan 4:5 menghasilkan 1122 × 1402 px, lalu renderer (sharp) melakukan resize dan crop ke ukuran slot.
+- Adapter memastikan file gambar benar-benar tersalin ke folder job; bila tidak, tahap dianggap gagal.
+- Satu panggilan menghasilkan satu gambar dalam sekitar 45 detik dan memakai puluhan ribu token input; jumlah aset per job perlu dibatasi demi kuota.
 - Bila generasi gambar via Codex tidak tersedia, adapter aset dapat diganti dengan sumber lain (foto pengguna, library lokal) tanpa mengubah pipeline (lihat `AssetProvider` di 5.3).
 
 #### Deteksi rate limit
@@ -425,5 +427,6 @@ Test yang memanggil CLI sungguhan ditandai `@live` dan tidak dijalankan otomatis
 | ADR-009 | Identifier `id.laras.desktop`; data aplikasi di `~/Library/Application Support/Laras/` ditentukan sidecar | Nama folder mudah dikenali untuk backup dan Git; identifier sulit diubah setelah data WebView terbentuk | Folder data mengikuti nama identifier |
 | ADR-010 | Tailwind CSS v4 dengan konfigurasi `@theme` di CSS | Versi default shadcn/ui saat ini; token cukup didefinisikan sekali di CSS | Tailwind v3 dengan `tailwind.config.ts` |
 | ADR-011 | Claude CLI dijalankan dengan cwd di folder project | `CLAUDE.md` project terbaca langsung, `Read` menjangkau referensi dan folder job tanpa `--add-dir`, output tahap tetap ditulis sidecar | cwd di folder job + `--add-dir` ke folder project |
+| ADR-012 | Codex dijalankan dengan cwd di folder project, sandbox `read-only`, stdin ditutup; gambar diambil dari `~/.codex/generated_images/<thread_id>/` | Uji T-101: tanpa repo git hanya `AGENTS.md` di cwd yang terbaca; `image_gen` menulis ke `CODEX_HOME` sehingga agent tidak perlu izin tulis; `thread_id` di event pertama menunjuk folder gambar secara deterministik | cwd di `jobs/<job-id>/assets` dengan sandbox `workspace-write` dan isi `AGENTS.md` disisipkan ke prompt |
 
 > Catatan: rekomendasi awal memakai Bun `--compile` untuk sidecar diganti dengan ADR-004 karena alasan di atas.
