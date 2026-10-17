@@ -37,11 +37,11 @@ Target: struktur monorepo sesuai ARCH 3, token DESIGN 15 terpasang, `pnpm dev` m
   - Verifikasi: `rustc --version`, `cargo --version`, `rustup target list --installed`.
   - Catatan: instalasi dilakukan pemilik (keputusan Q1 Tahap A). Blocker untuk T-007. Selesai 2026-10-18: rustc dan cargo 1.99.1, target `aarch64-apple-darwin` terpasang.
 
-- [ ] T-006 Aplikasi `apps/desktop`: Vite + React + TypeScript
+- [x] T-006 Aplikasi `apps/desktop`: Vite + React + TypeScript
   - Rujukan: ARCH 3, ARCH 4.2
   - AC: `apps/desktop` (`@laras/desktop`) dengan Vite, React, TypeScript strict; struktur `src/{app,features,components,lib,stores,styles}`; halaman kosong tanpa teks contoh bawaan Vite.
   - Verifikasi: `pnpm --filter @laras/desktop build` sukses; `pnpm typecheck && pnpm lint && pnpm test` lolos.
-  - Catatan: belum memakai Tailwind dan shadcn/ui (T-008 dan Fase 2).
+  - Catatan: belum memakai Tailwind dan shadcn/ui (T-008 dan Fase 2). Selesai 2026-10-18: Vite 8.3.4, React 19.3.1, @vitejs/plugin-react 6.1.2; tsconfig terpisah untuk kode UI (DOM) dan `vite.config.ts` (Node).
 
 - [ ] T-007 Shell Tauri 2 untuk `apps/desktop`
   - Rujukan: ARCH 4.1, ADR-001, ADR-009, DESIGN 5 (Ukuran tetap), DESIGN 2 (prinsip 4)
