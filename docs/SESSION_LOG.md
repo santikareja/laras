@@ -1,5 +1,11 @@
 # SESSION LOG
 
+## Sesi #5, 2026-10-18
+- Task: T-102
+- Hasil: Claude CLI headless terverifikasi dengan 4 dari 6 pemanggilan yang diizinkan (satu ditolak sebelum request). Perintah ARCH 4.5 dengan isolasi `--setting-sources project --strict-mcp-config --disable-slash-commands` hanya memuat tool `Read`, tanpa hook, plugin pengguna, MCP, skill, atau `CLAUDE.md` global; `CLAUDE.md` project tetap terbaca dan login subscription dipakai. `--json-schema` memberi `result.structured_output`; `--permission-prompts none` menolak tanpa menggantung; `rate_limit_event` tersedia untuk deteksi kuota. ARCH 4.5 diperbarui dan ADR-013 ditambahkan; output disimpan sebagai fixture.
+- Masalah dan solusinya: perintah `timeout` tidak ada di macOS sehingga satu percobaan gagal sebelum `claude` dijalankan (tidak memakai kuota, tidak dihitung); diulang tanpa `timeout`.
+- Commit: b7cd2c6, docs: update status sesi #5
+
 ## Sesi #4, 2026-10-18
 - Task: T-101
 - Hasil: Generasi gambar Codex terverifikasi dengan 2 dari 3 panggilan yang diizinkan. Gambar 4:5 bebas teks (1122 × 1402) tersimpan di `~/.codex/generated_images/<thread_id>/`; `AGENTS.md` hanya terbaca dari cwd; sandbox `read-only` cukup; sekitar 45 detik per gambar. ARCH 4.5 diperbarui dan ADR-012 ditambahkan; event `--json` disimpan sebagai fixture.
