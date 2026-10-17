@@ -150,7 +150,7 @@ Salinan CLI bawaan Claude desktop app atau ekstensi editor (VS Code, Kiro) senga
 
 #### Claude adapter
 
-Pemanggilan dasar (flag ada di `--help` Claude Code 2.1.302; perilakunya diuji di Fase 1, lihat `KNOWLEDGE.md`):
+Pemanggilan dasar (diuji di T-102 dengan Claude Code 2.1.302, lihat `KNOWLEDGE.md`):
 
 ```bash
 claude -p "<prompt>" \
@@ -158,17 +158,20 @@ claude -p "<prompt>" \
   --output-format stream-json --verbose \
   --tools "Read" \
   --permission-prompts none \
-  --no-session-persistence
-# cwd = folder project (ADR-011)
+  --no-session-persistence \
+  --setting-sources project --strict-mcp-config --disable-slash-commands \
+  --json-schema '<JSON Schema tahap>'
+# cwd = folder project (ADR-011), stdin ditutup
 ```
 
 - Prompt disusun dari file di `packages/sidecar/src/prompts/` ditambah data job.
 - Proses dijalankan dengan `cwd` di folder project (ADR-011), sehingga `CLAUDE.md` project (konteks brand) otomatis terbaca dan `Read` menjangkau `references/` serta `jobs/<job-id>/`. Output tahap ditulis oleh sidecar, bukan oleh Claude.
+- `--output-format stream-json` wajib disertai `--verbose`; tanpa itu CLI langsung keluar dengan error.
 - Tool dibatasi dengan `--tools` (membatasi tool yang tersedia). `--allowedTools` hanya menyetujui tool secara otomatis dan tidak membatasi, jadi tidak dipakai untuk tujuan ini. Tahap yang butuh melihat gambar (QA visual) memakai `Read` pada file PNG di folder job.
-- `--permission-prompts none`: aksi yang butuh izin langsung ditolak, sehingga proses headless tidak menggantung.
-- Output akhir diambil sebagai JSON, divalidasi dengan skema Zod tahap tersebut. Bila tidak valid, adapter mengirim ulang dengan pesan error validasi (maksimal 2 kali). `--json-schema` dievaluasi di Fase 1 sebagai lapis validasi pertama.
-- Isolasi dari konfigurasi global pengguna (hook, plugin, server MCP, `~/.claude/CLAUDE.md`) supaya tidak mencemari prompt dan memboroskan kuota. Kandidat: `--setting-sources`, `--strict-mcp-config`, `--disable-slash-commands`, `--restricted`; kombinasinya ditetapkan di Fase 1. `--bare` dan `--safe-mode` tidak dipakai (lihat `KNOWLEDGE.md`).
-- Event stream di-parse baris per baris dan diteruskan ke UI sebagai progres.
+- `--permission-prompts none`: aksi yang butuh izin (misalnya `Read` di luar cwd) langsung ditolak tanpa menggantung. Penolakan tercatat di `result.permission_denials`; adapter mencatatnya ke log job.
+- Isolasi dari konfigurasi global pengguna (ADR-013): `--setting-sources project --strict-mcp-config --disable-slash-commands` mematikan hook, plugin, server MCP, skill, dan `~/.claude/CLAUDE.md` global, sambil tetap membaca `CLAUDE.md` project dan memakai login subscription. `--bare` dan `--safe-mode` tidak dipakai (lihat `KNOWLEDGE.md`).
+- Validasi dua lapis: `--json-schema` (dari skema Zod tahap, dikonversi ke JSON Schema) membuat CLI memvalidasi output lewat tool `StructuredOutput`; adapter mengambil `result.structured_output`, lalu memvalidasinya lagi dengan Zod. Bila tidak valid, adapter mengirim ulang dengan pesan error validasi (maksimal 2 kali).
+- Event stream di-parse baris per baris dan diteruskan ke UI sebagai progres (urutan event di `KNOWLEDGE.md`).
 
 #### Codex adapter (aset gambar)
 
@@ -197,7 +200,8 @@ codex exec "<prompt aset>" \
 
 #### Deteksi rate limit
 
-- Adapter mengenali pola pesan batas kuota dan kode exit tertentu dari masing-masing CLI (pola dicatat di `cli/limits.ts` dan diperbarui bila berubah).
+- Claude CLI mengirim `rate_limit_event` di stream (`rate_limit_info.status`, `resetsAt`, `unifiedWindows.<jendela>.utilization`). Adapter memakainya sebagai sinyal utama dan untuk jam lanjut otomatis; nilai `status` selain `allowed` belum terverifikasi (lihat `KNOWLEDGE.md`).
+- Untuk Codex, dan sebagai cadangan untuk Claude, adapter mengenali pola pesan batas kuota dan kode exit tertentu (pola dicatat di `cli/limits.ts` dan diperbarui bila berubah).
 - Hasilnya `LimitReachedError`, yang membuat queue menjeda job dengan status `waiting_quota` dan mencoba lagi dengan backoff (5 menit, 15 menit, 60 menit) atau menunggu pengguna menekan "Lanjutkan".
 
 ---
@@ -428,5 +432,6 @@ Test yang memanggil CLI sungguhan ditandai `@live` dan tidak dijalankan otomatis
 | ADR-010 | Tailwind CSS v4 dengan konfigurasi `@theme` di CSS | Versi default shadcn/ui saat ini; token cukup didefinisikan sekali di CSS | Tailwind v3 dengan `tailwind.config.ts` |
 | ADR-011 | Claude CLI dijalankan dengan cwd di folder project | `CLAUDE.md` project terbaca langsung, `Read` menjangkau referensi dan folder job tanpa `--add-dir`, output tahap tetap ditulis sidecar | cwd di folder job + `--add-dir` ke folder project |
 | ADR-012 | Codex dijalankan dengan cwd di folder project, sandbox `read-only`, stdin ditutup; gambar diambil dari `~/.codex/generated_images/<thread_id>/` | Uji T-101: tanpa repo git hanya `AGENTS.md` di cwd yang terbaca; `image_gen` menulis ke `CODEX_HOME` sehingga agent tidak perlu izin tulis; `thread_id` di event pertama menunjuk folder gambar secara deterministik | cwd di `jobs/<job-id>/assets` dengan sandbox `workspace-write` dan isi `AGENTS.md` disisipkan ke prompt |
+| ADR-013 | Claude CLI dijalankan dengan `--setting-sources project --strict-mcp-config --disable-slash-commands` dan `--json-schema` per tahap | Uji T-102: kombinasi ini mematikan hook, plugin, MCP, skill, dan `CLAUDE.md` global pengguna tanpa kehilangan `CLAUDE.md` project dan login subscription; `--json-schema` memberi objek tervalidasi di `result.structured_output` | `--bare` (memaksa API key), `--safe-mode` (mematikan `CLAUDE.md` project), `--restricted` (tidak dibutuhkan) |
 
 > Catatan: rekomendasi awal memakai Bun `--compile` untuk sidecar diganti dengan ADR-004 karena alasan di atas.

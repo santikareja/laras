@@ -61,11 +61,31 @@ Versi teruji: **2.1.302** (standalone). Diverifikasi dari `claude --help` tanpa 
 - `--bare`: autentikasi hanya `ANTHROPIC_API_KEY` atau `apiKeyHelper` (OAuth dan keychain tidak dibaca), dan auto-discovery `CLAUDE.md` mati.
 - `--safe-mode`: mematikan semua kustomisasi, termasuk `CLAUDE.md`.
 
-**Belum diuji (T-102)**
-- Apakah `-p` + `--output-format stream-json` wajib `--verbose`. Claude desktop app sendiri memanggil keduanya bersama.
-- Apakah `--tools "Read"` + `--permission-prompts none` berjalan tanpa menggantung.
-- Kombinasi isolasi yang mematikan hook, plugin, MCP, dan `~/.claude/CLAUDE.md` global, tetapi tetap membaca `CLAUDE.md` project dan memakai login subscription.
-- Bentuk event stream-json dan pola pesan batas kuota.
+**Hasil uji headless (T-102, 2026-10-18, 4 pemanggilan `claude -p`, Claude Code 2.1.302)**
+
+Perintah yang terverifikasi (fixture di `packages/sidecar/test/fixtures/claude/`), dijalankan dengan cwd di folder project dan stdin ditutup:
+
+```bash
+claude -p "<prompt>" --model claude-opus-5-5 --output-format stream-json --verbose \
+  --tools "Read" --permission-prompts none --no-session-persistence \
+  --setting-sources project --strict-mcp-config --disable-slash-commands
+```
+
+- **`stream-json` wajib `--verbose`.** Tanpa `--verbose`, CLI keluar dengan exit 1 dalam 1 detik dan pesan `Error: When using --print, --output-format=stream-json requires --verbose`, sebelum request apa pun (tanpa kuota).
+- **Isolasi bekerja dengan `--setting-sources project --strict-mcp-config --disable-slash-commands`.** Event `system/init` menunjukkan `tools: ["Read"]`, `mcp_servers: []`, `slash_commands: []`, `skills: []`, dan `plugins` hanya 4 plugin bawaan (`cc-plugin-sec-default`, `cc-plugin-agents-md`, `cc-plugin-telemetry`, `cc-plugin-plugin-authoring`); plugin pengguna tidak dimuat. Dengan `--include-hook-events` tidak ada event hook sama sekali. `~/.claude/CLAUDE.md` global tidak terbaca (model menjawab `GLOBAL-NO` untuk frasa yang hanya ada di file itu; total input sekitar 4.4k token), sedangkan `CLAUDE.md` di cwd terbaca (penanda `PROJECT-OK`).
+- **Login subscription tetap dipakai:** `apiKeySource: "none"`, `model: "claude-opus-5-5"`.
+- **`--tools "Read"` benar-benar membatasi:** tidak ada tool shell, model melaporkan tidak bisa menjalankan perintah.
+- **`--permission-prompts none` tidak menggantung:** `Read` di dalam cwd berjalan tanpa izin; `Read` ke luar cwd (`/etc/hosts`) ditolak otomatis. Penolakan muncul sebagai event `{"type":"system","subtype":"permission_denied"}`, `tool_result` dengan `is_error: true`, dan daftar `result.permission_denials` (`tool_name`, `tool_use_id`, `tool_input`).
+- **`--json-schema <skema>`:** CLI menambah tool `StructuredOutput` (terlihat di `init.tools`); model memanggilnya, `num_turns` menjadi 2. Event `result` memuat `structured_output` (objek tervalidasi) dan `result` (string JSON yang sama). Model bisa menulis teks bebas sebelum memanggil tool, jadi ambil data dari `structured_output`.
+- **Urutan event stream-json:** `system/init` → `system/thinking_tokens` (estimasi) → `assistant` (blok `text`/`tool_use`) → `user` (blok `tool_result`) → `rate_limit_event` → `system/post_turn_summary` → `result` (`subtype`, `is_error`, `result`, `num_turns`, `duration_ms`, `total_cost_usd`, `usage`, `permission_denials`, `terminal_reason`).
+- **`rate_limit_event`:** `{"type":"rate_limit_event","rate_limit_info":{"status":"allowed","resetsAt":<unix>,"rateLimitType":"five_hour","overageStatus":"rejected","overageDisabledReason":"org_level_disabled","isUsingOverage":false,"unifiedWindows":{"five_hour":{"utilization":0.14,"resetsAt":<unix>}}}}`. Bisa dipakai untuk deteksi kuota dan jam lanjut otomatis. Nilai `status` selain `allowed` belum terlihat.
+- **Durasi:** 7–12 detik per panggilan pendek (satu sampai tiga turn).
+- **Efek samping:** auto-memory membuat folder kosong `~/.claude/projects/<cwd-ter-encode>/memory/` untuk setiap cwd baru, walau `--no-session-persistence`.
+
+**Belum diuji**
+- `--restricted` (tidak dibutuhkan: isolasi di atas sudah cukup).
+- Nilai `rate_limit_info.status` dan pesan error saat kuota benar-benar habis.
+- Cara mematikan auto-memory tanpa `--bare`.
 
 ## Codex CLI (versi teruji, flag terverifikasi, cara generasi gambar)
 

@@ -77,11 +77,11 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Verifikasi: temuan tertulis di KNOWLEDGE.md; fixture ada di `packages/sidecar/test/fixtures/codex/`.
   - Catatan: MEMAKAI KUOTA. Minta izin pemilik dan sebutkan jumlah panggilan sebelum mulai (target ≤ 3). Selesai 2026-10-18 dengan 2 dari 3 panggilan yang diizinkan: gambar ada di `~/.codex/generated_images/<thread_id>/` (tidak ada event gambar di `--json`); 4:5 menghasilkan 1122 × 1402; `AGENTS.md` hanya terbaca dari cwd; sandbox `read-only` cukup; sekitar 45 detik per gambar. ARCH 4.5 dan ADR-012 disesuaikan.
 
-- [ ] T-102 Verifikasi perilaku Claude CLI headless
+- [x] T-102 Verifikasi perilaku Claude CLI headless
   - Rujukan: ARCH 4.5 (Claude adapter), ADR-011, KNOWLEDGE (Claude CLI)
   - AC: diketahui apakah `--output-format stream-json` wajib `--verbose`; `--tools "Read"` benar membatasi tool; `--permission-prompts none` tidak menggantung; perilaku `--json-schema`; kombinasi `--setting-sources`, `--strict-mcp-config`, `--disable-slash-commands`, `--restricted` yang mematikan hook, plugin, MCP, dan `~/.claude/CLAUDE.md` global sambil tetap membaca `CLAUDE.md` project dan login subscription; contoh output stream-json disimpan sebagai fixture.
   - Verifikasi: temuan tertulis di KNOWLEDGE.md; fixture ada di `packages/sidecar/test/fixtures/claude/`.
-  - Catatan: MEMAKAI KUOTA. Minta izin pemilik dan sebutkan jumlah panggilan sebelum mulai (target ≤ 6, prompt sangat pendek).
+  - Catatan: MEMAKAI KUOTA. Minta izin pemilik dan sebutkan jumlah panggilan sebelum mulai (target ≤ 6, prompt sangat pendek). Selesai 2026-10-18 dengan 4 dari 6 pemanggilan (satu ditolak sebelum request): stream-json wajib `--verbose`; isolasi `--setting-sources project --strict-mcp-config --disable-slash-commands` terbukti; `--tools Read` membatasi; `--permission-prompts none` menolak tanpa menggantung; `--json-schema` memberi `result.structured_output`; `rate_limit_event` tersedia. ARCH 4.5 dan ADR-013 disesuaikan; `--restricted` tidak diuji karena tidak dibutuhkan.
 
 - [ ] T-103 Skema Zod inti di `packages/shared`
   - Rujukan: ARCH 5.2, ARCH 5.3, ARCH 6.1, PRD F2
