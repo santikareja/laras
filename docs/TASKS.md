@@ -43,11 +43,11 @@ Target: struktur monorepo sesuai ARCH 3, token DESIGN 15 terpasang, `pnpm dev` m
   - Verifikasi: `pnpm --filter @laras/desktop build` sukses; `pnpm typecheck && pnpm lint && pnpm test` lolos.
   - Catatan: belum memakai Tailwind dan shadcn/ui (T-008 dan Fase 2). Selesai 2026-10-18: Vite 8.3.4, React 19.3.1, @vitejs/plugin-react 6.1.2; tsconfig terpisah untuk kode UI (DOM) dan `vite.config.ts` (Node).
 
-- [ ] T-007 Shell Tauri 2 untuk `apps/desktop`
+- [~] T-007 Shell Tauri 2 untuk `apps/desktop`
   - Rujukan: ARCH 4.1, ADR-001, ADR-009, DESIGN 5 (Ukuran tetap), DESIGN 2 (prinsip 4)
   - AC: `apps/desktop/src-tauri` dengan identifier `id.laras.desktop`, productName "Laras"; jendela minimum 1100 × 700, title bar overlay dengan judul tersembunyi, tema mengikuti sistem; Rust hanya konfigurasi (tanpa command bisnis); capability minimal tanpa plugin shell; skrip root `pnpm dev` menjalankan `tauri dev`.
   - Verifikasi: `pnpm dev` membuka jendela Laras (screenshot); `cargo check` di `src-tauri` lolos; `pnpm typecheck && pnpm lint && pnpm test` lolos.
-  - Catatan: bergantung T-005 dan T-006. Nilai `titleBarStyle` di Tauri 2 ditulis "Overlay"; cek dokumentasi Tauri dan catat di KNOWLEDGE.md.
+  - Catatan: bergantung T-005 dan T-006. Nilai `titleBarStyle` di Tauri 2 ditulis "Overlay"; cek dokumentasi Tauri dan catat di KNOWLEDGE.md. Status 2026-10-18: `cargo check` dan pemeriksaan JS lolos; `pnpm dev` menjalankan proses `laras` dengan jendela 1280 × 800 (dicek lewat CGWindowList). Screenshot tidak bisa diambil karena sesi agent tidak punya izin Screen Recording, jadi **menunggu konfirmasi visual pemilik** sebelum [x]. Ditambahkan area seret 44 px + izin `core:window:allow-start-dragging` karena title bar Overlay menutup area seret bawaan. Ikon masih ikon bawaan Tauri (diganti di E-402).
 
 - [ ] T-008 Token UI DESIGN 15, Tailwind v4, dan light/dark mode
   - Rujukan: DESIGN 3, DESIGN 4, DESIGN 15, ADR-010
@@ -178,7 +178,7 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
 - [ ] E-201 Tauri + UI minimal + sidecar + satu tombol Buat
   - Rujukan: PRD 11 (Fase 2), ARCH 4.1–4.4, ADR-004, ADR-005, ADR-008, DESIGN 6, DESIGN 10.5, DESIGN 15
   - AC: menekan Buat di UI menghasilkan PNG dengan progres real-time di Bilah Laras.
-  - Cakupan awal: resolusi path Node (ADR-008), plugin shell dengan scope sempit, server dan klien JSON-RPC stdio, shadcn/ui dan Lucide sesuai pemetaan DESIGN 15, Plus Jakarta Sans dibundel, kerangka layout Studio, Bilah Laras.
+  - Cakupan awal: resolusi path Node (ADR-008), plugin shell dengan scope sempit, server dan klien JSON-RPC stdio, shadcn/ui dan Lucide sesuai pemetaan DESIGN 15, Plus Jakarta Sans dibundel, kerangka layout Studio, Bilah Laras, CSP Tauri (saat ini `csp: null` dari `tauri init`), posisi traffic lights terhadap toolbar 44 px (`trafficLightPosition`).
 
 ## Fase 3: Irisan vertikal (epic)
 

@@ -123,6 +123,13 @@ Versi teruji: **0.163.0** (standalone). Diverifikasi dari `codex --help`, `codex
 - **`pnpm -r --if-present <skrip>` tanpa paket workspace** mencetak "No projects matched" tetapi exit 0.
 - **`biome init` (2.5.15) default memakai indentasi tab.** Laras memakai 2 spasi dan `lineWidth` 100 (`biome.json`).
 
+- **Tauri 2 di Laras (T-007):** CLI `@tauri-apps/cli` 2.12.3, crate `tauri` 2.12.4, `tauri-build` 2.7.3. Opsi jendela macOS dari `config.schema.json`: `titleBarStyle` bernilai `"Visible"`, `"Transparent"`, atau `"Overlay"`; `hiddenTitle` (bool); `minWidth`/`minHeight`; `theme` dibiarkan kosong agar mengikuti tema sistem; `trafficLightPosition` untuk posisi tombol jendela.
+- **`tauri init --ci` menambahkan `tauri-plugin-log` dan crate `log`** ke template, serta identifier `com.tauri.dev`. Keduanya dihapus/diganti di Laras (Rust minimal, ADR-009).
+- **Title bar `Overlay` menutup area seret bawaan.** Jendela hanya bisa digeser lewat elemen `data-tauri-drag-region`, dan itu butuh izin `core:window:allow-start-dragging` di capability. Nama izin divalidasi saat build: izin yang salah membuat build gagal.
+- **`cargo` hanya ada di PATH login shell.** Jalankan `pnpm dev` atau `cargo` lewat `/bin/zsh -lic '...'` dari proses yang tidak memuat profil shell.
+- **Sesi agent tidak punya izin Screen Recording** (`CGPreflightScreenCaptureAccess()` = false), jadi `screencapture -l <id>` gagal ("could not create image from window"). Verifikasi visual jendela native perlu dilihat pemilik; HTML/CSS bisa dicek di browser bawaan lewat `http://localhost:1420`.
+- **Jendela Tauri dev bisa terbuka dengan `onscreen=false`** di CGWindowList (misalnya di Space lain), walaupun prosesnya berjalan.
+
 ## Keputusan kecil (tanggal, keputusan, alasan)
 
 | Tanggal | Keputusan | Alasan |
