@@ -130,6 +130,8 @@ Versi teruji: **0.163.0** (standalone). Diverifikasi dari `codex --help`, `codex
 - **Sesi agent tidak punya izin Screen Recording** (`CGPreflightScreenCaptureAccess()` = false), jadi `screencapture -l <id>` gagal ("could not create image from window"). Verifikasi visual jendela native perlu dilihat pemilik; HTML/CSS bisa dicek di browser bawaan lewat `http://localhost:1420`.
 - **Jendela Tauri dev bisa terbuka dengan `onscreen=false`** di CGWindowList (misalnya di Space lain), walaupun prosesnya berjalan.
 
+- **Node 22.22 menjalankan file `.ts` langsung** (type stripping aktif tanpa flag, tanpa ExperimentalWarning di Mac ini): `node scripts/lint-tokens.ts`. Syaratnya sintaks yang bisa dihapus saja (tanpa `enum` atau parameter property) dan impor relatif memakai ekstensi `.ts`, sehingga tsconfig root butuh `allowImportingTsExtensions`.
+
 ## Keputusan kecil (tanggal, keputusan, alasan)
 
 | Tanggal | Keputusan | Alasan |

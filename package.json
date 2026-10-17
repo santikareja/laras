@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "pnpm --filter @laras/desktop tauri dev",
-    "lint": "biome check .",
+    "lint": "biome check . && node scripts/lint-tokens.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json && pnpm -r --if-present typecheck",
     "test": "vitest run"
   },

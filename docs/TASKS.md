@@ -49,17 +49,17 @@ Target: struktur monorepo sesuai ARCH 3, token DESIGN 15 terpasang, `pnpm dev` m
   - Verifikasi: `pnpm dev` membuka jendela Laras (screenshot); `cargo check` di `src-tauri` lolos; `pnpm typecheck && pnpm lint && pnpm test` lolos.
   - Catatan: bergantung T-005 dan T-006. Nilai `titleBarStyle` di Tauri 2 ditulis "Overlay"; cek dokumentasi Tauri dan catat di KNOWLEDGE.md. Status 2026-10-18: `cargo check` dan pemeriksaan JS lolos; `pnpm dev` menjalankan proses `laras` dengan jendela 1280 × 800 (dicek lewat CGWindowList). Screenshot tidak bisa diambil karena sesi agent tidak punya izin Screen Recording, jadi **menunggu konfirmasi visual pemilik** sebelum [x]. Ditambahkan area seret 44 px + izin `core:window:allow-start-dragging` karena title bar Overlay menutup area seret bawaan. Ikon masih ikon bawaan Tauri (diganti di E-402).
 
-- [ ] T-008 Token UI DESIGN 15, Tailwind v4, dan light/dark mode
+- [~] T-008 Token UI DESIGN 15, Tailwind v4, dan light/dark mode
   - Rujukan: DESIGN 3, DESIGN 4, DESIGN 15, ADR-010
   - AC: `apps/desktop/src/styles/tokens.css` identik dengan DESIGN 15; Tailwind v4 terpasang dengan `@theme inline` sesuai tabel pemetaan DESIGN 15; `body` memakai `--surface-app`, `--text-primary`, `--font-ui`; tampilan mengikuti light/dark mode macOS.
   - Verifikasi: screenshot jendela di light dan dark mode; warna latar terukur `#F3F5F6` (light) dan `#1C1E20` (dark); `pnpm typecheck && pnpm lint && pnpm test` lolos.
   - Catatan: shadcn/ui, Lucide, dan Plus Jakarta Sans dipasang di Fase 2 (E-201).
 
-- [ ] T-009 Lint token warna
+- [x] T-009 Lint token warna
   - Rujukan: DESIGN 3 (Aturan), DESIGN 15, ARCH 6.2, CLAUDE.md (Desain dan Template)
   - AC: `pnpm lint` gagal bila ada literal warna (hex, `rgb()`, `hsl()`, `oklch()`) atau kelas warna bawaan Tailwind (mis. `bg-blue-500`) di `apps/desktop/src` (kecuali `styles/tokens.css`) dan `packages/templates` (kecuali `tokens/`); pesan error menyebut file, baris, dan token pengganti.
   - Verifikasi: test Vitest dengan fixture yang melanggar dan yang patuh; `pnpm lint` lolos di repo.
-  - Catatan:
+  - Catatan: Selesai 2026-10-18: `scripts/lint-tokens.ts` (tanpa dependency baru, dijalankan Node 22 dengan type stripping), 10 test; `pnpm lint` = Biome + lint token. Bila hex sama dengan nilai token DESIGN, pesan menyebut nama tokennya. Uji tanam: file berisi `bg-blue-500` dan `#1F2326` membuat `pnpm lint` exit 1 dengan saran `var(--text-primary)`. Batas: nama warna CSS (`red`, `white`) tidak diperiksa.
 
 - [ ] T-010 Gerbang Fase 0
   - Rujukan: PRD 11 (Fase 0), DESIGN 16
