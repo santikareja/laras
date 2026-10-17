@@ -1,5 +1,11 @@
 # SESSION LOG
 
+## Sesi #4, 2026-10-18
+- Task: T-101
+- Hasil: Generasi gambar Codex terverifikasi dengan 2 dari 3 panggilan yang diizinkan. Gambar 4:5 bebas teks (1122 × 1402) tersimpan di `~/.codex/generated_images/<thread_id>/`; `AGENTS.md` hanya terbaca dari cwd; sandbox `read-only` cukup; sekitar 45 detik per gambar. ARCH 4.5 diperbarui dan ADR-012 ditambahkan; event `--json` disimpan sebagai fixture.
+- Masalah dan solusinya: stream `--json` ternyata tidak memuat path gambar, jadi path diambil dari `thread_id` di event `thread.started`. `AGENTS.md` tidak terbaca dari folder job, jadi cwd Codex dipindah ke folder project.
+- Commit: 3a674ce, docs: update status sesi #4
+
 ## Sesi #3, 2026-10-18
 - Task: T-007, T-008, T-010 (verifikasi visual)
 - Hasil: Pemilik melaporkan jendela "blank". Diagnostik sementara di WebView Tauri membuktikan halaman berjalan normal (React ter-mount, latar `#F3F5F6`, tanpa error JS); jendela kosong adalah target Fase 0. Pemilik mengonfirmasi title bar, geser, ukuran minimum, dan peralihan ke Dark secara visual. T-007, T-008, T-010 ditandai [x]; Fase 0 selesai.
