@@ -31,11 +31,11 @@ Target: struktur monorepo sesuai ARCH 3, token DESIGN 15 terpasang, `pnpm dev` m
   - Verifikasi: `pnpm typecheck && pnpm lint && pnpm test` lolos dengan 3 test; struktur folder dicocokkan dengan ARCH 3 (`find packages scripts fixtures -type d`).
   - Catatan: folder kosong ditandai `.gitkeep`; belum ada logika atau skema. Selesai 2026-10-18: paket mengekspor sumber TS langsung (`exports` → `src/index.ts`, tanpa build); `sidecar` dan `templates` bergantung pada `@laras/shared` (`workspace:*`); subfolder `templates` di root paket sesuai pohon ARCH 3.
 
-- [ ] T-005 Prasyarat Rust dan Tauri terpasang
+- [x] T-005 Prasyarat Rust dan Tauri terpasang
   - Rujukan: ARCH 11, ADR-001, KNOWLEDGE (Lingkungan)
   - AC: Rust stable terpasang lewat rustup; target `aarch64-apple-darwin` tersedia; versi tercatat di KNOWLEDGE.md.
   - Verifikasi: `rustc --version`, `cargo --version`, `rustup target list --installed`.
-  - Catatan: instalasi dilakukan pemilik (keputusan Q1 Tahap A). Blocker untuk T-007.
+  - Catatan: instalasi dilakukan pemilik (keputusan Q1 Tahap A). Blocker untuk T-007. Selesai 2026-10-18: rustc dan cargo 1.99.1, target `aarch64-apple-darwin` terpasang.
 
 - [ ] T-006 Aplikasi `apps/desktop`: Vite + React + TypeScript
   - Rujukan: ARCH 3, ARCH 4.2

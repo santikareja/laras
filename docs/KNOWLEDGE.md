@@ -14,13 +14,13 @@ Diverifikasi 2026-10-17 (sesi #1).
 | git | 2.54.0 | `git --version` |
 | Node | v22.22.2 (LTS) lewat fnm, alias `default`. Ada juga v20.20.2 | `node -v`, `fnm list` |
 | pnpm | 12.11.2 | `pnpm -v` |
-| Rust / cargo | **Belum terpasang** per 2026-10-18 (T-005) | `rustc --version` |
+| Rust / cargo | rustc 1.99.1, cargo 1.99.1, rustup 1.29.1, toolchain `stable-aarch64-apple-darwin` (default), target `aarch64-apple-darwin`; di `~/.cargo/bin`, dipasang pemilik 2026-10-18 | `rustc --version`, `rustup target list --installed` |
 | Claude CLI | 2.1.302 di `~/.local/bin/claude` (symlink ke `~/.local/share/claude/versions/2.1.302`) | `claude --version` |
 | Codex CLI | 0.163.0 di `~/.local/bin/codex` (symlink ke `~/.codex/packages/standalone/current/bin/codex`), dipasang lewat installer standalone, bukan Homebrew | `codex --version` |
 | Google Chrome | Terpasang (fallback renderer `channel: "chrome"`) | `ls /Applications` |
 | Playwright browsers | Sudah ada di `~/Library/Caches/ms-playwright` (antara lain `chromium-1223`) | `ls ~/Library/Caches/ms-playwright` |
 
-- **PATH aplikasi GUI:** `launchctl getenv PATH` kosong, jadi aplikasi GUI hanya mendapat `/usr/bin:/bin:/usr/sbin:/sbin`. Node (fnm), Claude, dan Codex tidak ada di sana.
+- **PATH aplikasi GUI:** `launchctl getenv PATH` kosong, jadi aplikasi GUI hanya mendapat `/usr/bin:/bin:/usr/sbin:/sbin`. Node (fnm), Claude, Codex, dan cargo tidak ada di sana. `~/.cargo/bin` hanya masuk PATH lewat profil shell (login shell menemukannya).
 - **Path Node yang stabil:** `~/.local/share/fnm/aliases/default/bin/node` (symlink ke `~/.local/share/fnm/node-versions/v22.22.2/installation`). Path `~/.local/state/fnm_multishells/<id>/bin` berubah setiap shell dan tidak boleh disimpan.
 - **Login shell menemukan CLI:** `/bin/zsh -lic 'command -v claude codex'` mengembalikan `~/.local/bin/claude` dan `~/.local/bin/codex` (diverifikasi setelah instalasi standalone). Untuk `node` dan `pnpm`, login shell mengembalikan path fnm multishell yang berubah-ubah, jadi resolusi Node (ADR-008) harus menormalkannya ke path alias `default`.
 
