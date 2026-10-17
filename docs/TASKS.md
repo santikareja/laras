@@ -61,11 +61,11 @@ Target: struktur monorepo sesuai ARCH 3, token DESIGN 15 terpasang, `pnpm dev` m
   - Verifikasi: test Vitest dengan fixture yang melanggar dan yang patuh; `pnpm lint` lolos di repo.
   - Catatan: Selesai 2026-10-18: `scripts/lint-tokens.ts` (tanpa dependency baru, dijalankan Node 22 dengan type stripping), 10 test; `pnpm lint` = Biome + lint token. Bila hex sama dengan nilai token DESIGN, pesan menyebut nama tokennya. Uji tanam: file berisi `bg-blue-500` dan `#1F2326` membuat `pnpm lint` exit 1 dengan saran `var(--text-primary)`. Batas: nama warna CSS (`red`, `white`) tidak diperiksa.
 
-- [ ] T-010 Gerbang Fase 0
+- [~] T-010 Gerbang Fase 0
   - Rujukan: PRD 11 (Fase 0), DESIGN 16
   - AC: dari clone bersih, `pnpm install` lalu `pnpm dev` membuka jendela kosong yang mengikuti light/dark mode; struktur sesuai ARCH 3; STATUS.md menyatakan Fase 0 selesai.
   - Verifikasi: `git clone` ke folder sementara, jalankan `pnpm install && pnpm typecheck && pnpm lint && pnpm test && pnpm dev`; screenshot light dan dark dilihat.
-  - Catatan:
+  - Catatan: Status 2026-10-18: dari clone bersih, `pnpm install --frozen-lockfile`, typecheck, lint, test (4 file, 13 test), build desktop, dan `cargo check` lolos; struktur folder sesuai ARCH 3 (kecuali `scripts/render-demo.ts` dan `lib/rpc.ts`, yang dibuat di T-107 dan E-201). `pnpm dev` dari clone tidak dijalankan karena port 1420 dipakai instance yang sama dari repo. **Menunggu konfirmasi visual pemilik** (jendela, light/dark) bersama T-007 dan T-008.
 
 ## Fase 1: Spike pipeline
 
@@ -178,7 +178,7 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
 - [ ] E-201 Tauri + UI minimal + sidecar + satu tombol Buat
   - Rujukan: PRD 11 (Fase 2), ARCH 4.1–4.4, ADR-004, ADR-005, ADR-008, DESIGN 6, DESIGN 10.5, DESIGN 15
   - AC: menekan Buat di UI menghasilkan PNG dengan progres real-time di Bilah Laras.
-  - Cakupan awal: resolusi path Node (ADR-008), plugin shell dengan scope sempit, server dan klien JSON-RPC stdio, shadcn/ui dan Lucide sesuai pemetaan DESIGN 15, Plus Jakarta Sans dibundel, kerangka layout Studio, Bilah Laras, CSP Tauri (saat ini `csp: null` dari `tauri init`), posisi traffic lights terhadap toolbar 44 px (`trafficLightPosition`).
+  - Cakupan awal: resolusi path Node (ADR-008), plugin shell dengan scope sempit, server dan klien JSON-RPC stdio, shadcn/ui dan Lucide sesuai pemetaan DESIGN 15, Plus Jakarta Sans dibundel, kerangka layout Studio, Bilah Laras, CSP Tauri (saat ini `csp: null` dari `tauri init`), posisi traffic lights terhadap toolbar 44 px (`trafficLightPosition`), token skala tipografi UI (DESIGN 4 belum ada di `tokens.css` DESIGN 15; menunggu keputusan pemilik soal penamaan, lihat STATUS).
 
 ## Fase 3: Irisan vertikal (epic)
 

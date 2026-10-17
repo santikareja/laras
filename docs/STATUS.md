@@ -1,30 +1,29 @@
 # STATUS
-Terakhir diperbarui: 2026-10-18, sesi #1
+Terakhir diperbarui: 2026-10-18, sesi #2
 
 ## Fase saat ini
-Fase 0: Fondasi. Audit (T-001) dan dokumentasi kerja (T-002) selesai. Scaffold belum dimulai.
+Fase 0: Fondasi. Semua task sudah dikerjakan; T-007, T-008, T-010 menunggu konfirmasi visual pemilik sebelum ditandai [x].
 
 ## Sedang dikerjakan
-Tidak ada. Menunggu persetujuan pemilik atas isi TASKS.md Fase 0 dan Fase 1 sebelum Tahap C.
+- T-007, T-008, T-010: menunggu pemilik melihat jendela Laras (`pnpm dev`) di light dan dark mode.
 
 ## Berikutnya (urut)
-1. T-003 Workspace root: pnpm, TypeScript, Biome, Vitest
-2. T-004 Kerangka paket `shared`, `sidecar`, `templates`
-3. T-005 Prasyarat Rust dan Tauri (dikerjakan pemilik)
-4. T-006 Aplikasi `apps/desktop`: Vite + React + TypeScript
-5. T-007 Shell Tauri 2
-6. T-008 Token UI DESIGN 15, Tailwind v4, light/dark
-7. T-009 Lint token warna
-8. T-010 Gerbang Fase 0
+1. Konfirmasi visual pemilik, lalu tandai T-007, T-008, T-010 [x] dan nyatakan Fase 0 selesai.
+2. T-101 Verifikasi generasi gambar Codex (memakai kuota, butuh izin).
+3. T-102 Verifikasi Claude CLI headless (memakai kuota, butuh izin).
+4. T-103 Skema Zod inti.
 
 ## Blocker
-- Rust belum terpasang. Menghambat T-007; T-003 sampai T-006 tidak terhambat.
+- Tidak ada. Rust sudah terpasang (T-005).
 
 ## Menunggu keputusan pemilik
-- Persetujuan isi TASKS.md Fase 0 dan Fase 1 untuk mulai Tahap C.
+- Konfirmasi visual jendela native: muncul dengan title bar overlay dan traffic lights, bisa digeser lewat area atas 44 px, tidak bisa diperkecil di bawah 1100 × 700, latar mengikuti light/dark macOS.
+- Penamaan token skala tipografi UI: DESIGN 4 mendefinisikan `--text-caption` … `--text-display` (ukuran), tetapi `tokens.css` di DESIGN 15 tidak memuatnya. Prefix `--text-*` juga sudah dipakai untuk warna (`--text-primary`) dan merupakan namespace ukuran font di Tailwind v4.
+- Izin kuota untuk T-101 (≤ 3 panggilan Codex) dan T-102 (≤ 6 panggilan Claude).
 
 ## Catatan untuk sesi berikutnya
 - Baca docs/KNOWLEDGE.md sebelum task yang menyentuh CLI, build, atau lingkungan.
-- CLI teruji: Claude 2.1.302 dan Codex 0.163.0 di `~/.local/bin`. Jangan pakai salinan bawaan Claude desktop app atau ekstensi editor.
-- T-101, T-102, T-116, T-117 memakai kuota: minta izin pemilik dulu.
+- `cargo` dan `pnpm dev` dijalankan lewat login shell (`/bin/zsh -lic '...'`) dari proses agent.
+- Sesi agent tidak punya izin Screen Recording: cek HTML/CSS di browser bawaan (`http://localhost:1420`), jendela native dilihat pemilik.
+- CLI teruji: Claude 2.1.302 dan Codex 0.163.0 di `~/.local/bin`.
 - Paket Claude terdeteksi Team; pemilik diminta memastikan kebijakan organisasi.
