@@ -118,6 +118,10 @@ Versi teruji: **0.163.0** (standalone). Diverifikasi dari `codex --help`, `codex
 - **`accent` di shadcn/ui ≠ aksen Laras.** shadcn memakai `accent` untuk latar hover menu. Pemetaan yang benar ada di DESIGN 15: aksen Laras → `primary`, `accent` shadcn → `--surface-hover`.
 - **Kontras token DESIGN (dihitung 2026-10-17, rumus WCAG):** `--text-disabled` 2.4–2.9:1 (dikecualikan WCAG). `#8A949B` hanya 2.83:1 di atas `--surface-app`, jadi diganti `#848D94` (3.38 panel, 3.09 app). Teks putih di atas `--danger` mode gelap hanya 2.47:1, jadi ditambah `--danger-on` `#1C1E20` (6.76:1).
 - **Folder skill agent:** `.claude/skills` dan `.kiro/skills` adalah symlink ke `.agents/skills` (7.6 MB). Ketiganya di-gitignore; sumbernya tercatat di `skills-lock.json`.
+- **TypeScript 7 (native) dipakai sejak T-003.** Versi 7.0.2 rilis 2026-07-08; `tsc --version` mencetak `Version 7.0.2`. Laras tidak memakai alat yang bergantung pada API JS TypeScript lama (lint memakai Biome).
+- **Vitest 5 `test.projects` gagal bila glob tidak cocok dengan folder apa pun** ("No projects were found"). Selama semua paket memakai lingkungan yang sama, pakai `test.include` di root.
+- **`pnpm -r --if-present <skrip>` tanpa paket workspace** mencetak "No projects matched" tetapi exit 0.
+- **`biome init` (2.5.15) default memakai indentasi tab.** Laras memakai 2 spasi dan `lineWidth` 100 (`biome.json`).
 
 ## Keputusan kecil (tanggal, keputusan, alasan)
 

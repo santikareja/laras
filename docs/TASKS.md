@@ -19,11 +19,11 @@ Target: struktur monorepo sesuai ARCH 3, token DESIGN 15 terpasang, `pnpm dev` m
   - Verifikasi: `git log --oneline` menunjukkan commit "chore: setup dokumentasi kerja dan protokol sesi"; `grep -n "Content Studio\|ContentStudio" docs/PRD.md docs/ARCHITECTURE.md docs/DESIGN.md CLAUDE.md` kosong; `ls .claude/commands` berisi `lanjut.md` dan `selesai.md`.
   - Catatan:
 
-- [ ] T-003 Workspace root: pnpm, TypeScript, Biome, Vitest
+- [x] T-003 Workspace root: pnpm, TypeScript, Biome, Vitest
   - Rujukan: ARCH 3, CLAUDE.md (Perintah, Kode)
   - AC: `package.json` root (private, `packageManager` pnpm 12.11.2, `engines.node` >= 22); `pnpm-workspace.yaml` (`apps/*`, `packages/*`); `tsconfig.base.json` dengan `strict: true`; `biome.json`; `.node-version` berisi 22; skrip root `lint`, `typecheck`, `test` berjalan di seluruh workspace.
   - Verifikasi: `pnpm install && pnpm lint && pnpm typecheck && pnpm test` lolos (boleh tanpa test selama belum ada paket).
-  - Catatan: sebutkan alasan setiap dependency baru di ringkasan commit.
+  - Catatan: sebutkan alasan setiap dependency baru di ringkasan commit. Selesai 2026-10-18: TypeScript 7.0.2, Biome 2.5.15, Vitest 5.0.5, @types/node 22. `--passWithNoTests` sementara, dihapus di T-004.
 
 - [ ] T-004 Kerangka paket `shared`, `sidecar`, `templates` dan folder pendukung
   - Rujukan: ARCH 3, ARCH 1 (prinsip 2), CLAUDE.md (Struktur)
