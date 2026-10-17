@@ -25,11 +25,11 @@ Target: struktur monorepo sesuai ARCH 3, token DESIGN 15 terpasang, `pnpm dev` m
   - Verifikasi: `pnpm install && pnpm lint && pnpm typecheck && pnpm test` lolos (boleh tanpa test selama belum ada paket).
   - Catatan: sebutkan alasan setiap dependency baru di ringkasan commit. Selesai 2026-10-18: TypeScript 7.0.2, Biome 2.5.15, Vitest 5.0.5, @types/node 22. `--passWithNoTests` sementara, dihapus di T-004.
 
-- [ ] T-004 Kerangka paket `shared`, `sidecar`, `templates` dan folder pendukung
+- [x] T-004 Kerangka paket `shared`, `sidecar`, `templates` dan folder pendukung
   - Rujukan: ARCH 3, ARCH 1 (prinsip 2), CLAUDE.md (Struktur)
   - AC: `packages/shared` (`@laras/shared`), `packages/sidecar` (`@laras/sidecar`), `packages/templates` (`@laras/templates`), masing-masing dengan `package.json`, `tsconfig.json` yang meng-extend base, dan `src/index.ts`; subfolder sesuai ARCH 3 (`sidecar/src/{rpc,queue,pipeline,cli,prompts,render,storage,context}`, `templates/{feed,carousel,primitives,tokens}`); folder `scripts/spike/` dan `fixtures/brands/`; satu smoke test Vitest per paket.
   - Verifikasi: `pnpm typecheck && pnpm lint && pnpm test` lolos dengan 3 test; struktur folder dicocokkan dengan ARCH 3 (`find packages scripts fixtures -type d`).
-  - Catatan: folder kosong ditandai `.gitkeep`; belum ada logika atau skema.
+  - Catatan: folder kosong ditandai `.gitkeep`; belum ada logika atau skema. Selesai 2026-10-18: paket mengekspor sumber TS langsung (`exports` → `src/index.ts`, tanpa build); `sidecar` dan `templates` bergantung pada `@laras/shared` (`workspace:*`); subfolder `templates` di root paket sesuai pohon ARCH 3.
 
 - [ ] T-005 Prasyarat Rust dan Tauri terpasang
   - Rujukan: ARCH 11, ADR-001, KNOWLEDGE (Lingkungan)
