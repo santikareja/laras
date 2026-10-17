@@ -1,5 +1,13 @@
 # SESSION LOG
 
+## Sesi #3, 2026-10-18
+- Task: T-007, T-008, T-010 (verifikasi visual)
+- Hasil: Pemilik melaporkan jendela "blank". Diagnostik sementara di WebView Tauri membuktikan halaman berjalan normal (React ter-mount, latar `#F3F5F6`, tanpa error JS); jendela kosong adalah target Fase 0. Pemilik mengonfirmasi title bar, geser, ukuran minimum, dan peralihan ke Dark secara visual. T-007, T-008, T-010 ditandai [x]; Fase 0 selesai.
+- Masalah dan solusinya:
+  - Agent tidak bisa screenshot maupun membaca jendela lewat Accessibility: memakai config Vite diagnostik sementara yang mengirim keadaan WebView ke file log (tidak di-commit, sudah dihapus).
+  - Diagnostik tidak merekam peralihan Appearance saat Laras di belakang System Settings: dicatat di KNOWLEDGE; T-008 memakai konfirmasi visual pemilik untuk mode gelap.
+- Commit: 1632f7d, docs: update status sesi #3
+
 ## Sesi #2, 2026-10-18
 - Task: T-003, T-004, T-005, T-006, T-007, T-008, T-009, T-010
 - Hasil:

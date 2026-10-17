@@ -138,6 +138,9 @@ Versi teruji: **0.163.0** (standalone). Diverifikasi dari `codex --help`, `codex
 
 - **Membaca isi WebView Tauri tanpa screenshot:** jalankan Vite dengan config diagnostik sementara yang menyuntik skrip lewat `transformIndexHtml` dan menerima laporan di middleware `/__diag` (ditulis ke file), lalu `pnpm tauri dev --config '{"build":{"beforeDevCommand":""}}'` agar Tauri memakai server itu. User agent WebView: `AppleWebKit/605.1.15`, `window.__TAURI_INTERNALS__` ada. Config diagnostik tidak di-commit.
 
+- **Diagnostik WebView tidak merekam peralihan Appearance saat jendela Laras di belakang.** Saat pemilik mengganti Appearance di System Settings (Laras tidak di depan), tidak ada event `change` dari `matchMedia` maupun hasil polling 1 detik yang terkirim, padahal latar terlihat berubah gelap. Dugaan (belum diuji): WebKit/macOS memperlambat timer dan fetch WebView aplikasi latar belakang. Untuk mengukur dark di jendela native: ganti ke Dark, lalu klik jendela Laras agar event `focus` mengirim laporan.
+- **Jendela kosong di Fase 0 itu disengaja** (PRD 11). Latar `#F3F5F6` sangat terang dan mudah dikira "blank"; jelaskan ke pemilik sebelum verifikasi visual.
+
 ## Keputusan kecil (tanggal, keputusan, alasan)
 
 | Tanggal | Keputusan | Alasan |
