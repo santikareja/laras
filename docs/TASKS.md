@@ -53,7 +53,7 @@ Target: struktur monorepo sesuai ARCH 3, token DESIGN 15 terpasang, `pnpm dev` m
   - Rujukan: DESIGN 3, DESIGN 4, DESIGN 15, ADR-010
   - AC: `apps/desktop/src/styles/tokens.css` identik dengan DESIGN 15; Tailwind v4 terpasang dengan `@theme inline` sesuai tabel pemetaan DESIGN 15; `body` memakai `--surface-app`, `--text-primary`, `--font-ui`; tampilan mengikuti light/dark mode macOS.
   - Verifikasi: screenshot jendela di light dan dark mode; warna latar terukur `#F3F5F6` (light) dan `#1C1E20` (dark); `pnpm typecheck && pnpm lint && pnpm test` lolos.
-  - Catatan: shadcn/ui, Lucide, dan Plus Jakarta Sans dipasang di Fase 2 (E-201).
+  - Catatan: shadcn/ui, Lucide, dan Plus Jakarta Sans dipasang di Fase 2 (E-201). Status 2026-10-18: `tokens.css` identik byte-per-byte dengan DESIGN 15 (formatter Biome dimatikan khusus file ini); `@theme inline` memuat 19 pemetaan warna dan 3 radius sesuai tabel DESIGN 15; di browser bawaan terukur latar `#F3F5F6`/teks `#1F2326` (light) dan `#1C1E20`/`#ECEFF1` (dark); pemeriksa independen: 5/5 lolos. **Menunggu konfirmasi visual pemilik** bahwa jendela native mengikuti light/dark macOS (sesi tanpa izin Screen Recording).
 
 - [x] T-009 Lint token warna
   - Rujukan: DESIGN 3 (Aturan), DESIGN 15, ARCH 6.2, CLAUDE.md (Desain dan Template)

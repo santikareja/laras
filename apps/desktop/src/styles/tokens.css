@@ -1,0 +1,73 @@
+:root {
+  color-scheme: light dark;
+
+  --surface-app: #F3F5F6;
+  --surface-panel: #FFFFFF;
+  --surface-raised: #FFFFFF;
+  --surface-canvas: #E4E8EA;
+  --surface-hover: #EBEEF0;
+  --surface-selected: #F1E8D8;
+  --border: #D9DEE1;
+  --border-strong: #848D94;
+  --text-primary: #1F2326;
+  --text-secondary: #5B636A;
+  --text-disabled: #9AA2A8;
+  --accent: #8C6420;
+  --accent-hover: #7A5619;
+  --accent-on: #FFFFFF;
+  --success: #2F7D4F;
+  --warning: #A15C00;
+  --danger: #B3261E;
+  --danger-on: #FFFFFF;
+
+  --font-ui: system-ui, -apple-system, "SF Pro Text", sans-serif;
+  --font-brand: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 24px; --space-6: 32px; --space-7: 48px;
+
+  --radius-control: 6px;
+  --radius-card: 8px;
+  --radius-float: 10px;
+  --shadow-float: 0 8px 24px rgba(16, 18, 20, 0.16), 0 1px 2px rgba(16, 18, 20, 0.08);
+
+  --dur-fast: 120ms;
+  --dur-base: 180ms;
+  --dur-slow: 240ms;
+  --dur-pulse: 1200ms;
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface-app: #1C1E20;
+    --surface-panel: #24272A;
+    --surface-raised: #2C3033;
+    --surface-canvas: #141618;
+    --surface-hover: #2F3336;
+    --surface-selected: #3A3226;
+    --border: #34383C;
+    --border-strong: #6B747B;
+    --text-primary: #ECEFF1;
+    --text-secondary: #A3ABB2;
+    --text-disabled: #5F676D;
+    --accent: #D9A84E;
+    --accent-hover: #E4B866;
+    --accent-on: #1C1E20;
+    --success: #5BBE84;
+    --warning: #E5A33B;
+    --danger: #F2867E;
+    --danger-on: #1C1E20;
+    --shadow-float: 0 8px 24px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root { --border: var(--border-strong); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-fast: 0ms; --dur-base: 0ms; --dur-slow: 0ms; --dur-pulse: 0ms; }
+}

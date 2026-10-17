@@ -132,6 +132,10 @@ Versi teruji: **0.163.0** (standalone). Diverifikasi dari `codex --help`, `codex
 
 - **Node 22.22 menjalankan file `.ts` langsung** (type stripping aktif tanpa flag, tanpa ExperimentalWarning di Mac ini): `node scripts/lint-tokens.ts`. Syaratnya sintaks yang bisa dihapus saja (tanpa `enum` atau parameter property) dan impor relatif memakai ekstensi `.ts`, sehingga tsconfig root butuh `allowImportingTsExtensions`.
 
+- **Biome 2.5 dan Tailwind v4:** directive Tailwind (`@theme`, `@apply`) membuat Biome gagal parse kecuali `css.parser.tailwindDirectives: true`. Formatter Biome juga menulis ulang `tokens.css` (satu deklarasi per baris, hex huruf kecil), jadi file itu dikecualikan dari formatter agar tetap identik dengan DESIGN 15.
+- **`@theme inline` tidak membuat variabel `--color-*` di `:root`**; nilainya langsung disisipkan ke utility yang dipakai. Jadi `getPropertyValue("--color-primary")` kosong, dan itu normal.
+- **Spacing Tailwind v4 berbasis rem** (`--spacing: .25rem`): `h-11` = 44 px selama ukuran font root 16 px.
+
 ## Keputusan kecil (tanggal, keputusan, alasan)
 
 | Tanggal | Keputusan | Alasan |

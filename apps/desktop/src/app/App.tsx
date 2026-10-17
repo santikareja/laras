@@ -2,7 +2,7 @@
 export function App() {
   return (
     <>
-      <div data-tauri-drag-region style={{ height: 44 }} />
+      <div data-tauri-drag-region className="h-11" />
       <main />
     </>
   );
