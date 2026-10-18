@@ -170,8 +170,9 @@ claude -p "<prompt>" \
 - Tool dibatasi dengan `--tools` (membatasi tool yang tersedia). `--allowedTools` hanya menyetujui tool secara otomatis dan tidak membatasi, jadi tidak dipakai untuk tujuan ini. Tahap yang butuh melihat gambar (QA visual) memakai `Read` pada file PNG di folder job.
 - `--permission-prompts none`: aksi yang butuh izin (misalnya `Read` di luar cwd) langsung ditolak tanpa menggantung. Penolakan tercatat di `result.permission_denials`; adapter mencatatnya ke log job.
 - Isolasi dari konfigurasi global pengguna (ADR-013): `--setting-sources project --strict-mcp-config --disable-slash-commands` mematikan hook, plugin, server MCP, skill, dan `~/.claude/CLAUDE.md` global, sambil tetap membaca `CLAUDE.md` project dan memakai login subscription. `--bare` dan `--safe-mode` tidak dipakai (lihat `KNOWLEDGE.md`).
-- Validasi dua lapis: `--json-schema` (dari skema Zod tahap, dikonversi ke JSON Schema) membuat CLI memvalidasi output lewat tool `StructuredOutput`; adapter mengambil `result.structured_output`, lalu memvalidasinya lagi dengan Zod. Bila tidak valid, adapter mengirim ulang dengan pesan error validasi (maksimal 2 kali).
-- Event stream di-parse baris per baris dan diteruskan ke UI sebagai progres (urutan event di `KNOWLEDGE.md`).
+- Validasi dua lapis: `--json-schema` (dari skema Zod tahap, dikonversi ke JSON Schema) membuat CLI memvalidasi output lewat tool `StructuredOutput`; adapter mengambil `result.structured_output`, lalu memvalidasinya lagi dengan Zod. Bila tidak valid atau tidak ada, adapter mengirim ulang prompt asli ditambah daftar masalah validasi (`prompts/retry-invalid-output.md`), maksimal 2 kali, lalu melempar `InvalidOutputError`. Panggilan yang gagal karena hal lain melempar `ClaudeRunError` (dengan potongan stderr).
+- Event stream di-parse baris per baris dan diteruskan ke UI sebagai progres (urutan event di `KNOWLEDGE.md`). Stream dibaca sampai proses selesai, karena event lain bisa muncul sesudah `result`.
+- Implementasi: `runClaude()` di `packages/sidecar/src/cli/claude.ts`, proses lewat `cli/stream.ts` (stdin ditutup, bisa dibatalkan dengan `AbortSignal`).
 
 #### Codex adapter (aset gambar)
 
@@ -202,6 +203,7 @@ codex exec "<prompt aset>" \
 
 - Claude CLI mengirim `rate_limit_event` di stream (`rate_limit_info.status`, `resetsAt`, `unifiedWindows.<jendela>.utilization`). Adapter memakainya sebagai sinyal utama dan untuk jam lanjut otomatis; nilai `status` selain `allowed` belum terverifikasi (lihat `KNOWLEDGE.md`).
 - Untuk Codex, dan sebagai cadangan untuk Claude, adapter mengenali pola pesan batas kuota dan kode exit tertentu (pola dicatat di `cli/limits.ts` dan diperbarui bila berubah).
+- Claude: `LimitReachedError` hanya dilempar bila panggilan gagal DAN (status `rate_limit_event` terakhir bukan `allowed` ATAU pesan cocok pola kuota). Status bukan `allowed` pada panggilan yang sukses hanya dicatat, agar pekerjaan yang ternyata jalan tidak dibatalkan. `resetsAt` diambil dari pesan atau `rate_limit_info.resetsAt`.
 - Hasilnya `LimitReachedError`, yang membuat queue menjeda job dengan status `waiting_quota` dan mencoba lagi dengan backoff (5 menit, 15 menit, 60 menit) atau menunggu pengguna menekan "Lanjutkan".
 
 ---

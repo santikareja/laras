@@ -137,11 +137,11 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Verifikasi: test dengan `exec` palsu untuk kasus ditemukan, tidak ditemukan, dan belum login; dijalankan sekali di Mac ini (tanpa kuota).
   - Catatan: Selesai 2026-10-18. `resolveClis(manualPaths, deps)` di `packages/sidecar/src/cli/resolvePath.ts` dengan skema `CliStatus` baru di `shared`; penanda PATH login shell, salinan bawaan aplikasi lain dilewati, normalisasi fnm multishell, perintah status dijalankan dengan PATH login shell dan stdin ditutup. Output asli (termasuk belum login, direkam dengan folder konfigurasi kosong atas izin pemilik; data pribadi disamarkan) jadi fixture di `packages/sidecar/test/fixtures/cli/`. Ditemukan: `codex login status` menulis ke stderr; kedua perintah status keluar dengan exit 1 bila belum login. Dijalankan sekali di Mac ini dengan PATH minimal ala aplikasi GUI: kedua CLI ditemukan lewat login shell, versi 2.1.302 dan 0.163.0, sudah login. Test: 2 skema, 7 deteksi.
 
-- [ ] T-112 Adapter Claude
+- [x] T-112 Adapter Claude
   - Rujukan: ARCH 4.5 (Claude adapter, Deteksi rate limit), ARCH 5.2, ARCH 10
   - AC: menjalankan Claude dengan flag hasil T-102; parsing stream-json baris per baris; validasi Zod dengan retry maksimal 2; `LimitReachedError` untuk pesan batas kuota.
   - Verifikasi: test Vitest memakai fixture T-102, tanpa memanggil CLI asli.
-  - Catatan: bergantung T-102 dan T-111.
+  - Catatan: bergantung T-102 dan T-111. Selesai 2026-10-18. `runClaude()` di `packages/sidecar/src/cli/claude.ts`: argumen persis T-102/ADR-013 (`claudeArgs`), stream dibaca baris per baris lewat `cli/stream.ts` (event diteruskan ke `onEvent`, dibaca sampai proses selesai), `--json-schema` dari skema Zod tahap, validasi ulang Zod dengan retry maksimal 2 memakai `prompts/retry-invalid-output.md`, `InvalidOutputError`, `ClaudeRunError`, dan `LimitReachedError` (`cli/limits.ts`, kebijakan disetujui pemilik). `zod` ditambahkan ke sidecar (disetujui pemilik). Test: 14 test (argumen, parsing ketiga fixture T-102, retry, error, dan batas kuota dengan fixture sintetis berlabel karena perilaku kuota habis belum teramati).
 
 - [ ] T-113 Adapter Codex dan AssetProvider
   - Rujukan: ARCH 4.5 (Codex adapter), ARCH 5.3, ARCH 9
