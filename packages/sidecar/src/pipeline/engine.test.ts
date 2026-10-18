@@ -5,6 +5,7 @@ import { join } from "node:path";
 import { BrandKit, CopyGuide, type JobSpec, type RenderCheck } from "@laras/shared";
 import { templates } from "@laras/templates";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { ClaudeRunError } from "../cli/claude.ts";
 import { LimitReachedError } from "../cli/limits.ts";
 import type { Stage } from "../prompts/index.ts";
 import type { AssetProvider } from "./assets.ts";
@@ -274,6 +275,13 @@ describe("runJob", () => {
     f.calls.length = 0;
     expect((await runJob(spec(), f.deps)).status).toBe("done");
     expect(f.calls.map((c) => c.stage)).toEqual(["layout", "qa-visual"]);
+  });
+
+  it("mencatat detail error CLI (stderr) di job.json", async () => {
+    const stderr = "Error: --json-schema is not a valid JSON Schema: no schema with key or ref";
+    const f = fake({ answers: { plan: [new ClaudeRunError("Claude gagal (exit 1)", stderr)] } });
+    await runJob(spec(), f.deps);
+    expect(jobJson().error).toBe(`Claude gagal (exit 1): ${stderr}`);
   });
 
   it("berhenti dengan waiting_quota saat kuota habis lalu bisa dilanjutkan", async () => {

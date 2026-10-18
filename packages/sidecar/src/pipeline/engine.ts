@@ -146,7 +146,15 @@ export async function runJob(spec: JobSpec, deps: PipelineDeps): Promise<JobResu
     await saveState(dir, spec, "done", null, null, now());
     return { jobId: spec.id, status: "done", qa: work.qa ?? null, error: null };
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
+    // Detail (mis. stderr ClaudeRunError/CodexRunError) ikut dicatat agar penyebab terbaca.
+    const detail =
+      error instanceof Error &&
+      "detail" in error &&
+      typeof error.detail === "string" &&
+      error.detail
+        ? `: ${error.detail.slice(0, 500)}`
+        : "";
+    const message = error instanceof Error ? `${error.message}${detail}` : String(error);
     const status: JobStatus =
       error instanceof LimitReachedError
         ? "waiting_quota"

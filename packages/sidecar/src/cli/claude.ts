@@ -52,6 +52,12 @@ export class InvalidOutputError extends Error {
 
 // Flag hasil uji T-102 (KNOWLEDGE): stream-json wajib --verbose; isolasi dari konfigurasi
 // global pengguna (ADR-013); hanya tool Read; izin yang dibutuhkan langsung ditolak.
+// Claude CLI memvalidasi --json-schema dengan Ajv default yang hanya mengenal draft-07; skema
+// draft 2020-12 (default Zod) ditolak sebelum request (KNOWLEDGE, T-116).
+export function toCliJsonSchema(schema: z.ZodType): object {
+  return z.toJSONSchema(schema, { target: "draft-7" });
+}
+
 export function claudeArgs(prompt: string, model: string, jsonSchema: object): string[] {
   return [
     "-p",
@@ -130,7 +136,7 @@ export type ClaudeRun<T> = {
 
 export async function runClaude<T>(options: RunClaudeOptions<T>): Promise<ClaudeRun<T>> {
   if (!isAbsolute(options.cwd)) throw new Error("cwd Claude harus path absolut folder project");
-  const jsonSchema = z.toJSONSchema(options.schema);
+  const jsonSchema = toCliJsonSchema(options.schema);
   const model = options.model ?? DEFAULT_MODEL;
   let prompt = options.prompt;
   let issues: string[] = [];

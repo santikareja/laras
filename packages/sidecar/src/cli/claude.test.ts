@@ -114,6 +114,7 @@ describe("runClaude", () => {
     expect(calls[0]?.cwd).toBe(CWD);
     const schemaArg = calls[0]?.args[calls[0].args.indexOf("--json-schema") + 1] ?? "";
     expect(JSON.parse(schemaArg)).toMatchObject({
+      $schema: "http://json-schema.org/draft-07/schema#",
       type: "object",
       required: ["headline", "word_count"],
     });

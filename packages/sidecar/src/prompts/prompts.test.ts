@@ -103,7 +103,8 @@ describe("renderPrompt", () => {
     for (const stage of stages) {
       const prompt = renderPrompt(stage, SAMPLE_INPUTS[stage]);
       expect(prompt).not.toMatch(/\{\{\w+\}\}/);
-      expect(prompt).toContain('"$schema"');
+      // Draft-07: Ajv di Claude CLI menolak draft 2020-12 (T-116).
+      expect(prompt).toContain('"$schema": "http://json-schema.org/draft-07/schema#"');
     }
   });
 

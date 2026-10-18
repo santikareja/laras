@@ -63,7 +63,7 @@ export function renderPrompt<S extends Stage>(stage: S, inputs: PromptInputs[S])
   const template = promptTemplate(stage);
   const values: Record<string, string> = {
     ...inputs,
-    schema: JSON.stringify(z.toJSONSchema(STAGE_SCHEMAS[stage]), null, 2),
+    schema: JSON.stringify(z.toJSONSchema(STAGE_SCHEMAS[stage], { target: "draft-7" }), null, 2),
   };
   const tags = new Map([...template.matchAll(DATA_BLOCK)].map(([, tag, key]) => [key, tag]));
   return template.replace(/\{\{(\w+)\}\}/g, (_, key: string) => {
