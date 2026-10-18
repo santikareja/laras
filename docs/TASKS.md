@@ -155,17 +155,17 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Verifikasi: test statis memastikan setiap prompt memuat skema, contoh yang lolos validasi Zod, dan delimiter data.
   - Catatan: Selesai 2026-10-18. Lima prompt berbahasa Indonesia, `renderPrompt` dengan input bertipe per tahap, `brandContext`, dan skema baru `Revision` di `shared` (semuanya disetujui pemilik: konteks brand eksplisit di prompt, skema Revision, bahasa Indonesia). Contoh di setiap prompt lolos Zod; contoh layout dan revise juga lolos `layoutIssues` terhadap katalog. Prompt layout Kopi Lembayung yang dirender dengan katalog penuh sekitar 3,6 ribu token. Test: 20 test prompt, 2 test `Revision`, 1 test JSON Schema.
 
-- [ ] T-115 Pipeline engine dengan resume dan revisi
+- [x] T-115 Pipeline engine dengan resume dan revisi
   - Rujukan: ARCH 5.1, ARCH 5.4, PRD F7
   - AC: tahap menyimpan output ke `jobs/<job-id>/<nn>-<tahap>.json`; resume dari tahap pertama yang belum punya output valid; `plan` sekali per brief dengan angle per varian; revisi maksimal 2 putaran yang masuk ulang di tahap terdampak.
   - Verifikasi: test Vitest dengan adapter palsu untuk transisi state, resume setelah gagal, dan revisi parsial.
-  - Catatan: dari T-114: isi prompt lewat `renderPrompt` (input `PromptInputs`); `<catalog>` hanya meta template dengan format job; `<brand>` dari `brandContext`; `<knowledge>` dari `knowledge/business.md`; LayoutSpec divalidasi `layoutIssues` (kirim ulang seperti validasi Zod bila gagal); revise menghasilkan `Revision` lalu masuk ulang di `assets` (hanya `regenerateAssets`) atau `render`. Prompt aset dari T-113.
+  - Catatan: dari T-114: isi prompt lewat `renderPrompt` (input `PromptInputs`); `<catalog>` hanya meta template dengan format job; `<brand>` dari `brandContext`; `<knowledge>` dari `knowledge/business.md`; LayoutSpec divalidasi `layoutIssues` (kirim ulang seperti validasi Zod bila gagal); revise menghasilkan `Revision` lalu masuk ulang di `assets` (hanya `regenerateAssets`) atau `render`. Prompt aset dari T-113. Selesai 2026-10-18. `runBrief`/`runJob` di `pipeline/engine.ts`, aturan tahap di `pipeline/stages.ts`, skema `JobSpec`/`JobState`/`JobEvent` di `shared`. Keputusan pemilik: QA visual dilewati bila cek deterministik gagal, status di `job.json` dan event di `events.jsonl`. Detail urutan langkah di ARCH 5.1. Test: 11 test engine dengan adapter palsu (jalur lolos, revisi dari cek kode, aset dibuat ulang sesuai permintaan, batas 2 putaran, revisi dari QA visual, resume setelah gagal, `waiting_quota`, file rusak, batal, plan sekali untuk 3 varian, skema tahap) dan 2 test skema Job.
 
 - [ ] T-116 Skrip `pnpm spike`
   - Rujukan: PRD 11 (Fase 1), CLAUDE.md (Perintah)
   - AC: `pnpm spike -- --brand <slug> --brief "<teks>"` menjalankan pipeline penuh dan menulis PNG, laporan QA, dan durasi per tahap ke `out/spike/`.
   - Verifikasi: satu kali jalan dengan brand fixture, hasil dibuka dan dinilai.
-  - Catatan: MEMAKAI KUOTA. Minta izin pemilik sebelum menjalankan.
+  - Catatan: MEMAKAI KUOTA. Minta izin pemilik sebelum menjalankan. Dari T-115: skrip merangkai `PipelineDeps` nyata: `claude` = `runClaude` (path dari `resolveClis`, cwd folder project), `assetsFor` = gabungan `UserUploadAssetProvider` dan `CodexAssetProvider`, `render` = `renderLayoutHtml` + `createRenderer` + `toMaster`; durasi per tahap dibaca dari `events.jsonl`. Folder project brand fixture di repo tidak boleh dipakai langsung sebagai folder kerja (job menulis ke `jobs/`); salin ke `out/spike/`.
 
 - [ ] T-117 Evaluasi spike (gerbang go/no-go)
   - Rujukan: PRD 11 (Fase 1), PRD 10 (risiko kualitas), PRD 12 pertanyaan 5

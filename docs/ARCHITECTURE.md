@@ -223,8 +223,11 @@ Status khusus: waiting_quota · interrupted · failed · cancelled
 
 - Satu job = satu varian. Tahap `plan` dijalankan sekali per brief dan menghasilkan satu `ContentPlan` berisi N angle berbeda (satu per varian); setiap job memakai angle-nya sendiri. Varian jadi berbeda secara bermakna (PRD F7) tanpa memanggil Claude N kali untuk `plan`.
 - `revise` masuk ulang di tahap paling awal yang terdampak daftar perbaikan (`copy`, `layout`, atau `assets`), lalu tahap sesudahnya sampai `qa` dijalankan lagi.
-- Setiap tahap menulis output ke `jobs/<job-id>/<nn>-<tahap>.json` dan mencatat event ke tabel `job_events`.
-- `job.resume` memulai dari tahap pertama yang belum punya output valid.
+- Setiap tahap menulis output ke `jobs/<job-id>/<nn>-<tahap>.json` dan mencatat event ke tabel `job_events`. Sebelum database ada, event ditulis ke `jobs/<job-id>/events.jsonl` (mulai, selesai, gagal, durasi, biaya) dan status ke `jobs/<job-id>/job.json` (skema `JobState`).
+- Nomor langkah naik terus, termasuk putaran revisi: `01-plan`, `02-copy`, `03-layout`, `04-assets`, `05-render`, `06-qa`, lalu per putaran `revise`, `assets`, `render`, `qa` (`07`–`10`, `11`–`14`). Revise menghasilkan `Revision` (copy dan layout sekaligus), jadi putaran revisi masuk ulang di `assets`: hanya `regenerateAssets` dan aset baru yang dibuat, sisanya dipakai ulang. PNG dan HTML slide disimpan di `jobs/<job-id>/slides/<nn>-<i>.png`.
+- `job.resume` memulai dari tahap pertama yang belum punya output valid (lolos skema tahap; aset dan PNG yang dirujuk harus ada). Begitu satu langkah dijalankan ulang, file langkah sesudahnya dianggap basi. File ditulis atomik (tulis sementara lalu rename).
+- `LimitReachedError` menghentikan job dengan status `waiting_quota` (dan `resumeAt` bila diketahui); pembatalan menjadi `cancelled`; error lain menjadi `failed`. `runBrief` menjalankan job varian berurutan dan berhenti di `waiting_quota` atau `cancelled`.
+- Implementasi: `packages/sidecar/src/pipeline/engine.ts` (`runBrief`, `runJob`) dan `stages.ts` (skema tahap yang diperketat konteks job, QA, pemetaan perbaikan).
 
 ### 5.2 Tahap dan kontraknya
 
@@ -264,6 +267,7 @@ Kode di `packages/sidecar/src/pipeline/assets.ts` (`LocalLibraryAssetProvider` m
 - QA menghasilkan daftar perbaikan yang terarah (misalnya "headline terlalu panjang, maks 6 kata", "kontras CTA kurang").
 - Revisi hanya mengubah bagian yang disebut; aset gambar tidak dibuat ulang kecuali masalahnya memang di aset. Ini menghemat kuota.
 - Revisi dari chat pengguna memakai jalur yang sama, dengan instruksi pengguna sebagai daftar perbaikan.
+- QA visual hanya dijalankan bila semua cek deterministik lolos (hemat kuota); bila tidak, `QaReport.visual` bernilai null dan perbaikan berasal dari cek yang gagal: kontras, warna, font, ukuran font, dan safe margin ke `layout`; overflow, kata terlarang, dan emoji/hashtag ke `copy`; aset rusak ke `assets`. QA lolos bila cek deterministik lolos dan skor visual rata-rata ≥ 8 tanpa aspek < 7 (PRD F9). Setelah 2 putaran yang masih gagal, job tetap `done` dengan `QaReport` gagal agar UI memberi peringatan.
 
 ---
 
