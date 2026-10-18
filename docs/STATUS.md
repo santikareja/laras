@@ -2,22 +2,21 @@
 Terakhir diperbarui: 2026-10-18, sesi #8
 
 ## Fase saat ini
-Fase 1: Spike pipeline. Fase 0 selesai. Verifikasi CLI selesai: T-101 (generasi gambar Codex, ADR-012) dan T-102 (Claude headless dan isolasi, ADR-013). T-103 (skema Zod inti), T-104 (tiga brand fixture, skema `CopyGuide`), T-105 (token brand ke CSS), T-106 (primitives template), T-107 (renderer Playwright, sharp, `pnpm render:demo`), dan T-108 (template feed `feed-foto-teks` dan `feed-sorotan`, skema `TemplateMeta`) selesai. Task berikutnya tidak memakai kuota sampai T-116, kecuali foto Seruni baru untuk T-109 (lihat di bawah).
+Fase 1: Spike pipeline. Fase 0 selesai. Verifikasi CLI selesai: T-101 (generasi gambar Codex, ADR-012) dan T-102 (Claude headless dan isolasi, ADR-013). T-103 (skema Zod inti), T-104 (tiga brand fixture, skema `CopyGuide`), T-105 (token brand ke CSS), T-106 (primitives template), T-107 (renderer Playwright, sharp, `pnpm render:demo`), T-108 (template `feed-foto-teks` dan `feed-sorotan`, skema `TemplateMeta`), dan T-109 (template `feed-foto-penuh` dan `feed-kutipan`) selesai. Katalog berisi 4 template feed. Tidak ada task berikutnya yang memakai kuota sampai T-116.
 
 ## Sedang dikerjakan
 Tidak ada.
 
 ## Berikutnya (urut)
-1. T-109 Template feed C dan D (foto penuh, kutipan tipografis).
-2. T-110 QA deterministik.
-3. T-111 Deteksi CLI (`cli/resolvePath.ts`).
-4. T-112 Adapter Claude.
+1. T-110 QA deterministik.
+2. T-111 Deteksi CLI (`cli/resolvePath.ts`).
+3. T-112 Adapter Claude.
+4. T-113 Adapter Codex dan AssetProvider.
 
 ## Blocker
 - Tidak ada.
 
 ## Menunggu keputusan pemilik
-- Foto contoh Seruni untuk template foto penuh di T-109: foto saat ini berupa tempelan 3:2 dengan garis potongan (`fixtures/demo-assets/README.md`). Pilihan: 1 panggilan Codex lagi (memakai kuota) atau sumber lain.
 - Jumlah template awal per format (PRD 12 pertanyaan 3; usulan 8 feed, 4 sistem carousel).
 - Penamaan token skala tipografi UI: DESIGN 4 mendefinisikan `--text-caption` … `--text-display` (ukuran), tetapi `tokens.css` di DESIGN 15 tidak memuatnya; prefix `--text-*` juga dipakai untuk warna (`--text-primary`) dan merupakan namespace ukuran font di Tailwind v4. Usulan: ganti nama token ukuran menjadi `--type-*` (dibutuhkan paling lambat E-201).
 
