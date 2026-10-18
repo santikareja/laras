@@ -107,17 +107,17 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Verifikasi: test render HTML statis per komponen; `pnpm lint` lolos.
   - Catatan: Selesai 2026-10-18. Lima primitives di `packages/templates/primitives` dengan props bertipe nama token (warna, ukuran 1–6 dengan fallback ke langkah terbesar yang ada, spacing 1–8) dan `data-slot`; ringkasan perilaku di ARCH 6.2. Disetujui pemilik: dependency React 19.3 di `@laras/templates` dan enam token baru di `brandCss` (`--color-neutral-light/dark`, `--font-{heading,body}-weight[-strong]`). Test: 6 snapshot HTML, 1 test atribut kosong, 1 penjaga token (warna/font/ukuran wajib `var(--…)`), 1 test rantai ukuran; snapshot `brandCss` diperbarui. Dicek di browser bawaan dengan ketiga brand: bobot sesuai brand tanpa tebal palsu, tanpa overflow pada kanvas 1080 × 1350.
 
-- [ ] T-107 Renderer Playwright, pasca-proses sharp, dan `pnpm render:demo`
+- [x] T-107 Renderer Playwright, pasca-proses sharp, dan `pnpm render:demo`
   - Rujukan: ARCH 7.1, ARCH 7.3, ADR-009, CLAUDE.md (Desain dan Template)
   - AC: `LayoutSpec` dirender ke HTML (`renderToStaticMarkup`) lalu PNG 2160 × 2700 setelah `document.fonts.ready` dan semua gambar termuat; satu browser dipakai ulang; export upload 1080 × 1350 sRGB; `pnpm render:demo` merender semua template × 3 brand ke `out/demo`.
   - Verifikasi: test memeriksa dimensi dan profil warna PNG; PNG demo dibuka dan dinilai.
-  - Catatan: Chromium Playwright sudah ada di cache Mac ini (lihat KNOWLEDGE.md).
+  - Catatan: Chromium Playwright sudah ada di cache Mac ini (lihat KNOWLEDGE.md). Selesai 2026-10-18. `packages/sidecar/src/render/`: `layout.ts` (LayoutSpec → HTML, resolve slot dengan cek path), `renderer.ts` (satu browser, context per slide, origin `http://laras.invalid/` dengan route terisolasi, ADR-014), `postprocess.ts` (master sRGB, upload 1080 × 1350 PNG/JPG 92). Kontrak `Template`/`SlideProps`/`slot()` dan katalog kosong di `@laras/templates`; spesimen brand untuk demo. Dependency disetujui pemilik: `playwright-core` 1.60.0, `sharp`, `react`/`react-dom` di sidecar, `tsx` di root; `esbuild` tanpa skrip build. `jsx` dipindah ke `tsconfig.base.json`. Test: 4 test layout, 4 test renderer (PNG 2160 × 2700 dan upload PNG/JPG 1080 × 1350 berprofil sRGB, satu kali launch untuk dua slide, blokir origin lain dan path keluar folder). PNG demo tiga brand dibuka dan dinilai: font brand termuat, safe margin, radius, bayangan, dan logo sesuai; potongan 1:1 upload tajam tanpa halo. Thumbnail 360 px (ARCH 7.3) ditunda ke E-307. Alasan "CORS font `file://`" di rencana ternyata salah (diuji, lihat KNOWLEDGE); alasan ADR-014 adalah isolasi.
 
 - [ ] T-108 Template feed A dan B
   - Rujukan: PRD 4 (prinsip 3), PRD 5, ARCH 6.2, CLAUDE.md (Desain dan Template)
   - AC: dua template feed 4:5 dengan `meta` (id, format, slot dan batas karakter, opsi) dan komponen render; safe margin 64 px; font minimum 24 px; lint token lolos.
   - Verifikasi: `pnpm render:demo`, PNG dibuka dan dinilai (hierarki, keterbacaan, keseimbangan) untuk ketiga brand.
-  - Catatan:
+  - Catatan: dari T-107: kontrak `Template` di `packages/templates/src/template.ts` baru berisi `meta.id` dan `meta.format`; skema `meta` lengkap (dikirim ke Claude, jadi skema Zod di `shared`) dibuat di sini. Template baru didaftarkan di `src/catalog.ts` dan wajib punya isi contoh di `DEMO_SLIDES` (`scripts/render-demo.ts`). Belum ada gambar contoh untuk slot `image` di demo; sumbernya perlu diputuskan pemilik (unduhan atau Codex memakai kuota).
 
 - [ ] T-109 Template feed C dan D
   - Rujukan: sama dengan T-108
@@ -198,4 +198,5 @@ Urutan mengikuti PRD 11. Setiap epic dipecah menjadi task saat dimulai.
 - [ ] E-401 Penanganan error dan rate limit di UI (PRD US-41, US-42, F15; DESIGN 11)
 - [ ] E-402 Detail UX, ikon aplikasi, dan checklist DESIGN 16 di semua halaman (DESIGN 1, DESIGN 16)
 - [ ] E-403 Build `.dmg` (ARCH 11)
+  - Cakupan awal (ditemukan di T-107): unduh Chromium revisi yang cocok dengan `playwright-core` terpin ke `~/Library/Application Support/Laras/browsers` saat pertama dipakai (`PLAYWRIGHT_BROWSERS_PATH`, ARCH 7.1) dengan izin pengguna, fallback Chrome terinstal; saat ini renderer memakai cache Playwright bawaan. Bundel sidecar (tsup) juga perlu JSX otomatis (lihat KNOWLEDGE soal tsx).
 - [ ] E-404 Mengukur kriteria sukses PRD 3

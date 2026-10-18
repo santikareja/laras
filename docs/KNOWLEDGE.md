@@ -18,7 +18,8 @@ Diverifikasi 2026-10-17 (sesi #1).
 | Claude CLI | 2.1.302 di `~/.local/bin/claude` (symlink ke `~/.local/share/claude/versions/2.1.302`) | `claude --version` |
 | Codex CLI | 0.163.0 di `~/.local/bin/codex` (symlink ke `~/.codex/packages/standalone/current/bin/codex`), dipasang lewat installer standalone, bukan Homebrew | `codex --version` |
 | Google Chrome | Terpasang (fallback renderer `channel: "chrome"`) | `ls /Applications` |
-| Playwright browsers | Sudah ada di `~/Library/Caches/ms-playwright` (antara lain `chromium-1223`) | `ls ~/Library/Caches/ms-playwright` |
+| Playwright browsers | Sudah ada di `~/Library/Caches/ms-playwright` (antara lain `chromium-1223` dan `chromium_headless_shell-1223`) | `ls ~/Library/Caches/ms-playwright` |
+| `playwright-core` ↔ Chromium (dicek 2026-10-18 dari `browsers.json` di jsDelivr) | 1.58.2 → 1208 (Chrome 145); 1.59.1 → 1217 (147); **1.60.0 → 1223 (148.0.7778.96, dipakai Laras)**; 1.61.1 → 1228 (149); 1.62.0 → 1234 (151); 1.63.0 → 1243 (153); 1.64.1 → 1248 (156) | `https://cdn.jsdelivr.net/npm/playwright-core@<versi>/browsers.json` |
 
 - **PATH aplikasi GUI:** `launchctl getenv PATH` kosong, jadi aplikasi GUI hanya mendapat `/usr/bin:/bin:/usr/sbin:/sbin`. Node (fnm), Claude, Codex, dan cargo tidak ada di sana. `~/.cargo/bin` hanya masuk PATH lewat profil shell (login shell menemukannya).
 - **Path Node yang stabil:** `~/.local/share/fnm/aliases/default/bin/node` (symlink ke `~/.local/share/fnm/node-versions/v22.22.2/installation`). Path `~/.local/state/fnm_multishells/<id>/bin` berubah setiap shell dan tidak boleh disimpan.
@@ -194,6 +195,14 @@ Panggilan yang dipakai (fixture di `packages/sidecar/test/fixtures/codex/`):
 - **Biome `a11y/useValidAriaRole` juga memeriksa prop `role` pada komponen React buatan sendiri**, jadi prop bernama `role` dengan nilai seperti `"body"` ditolak. Primitive `Text` memakai `font` (`"heading" | "body"`).
 - **Diverifikasi di browser bawaan, 2026-10-18:** primitives dengan token ketiga fixture menghasilkan bobot sesuai brand (Anton tetap 400 dengan `font-synthesis: none`, Fraunces 700, Cormorant 600), ukuran dari rantai `var(--font-size-N, …)`, dan padding `--space-safe` 64/80 px.
 
+- **`tsx` hanya menerapkan tsconfig di cwd ke file yang cocok dengan `include`-nya.** Root `tsconfig.json` hanya mencakup `*.ts` dan `scripts/`, jadi `.tsx` di `packages/templates` dikompilasi dengan JSX klasik (`React is not defined`). `pnpm render:demo` memakai `tsx --tsconfig tsconfig.base.json` (tanpa `include`, berarti semua file), dan `"jsx": "react-jsx"` dipindah ke `tsconfig.base.json`. File di luar paket bertipe module dianggap CommonJS oleh tsx (top-level await gagal).
+- **pnpm 12 menolak skrip build dependency yang belum diputuskan** (`ERR_PNPM_IGNORED_BUILDS`, mis. `esbuild` dari `tsx`). `pnpm approve-builds '!esbuild'` menulis `allowBuilds: { esbuild: false }` di `pnpm-workspace.yaml`; esbuild tetap berjalan dengan biner dari `@esbuild/darwin-arm64`. `sharp` 0.35.5 tidak punya skrip install (biner prebuilt `@img/*`).
+- **zsh mengekspansi `workspace:*` sebagai glob** ("no matches found") dan membatalkan seluruh perintah; kutip argumen seperti `'@laras/templates@workspace:*'`.
+- **Playwright 1.60 menjalankan Chromium dengan `--force-color-profile=srgb`** (`lib/coreBundle.js`), jadi screenshot sudah sRGB. `chromium.launch()` headless memakai `chromium_headless_shell-1223`.
+- **Chromium Playwright 1.60 memuat `@font-face` `file://`** dari halaman `file://` maupun dari `page.setContent` (diuji T-107, status `loaded`). Tidak ada hambatan CORS, tetapi juga tidak ada batas folder; karena itu renderer memakai origin terisolasi (ADR-014).
+- **`sharp().withIccProfile("srgb")` menanam profil ICC v4 lcms 480 byte** dengan tag `desc` bertipe `mluc` berisi "sRGB" (UTF-16BE), bukan teks ASCII; `metadata().space` = `srgb`, `hasProfile` = true.
+- **`renderToStaticMarkup` + Playwright untuk satu slide spesimen:** render tiga brand (launch browser, tiga context, sharp) selesai ~3 detik di Mac ini.
+
 ## Keputusan kecil (tanggal, keputusan, alasan)
 
 | Tanggal | Keputusan | Alasan |
@@ -210,3 +219,5 @@ Panggilan yang dipakai (fixture di `packages/sidecar/test/fixtures/codex/`):
 | 2026-10-18 | Skala tipografi dan bentuk ikut T-105 sebagai `--font-size-*` dan namespace baru `--shape-*` | T-106 (Text, Badge) langsung membutuhkannya (pemilik, sesi #8) |
 | 2026-10-18 | `@laras/templates` memakai React 19.3 (`react` dependency; `react-dom`, `@types/react`, `@types/react-dom` devDependency), versi sama dengan `apps/desktop` | Template dan primitives adalah komponen JSX yang dirender `renderToStaticMarkup` (ARCH 6.2) (pemilik, sesi #8) |
 | 2026-10-18 | Token tambahan `--color-neutral-light`/`-dark` dan `--font-{heading,body}-weight[-strong]` | Kunci netral berbeda per brand; bobot eksplisit mencegah tebal palsu pada font satu bobot (pemilik, sesi #8) |
+| 2026-10-18 | Sidecar: `playwright-core` 1.60.0 (dipin tepat), `sharp` ^0.35.5, `react`/`react-dom` ^19.3.1; root dev: `tsx` ^4.23.15; `esbuild` tanpa skrip build | Versi Playwright cocok dengan Chromium 1223 di cache sehingga tanpa unduhan browser; tsx sesuai ARCH 11 (pemilik, sesi #8) |
+| 2026-10-18 | `pnpm render:demo` merender spesimen brand (`packages/templates/specimen`) selain katalog template; spesimen tidak masuk katalog untuk Claude | Demo T-107 bisa dinilai sebelum ada template; tetap berguna untuk cek font dan token per brand (pemilik, sesi #8) |

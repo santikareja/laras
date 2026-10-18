@@ -1,9 +1,8 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "lib": ["es2023", "dom"],
-    "jsx": "react-jsx"
+    "lib": ["es2023", "dom"]
   },
-  "include": ["src", "feed", "carousel", "primitives", "tokens"],
+  "include": ["src", "feed", "carousel", "primitives", "specimen", "tokens"],
   "exclude": ["**/*.test.ts", "**/*.test.tsx"]
 }

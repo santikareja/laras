@@ -324,10 +324,13 @@ Claude dapat diminta merancang template baru dalam alur terpisah, ditinjau pengg
 
 ### 7.1 Render
 
-- **Playwright + Chromium**, viewport 1080 × 1350, `deviceScaleFactor: 2` → master 2160 × 2700.
-- Font dimuat lewat `@font-face` dari file lokal project. Renderer menunggu `document.fonts.ready` dan semua `<img>` selesai dimuat sebelum screenshot.
-- Satu browser instance dipakai ulang; setiap slide dirender di page baru.
-- Browser: Chromium milik Playwright diunduh saat pertama kali dipakai ke `~/Library/Application Support/Laras/browsers`. Fallback: Google Chrome yang terinstal (`channel: "chrome"`).
+- **Playwright + Chromium** (`playwright-core` dipin 1.60.0 = Chromium 148, revisi 1223), viewport 1080 × 1350, `deviceScaleFactor: 2` → master 2160 × 2700. Kode di `packages/sidecar/src/render/`.
+- `LayoutSpec` → HTML: slot gambar di-resolve ke `/job/<path>` dari `AssetManifest`, logo ke `/project/<path>` dari Brand Kit (path dicek tetap di bawah folder), lalu `Template.Slide` dirender dengan `renderToStaticMarkup` dan dibungkus dokumen berisi `brandCss`.
+- Halaman dimuat dari origin `http://laras.invalid/` yang hanya dilayani route Playwright (ADR-014): `/slide.html` dari memori, `/project/…` dan `/job/…` dari disk (hanya font dan gambar, path dicek tetap di dalam folder), request lain diblokir termasuk internet.
+- Font dimuat lewat `@font-face` dari file lokal project. Renderer menunggu `load`, `document.fonts.ready`, dan semua `<img>` selesai di-decode sebelum screenshot.
+- Satu browser instance dipakai ulang; setiap slide dirender di context dan page baru.
+- Browser: saat ini cache Playwright bawaan (`~/Library/Caches/ms-playwright`). Unduhan Chromium ke `~/Library/Application Support/Laras/browsers` saat pertama kali dipakai menjadi bagian E-403. Fallback: Google Chrome yang terinstal (`channel: "chrome"`).
+- `pnpm render:demo` (lewat `tsx`, karena template berupa JSX) merender spesimen brand dan semua template × 3 brand fixture ke `out/demo/`.
 
 ### 7.2 QA deterministik (dijalankan di dalam page sebelum screenshot)
 
@@ -449,5 +452,6 @@ Test yang memanggil CLI sungguhan ditandai `@live` dan tidak dijalankan otomatis
 | ADR-011 | Claude CLI dijalankan dengan cwd di folder project | `CLAUDE.md` project terbaca langsung, `Read` menjangkau referensi dan folder job tanpa `--add-dir`, output tahap tetap ditulis sidecar | cwd di folder job + `--add-dir` ke folder project |
 | ADR-012 | Codex dijalankan dengan cwd di folder project, sandbox `read-only`, stdin ditutup; gambar diambil dari `~/.codex/generated_images/<thread_id>/` | Uji T-101: tanpa repo git hanya `AGENTS.md` di cwd yang terbaca; `image_gen` menulis ke `CODEX_HOME` sehingga agent tidak perlu izin tulis; `thread_id` di event pertama menunjuk folder gambar secara deterministik | cwd di `jobs/<job-id>/assets` dengan sandbox `workspace-write` dan isi `AGENTS.md` disisipkan ke prompt |
 | ADR-013 | Claude CLI dijalankan dengan `--setting-sources project --strict-mcp-config --disable-slash-commands` dan `--json-schema` per tahap | Uji T-102: kombinasi ini mematikan hook, plugin, MCP, skill, dan `CLAUDE.md` global pengguna tanpa kehilangan `CLAUDE.md` project dan login subscription; `--json-schema` memberi objek tervalidasi di `result.structured_output` | `--bare` (memaksa API key), `--safe-mode` (mematikan `CLAUDE.md` project), `--restricted` (tidak dibutuhkan) |
+| ADR-014 | Renderer memuat slide dari origin `http://laras.invalid/` yang hanya dilayani route Playwright (font dan gambar dari folder project dan job, request lain diblokir); `playwright-core` dipin ke versi yang cocok dengan Chromium terpasang | HTML berisi teks dari AI tidak bisa memuat sumber internet atau file di luar folder project dan job; URL aset sama di semua mesin; pin versi mencegah unduhan browser tak terduga (T-107) | `file://` atau `page.setContent` dengan URL `file://` (uji T-107: font dan gambar dari path mana pun di disk ikut termuat); server HTTP lokal (membuka port) |
 
 > Catatan: rekomendasi awal memakai Bun `--compile` untuk sidecar diganti dengan ADR-004 karena alasan di atas.

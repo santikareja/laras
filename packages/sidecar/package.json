@@ -9,6 +9,15 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@laras/shared": "workspace:*"
+    "@laras/shared": "workspace:*",
+    "@laras/templates": "workspace:*",
+    "playwright-core": "1.60.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0"
   }
 }
