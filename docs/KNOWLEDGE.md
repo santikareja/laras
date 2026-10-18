@@ -219,6 +219,39 @@ Panggilan yang dipakai (fixture di `packages/sidecar/test/fixtures/codex/`):
 - **Smart crop sharp ke 3:2 pada foto demo 1122 × 1402 (T-113):** `attention` memilih jendela berbeda dari tengah (Kopi mulai baris 654, Seruni 195, Ritme 239) dan menjaga subjek: bibir dan botol Seruni yang terpotong oleh crop tengah tetap ada; cangkir Kopi utuh beserta kain. `entropy` mirip, tetapi memotong botol Seruni.
 - **Durasi `pnpm test` sejak T-110 ~12,5 detik** (sebelumnya ~1,4 detik): 25 render Chromium untuk fixture QA dan isi demo seluruh katalog × 3 brand.
 
+## Evaluasi spike T-117 (2026-10-18/19, gerbang Fase 1)
+
+Pengaturan: 9 percobaan `pnpm spike` sungguhan (izin pemilik), 1 varian, template dipilih Claude, batas per percobaan Claude 12 dan Codex 3, berurutan. Claude Code 2.1.302 (model default `claude-opus-5-5`), Codex 0.163.0. Laporan per percobaan di `out/spike/<brand>/runs/<briefId>/` (tidak di-commit).
+
+Brief: K1 "Ajak pekerja di sekitar kedai mampir pagi untuk kopi susu gula aren sebelum mulai kerja." (sama dengan T-116); K2 "Kenalkan biji kopi sangrai 200 g yang disangrai sendiri setiap minggu, dengan tanggal sangrai tertulis di kemasan."; K3 "Ajak warga sekitar mengobrol santai sore hari di teras kedai, termasuk yang datang bersama hewan peliharaan."; S1 "Jelaskan kenapa setiap perawatan di Seruni selalu diawali konsultasi gratis dan foto kondisi kulit."; S2 "Promosikan paket 4x facial dasar seharga Rp900.000 untuk pekerja kantoran yang ingin perawatan rutin."; S3 "Jawab pertanyaan yang sering muncul: berapa lama sampai hasil perawatan kulit terlihat?"; R1 "Ajak pemula yang belum pernah lari 5K ikut Sunday group run; pace group 8:30 boleh jalan dan lari."; R2 "Umumkan pendaftaran Ritme 10K City Race seharga IDR 250,000; biaya pendaftaran ikut mendanai water station gratis di Sunday run."; R3 "Promosikan sesi interval Rabu malam yang gratis untuk anggota yang ingin berlari lebih cepat."
+
+| # | Template | QA kode | Skor h/b/r/rf/p (rata) | Wajib/saran akhir | Putaran | QA | Retry | Durasi | Claude/Codex | Biaya CLI | Pemilik |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| K1 | feed-foto-penuh | lolos | 8/8/9/8/8 (8,2) | 0/3 | 1 | lolos | 0 | 176 s | 6/2 | $0,76 | tidak layak |
+| K2 | feed-foto-teks | lolos | 8/7/9/8/7 (7,8) | 0/3 | 2 | gagal | 0 | 250 s | 8/3 | $1,00 | tidak layak |
+| K3 | feed-foto-penuh | lolos | 9/7/9/9/8 (8,4) | 0/3 | 1 | lolos | 0 | 214 s | 6/2 | $0,69 | tidak layak |
+| S1 | feed-foto-teks | lolos | 9/8/9/9/8 (8,6) | 0/2 | 2 | lolos | 0 | 228 s | 8/2 | $1,01 | tidak layak |
+| S2 | feed-foto-teks | lolos | 8/7/9/9/8 (8,2) | 0/2 | 2 | lolos | 0 | 231 s | 8/2 | $1,00 | tidak layak |
+| S3 | feed-foto-teks | lolos | 8/7/9/8/8 (8,0) | 0/3 | 0 | lolos | 0 | 114 s | 4/1 | $0,44 | tidak layak |
+| R1 | feed-foto-penuh | lolos | 8/6/9/7/6 (7,2) | 2/3 | 2 | gagal | 0 | 200 s | 8/1 | $1,00 | tidak layak |
+| R2 | feed-foto-penuh | lolos | 8/6/9/7/6 (7,2) | 1/3 | 2 | gagal | 0 | 196 s | 8/1 | $0,95 | tidak layak |
+| R3 | feed-foto-penuh | lolos | 8/6/9/7/6 (7,2) | 2/2 | 1 | job gagal | 0 | 137 s | 5/1 | $0,56 | tidak layak (gagal teknis) |
+
+Angka: Claude 61 panggilan (perkiraan rencana 45–55), Codex 15 (perkiraan 6–10), retry validasi 0 dari 61 (0%), estimasi biaya CLI $7,41, total ±30 menit; setiap percobaan ≤ 5 menit (target PRD 3 tercapai). QA kode lolos 9/9, rata-rata skor visual 7,9 (sinyal dini PRD 10 "< 7" tidak terpicu), QA lolos 5/9, **layak menurut pemilik 0/9**. Penilaian pemilik: "tidak ada yang sesuai standar design kelas dunia. masih terlalu generik, kaku dan AI slop".
+
+Kalibrasi (PRD 12 pertanyaan 5): kelima hasil yang lolos QA (skor 8,0–8,6) ditolak pemilik, begitu juga penilaian awal agent (6/9 layak). Masalahnya bukan angka ambang: rubric QA visual dan penilaian agent mengukur "bersih dan rapi", bukan standar pemilik. Menaikkan ambang tanpa mengubah tolok ukur hanya menambah putaran revisi dan kuota.
+
+Temuan teknis:
+- Bug: layout dan revisi bisa memilih varian logo yang tidak dimiliki brand (R3: `onLight`, Ritme hanya punya `primary` dan `onDark`), sehingga render gagal. Varian belum divalidasi terhadap Brand Kit sebelum render.
+- QA visual tidak tahu bentuk logo: logo Ritme (tiga chevron tanpa tulisan) dikira ikon panah, sehingga muncul perbaikan wajib palsu "logo tidak tampil" di semua putaran R1–R3. Revisi tidak bisa memperbaikinya dan putaran terbuang.
+- Foto Codex tidak mengikuti lokasi brand: Ritme (Jakarta) mendapat kota Eropa atau skyline ala New York, S3 (Surabaya) model berpenampilan Eropa. Deskripsi aset dari tahap layout tidak membawa lokasi atau audiens dari knowledge.
+- `feed-foto-teks` menyisakan celah kosong besar antara body dan CTA bila copy pendek (4 dari 4 pemakaian; skor balance 6–7).
+- Revisi karena skor saja (K2, S1, S2 tanpa perbaikan wajib) memakai 2 putaran dan membuat ulang foto untuk perbaikan yang hanya saran; ini penyebab utama panggilan melebihi perkiraan.
+- QA visual menyarankan fakta karangan (tanggal lomba R2 "Sun, 23 Nov"). Prompt `qa-visual.md` belum melarang menyarankan fakta di luar knowledge.
+- T-118 bekerja: di K1 dan K3 putaran 0 menandai masalah nyata sebagai wajib (foto kopi berisi es padahal copy "hangat", CTA mengulang headline, anjing terpotong, pengulangan di caption) dan revisi memperbaikinya.
+
+Keputusan: **NO-GO** untuk Fase 2 (PRD 11: butuh ≥ 6 dari 9).
+
 ## Keputusan kecil (tanggal, keputusan, alasan)
 
 | Tanggal | Keputusan | Alasan |
@@ -250,3 +283,4 @@ Panggilan yang dipakai (fixture di `packages/sidecar/test/fixtures/codex/`):
 | 2026-10-18 | `LimitReachedError` Claude hanya bila panggilan gagal dan (status rate limit bukan `allowed` atau pesan cocok pola) | Status selain `allowed` belum pernah teramati; tidak membatalkan panggilan yang ternyata sukses (pemilik, sesi #8) |
 | 2026-10-18 | `QaFix.severity` `wajib`/`saran`; QA lolos hanya tanpa perbaikan wajib; revisi otomatis memakai perbaikan wajib saja bila ada (PRD F9, ARCH 5.4 diperbarui) | Jalan spike pertama: QA lolos dengan skor 8,2 padahal ada perbaikan nyata yang tidak pernah diterapkan (pemilik, sesi #8, T-118) |
 | 2026-10-18 | Pengulangan informasi antarslot dicegah lewat aturan prompt copy, layout, dan revise (tanpa cek kode); logo panel `feed-foto-penuh` naik ke langkah spacing 6 | Cek kode untuk pengulangan rawan salah lapor; prompt ditambah penilaian QA visual (wajib) sudah cukup sebagai jaring (pemilik, sesi #8, T-118) |
+| 2026-10-19 | Gerbang Fase 1 (T-117): NO-GO, 0 dari 9 percobaan layak menurut pemilik | Hasil dinilai "terlalu generik, kaku dan AI slop", bukan standar desain kelas dunia; QA visual meloloskan 5 di antaranya (pemilik, sesi #8) |

@@ -173,11 +173,22 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Verifikasi: test prompt, skema, dan engine; `pnpm render:demo` lolos QA dan PNG dinilai; dry-run spike lolos; tanpa kuota.
   - Catatan: disetujui pemilik 2026-10-18 (kebijakan wajib/saran, pengulangan cukup lewat prompt). Selesai: 257 test lolos; `pnpm render:demo` 27/27 lolos QA, logo `feed-foto-penuh` dinilai seimbang di 3 brand (contoh dan maks); dry-run spike lolos. Efek prompt dan severity pada model asli baru terlihat di T-117.
 
-- [~] T-117 Evaluasi spike (gerbang go/no-go)
+- [!] T-117 Evaluasi spike (gerbang go/no-go)
   - Rujukan: PRD 11 (Fase 1), PRD 10 (risiko kualitas), PRD 12 pertanyaan 5
   - AC: 3 brand × 3 brief dijalankan; pemilik menilai kelayakan publikasi; skor QA visual, durasi, dan jumlah retry tercatat; ambang QA dikalibrasi; keputusan go/no-go tertulis.
   - Verifikasi: tabel hasil 9 percobaan di KNOWLEDGE.md; ≥ 6 dari 9 layak publikasi menurut pemilik.
   - Catatan: MEMAKAI KUOTA BESAR. Jadwalkan bersama pemilik. Temuan jalan spike pertama (T-116) untuk kalibrasi: (1) QA visual lolos (rata-rata 8,2) padahal menulis 3 perbaikan nyata (jam buka disebut dua kali, "sebelum kerja" di headline dan CTA, logo kecil) yang tidak diterapkan; pertimbangkan ambang lebih ketat atau satu putaran revisi bila ada fixes. (2) Logo di panel `feed-foto-penuh` (tinggi langkah 5 = 48 px) dinilai terlalu kecil; kandidat perbaikan template. (3) Prompt copy perlu larangan mengulang informasi yang sama antar slot (badge, body, CTA). Ketiganya ditangani T-118; T-117 memeriksa efeknya pada model asli.
+  - Hasil 2026-10-19: 9 percobaan dijalankan (izin pemilik; Claude 61, Codex 15, retry 0, ±30 menit). R3 gagal teknis di render putaran 1 (bug varian logo, lihat T-119). QA lolos 5/9, layak menurut pemilik **0/9** ("terlalu generik, kaku dan AI slop"). Keputusan: NO-GO. Tabel, kalibrasi, dan temuan di KNOWLEDGE "Evaluasi spike T-117". Status [!] karena verifikasi ≥ 6/9 tidak tercapai; arah perbaikan menunggu pemilik (T-120).
+
+- [ ] T-119 Validasi varian logo terhadap Brand Kit sebelum render
+  - Rujukan: KNOWLEDGE "Evaluasi spike T-117", ARCH 5.4
+  - AC: layout dan revisi yang memakai varian logo yang tidak ada di Brand Kit ditolak saat validasi tahap (masuk retry validasi), dan prompt layout serta revise menyebut varian yang tersedia.
+  - Verifikasi: test validasi tahap dan engine; dry-run spike lolos; tanpa kuota.
+
+- [ ] T-120 Arah ulang kualitas desain setelah NO-GO
+  - Rujukan: KNOWLEDGE "Evaluasi spike T-117", PRD 4 (anti AI-slop), PRD 10, DESIGN
+  - AC: standar "kelas dunia" pemilik ditulis konkret (referensi dan kriteria), lalu dipecah menjadi task template, art direction foto, dan rubric QA visual sebelum evaluasi ulang.
+  - Catatan: menunggu masukan pemilik. Kandidat dari temuan T-117: QA visual membuka file logo, deskripsi foto membawa lokasi dan audiens brand, celah kosong `feed-foto-teks`, larangan fakta karangan di `qa-visual.md`, revisi karena skor saja.
 
 ## Fase 2: Walking skeleton (epic)
 
