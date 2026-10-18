@@ -1,5 +1,6 @@
 export * from "./asset-manifest.ts";
 export * from "./brand-kit.ts";
+export * from "./cli-status.ts";
 export * from "./common.ts";
 export * from "./content-plan.ts";
 export * from "./copy-draft.ts";

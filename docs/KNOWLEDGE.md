@@ -30,7 +30,7 @@ Diverifikasi 2026-10-17 (sesi #1).
 Versi teruji: **2.1.302** (standalone). Diverifikasi dari `claude --help` tanpa memakai kuota.
 
 **Login dan status (tanpa kuota)**
-- `claude auth status --json` (default JSON) mengembalikan antara lain `loggedIn`, `authMethod` (`claude.ai`), `subscriptionType`. `--text` untuk teks biasa. Mac ini: login aktif, paket **Team**.
+- `claude auth status --json` (default JSON) mengembalikan antara lain `loggedIn`, `authMethod` (`claude.ai`), `subscriptionType`. `--text` untuk teks biasa. Mac ini: login aktif, paket **Team**. Bila belum login tetap mencetak JSON (`loggedIn: false`, `authMethod: "none"`) tetapi keluar dengan **exit 1** (direkam T-111 dengan `CLAUDE_CONFIG_DIR` kosong; folder itu langsung diisi `.claude.json`). JSON login berisi `email`, `orgId`, dan `orgName`: jangan dicatat ke log atau fixture tanpa disamarkan.
 - `claude --version` mencetak `2.1.302 (Claude Code)`.
 
 **Flag yang ada di `--help` dan relevan untuk adapter**
@@ -93,7 +93,7 @@ claude -p "<prompt>" --model claude-opus-5-5 --output-format stream-json --verbo
 Versi teruji: **0.163.0** (standalone). Diverifikasi dari `codex --help`, `codex exec --help`, `codex login --help`, dan `codex features list` tanpa memakai kuota. Output `codex exec --help` identik dengan 0.162.0-alpha.17.2.
 
 **Login dan status (tanpa kuota)**
-- `codex login status` mencetak `Logged in using ChatGPT`.
+- `codex login status` mencetak `Logged in using ChatGPT` ke **stderr** (bukan stdout) dengan exit 0; bila belum login mencetak `Not logged in` ke stderr dengan exit 1 (direkam T-111 dengan `CODEX_HOME` kosong; fixture di `packages/sidecar/test/fixtures/cli/`).
 - `codex --version` mencetak `codex-cli 0.163.0`.
 
 **Flag `codex exec` yang relevan**
@@ -212,6 +212,7 @@ Panggilan yang dipakai (fixture di `packages/sidecar/test/fixtures/codex/`):
 - **CDP `CSS.getPlatformFontsForNode` (Chromium 148, diuji T-110):** butuh `DOM.enable` lalu `CSS.enable`; mengembalikan `{ familyName, postScriptName, isCustomFont, glyphCount }` per font yang benar-benar menggambar glyph elemen itu. Font `@font-face` brand berstatus `isCustomFont: true`; glyph "→" di Inter jatuh ke `Lucida Grande` (`isCustomFont: false`, 1 glyph); `font-family: Georgia` muncul sebagai Georgia non-custom. Computed `font-family` saja tidak bisa mendeteksi fallback per glyph.
 - **`document.elementsFromPoint` untuk latar efektif teks:** urutan dari atas; elemen teks itu sendiri ikut di dalam daftar (latar badge milik elemen teks, jadi pencarian harus mulai dari elemen itu, bukan sesudahnya). Teks langsung di atas foto mendapati `IMG`; teks di panel mendapati `DIV` panel sebelum `IMG`.
 - **Fungsi yang diserialisasi ke `page.evaluate` rusak di bawah tsx:** esbuild (keepNames) menulis `const f = __name((n) => …, "f")` di dalam fungsi, dan page gagal dengan `ReferenceError: __name is not defined` (diuji T-110). Di Vitest tidak terjadi, jadi test tidak menangkapnya. Skrip page di sidecar ditulis sebagai string (`String.raw`).
+- **PATH login shell di Mac ini (T-111):** `~/.local/bin` baru muncul di urutan ke-23, setelah folder Antigravity, opencode, bun, fnm multishell, dan Homebrew; saat ini hanya ada satu `claude` dan satu `codex` di seluruh PATH itu (`whence -a`). Deteksi dari PATH minimal ala aplikasi GUI (`env -i`, `/usr/bin:/bin:/usr/sbin:/sbin`) menemukan keduanya lewat login shell dalam ~265 ms.
 - **Durasi `pnpm test` sejak T-110 ~12,5 detik** (sebelumnya ~1,4 detik): 25 render Chromium untuk fixture QA dan isi demo seluruh katalog × 3 brand.
 
 ## Keputusan kecil (tanggal, keputusan, alasan)

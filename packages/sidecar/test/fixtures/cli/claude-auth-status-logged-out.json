@@ -1,0 +1,8 @@
+{
+  "loggedIn": false,
+  "authMethod": "none",
+  "apiProvider": "firstParty",
+  "analyticsDisabled": false,
+  "projectsDirectory": "/Users/contoh/.claude/projects",
+  "configDirectory": "/Users/contoh/.claude"
+}

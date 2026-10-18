@@ -141,12 +141,12 @@ Package manager: **pnpm workspaces**, scope paket `@laras/*`. Lint dan format: *
 
 Aplikasi GUI macOS tidak mewarisi PATH dari terminal. Saat start, sidecar:
 
-1. Membaca PATH dari login shell: `/bin/zsh -lic 'echo $PATH'`.
-2. Mencari `claude` dan `codex` di PATH tersebut, lalu di lokasi umum (`~/.local/bin` — lokasi installer resmi Claude dan Codex, `/opt/homebrew/bin`, `/usr/local/bin`, `~/.npm-global/bin`, `~/.bun/bin`, `~/.local/share/fnm/aliases/default/bin`).
-3. Memakai path manual dari Pengaturan bila diisi.
-4. Memeriksa versi (`--version`) dan status login (`claude auth status --json`, `codex login status`; keduanya tanpa kuota), lalu mengirim `cli.status` ke UI.
+1. Membaca PATH dari login shell: `/bin/zsh -lic` yang mencetak `$PATH` diawali penanda `__LARAS_PATH__`, karena profil shell bisa mencetak teks lain ke stdout. Timeout 10 detik; bila gagal, langsung ke langkah 2 tanpa PATH shell.
+2. Mencari `claude` dan `codex` di PATH tersebut, lalu di lokasi umum (`~/.local/bin` — lokasi installer resmi Claude dan Codex, `/opt/homebrew/bin`, `/usr/local/bin`, `~/.npm-global/bin`, `~/.bun/bin`, `~/.local/share/fnm/aliases/default/bin`). Path di folder fnm "multishell" diganti padanannya di alias `default`.
+3. Memakai path manual dari Pengaturan bila deteksi otomatis gagal (PRD F14).
+4. Memeriksa versi (`--version`) dan status login (`claude auth status --json`, `codex login status`; keduanya tanpa kuota, stdin ditutup, PATH dari login shell agar CLI berbasis skrip Node tetap jalan), lalu mengirim `cli.status` (skema `CliStatus` di `shared`) ke UI.
 
-Salinan CLI bawaan Claude desktop app atau ekstensi editor (VS Code, Kiro) sengaja tidak dipakai, karena path-nya berubah setiap update dan versinya bisa alpha.
+Salinan CLI bawaan Claude desktop app atau ekstensi editor (VS Code, Cursor, Kiro, Antigravity) sengaja dilewati walau ada di PATH, karena path-nya berubah setiap update dan versinya bisa alpha. Implementasi: `packages/sidecar/src/cli/resolvePath.ts` (`resolveClis`).
 
 #### Claude adapter
 

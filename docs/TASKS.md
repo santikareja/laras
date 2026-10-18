@@ -131,11 +131,11 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Verifikasi: test Vitest + Playwright dengan fixture yang sengaja melanggar setiap aturan dan fixture yang patuh.
   - Catatan: dari T-108: `scrollHeight > clientHeight` pada heading `line-height: 1.1` selalu terpicu tanpa teks terpotong (KNOWLEDGE), jadi aturan overflow perlu toleransi berbasis metrik font. Isi "maks" di `render:demo` bisa dijadikan fixture patuh untuk semua template × brand. Selesai 2026-10-18. `packages/sidecar/src/render/qa/`: kolektor string di page, font nyata lewat CDP, sampling piksel untuk teks di atas foto (screenshot kedua tanpa teks, persentil ke-5), aturan murni di `rules.ts`, `buildRenderReport()`; `render()` kini mengembalikan `{ png, checks }`. Ditambah aturan `asset-load` (PRD F9). Keputusan pemilik: definisi overflow baru (ARCH 7.2 diperbarui) dan hashtag dilarang di gambar. Primitives menulis `data-slot-type`. Isi demo dipindah ke `scripts/demo-content.ts`; `render:demo` menjalankan QA (27 render lolos, exit 1 bila ada yang gagal). Fixture patuh pertama menemukan bug kolektor (latar badge sendiri terlewat), sudah diperbaiki dengan fixture khusus. Test: 13 unit aturan, 10 fixture Chromium (pelanggaran per aturan, teks di atas foto, badge, RenderReport), 15 fixture patuh (katalog + spesimen × 3 brand).
 
-- [ ] T-111 Deteksi CLI (`cli/resolvePath.ts`)
+- [x] T-111 Deteksi CLI (`cli/resolvePath.ts`)
   - Rujukan: ARCH 4.5 (Deteksi CLI dan PATH), PRD F14, CLAUDE.md (Hal yang Mudah Salah)
   - AC: mengembalikan path, versi, dan status login `claude` dan `codex` dari PATH login shell, lalu lokasi umum ARCH 4.5, lalu path manual.
   - Verifikasi: test dengan `exec` palsu untuk kasus ditemukan, tidak ditemukan, dan belum login; dijalankan sekali di Mac ini (tanpa kuota).
-  - Catatan:
+  - Catatan: Selesai 2026-10-18. `resolveClis(manualPaths, deps)` di `packages/sidecar/src/cli/resolvePath.ts` dengan skema `CliStatus` baru di `shared`; penanda PATH login shell, salinan bawaan aplikasi lain dilewati, normalisasi fnm multishell, perintah status dijalankan dengan PATH login shell dan stdin ditutup. Output asli (termasuk belum login, direkam dengan folder konfigurasi kosong atas izin pemilik; data pribadi disamarkan) jadi fixture di `packages/sidecar/test/fixtures/cli/`. Ditemukan: `codex login status` menulis ke stderr; kedua perintah status keluar dengan exit 1 bila belum login. Dijalankan sekali di Mac ini dengan PATH minimal ala aplikasi GUI: kedua CLI ditemukan lewat login shell, versi 2.1.302 dan 0.163.0, sudah login. Test: 2 skema, 7 deteksi.
 
 - [ ] T-112 Adapter Claude
   - Rujukan: ARCH 4.5 (Claude adapter, Deteksi rate limit), ARCH 5.2, ARCH 10
