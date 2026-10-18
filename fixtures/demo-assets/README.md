@@ -8,4 +8,6 @@ Satu foto per brand fixture, dipakai sebagai aset job (`foto.jpg`, 1122 × 1402,
 | `seruni-skin` | T-108, 2026-10-18, thread `01a14f80-220b-7111-a5cb-ab8f9522ebdc` | Pipi dan rahang dengan tekstur kulit asli, botol tetes tanpa label, cahaya jendela, palet brand |
 | `ritme-run-club` | T-108, 2026-10-18, thread `01a14f80-e144-7990-a7a4-3e668d3444ee` | Tiga pelari beragam bentuk tubuh sedang berlari saat matahari terbit, pakaian polos warna brand, tanpa nomor dada |
 
-Catatan: foto `seruni-skin` berupa foto 3:2 yang ditempel di atas latar polos (garis potongan di sekitar y 265 dan y 1130). Aman untuk slot 3:2 yang dipotong di tengah, tetapi tidak untuk template foto penuh.
+| `seruni-skin` (`foto-4x5.jpg`) | T-109, 2026-10-18, thread `01a14f8d-d0c7-76d1-9534-e91e0eb516b2` | Foto utuh dari tepi ke tepi: jari mengoleskan serum ke pipi, mata di luar bingkai, botol tanpa label, jubah biru pucat |
+
+Catatan: `seruni-skin/foto.jpg` berupa foto 3:2 yang ditempel di atas latar polos (garis potongan di sekitar y 265 dan y 1130). Aman untuk slot 3:2 yang dipotong di tengah, tetapi tidak untuk foto penuh; slot 4:5 memakai `foto-4x5.jpg`. `render:demo` memilih `foto-<rasio>.jpg` bila ada, selain itu `foto.jpg`.

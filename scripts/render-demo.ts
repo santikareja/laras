@@ -1,5 +1,6 @@
 // Render spesimen brand dan semua template × tiga brand fixture ke out/demo (CLAUDE.md, ARCH 10).
 // Dijalankan lewat `pnpm render:demo` (tsx, karena template berupa JSX).
+import { existsSync } from "node:fs";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import {
@@ -19,14 +20,14 @@ const BRANDS = ["kopi-lembayung", "seruni-skin", "ritme-run-club"] as const;
 type Brand = (typeof BRANDS)[number];
 const OUT_DIR = resolve("out/demo");
 
-// Foto contoh hasil Codex (fixtures/demo-assets/README.md), satu per brand.
-const PHOTO: AssetManifest["assets"][number] = {
-  id: "foto",
-  path: "foto.jpg",
-  width: 1122,
-  height: 1402,
-  source: "codex",
-};
+// Foto contoh hasil Codex (fixtures/demo-assets/README.md): foto.jpg untuk semua rasio, kecuali
+// brand punya foto khusus rasio slot, mis. foto-4x5.jpg.
+type Asset = AssetManifest["assets"][number];
+function photoFor(slug: Brand, aspectRatio: string): Asset {
+  const special = `foto-${aspectRatio.replace(":", "x")}.jpg`;
+  const path = existsSync(resolve("fixtures/demo-assets", slug, special)) ? special : "foto.jpg";
+  return { id: path.replace(".jpg", ""), path, width: 1122, height: 1402, source: "codex" };
+}
 
 // Isi contoh per template: teks per slot dan opsi. Varian "maks" mengisi setiap slot teks
 // sampai maxChars dengan opsi maxOptions, untuk menguji batas karakter di ketiga brand.
@@ -105,6 +106,69 @@ const SOROTAN: Record<Brand, DemoCopy> = {
   },
 };
 
+const FOTO_PENUH: Record<Brand, DemoCopy> = {
+  "kopi-lembayung": {
+    text: {
+      badge: "Biji baru",
+      headline: "Sangrai minggu ini sudah siap",
+      body: "Biji Jawa Barat 200 g. Tanggal sangrai tertulis di kemasan.",
+      cta: "Ambil di kedai",
+    },
+    options: { tone: "light", position: "top" },
+    maxOptions: { tone: "dark", position: "bottom" },
+  },
+  "seruni-skin": {
+    text: {
+      badge: "Edukasi",
+      headline: "Pori dan tekstur itu bagian dari kulit sehat",
+      body: "Kami merawat kulitmu, bukan menutupinya. Konsultasi dulu, perawatan kemudian.",
+      cta: "Baca penjelasan lengkapnya",
+    },
+    options: { tone: "light", position: "bottom" },
+    maxOptions: { tone: "dark", position: "top" },
+  },
+  "ritme-run-club": {
+    text: {
+      badge: "Ritme 10K City Race",
+      headline: "Your first 10K starts on Sunday",
+      body: "Train with pace groups from 5:00 to 8:30 min/km before race day.",
+      cta: "Save your spot",
+    },
+    options: { tone: "dark", position: "bottom" },
+    maxOptions: { tone: "light", position: "bottom" },
+  },
+};
+
+const KUTIPAN: Record<Brand, DemoCopy> = {
+  "kopi-lembayung": {
+    text: {
+      badge: "Kata pelanggan",
+      quote: "Teras kecil ini tempat saya memulai pagi sebelum kerja, sejak kedai ini buka.",
+      attribution: "Rina, pelanggan sejak 2022",
+    },
+    options: { tone: "secondary" },
+    maxOptions: { tone: "dark" },
+  },
+  "seruni-skin": {
+    text: {
+      badge: "Cerita klien",
+      quote: "Saya jadi paham kenapa kulit saya kering, bukan sekadar ditawari produk.",
+      attribution: "Dimas, klien facial hidrasi",
+    },
+    options: { tone: "dark" },
+    maxOptions: { tone: "secondary" },
+  },
+  "ritme-run-club": {
+    text: {
+      badge: "Member story",
+      quote: "I joined the 8:30 pace group as a walker. Six months later I ran my first 10K.",
+      attribution: "Sari, member since 2024",
+    },
+    options: { tone: "secondary" },
+    maxOptions: { tone: "dark" },
+  },
+};
+
 const titleCase = (slug: string) =>
   slug.replace(
     /(^|-)(\w)/g,
@@ -121,6 +185,8 @@ const DEMO_COPY: Record<string, (brand: BrandKit, slug: Brand) => DemoCopy> = {
   }),
   "feed-foto-teks": (_, slug) => FOTO_TEKS[slug],
   "feed-sorotan": (_, slug) => SOROTAN[slug],
+  "feed-foto-penuh": (_, slug) => FOTO_PENUH[slug],
+  "feed-kutipan": (_, slug) => KUTIPAN[slug],
 };
 
 // Mengulang contoh sampai tepat maxChars, agar baris terpanjang yang diizinkan ikut dirender.
@@ -130,12 +196,14 @@ function fill(sample: string, max: number): string {
   return text.slice(0, max).trimEnd();
 }
 
-function demoLayout(meta: TemplateMeta, copy: DemoCopy, max: boolean): LayoutSpec {
+function demoLayout(meta: TemplateMeta, copy: DemoCopy, max: boolean, slug: Brand) {
   const options = (max ? copy.maxOptions : copy.options) ?? {};
+  const image = meta.slots.find((s) => s.type === "image");
+  const photo = image?.aspectRatio ? photoFor(slug, image.aspectRatio) : undefined;
   const slots: Record<string, SlotValue> = {};
   for (const slot of meta.slots) {
     const sample = copy.text[slot.name];
-    if (slot.type === "image") slots[slot.name] = { type: "image", assetId: PHOTO.id };
+    if (slot.type === "image" && photo) slots[slot.name] = { type: "image", assetId: photo.id };
     if (slot.type === "logo") {
       slots[slot.name] = { type: "logo", variant: options.tone === "dark" ? "onDark" : "primary" };
     }
@@ -146,18 +214,17 @@ function demoLayout(meta: TemplateMeta, copy: DemoCopy, max: boolean): LayoutSpe
       };
     }
   }
-  const image = meta.slots.find((s) => s.type === "image");
   const spec = LayoutSpec.parse({
     templateId: meta.id,
     format: meta.format,
     slides: [{ slots, options }],
-    assetRequests: image
-      ? [{ id: PHOTO.id, description: "Foto contoh", aspectRatio: image.aspectRatio }]
+    assetRequests: photo
+      ? [{ id: photo.id, description: "Foto contoh", aspectRatio: image?.aspectRatio }]
       : [],
   });
   const issues = layoutIssues(spec, meta);
   if (issues.length > 0) throw new Error(`Isi demo ${meta.id} tidak cocok: ${issues.join("; ")}`);
-  return spec;
+  return { spec, assets: { assets: photo ? [photo] : [] } };
 }
 
 async function main() {
@@ -178,8 +245,7 @@ async function main() {
         const copy = demoCopy(brand, slug);
         const variants = template === specimen ? ["contoh"] : ["contoh", "maks"];
         for (const variant of variants) {
-          const spec = demoLayout(template.meta, copy, variant === "maks");
-          const assets = { assets: [PHOTO] };
+          const { spec, assets } = demoLayout(template.meta, copy, variant === "maks", slug);
           const pages = renderLayoutHtml(spec, { brand, assets, templates: catalog });
           for (const [index, html] of pages.entries()) {
             const name = `${template.meta.id}-${slug}-${variant}-${index + 1}`;
