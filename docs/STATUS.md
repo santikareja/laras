@@ -5,13 +5,12 @@ Terakhir diperbarui: 2026-10-19, sesi #8
 Fase 1: Spike pipeline. Fase 0 selesai. Verifikasi CLI selesai: T-101 (generasi gambar Codex, ADR-012) dan T-102 (Claude headless dan isolasi, ADR-013). T-103 (skema Zod inti), T-104 (tiga brand fixture, skema `CopyGuide`), T-105 (token brand ke CSS), T-106 (primitives template), T-107 (renderer Playwright, sharp, `pnpm render:demo`), T-108 (template `feed-foto-teks` dan `feed-sorotan`, skema `TemplateMeta`), T-109 (template `feed-foto-penuh` dan `feed-kutipan`), T-110 (QA deterministik di renderer), T-111 (deteksi CLI, skema `CliStatus`), T-112 (adapter Claude), T-113 (adapter Codex dan AssetProvider), T-114 (prompt tahap, skema `Revision`), T-115 (pipeline engine), T-116 (`pnpm spike`; satu jalan sungguhan Kopi Lembayung lolos QA dalam 97 detik dengan 4 panggilan Claude dan 1 Codex), dan T-118 (perbaikan temuan spike: perbaikan QA bertingkat `wajib`/`saran`, larangan pengulangan informasi di prompt, logo `feed-foto-penuh` lebih besar) selesai. Katalog berisi 4 template feed. T-117 (evaluasi spike, 9 percobaan) selesai dijalankan dengan keputusan **NO-GO**: 0 dari 9 layak menurut pemilik ("terlalu generik, kaku dan AI slop"), walau QA meloloskan 5. Fase 2 belum dimulai; Fase 1 berlanjut dengan perbaikan kualitas desain: standar K1–K8 di PRD 4 (dari 59 referensi pemilik) dan arketipe komposisi parametrik (ADR-015), dipecah menjadi T-121 sampai T-127. T-121 selesai: Codex menghasilkan subjek cut-out beralpha dan gambar konsep sesuai komposisi yang diminta.
 
 ## Sedang dikerjakan
-T-122 Prototipe arketipe komposisi: v3 menunggu penilaian pemilik (A1 dan A3 sudah diterima; A2 dan A4 direvisi dengan perangkat grafis kolase dan cut-out yang berinteraksi). `pnpm render:prototype` merender 4 arketipe × 3 brand ke `out/prototype/`.
+Tidak ada. T-122 selesai: empat arketipe prototipe (`pnpm render:prototype`) disetujui pemilik setelah revisi v4 sesuai aturan desain P8–P11.
 
 ## Berikutnya (urut)
-1. Selesaikan T-122 sesuai penilaian pemilik atas v3.
-2. T-119, lalu T-123 sampai T-126 (sistem arketipe dengan fit-to-width dan penempatan berdasarkan bentuk subjek, aturan brand terstruktur dan perangkat grafis Brand Kit, ide besar dan art direction, rubric QA K1–K8 dan P1–P7).
-3. T-128 Gaya desain tahap 1 (enam gaya, PRD F16), lalu T-129 tahap 2.
-4. T-127 Evaluasi ulang spike (memakai kuota besar; izin pemilik).
+1. T-119, lalu T-123 sampai T-126 (sistem arketipe dengan fit-to-width dan penempatan berdasarkan bentuk subjek, aturan brand terstruktur dan perangkat grafis Brand Kit, ide besar dan art direction, rubric QA K1–K8 dan P1–P7).
+2. T-128 Gaya desain tahap 1 (enam gaya, PRD F16), lalu T-129 tahap 2.
+3. T-127 Evaluasi ulang spike (memakai kuota besar; izin pemilik).
 
 ## Blocker
 - Tidak ada.
