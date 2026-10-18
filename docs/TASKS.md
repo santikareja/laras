@@ -188,7 +188,7 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
 - [ ] T-120 Arah ulang kualitas desain setelah NO-GO
   - Rujukan: KNOWLEDGE "Evaluasi spike T-117", PRD 4 (anti AI-slop), PRD 10, DESIGN
   - AC: standar "kelas dunia" pemilik ditulis konkret (referensi dan kriteria), lalu dipecah menjadi task template, art direction foto, dan rubric QA visual sebelum evaluasi ulang.
-  - Catatan: menunggu masukan pemilik. Kandidat dari temuan T-117: QA visual membuka file logo, deskripsi foto membawa lokasi dan audiens brand, celah kosong `feed-foto-teks`, larangan fakta karangan di `qa-visual.md`, revisi karena skor saja.
+  - Catatan: masukan pemilik 2026-10-19: masalah utama adalah struktur yang selalu sama (foto + kartu teks, urutan badge–headline–body–CTA di setiap postingan); foto, tipografi, dan jumlah teks tidak dipilih sebagai masalah utama. Pemilik akan mengirim 5–10 referensi kelas dunia; kriteria konkret diturunkan dari referensi itu sebelum rencana disusun. Kandidat dari temuan T-117: QA visual membuka file logo, deskripsi foto membawa lokasi dan audiens brand, celah kosong `feed-foto-teks`, larangan fakta karangan di `qa-visual.md`, revisi karena skor saja.
 
 ## Fase 2: Walking skeleton (epic)
 

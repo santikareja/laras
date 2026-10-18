@@ -8,7 +8,7 @@ Fase 1: Spike pipeline. Fase 0 selesai. Verifikasi CLI selesai: T-101 (generasi 
 Tidak ada.
 
 ## Berikutnya (urut)
-1. T-120 Arah ulang kualitas desain setelah NO-GO: menunggu masukan pemilik tentang standar "kelas dunia" (referensi dan kriteria), lalu dipecah menjadi task template, art direction foto, dan rubric QA visual. Hasil dan temuan T-117 di KNOWLEDGE "Evaluasi spike T-117".
+1. T-120 Arah ulang kualitas desain setelah NO-GO: menurut pemilik masalah utamanya struktur yang selalu sama; menunggu 5–10 referensi kelas dunia dari pemilik untuk diturunkan menjadi kriteria, lalu dipecah menjadi task template, art direction foto, dan rubric QA visual. Hasil dan temuan T-117 di KNOWLEDGE "Evaluasi spike T-117".
 2. T-119 Validasi varian logo terhadap Brand Kit (bug R3; kecil, tanpa kuota).
 3. Evaluasi ulang spike setelah perbaikan (memakai kuota; izin pemilik). T-117 memakai Claude 61 dan Codex 15 panggilan untuk 9 percobaan; revisi karena skor saja menaikkan jumlahnya.
 
