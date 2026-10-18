@@ -22,6 +22,8 @@ export const Hashtag = z
 
 export const Slug = z.string().regex(/^[a-z0-9][a-z0-9-]*$/, "Id hanya huruf kecil, angka, dan -");
 
+export const AspectRatio = z.string().regex(/^\d+:\d+$/, "Rasio berformat lebar:tinggi, mis. 4:5");
+
 export const ContentFormat = z.enum(["feed-4x5", "carousel-4x5"]);
 export type ContentFormat = z.infer<typeof ContentFormat>;
 

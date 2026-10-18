@@ -203,6 +203,10 @@ Panggilan yang dipakai (fixture di `packages/sidecar/test/fixtures/codex/`):
 - **`sharp().withIccProfile("srgb")` menanam profil ICC v4 lcms 480 byte** dengan tag `desc` bertipe `mluc` berisi "sRGB" (UTF-16BE), bukan teks ASCII; `metadata().space` = `srgb`, `hasProfile` = true.
 - **`renderToStaticMarkup` + Playwright untuk satu slide spesimen:** render tiga brand (launch browser, tiga context, sharp) selesai ~3 detik di Mac ini.
 
+- **`scrollHeight > clientHeight` pada heading dengan `line-height: 1.1` bukan tanda teks terpotong.** Ascent + descent font (content area) lebih besar dari line box, jadi Chromium mencatat overflow vertikal walaupun teks utuh: Fraunces 60 px `136/132`, Cormorant 56 px `64/62`, Anton 76 px `182/167` (diukur T-108). Overflow horizontal tetap valid. Aturan overflow QA (T-110) perlu toleransi berbasis metrik font atau membandingkan dengan kotak induk.
+- **Codex `image_gen` bisa menghasilkan foto tempelan (letterbox).** Prompt "subjek di pita horizontal tengah, ruang kosong di atas dan bawah" menghasilkan foto 3:2 yang ditempel di atas latar polos dengan garis potongan (Seruni, T-108). Prompt lain dalam kalimat yang sama (Ritme) menghasilkan foto utuh. Untuk foto penuh, minta komposisi utuh tanpa instruksi pita.
+- **Uji generasi gambar T-108 (2 panggilan, Codex 0.163.0):** pemanggilan ADR-012 dengan cwd folder brand fixture berhasil, exit 0, 1122 × 1402, file di folder `thread_id`; 86.5k input (61.8k cached) dan 69.6k input (50.2k cached) token per panggilan; agent menyebut memakai skill `imagegen`.
+
 ## Keputusan kecil (tanggal, keputusan, alasan)
 
 | Tanggal | Keputusan | Alasan |
@@ -221,3 +225,5 @@ Panggilan yang dipakai (fixture di `packages/sidecar/test/fixtures/codex/`):
 | 2026-10-18 | Token tambahan `--color-neutral-light`/`-dark` dan `--font-{heading,body}-weight[-strong]` | Kunci netral berbeda per brand; bobot eksplisit mencegah tebal palsu pada font satu bobot (pemilik, sesi #8) |
 | 2026-10-18 | Sidecar: `playwright-core` 1.60.0 (dipin tepat), `sharp` ^0.35.5, `react`/`react-dom` ^19.3.1; root dev: `tsx` ^4.23.15; `esbuild` tanpa skrip build | Versi Playwright cocok dengan Chromium 1223 di cache sehingga tanpa unduhan browser; tsx sesuai ARCH 11 (pemilik, sesi #8) |
 | 2026-10-18 | `pnpm render:demo` merender spesimen brand (`packages/templates/specimen`) selain katalog template; spesimen tidak masuk katalog untuk Claude | Demo T-107 bisa dinilai sebelum ada template; tetap berguna untuk cek font dan token per brand (pemilik, sesi #8) |
+| 2026-10-18 | Foto contoh demo: Kopi memakai foto uji T-101, Seruni dan Ritme dibuat dengan 2 panggilan Codex (`fixtures/demo-assets/`) | Sesuai alur produksi ADR-012 (pemilik, sesi #8) |
+| 2026-10-18 | Template feed pertama: `feed-foto-teks` dan `feed-sorotan`; T-109 untuk foto penuh dan kutipan tipografis | Komposisi berbeda untuk varian (PRD F7) (pemilik, sesi #8) |

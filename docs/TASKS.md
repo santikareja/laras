@@ -113,23 +113,23 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Verifikasi: test memeriksa dimensi dan profil warna PNG; PNG demo dibuka dan dinilai.
   - Catatan: Chromium Playwright sudah ada di cache Mac ini (lihat KNOWLEDGE.md). Selesai 2026-10-18. `packages/sidecar/src/render/`: `layout.ts` (LayoutSpec → HTML, resolve slot dengan cek path), `renderer.ts` (satu browser, context per slide, origin `http://laras.invalid/` dengan route terisolasi, ADR-014), `postprocess.ts` (master sRGB, upload 1080 × 1350 PNG/JPG 92). Kontrak `Template`/`SlideProps`/`slot()` dan katalog kosong di `@laras/templates`; spesimen brand untuk demo. Dependency disetujui pemilik: `playwright-core` 1.60.0, `sharp`, `react`/`react-dom` di sidecar, `tsx` di root; `esbuild` tanpa skrip build. `jsx` dipindah ke `tsconfig.base.json`. Test: 4 test layout, 4 test renderer (PNG 2160 × 2700 dan upload PNG/JPG 1080 × 1350 berprofil sRGB, satu kali launch untuk dua slide, blokir origin lain dan path keluar folder). PNG demo tiga brand dibuka dan dinilai: font brand termuat, safe margin, radius, bayangan, dan logo sesuai; potongan 1:1 upload tajam tanpa halo. Thumbnail 360 px (ARCH 7.3) ditunda ke E-307. Alasan "CORS font `file://`" di rencana ternyata salah (diuji, lihat KNOWLEDGE); alasan ADR-014 adalah isolasi.
 
-- [ ] T-108 Template feed A dan B
+- [x] T-108 Template feed A dan B
   - Rujukan: PRD 4 (prinsip 3), PRD 5, ARCH 6.2, CLAUDE.md (Desain dan Template)
   - AC: dua template feed 4:5 dengan `meta` (id, format, slot dan batas karakter, opsi) dan komponen render; safe margin 64 px; font minimum 24 px; lint token lolos.
   - Verifikasi: `pnpm render:demo`, PNG dibuka dan dinilai (hierarki, keterbacaan, keseimbangan) untuk ketiga brand.
-  - Catatan: dari T-107: kontrak `Template` di `packages/templates/src/template.ts` baru berisi `meta.id` dan `meta.format`; skema `meta` lengkap (dikirim ke Claude, jadi skema Zod di `shared`) dibuat di sini. Template baru didaftarkan di `src/catalog.ts` dan wajib punya isi contoh di `DEMO_SLIDES` (`scripts/render-demo.ts`). Belum ada gambar contoh untuk slot `image` di demo; sumbernya perlu diputuskan pemilik (unduhan atau Codex memakai kuota).
+  - Catatan: dari T-107: kontrak `Template` di `packages/templates/src/template.ts` baru berisi `meta.id` dan `meta.format`; skema `meta` lengkap (dikirim ke Claude, jadi skema Zod di `shared`) dibuat di sini. Template baru didaftarkan di `src/catalog.ts` dan wajib punya isi contoh di `DEMO_SLIDES` (`scripts/render-demo.ts`). Belum ada gambar contoh untuk slot `image` di demo; sumbernya perlu diputuskan pemilik (unduhan atau Codex memakai kuota). Selesai 2026-10-18. Skema `TemplateMeta` dan `layoutIssues` di `shared` (validasi LayoutSpec terhadap meta ikut dibuat di sini karena dipakai demo, bukan task terpisah seperti di rencana). Template `feed-foto-teks` (opsi `tone` light/secondary) dan `feed-sorotan` (opsi `tone` dark/light; blok konten ditambatkan ke bawah setelah versi tengah terlihat mengambang). Foto contoh di `fixtures/demo-assets/` (T-101 untuk Kopi, 2 panggilan Codex disetujui pemilik untuk Seruni dan Ritme). `render:demo` merender isi "contoh" dan "maks" (setiap slot teks tepat `maxChars`, tone kebalikan) × 3 brand; 12 PNG dinilai: hierarki jelas, tanpa teks terpotong, slot di dalam safe margin 64/80 px, font ≥ 24 px (dicek juga lewat DOM). Test: 7 test `TemplateMeta`/`layoutIssues`, 13 test katalog (meta valid, setiap slot ber-`data-slot`, slot opsional, setiap nilai opsi).
 
 - [ ] T-109 Template feed C dan D
   - Rujukan: sama dengan T-108
   - AC: dua template feed tambahan dengan komposisi berbeda dari A dan B (mis. foto penuh dan tipografi dominan).
   - Verifikasi: sama dengan T-108.
-  - Catatan: jumlah template akhir mengikuti jawaban PRD 12 pertanyaan 3.
+  - Catatan: jumlah template akhir mengikuti jawaban PRD 12 pertanyaan 3. Dari T-108: rencana C = foto penuh dengan teks di atasnya, D = kutipan atau pernyataan tipografis. Foto contoh Seruni berupa tempelan 3:2 (lihat `fixtures/demo-assets/README.md`), jadi template foto penuh butuh foto Seruni baru (1 panggilan Codex, perlu izin pemilik) atau sumber lain.
 
 - [ ] T-110 QA deterministik
   - Rujukan: PRD F9, ARCH 7.2
   - AC: skrip di dalam page menghasilkan `RenderReport`: kontras (termasuk teks di atas gambar), overflow, safe margin, font minimum, font dan warna dari Brand Kit, kata terlarang, aturan emoji dan hashtag.
   - Verifikasi: test Vitest + Playwright dengan fixture yang sengaja melanggar setiap aturan dan fixture yang patuh.
-  - Catatan:
+  - Catatan: dari T-108: `scrollHeight > clientHeight` pada heading `line-height: 1.1` selalu terpicu tanpa teks terpotong (KNOWLEDGE), jadi aturan overflow perlu toleransi berbasis metrik font. Isi "maks" di `render:demo` bisa dijadikan fixture patuh untuk semua template × brand.
 
 - [ ] T-111 Deteksi CLI (`cli/resolvePath.ts`)
   - Rujukan: ARCH 4.5 (Deteksi CLI dan PATH), PRD F14, CLAUDE.md (Hal yang Mudah Salah)

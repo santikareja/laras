@@ -77,6 +77,18 @@ function SpecimenSlide({ slots }: SlideProps) {
 }
 
 export const specimen: Template = {
-  meta: { id: "specimen", format: "feed-4x5" },
+  meta: {
+    id: "specimen",
+    name: "Spesimen brand",
+    format: "feed-4x5",
+    description: "Alat cek font dan token per brand untuk render:demo; tidak masuk katalog.",
+    slots: [
+      { name: "badge", type: "badge", required: true, description: "Label", maxChars: 24 },
+      { name: "title", type: "text", required: true, description: "Nama brand", maxChars: 24 },
+      { name: "body", type: "text", required: true, description: "Keterangan font", maxChars: 80 },
+      { name: "logo", type: "logo", required: true, description: "Logo utama" },
+    ],
+    options: [],
+  },
   Slide: SpecimenSlide,
 };

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ContentFormat, duplicates, Slug, slideCountError } from "./common.ts";
+import { AspectRatio, ContentFormat, duplicates, Slug, slideCountError } from "./common.ts";
 
 export const LogoVariant = z.enum(["primary", "onDark", "onLight", "icon"]);
 
@@ -15,7 +15,7 @@ export type SlotValue = z.infer<typeof SlotValue>;
 export const AssetRequest = z.strictObject({
   id: Slug,
   description: z.string().min(1),
-  aspectRatio: z.string().regex(/^\d+:\d+$/, "Rasio berformat lebar:tinggi, mis. 4:5"),
+  aspectRatio: AspectRatio,
 });
 export type AssetRequest = z.infer<typeof AssetRequest>;
 
