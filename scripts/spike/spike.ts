@@ -9,8 +9,10 @@ import {
   CopyGuide,
   type JobEvent,
   type JobSpec,
-  type LayoutSpec,
+  LayoutSpec,
+  type QaFix,
   RenderReport,
+  Revision,
 } from "../../packages/shared/src/index.ts";
 import { runClaude } from "../../packages/sidecar/src/cli/claude.ts";
 import { resolveClis } from "../../packages/sidecar/src/cli/resolvePath.ts";
@@ -56,15 +58,19 @@ export type SpikeReport = {
   startedAt: string;
   durationMs: number;
   calls: { claude: number; codex: number };
+  // Retry validasi Claude (panggilan ulang karena output tidak lolos skema), termasuk di calls.
+  retries: number;
   costUsd: number;
   jobs: {
     id: string;
     status: string;
     error: string | null;
     round: number | null;
+    templateId: string | null;
     qaPassed: boolean | null;
     scores: Record<string, number> | null;
     failures: string[];
+    fixes: QaFix[];
     steps: { step: number; stage: string; durationMs: number; costUsd: number | null }[];
     pngs: string[];
   }[];
@@ -91,6 +97,7 @@ export async function spike(options: SpikeOptions): Promise<SpikeReport> {
   const knowledge = await read("knowledge/business.md");
 
   const calls = { claude: 0, codex: 0 };
+  let retries = 0;
   const renderer = createRenderer();
   try {
     const live = options.dryRun ? null : await liveClis();
@@ -114,6 +121,7 @@ export async function spike(options: SpikeOptions): Promise<SpikeReport> {
             ...(options.model ? { model: options.model } : {}),
             ...(options.signal ? { signal: options.signal } : {}),
           });
+          retries += run.attempts - 1;
           return { data: run.data, costUsd: run.costUsd };
         }
       : async (stage, _prompt, schema) => {
@@ -182,6 +190,7 @@ export async function spike(options: SpikeOptions): Promise<SpikeReport> {
       runDir,
       started,
       calls,
+      retries,
     });
     await writeFile(join(runDir, "laporan.json"), `${JSON.stringify(report, null, 2)}\n`);
     await writeFile(join(runDir, "laporan.md"), reportMarkdown(report));
@@ -236,6 +245,7 @@ async function buildReport(
     runDir: string;
     started: Date;
     calls: { claude: number; codex: number };
+    retries: number;
   },
 ): Promise<SpikeReport> {
   const jobs: SpikeReport["jobs"] = [];
@@ -259,11 +269,13 @@ async function buildReport(
       status: result.status,
       error: result.error,
       round: result.qa?.round ?? null,
+      templateId: await finalTemplateId(dir, steps),
       qaPassed: result.qa?.passed ?? null,
       scores: result.qa?.visual?.scores ?? null,
       failures: (result.qa?.deterministic.failures ?? []).map(
         (c) => `${c.rule} ${c.target ?? ""}: ${c.message}`,
       ),
+      fixes: result.qa?.fixes ?? [],
       steps,
       pngs,
     });
@@ -277,9 +289,20 @@ async function buildReport(
     startedAt: ctx.started.toISOString(),
     durationMs: Date.now() - ctx.started.getTime(),
     calls: { ...ctx.calls },
+    retries: ctx.retries,
     costUsd: Math.round(costUsd * 10000) / 10000,
     jobs,
   };
+}
+
+// Template akhir: dari layout, atau dari revisi terakhir bila ada.
+async function finalTemplateId(dir: string, steps: { step: number; stage: string }[]) {
+  const last = steps.filter((s) => s.stage === "layout" || s.stage === "revise").at(-1);
+  if (!last) return null;
+  const file = `${String(last.step).padStart(2, "0")}-${last.stage}.json`;
+  const data: unknown = JSON.parse(await readFile(join(dir, file), "utf8"));
+  return (last.stage === "revise" ? Revision.parse(data).layout : LayoutSpec.parse(data))
+    .templateId;
 }
 
 // PNG render terakhir job disalin ke folder laporan: master dan versi unggah 1080.
@@ -311,12 +334,13 @@ function reportMarkdown(report: SpikeReport): string {
     `- Brand: ${report.brand}`,
     `- Brief: ${report.brief}`,
     `- Mulai: ${report.startedAt}, durasi ${(report.durationMs / 1000).toFixed(1)} s`,
-    `- Panggilan: Claude ${report.calls.claude}, Codex ${report.calls.codex}; estimasi biaya Claude $${report.costUsd}`,
+    `- Panggilan: Claude ${report.calls.claude} (retry validasi ${report.retries}), Codex ${report.calls.codex}; estimasi biaya Claude $${report.costUsd}`,
     "",
   ];
   for (const job of report.jobs) {
     lines.push(`## ${job.id}: ${job.status}${job.error ? ` (${job.error})` : ""}`, "");
     lines.push(
+      `- Template: ${job.templateId ?? "-"}`,
       `- QA: ${job.qaPassed === null ? "-" : job.qaPassed ? "lolos" : "GAGAL"}, putaran ${job.round ?? "-"}`,
     );
     if (job.scores)
@@ -326,6 +350,10 @@ function reportMarkdown(report: SpikeReport): string {
           .join(", ")}`,
       );
     for (const failure of job.failures) lines.push(`- Cek gagal: ${failure}`);
+    for (const fix of job.fixes) {
+      const slide = fix.slideIndex === undefined ? "" : `, slide ${fix.slideIndex + 1}`;
+      lines.push(`- Perbaikan (${fix.severity}, ${fix.target}${slide}): ${fix.instruction}`);
+    }
     lines.push("", "| Langkah | Tahap | Durasi (s) | Biaya ($) |", "|---|---|---|---|");
     for (const step of job.steps) {
       lines.push(

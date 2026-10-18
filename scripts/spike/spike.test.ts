@@ -25,8 +25,16 @@ describe("spike --dry-run", () => {
       log: (line) => lines.push(line),
     });
     expect(report.calls).toEqual({ claude: 8, codex: 3 });
+    expect(report.retries).toBe(0);
     const [job] = report.jobs;
-    expect(job).toMatchObject({ status: "done", round: 2, qaPassed: false, failures: [] });
+    expect(job).toMatchObject({
+      status: "done",
+      round: 2,
+      templateId: "feed-foto-teks",
+      qaPassed: false,
+      failures: [],
+    });
+    expect(job?.fixes.map((f) => f.severity)).toEqual(["wajib", "saran"]);
     expect(job?.steps.map((s) => s.stage)).toEqual([
       "plan",
       "copy",

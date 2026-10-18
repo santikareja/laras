@@ -173,7 +173,7 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Verifikasi: test prompt, skema, dan engine; `pnpm render:demo` lolos QA dan PNG dinilai; dry-run spike lolos; tanpa kuota.
   - Catatan: disetujui pemilik 2026-10-18 (kebijakan wajib/saran, pengulangan cukup lewat prompt). Selesai: 257 test lolos; `pnpm render:demo` 27/27 lolos QA, logo `feed-foto-penuh` dinilai seimbang di 3 brand (contoh dan maks); dry-run spike lolos. Efek prompt dan severity pada model asli baru terlihat di T-117.
 
-- [ ] T-117 Evaluasi spike (gerbang go/no-go)
+- [~] T-117 Evaluasi spike (gerbang go/no-go)
   - Rujukan: PRD 11 (Fase 1), PRD 10 (risiko kualitas), PRD 12 pertanyaan 5
   - AC: 3 brand × 3 brief dijalankan; pemilik menilai kelayakan publikasi; skor QA visual, durasi, dan jumlah retry tercatat; ambang QA dikalibrasi; keputusan go/no-go tertulis.
   - Verifikasi: tabel hasil 9 percobaan di KNOWLEDGE.md; ≥ 6 dari 9 layak publikasi menurut pemilik.
