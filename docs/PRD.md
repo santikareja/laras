@@ -92,6 +92,14 @@ Prinsip ini mengikat semua keputusan desain dan implementasi.
    - K6. Komposisi berganti antar postingan dalam satu sistem: posisi, orientasi, dan hierarki berubah; palet, tipografi, dan perangkat grafis tetap.
    - K7. Teks hemat: satu pesan utama, teks pendukung kecil, CTA berupa baris atau chip kecil.
    - K8. Elemen informasi visual bila relevan, misalnya pin lokasi dengan waktu tempuh, chip fitur, kartu rating, atau mockup ponsel.
+8. **Aturan brand dan prinsip desain umum wajib dipatuhi setiap komposisi.** Aturan di Brand Kit (misalnya posisi logo, batas elemen visual, larangan gradient) berlaku di semua arketipe dan gaya. Prinsip desain umum (disetujui pemilik, T-122):
+   - P1. Grid dan perataan: semua blok menempel ke grid 12 kolom di dalam safe margin, maksimal dua sumbu perataan per postingan.
+   - P2. Hierarki: tepat satu elemen dominan, maksimal tiga ukuran huruf, headline minimal dua kali ukuran body.
+   - P3. Kedekatan dan ritme: elemen yang berhubungan dikelompokkan dengan jarak token yang sama, tanpa celah kosong mati di antara grup.
+   - P4. Tipografi: maksimal dua keluarga huruf, tanpa baris yatim (baris terakhir minimal dua kata), baris body 30–45 karakter, tanda baca tidak terpisah dari katanya.
+   - P5. Anggaran elemen: maksimal tiga elemen visual utama, atau batas brand bila lebih ketat.
+   - P6. Keseimbangan: berat visual seimbang, subjek dan teks tidak saling menutup bagian penting.
+   - P7. Kontras dan keterbacaan sesuai QA deterministik (F9).
 
 ---
 
@@ -139,6 +147,7 @@ Prioritas: **P0** wajib untuk MVP, **P1** sangat diinginkan (masuk MVP bila wakt
 | US-14 | P0 | Sebagai pengguna, saya ingin membuat carousel dengan alur cerita antar slide yang konsisten secara visual. |
 | US-15 | P1 | Sebagai pengguna, saya ingin melampirkan foto milik sendiri (misalnya foto produk) untuk dipakai di desain, bukan gambar buatan AI. |
 | US-16 | P1 | Sebagai pengguna, saya ingin memilih template tertentu secara manual, atau menyerahkan pilihan ke agent. |
+| US-17 | P1 | Sebagai pengguna, saya ingin memilih gaya desain (misalnya Gaya Swiss, Bauhaus, Pop Art) sebagai default project dan menggantinya per brief, setelah melihat contoh setiap gaya yang memakai brand saya. |
 
 ### Revisi dan Editing
 
@@ -290,6 +299,16 @@ AC: varian yang gagal QA setelah 2 putaran revisi tetap ditampilkan, dengan labe
 - Antrean job dengan konkurensi default 1 per CLI (dapat diatur).
 - Deteksi pesan batas kuota dari output CLI, lalu job dijeda dengan status "Menunggu kuota" dan dapat dilanjutkan.
 - AC: menutup aplikasi saat ada job berjalan memunculkan konfirmasi; job yang terputus dapat dilanjutkan dari tahap terakhir yang selesai.
+
+### F16. Gaya Desain
+
+- Pengguna memilih gaya desain sebagai default project dan dapat menggantinya per brief (keputusan pemilik, T-122).
+- Gaya mengatur arketipe komposisi yang dipakai beserta parameternya, perangkat grafis, serta perlakuan tipografi dan foto, di dalam token dan aturan Brand Kit.
+- Brand Kit menang: unsur gaya yang bertentangan dengan Brand Kit tidak dipakai, dan gaya yang ciri utamanya bertentangan (misalnya butuh gradient pada brand yang melarang gradient) ditandai "kurang cocok untuk brand ini".
+- Pratinjau: setiap gaya punya contoh tampilan yang dirender dengan brand dan foto contoh project pengguna, tanpa memakai kuota bila fotonya sudah ada.
+- Tahap 1 (enam gaya): Gaya Swiss, Bauhaus, Minimalism, Pop Art, Scrapbook/Digital Collage, Imperfect & Hand-drawn Aesthetics (Notes App Chic).
+- Tahap 2 (enam belas gaya): Modernisme, Art Deco, Art Nouveau, Psychedelic, Flat Design, Corporate Clean, Vintage/Retro, Y2K Nostalgia, Cyberpunk/Futuristik, Brutalisme, Anti-Design, Maksimalisme, Retro-Futurisme, Immersive 3D & Spatial Design, Chaos Packaging, Neo-Minimalisme.
+- AC: pengguna melihat pratinjau setiap gaya dengan brand-nya sebelum memilih; hasil generasi memakai gaya yang dipilih; QA visual menilai kesesuaian dengan gaya selain K1–K8 dan P1–P7.
 
 ---
 

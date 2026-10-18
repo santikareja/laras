@@ -203,14 +203,17 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - AC: 4 arketipe (tipografi raksasa yang menimpa foto, bidang warna dengan subjek dan kata bersorot, iklan minimal satu objek, kolase diagonal) dirender untuk 3 brand dengan aset demo atau hasil T-121; pemilik menilai arahnya sebelum sistem penuh dibangun.
   - Verifikasi: `pnpm render:demo` lolos QA kode; PNG dinilai agent dan pemilik.
   - Catatan 2026-10-19: atas izin pemilik, 1 panggilan Codex tambahan untuk cut-out Seruni. Dikerjakan: aset T-121 dan cut-out Seruni di `fixtures/demo-assets/`, primitives `Display`, `Highlight` (prop `highlight` di `Text`), `Scribble`, `Sticker`, `Frame`, empat arketipe di `packages/templates/prototype/` (di luar katalog), `pnpm render:prototype`, dan test QA prototipe. Pesan sama dengan T-117 K2/S1/R1 untuk pembanding. 12 render lolos QA kode; 279 test lolos. Menunggu penilaian pemilik.
+  - Penilaian pemilik 2026-10-19: A2 "sudah lumayan, tetapi masih belum sesuai dengan design rules" (aturan brand dan prinsip desain umum). Prototipe melanggar aturan brand: logo Kopi tidak di kanan bawah, kantong Kopi di latar terang polos, Seruni lebih dari dua elemen visual utama, angka Ritme ditulis kecil. Prinsip desain umum P1–P7 disetujui dan ditulis di PRD 4; keempat arketipe direvisi agar patuh aturan brand dan P1–P7 sebelum dinilai ulang. Pemilik juga meminta fitur gaya desain (PRD F16, T-128, T-129).
 
 - [ ] T-123 Sistem arketipe parametrik
   - Rujukan: ADR-015, ARCH 6.2, ARCH 7.2
   - AC: skema meta arketipe (lapisan, slot, parameter) di `shared`, renderer lapisan (termasuk teks di belakang subjek), validasi parameter, dan QA kode yang memahami lapisan. Rincian dan ADR diperbarui saat task dimulai.
+  - Tambahan dari T-122: fit-to-width yang mengukur lebar teks sebenarnya untuk kata raksasa; penempatan teks dan subjek memakai kotak alpha subjek; aturan QA kode untuk PRD 4 P1, P2, P4, dan P5 (sumbu perataan, jumlah ukuran huruf, rasio headline dan body, baris yatim, panjang baris, jumlah elemen visual).
 
 - [ ] T-124 Perangkat grafis dan peran font tambahan di Brand Kit
   - Rujukan: PRD 4 (K2, K5), PRD F2, ARCH 6.1
   - AC: Brand Kit dan token memuat perangkat grafis brand (gaya sorot, coretan, stiker) dan peran font aksen opsional; fixture tiga brand diperbarui.
+  - Tambahan dari T-122: aturan brand yang bisa ditegakkan kode dibuat terstruktur (mis. posisi logo, batas elemen visual utama, angka ditulis besar, larangan gradient, larangan latar polos), sementara aturan teks bebas tetap untuk Claude dan QA visual.
 
 - [ ] T-125 Ide besar di tahap plan dan art direction aset
   - Rujukan: PRD 4 (K1, K4, K7), temuan T-117 (lokasi brand)
@@ -219,6 +222,16 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
 - [ ] T-126 Rubric QA visual K1–K8 dan perbaikan QA dari T-117
   - Rujukan: PRD 4, PRD F9, temuan T-117
   - AC: skor QA visual mengikuti K1–K8 dengan contoh referensi; QA membuka file logo brand; larangan menyarankan fakta di luar knowledge; kebijakan revisi bila skor rendah tanpa perbaikan wajib diputuskan pemilik.
+  - Tambahan dari T-122: QA visual juga menilai kepatuhan aturan brand, P1–P7, dan kesesuaian dengan gaya desain yang dipilih (PRD F16).
+
+- [ ] T-128 Gaya desain tahap 1 (enam gaya)
+  - Rujukan: PRD F16, US-17, PRD 4, ADR-015
+  - AC: definisi gaya (arketipe dan parameter, perangkat grafis, perlakuan tipografi dan foto) untuk Gaya Swiss, Bauhaus, Minimalism, Pop Art, Scrapbook/Digital Collage, dan Imperfect & Hand-drawn Aesthetics; pilihan default project dan per brief; pratinjau tiap gaya dirender dengan brand dan foto contoh project; gaya yang bertentangan dengan Brand Kit ditandai "kurang cocok".
+  - Catatan: bergantung pada T-123 dan T-124. Rincian skema dan ADR ditulis saat task dimulai.
+
+- [ ] T-129 Gaya desain tahap 2 (enam belas gaya)
+  - Rujukan: PRD F16, T-128
+  - AC: enam belas gaya sisanya ditambahkan dengan pola yang sama dengan T-128, masing-masing dengan pratinjau.
 
 - [ ] T-127 Evaluasi ulang spike
   - Rujukan: PRD 11 (Fase 1), KNOWLEDGE "Evaluasi spike T-117"
