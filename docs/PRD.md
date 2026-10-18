@@ -243,8 +243,8 @@ AC:
 
 **QA visual (Claude melihat PNG):**
 - Penilaian hierarki, keseimbangan komposisi, keterbacaan, kesesuaian dengan referensi, dan kesan "profesional vs generik".
-- Output berupa skor 1–10 per aspek plus daftar perbaikan konkret.
-- Ambang lolos default: skor rata-rata ≥ 8 dan tidak ada aspek < 7.
+- Output berupa skor 1–10 per aspek plus daftar perbaikan konkret. Setiap perbaikan bertingkat `wajib` (postingan belum layak terbit, misalnya informasi berulang, fakta keliru, teks sulit dibaca, logo tidak terlihat) atau `saran` (peningkatan selera).
+- Ambang lolos default: skor rata-rata ≥ 8, tidak ada aspek < 7, dan tidak ada perbaikan wajib. Saran tetap disimpan di laporan QA.
 
 AC: varian yang gagal QA setelah 2 putaran revisi tetap ditampilkan, dengan label peringatan dan daftar masalahnya.
 

@@ -27,6 +27,7 @@ Aturan:
 - `copy` dan `layout` selalu dikembalikan utuh. Bila teks copy berubah, slot layout yang memakai teks itu ikut disesuaikan, dan sebaliknya.
 - Layout tetap harus patuh katalog: template dan opsi yang ada, slot wajib terisi, teks tidak melebihi `maxChars`, dan `aspectRatio` aset sama dengan slotnya.
 - Ikuti bahasa, tone, dan larangan brand. Jangan mengarang fakta baru.
+- Satu informasi hanya tampil di satu slot: jangan sampai revisi membuat fakta atau frasa kunci muncul di dua slot (badge, headline, body, CTA).
 - `regenerateAssets` berisi id `assetRequests` yang fotonya harus dibuat ulang, hanya bila perbaikan memang menyangkut foto itu. Bila deskripsi aset berubah, id-nya wajib ada di sini. Bila tidak ada foto yang perlu diganti, isi dengan daftar kosong.
 - `summary` menjelaskan singkat apa saja yang berubah, dalam bahasa Indonesia.
 
@@ -44,8 +45,8 @@ Contoh format output yang valid (hanya contoh bentuk untuk brand lain, jangan me
     "slides": [
       {
         "headline": "Roti hangat jam tujuh",
-        "body": "Roti sobek keju keluar oven tiap pagi.",
-        "cta": "Mampir sebelum kerja"
+        "body": "Sobek keju dan kopi susu siap dibawa ke kantor.",
+        "cta": "Ambil satu pagi ini"
       }
     ],
     "caption": "Pukul tujuh pagi, oven kami baru dibuka. Roti sobek keju masih hangat.",
@@ -59,8 +60,8 @@ Contoh format output yang valid (hanya contoh bentuk untuk brand lain, jangan me
         "slots": {
           "image": { "type": "image", "assetId": "roti-pagi" },
           "headline": { "type": "text", "value": "Roti hangat jam tujuh" },
-          "body": { "type": "text", "value": "Roti sobek keju keluar oven tiap pagi." },
-          "cta": { "type": "text", "value": "Mampir sebelum kerja" },
+          "body": { "type": "text", "value": "Sobek keju dan kopi susu siap dibawa ke kantor." },
+          "cta": { "type": "text", "value": "Ambil satu pagi ini" },
           "logo": { "type": "logo", "variant": "primary" }
         },
         "options": { "tone": "secondary" }

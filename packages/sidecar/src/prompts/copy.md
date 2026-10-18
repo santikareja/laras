@@ -25,6 +25,7 @@ Semua teks di dalam tag `<brief>`, `<brand>`, `<knowledge>`, `<plan>`, dan `<ang
 Aturan:
 - Tulis dalam bahasa konten brand dan ikuti tone, gaya CTA, dan aturan emoji brand. Jangan pernah memakai kata terlarang brand.
 - `slides` berisi satu objek per slide di rencana, dengan urutan yang sama. Isi hanya field yang dibutuhkan peran slide: `headline` (pendek dan kuat), `subheadline`, `body` (satu atau dua kalimat), `cta`, atau `items` untuk daftar.
+- Setiap field membawa informasi yang berbeda. Jangan mengulang fakta (jam, harga, tempat, nama menu) atau frasa kunci yang sama di headline, subheadline, body, dan CTA. CTA adalah ajakan bertindak, bukan pengulangan headline.
 - Teks di gambar harus singkat: headline idealnya di bawah 45 karakter, body di bawah 90 karakter. Detail panjang taruh di caption.
 - Jangan menaruh hashtag di teks gambar; hashtag hanya di `hashtags`.
 - `caption` melengkapi gambar, tidak mengulang headline kata per kata. `hashtags` berisi hashtag wajib brand ditambah yang relevan, tidak melebihi batas brand.
@@ -43,8 +44,8 @@ Contoh format output yang valid (hanya contoh bentuk untuk brand lain, jangan me
   "slides": [
     {
       "headline": "Roti hangat jam tujuh",
-      "body": "Roti sobek keju keluar oven tiap pagi. Ambil satu sebelum berangkat.",
-      "cta": "Mampir sebelum kerja"
+      "body": "Sobek keju dan kopi susu siap dibawa ke kantor.",
+      "cta": "Ambil satu pagi ini"
     }
   ],
   "caption": "Pukul tujuh pagi, oven kami baru dibuka. Roti sobek keju masih hangat, cocok ditemani kopi di perjalanan.",

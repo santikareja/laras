@@ -100,6 +100,7 @@ export function deterministicFixes(render: RenderReport): QaFix[] {
       .filter((check) => !check.passed)
       .map((check) => ({
         target: RULE_TARGET[check.rule],
+        severity: "wajib" as const,
         slideIndex: slide.index,
         instruction: check.target ? `${check.message} (${check.target})` : check.message,
       })),
@@ -114,6 +115,11 @@ export function qaReport(round: number, render: RenderReport, visual: VisualQa |
     deterministic: { passed: deterministicPassed, failures },
     visual,
     fixes: deterministicPassed ? (visual?.fixes ?? []) : deterministicFixes(render),
-    passed: deterministicPassed && visual !== null && visualPassed(visual),
+    // Lolos hanya bila skor cukup DAN tidak ada perbaikan wajib (T-118); saran disimpan untuk UI.
+    passed:
+      deterministicPassed &&
+      visual !== null &&
+      visualPassed(visual) &&
+      !visual.fixes.some((fix) => fix.severity === "wajib"),
   });
 }

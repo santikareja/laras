@@ -69,7 +69,7 @@ function FotoPenuhSlide({ slots, options }: SlideProps) {
                 </Text>
               )}
             </div>
-            <Logo slot="logo" src={slot(slots, "logo", "logo").src} height={5} />
+            <Logo slot="logo" src={slot(slots, "logo", "logo").src} height={6} />
           </div>
         </div>
       </div>

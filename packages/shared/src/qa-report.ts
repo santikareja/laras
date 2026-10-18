@@ -5,9 +5,11 @@ const MAX_REVISION_ROUNDS = 2; // PRD F7
 
 const Score = z.int().min(1).max(10);
 
-// target menentukan tahap tempat revisi masuk ulang (ARCH 5.1).
+// target menentukan tahap tempat revisi masuk ulang (ARCH 5.1). severity `wajib` = kesalahan
+// yang harus diperbaiki sebelum lolos; `saran` = peningkatan opsional untuk ditampilkan di UI.
 export const QaFix = z.strictObject({
   target: z.enum(["copy", "layout", "assets"]),
+  severity: z.enum(["wajib", "saran"]),
   slideIndex: z.int().min(0).optional(),
   instruction: z.string().min(1),
 });
@@ -60,6 +62,13 @@ export const QaReport = z
         code: "custom",
         path: ["passed"],
         message: "QA tidak bisa lolos bila QA deterministik gagal",
+      });
+    }
+    if (report.passed && report.fixes.some((fix) => fix.severity === "wajib")) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["passed"],
+        message: "QA tidak bisa lolos bila ada perbaikan wajib",
       });
     }
   });

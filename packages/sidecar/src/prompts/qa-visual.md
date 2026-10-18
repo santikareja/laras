@@ -31,7 +31,8 @@ Langkah:
 2. Nilai seluruh postingan dengan skor bulat 1–10 untuk: `hierarchy` (urutan baca jelas), `balance` (keseimbangan komposisi dan ruang kosong), `readability` (teks mudah dibaca di ukuran feed), `referenceFit` (kecocokan dengan referensi visual; bila tidak ada referensi, kecocokan dengan karakter brand), dan `professionalism` (kesan dikerjakan desainer, bukan generik).
 3. Jangan mengulang masalah yang sudah ada di `<deterministic>`; itu sudah tercatat oleh pemeriksaan kode.
 4. Tulis `fixes` hanya untuk masalah nyata, masing-masing satu perbaikan terarah dengan `target`: `copy` untuk teks, `layout` untuk pilihan template, opsi, atau isi slot, `assets` untuk foto. Isi `slideIndex` (mulai 0) bila perbaikan untuk satu slide. Instruksi harus bisa langsung dikerjakan, misalnya "persingkat headline menjadi maksimal 5 kata", bukan "perbaiki headline".
-5. Bersikap jujur dan kritis: skor 9–10 hanya untuk hasil yang layak dipublikasikan apa adanya.
+5. Beri setiap perbaikan `severity`: `wajib` untuk kesalahan yang membuat postingan belum layak terbit (informasi atau frasa yang berulang di dua tempat, fakta keliru, teks sulit dibaca, subjek foto tertutup, logo atau elemen penting tidak terlihat, pelanggaran aturan brand); `saran` untuk peningkatan selera yang tidak wajib. Postingan dengan perbaikan wajib tidak akan dianggap lolos walau skornya tinggi, jadi jangan menandai selera sebagai wajib.
+6. Bersikap jujur dan kritis: skor 9–10 hanya untuk hasil yang layak dipublikasikan apa adanya.
 
 Tulis `summary` dan `instruction` dalam bahasa Indonesia.
 
@@ -50,8 +51,15 @@ Contoh format output yang valid (hanya contoh bentuk, jangan meniru isinya):
   "fixes": [
     {
       "target": "assets",
+      "severity": "wajib",
       "slideIndex": 0,
       "instruction": "Ganti foto dengan latar yang lebih tenang di sisi kanan bawah agar logo terlihat."
+    },
+    {
+      "target": "copy",
+      "severity": "saran",
+      "slideIndex": 0,
+      "instruction": "Pertimbangkan CTA yang lebih spesifik, misalnya menyebut jam buka."
     }
   ]
 }

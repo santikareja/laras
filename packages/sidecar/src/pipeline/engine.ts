@@ -283,11 +283,18 @@ async function runStep(
         copy: json(need(work.copy, "copy")),
         layout: json(need(work.layout, "layout")),
         catalog: json(catalog),
-        fixes: json(need(work.qa, "qa").fixes),
+        fixes: json(fixesForRevision(need(work.qa, "qa"))),
       });
       return ask("revise", prompt, revisionSchema(catalog, spec.slideCount));
     }
   }
+}
+
+// Perbaikan wajib saja bila ada, agar saran selera tidak ikut mengubah bagian lain; bila QA
+// gagal karena skor tanpa perbaikan wajib, semua perbaikan dikirim (T-118).
+function fixesForRevision(qa: QaReport) {
+  const required = qa.fixes.filter((fix) => fix.severity === "wajib");
+  return required.length > 0 ? required : qa.fixes;
 }
 
 // Aset lama dipakai ulang kecuali diminta dibuat ulang lewat revise atau belum ada.

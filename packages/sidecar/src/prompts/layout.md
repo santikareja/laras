@@ -31,6 +31,7 @@ Aturan:
 - Satu slide Layout Spec untuk setiap slide di copy, dengan urutan yang sama.
 - Isi setiap slot wajib template. Slot opsional boleh dikosongkan bila copy tidak punya isinya. Jangan menambah slot yang tidak ada di meta template.
 - Teks slot diambil dari copy. Boleh dipersingkat agar muat, tetapi wajib tidak melebihi `maxChars` slot dan tidak boleh mengubah fakta. Untuk slot seperti `highlight` atau `badge`, ambil kata atau angka pendek dari copy.
+- Satu informasi hanya tampil di satu slot. Bila badge atau sorotan memakai fakta dari body (mis. jam atau harga), hapus fakta itu dari body; jangan biarkan dua slot menyebut hal yang sama.
 - Opsi slide hanya memakai nama dan nilai dari `options` template. Untuk logo, pakai varian `onDark` bila opsi membuat latar gelap (lihat deskripsi slot logo), selain itu `primary`.
 - Setiap slot gambar merujuk satu `assetRequests` dengan `aspectRatio` sama persis dengan slot itu. Bila ada aset pengguna yang cocok, pakai id-nya. Bila tidak, tulis `description` foto yang konkret (subjek, suasana, cahaya, komposisi) dan patuh aturan foto brand. Deskripsi tidak boleh meminta teks, huruf, angka, logo, atau label apa pun di gambar.
 
@@ -50,10 +51,10 @@ Contoh format output yang valid (hanya contoh bentuk untuk brand lain, jangan me
     {
       "slots": {
         "image": { "type": "image", "assetId": "roti-pagi" },
-        "badge": { "type": "badge", "value": "Setiap pagi" },
+        "badge": { "type": "badge", "value": "Menu sarapan" },
         "headline": { "type": "text", "value": "Roti hangat jam tujuh" },
-        "body": { "type": "text", "value": "Roti sobek keju keluar oven tiap pagi." },
-        "cta": { "type": "text", "value": "Mampir sebelum kerja" },
+        "body": { "type": "text", "value": "Sobek keju dan kopi susu siap dibawa ke kantor." },
+        "cta": { "type": "text", "value": "Ambil satu pagi ini" },
         "logo": { "type": "logo", "variant": "primary" }
       },
       "options": { "tone": "light" }

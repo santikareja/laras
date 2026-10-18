@@ -98,6 +98,21 @@ describe("contoh layout dan revise patuh katalog template", () => {
   });
 });
 
+describe("aturan temuan spike (T-118)", () => {
+  it("copy, layout, dan revise melarang informasi yang sama di dua slot", () => {
+    expect(promptTemplate("copy")).toContain("Setiap field membawa informasi yang berbeda");
+    expect(promptTemplate("layout")).toContain("Satu informasi hanya tampil di satu slot");
+    expect(promptTemplate("revise")).toContain("Satu informasi hanya tampil di satu slot");
+  });
+
+  it("QA visual memberi tingkat wajib atau saran pada setiap perbaikan", () => {
+    const template = promptTemplate("qa-visual");
+    expect(template).toContain("`severity`: `wajib`");
+    const fixes = (example(template) as { fixes: { severity: string }[] }).fixes;
+    expect(fixes.map((fix) => fix.severity)).toEqual(["wajib", "saran"]);
+  });
+});
+
 describe("renderPrompt", () => {
   it("mengisi semua placeholder termasuk JSON Schema tahap", () => {
     for (const stage of stages) {

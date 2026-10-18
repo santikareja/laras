@@ -62,7 +62,8 @@ const visual = (score: number) => ({
     professionalism: score,
   },
   summary: "Ringkasan",
-  fixes: score >= 8 ? [] : [{ target: "layout", instruction: "Perbaiki komposisi" }],
+  fixes:
+    score >= 8 ? [] : [{ target: "layout", severity: "saran", instruction: "Perbaiki komposisi" }],
 });
 const revision = (regenerateAssets: string[]) => ({
   copy,
@@ -229,6 +230,7 @@ describe("runJob", () => {
     expect(firstQa.fixes).toEqual([
       {
         target: "layout",
+        severity: "wajib",
         slideIndex: 0,
         instruction: "Kontras teks 2:1, minimal 4.5:1 (headline)",
       },
@@ -254,6 +256,34 @@ describe("runJob", () => {
     expect(result).toMatchObject({ status: "done", qa: { round: 2, passed: false } });
     expect(f.calls.filter((c) => c.stage === "revise")).toHaveLength(2);
     expect(files()("14-qa.json")).toBe(true);
+  });
+
+  it("skor lolos tetapi ada perbaikan wajib: revisi hanya dengan perbaikan wajib (T-118)", async () => {
+    const withFixes = {
+      ...visual(9),
+      fixes: [
+        { target: "copy", severity: "wajib", instruction: "Hapus jam buka yang berulang di body" },
+        { target: "copy", severity: "saran", instruction: "CTA bisa lebih spesifik" },
+      ],
+    };
+    const f = fake({ answers: { "qa-visual": [withFixes, visual(9)] } });
+    const result = await runJob(spec(), f.deps);
+    expect(result.qa).toMatchObject({ round: 1, passed: true });
+    const revisePrompt = f.calls.find((c) => c.stage === "revise")?.prompt ?? "";
+    expect(revisePrompt).toContain("Hapus jam buka yang berulang di body");
+    expect(revisePrompt).not.toContain("CTA bisa lebih spesifik");
+  });
+
+  it("skor lolos dengan saran saja: selesai tanpa revisi dan saran tetap tersimpan", async () => {
+    const suggestion = {
+      target: "copy",
+      severity: "saran",
+      instruction: "CTA bisa lebih spesifik",
+    };
+    const f = fake({ answers: { "qa-visual": [{ ...visual(9), fixes: [suggestion] }] } });
+    const result = await runJob(spec(), f.deps);
+    expect(result.qa).toMatchObject({ round: 0, passed: true, fixes: [suggestion] });
+    expect(f.calls.some((c) => c.stage === "revise")).toBe(false);
   });
 
   it("QA visual di bawah ambang memicu revisi dengan perbaikan dari Claude", async () => {

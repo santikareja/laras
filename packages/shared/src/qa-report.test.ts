@@ -5,7 +5,14 @@ import { issuesOf } from "./test-utils.ts";
 const visual = (): VisualQa => ({
   scores: { hierarchy: 8, balance: 9, readability: 8, referenceFit: 7, professionalism: 8 },
   summary: "Hierarki jelas, CTA kurang kontras",
-  fixes: [{ target: "layout", slideIndex: 0, instruction: "Perbesar kontras tombol CTA" }],
+  fixes: [
+    {
+      target: "layout",
+      severity: "saran",
+      slideIndex: 0,
+      instruction: "Perbesar kontras tombol CTA",
+    },
+  ],
 });
 
 const qaReport = (): QaReport => ({
@@ -27,8 +34,13 @@ describe("VisualQa", () => {
       v.scores.balance = score;
       expect(VisualQa.safeParse(v).success).toBe(false);
     }
-    const badFix = { ...visual(), fixes: [{ target: "render", instruction: "x" }] };
+    const badFix = {
+      ...visual(),
+      fixes: [{ target: "render", severity: "saran", instruction: "x" }],
+    };
     expect(VisualQa.safeParse(badFix).success).toBe(false);
+    const noSeverity = { ...visual(), fixes: [{ target: "copy", instruction: "x" }] };
+    expect(VisualQa.safeParse(noSeverity).success).toBe(false);
   });
 });
 
@@ -45,11 +57,27 @@ describe("QaReport", () => {
       },
       visual: null,
       fixes: [
-        { target: "copy", slideIndex: 0, instruction: "Pendekkan headline menjadi maks. 6 kata" },
+        {
+          target: "copy",
+          severity: "wajib",
+          slideIndex: 0,
+          instruction: "Pendekkan headline menjadi maks. 6 kata",
+        },
       ],
       passed: false,
     };
     expect(issuesOf(QaReport, failed)).toEqual([]);
+  });
+
+  it("menolak QA lolos saat masih ada perbaikan wajib", () => {
+    const fix = {
+      target: "copy" as const,
+      severity: "wajib" as const,
+      instruction: "Hapus jam buka yang berulang",
+    };
+    expect(issuesOf(QaReport, { ...qaReport(), fixes: [fix] })).toContain(
+      "QA tidak bisa lolos bila ada perbaikan wajib",
+    );
   });
 
   it("menolak QA lolos saat QA deterministik gagal", () => {
