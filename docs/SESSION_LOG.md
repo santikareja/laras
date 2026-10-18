@@ -1,5 +1,11 @@
 # SESSION LOG
 
+## Sesi #7, 2026-10-18
+- Task: T-104
+- Hasil: Tiga brand fixture fiktif sesuai usulan yang disetujui pemilik (Kopi Lembayung, Seruni Skin, Ritme Run Club), lengkap dengan `brand.json`, `copy-guide.json`, `knowledge/business.md`, logo SVG, dan font WOFF2 OFL dari Fontsource 5.3.0 (12 file diunduh dengan izin). Skema `CopyGuide` baru di `shared`; pembaca glyph font WOFF2/TTF/OTF di sidecar tanpa dependency baru. PRD 12 pertanyaan 2 terjawab (bahasa per project, `id`/`en`). Total test repo 85.
+- Masalah dan solusinya: aksen brand B semula `#E58F7B` hanya 4.45:1 di atas primary, diganti `#EA9A84` (4.93:1) sebelum diusulkan. Biome me-lint SVG dan mewajibkan `<title>`, jadi setiap logo diberi judul. Satu catatan TASKS salah menyebut jumlah test pembaca font (10, seharusnya 9) dan diperbaiki di commit status.
+- Commit: 47e4c46, docs: update status sesi #7
+
 ## Sesi #6, 2026-10-18
 - Task: T-103
 - Hasil: Skema Zod inti di `packages/shared` (Zod 4.6.7) sesuai rencana yang disetujui pemilik: `BrandKit`, `ContentPlan`, `CopyDraft`, `LayoutSpec`, `AssetManifest`, `RenderReport`, `VisualQa`, `QaReport`, semuanya strict dengan aturan deterministik. 45 test baru (total repo 57), termasuk validasi contoh `brand.json` langsung dari ARCH 6.1 dan konversi ke JSON Schema.
