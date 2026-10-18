@@ -1,0 +1,18 @@
+{
+  "language": "id",
+  "tone": "Hangat, akrab, dan tenang seperti barista langganan. Memakai sapaan kamu, kalimat pendek, tanpa huruf kapital semua.",
+  "examples": {
+    "good": [
+      "Pagi yang pelan lebih enak ditemani kopi susu gula aren.",
+      "Kursi teras sudah kami lap. Tinggal kamu yang datang."
+    ],
+    "bad": [
+      "DAPATKAN KOPI TERENAK SE-BANDUNG SEKARANG JUGA!!!",
+      "Kami adalah solusi terbaik untuk kebutuhan kopi Anda."
+    ]
+  },
+  "forbiddenWords": ["terenak", "termurah", "solusi", "Anda"],
+  "ctaStyle": "Ajakan santai dengan kata kerja di depan, satu kalimat, tanpa tanda seru beruntun. Contoh: Mampir sebelum kerja.",
+  "emoji": { "allowed": true, "max": 2 },
+  "hashtags": { "max": 5, "always": ["#KopiLembayung"] }
+}

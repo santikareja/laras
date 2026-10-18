@@ -1,0 +1,18 @@
+{
+  "language": "en",
+  "tone": "Punchy, energetic, and inclusive. Short sentences, active verbs, numbers up front. Every pace is welcome.",
+  "examples": {
+    "good": [
+      "5K. Sunday. 6 AM. Every pace welcome.",
+      "Last week 212 of you showed up. Let's make it 300."
+    ],
+    "bad": [
+      "Only real athletes should join our elite running club.",
+      "We are pleased to announce that registration is now open for our event."
+    ]
+  },
+  "forbiddenWords": ["elite", "no pain no gain", "beast mode"],
+  "ctaStyle": "Imperative, two to four words, starts with a verb. Example: Save your spot.",
+  "emoji": { "allowed": false, "max": 0 },
+  "hashtags": { "max": 3, "always": ["#RitmeRunClub"] }
+}

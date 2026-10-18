@@ -1,0 +1,18 @@
+{
+  "language": "id",
+  "tone": "Tenang, jujur, dan mengedukasi. Menjelaskan alasan di balik perawatan, memakai sapaan kamu, tanpa menakut-nakuti soal kondisi kulit.",
+  "examples": {
+    "good": [
+      "Kulit berminyak tetap butuh pelembap. Pilih tekstur gel yang ringan.",
+      "Hasil perawatan berbeda untuk tiap orang. Konsultasi dulu sebelum memulai."
+    ],
+    "bad": [
+      "Jerawat hilang permanen dalam 3 hari, dijamin 100%!",
+      "Kulit kusam bikin kamu tidak percaya diri? Segera atasi!"
+    ]
+  },
+  "forbiddenWords": ["permanen", "dijamin", "100%", "menyembuhkan", "instan"],
+  "ctaStyle": "Ajakan lembut untuk konsultasi atau membaca lebih lanjut, tanpa tekanan waktu. Contoh: Jadwalkan konsultasi gratis.",
+  "emoji": { "allowed": true, "max": 1 },
+  "hashtags": { "max": 8, "always": ["#SeruniSkin"] }
+}

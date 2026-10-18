@@ -353,7 +353,7 @@ AC: varian yang gagal QA setelah 2 putaran revisi tetap ditampilkan, dengan labe
 ## 12. Pertanyaan Terbuka
 
 1. ~~Nama final aplikasi.~~ Terjawab: **Laras** (lihat `DESIGN.md` bagian 1).
-2. Bahasa konten default per project: Indonesia, English, atau campuran?
+2. ~~Bahasa konten default per project: Indonesia, English, atau campuran?~~ Terjawab (2026-10-18): bahasa konten ditetapkan per project di copy guide, `id` atau `en`. Campuran belum didukung.
 3. Berapa jumlah template awal yang dibutuhkan per format? (Usulan: 8 template feed, 4 sistem carousel.)
 4. Apakah perlu library aset lokal (foto stok milik sendiri) sebagai alternatif aset AI?
 5. Ambang skor QA visual yang tepat. Perlu dikalibrasi selama Fase 1.

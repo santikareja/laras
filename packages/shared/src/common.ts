@@ -13,6 +13,13 @@ export const RelativePath = z
   )
   .refine((path) => !path.split("/").includes(".."), "Path tidak boleh keluar folder lewat ..");
 
+export const NonEmptyText = z.string().trim().min(1);
+
+export const HASHTAG_LIMIT = 30; // batas hashtag per postingan Instagram
+export const Hashtag = z
+  .string()
+  .regex(/^#[\p{L}\p{N}_]+$/u, "Hashtag harus berbentuk #kata tanpa spasi");
+
 export const Slug = z.string().regex(/^[a-z0-9][a-z0-9-]*$/, "Id hanya huruf kecil, angka, dan -");
 
 export const ContentFormat = z.enum(["feed-4x5", "carousel-4x5"]);

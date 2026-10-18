@@ -1,9 +1,7 @@
 import { z } from "zod";
+import { HASHTAG_LIMIT, Hashtag, NonEmptyText as Text } from "./common.ts";
 
 const CAPTION_LIMIT = 2200; // batas caption Instagram, termasuk hashtag
-const HASHTAG_LIMIT = 30; // batas hashtag per postingan Instagram
-
-const Text = z.string().trim().min(1);
 
 // Teks semantik per slide. Copy ditulis sebelum template dipilih (ARCH 5.2), jadi tahap
 // layout yang memetakan field ini ke slot template.
@@ -19,8 +17,6 @@ export const CopySlide = z
     message: "Setiap slide butuh minimal satu teks",
   });
 export type CopySlide = z.infer<typeof CopySlide>;
-
-const Hashtag = z.string().regex(/^#[\p{L}\p{N}_]+$/u, "Hashtag harus berbentuk #kata tanpa spasi");
 
 // Output tahap copy (ARCH 5.2; PRD US-13, F7).
 export const CopyDraft = z

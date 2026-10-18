@@ -180,6 +180,11 @@ Panggilan yang dipakai (fixture di `packages/sidecar/test/fixtures/codex/`):
 - **Impor relatif memakai ekstensi `.ts`** di seluruh workspace (`allowImportingTsExtensions` di `tsconfig.base.json`), sehingga paket bisa diimpor langsung oleh Node 22 dengan type stripping (dicek: `import("packages/shared/src/index.ts")` berhasil) dan oleh Vite/Vitest.
 - **Zod 4.6.7:** `z.strictObject` menghasilkan `additionalProperties: false` di `z.toJSONSchema`; `.refine`/`.superRefine` tidak ikut ke JSON Schema (validasinya tetap di Zod); `discriminatedUnion` menjadi union dengan `"const"` per tipe; `z.string().trim()` tidak membuat konversi gagal. Belum diuji: apakah tool `StructuredOutput` Claude menerima kata kunci seperti `propertyNames` (dari `z.record` dengan skema key) — diuji di T-112.
 
+- **Sumber font fixture:** paket npm Fontsource 5.3.0 lewat jsDelivr, mis. `https://cdn.jsdelivr.net/npm/@fontsource-variable/inter@5.3.0/files/inter-latin-wght-normal.woff2` dan `.../LICENSE`. Daftar file bisa dibaca dari `https://data.jsdelivr.com/v1/packages/npm/<paket>@<versi>?structure=flat`. Varian `-latin-` memuat 218–232 codepoint (Latin dasar + Latin-1). Paket `@fontsource-variable/*` berisi font variabel satu file (cocok untuk skema `BrandKit` yang membolehkan satu file per peran); `@fontsource/*` statis satu bobot per file.
+- **Membaca WOFF2 tanpa dependency:** header 48 byte, lalu direktori tabel (flag, tag opsional, panjang UIntBase128), lalu satu blok Brotli berisi semua tabel berurutan. `node:zlib` `brotliDecompressSync` cukup. Tabel `cmap` tidak pernah ditransformasi; panjang tersimpan sebuah tabel = `transformLength` bila ditransformasi (glyf/loca versi 0, tabel lain versi ≠ 0), selain itu `origLength`. Implementasi di `packages/sidecar/src/storage/fonts.ts`.
+- **Biome 2.5 juga me-lint file SVG:** aturan `a11y/noSvgWithoutTitle` mewajibkan `<title>` di setiap SVG.
+- **`exactOptionalPropertyTypes`:** `Object.values()` pada objek dengan properti opsional bertipe `T | undefined`; saring dulu sebelum dipakai.
+
 ## Keputusan kecil (tanggal, keputusan, alasan)
 
 | Tanggal | Keputusan | Alasan |

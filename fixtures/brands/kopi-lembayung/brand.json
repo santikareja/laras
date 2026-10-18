@@ -1,0 +1,29 @@
+{
+  "colors": {
+    "primary": "#0F3D3E",
+    "secondary": "#E2DCC8",
+    "accent": "#F2A541",
+    "neutral": { "50": "#FAF7F0", "900": "#1B1A17" }
+  },
+  "typography": {
+    "heading": {
+      "family": "Fraunces",
+      "file": "fonts/fraunces-latin-wght-normal.woff2",
+      "weights": [700]
+    },
+    "body": {
+      "family": "Inter",
+      "file": "fonts/inter-latin-wght-normal.woff2",
+      "weights": [400, 600]
+    },
+    "scale": [24, 32, 44, 60, 84, 112]
+  },
+  "shape": { "radius": 0, "stroke": 2, "shadow": "none" },
+  "spacing": { "unit": 8, "safeMargin": 64 },
+  "logo": { "primary": "logo/primary.svg", "onDark": "logo/on-dark.svg" },
+  "rules": [
+    "Tanpa gradient",
+    "Logo selalu kanan bawah",
+    "Foto produk selalu dengan cahaya alami, tanpa latar putih polos"
+  ]
+}

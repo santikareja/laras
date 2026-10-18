@@ -1,0 +1,29 @@
+{
+  "colors": {
+    "primary": "#233D63",
+    "secondary": "#EAF1F4",
+    "accent": "#EA9A84",
+    "neutral": { "50": "#F8FAFB", "900": "#121A24" }
+  },
+  "typography": {
+    "heading": {
+      "family": "Cormorant Garamond",
+      "file": "fonts/cormorant-garamond-latin-wght-normal.woff2",
+      "weights": [600]
+    },
+    "body": {
+      "family": "Manrope",
+      "file": "fonts/manrope-latin-wght-normal.woff2",
+      "weights": [400, 600]
+    },
+    "scale": [24, 30, 40, 56, 76, 104]
+  },
+  "shape": { "radius": 24, "stroke": 1, "shadow": "soft" },
+  "spacing": { "unit": 8, "safeMargin": 80 },
+  "logo": { "primary": "logo/primary.svg", "onDark": "logo/on-dark.svg" },
+  "rules": [
+    "Tidak ada klaim medis berlebihan seperti menyembuhkan atau hasil permanen",
+    "Tampilkan tekstur kulit asli, tanpa filter berlebihan",
+    "Banyak ruang kosong; maksimal dua elemen visual utama per slide"
+  ]
+}
