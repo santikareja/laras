@@ -1,0 +1,133 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`brandCss > CSS kopi-lembayung sesuai snapshot 1`] = `
+"@font-face {
+  font-family: "Fraunces";
+  src: url("file:///projects/kopi-lembayung/fonts/fraunces-latin-wght-normal.woff2") format("woff2");
+  font-weight: 700;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("file:///projects/kopi-lembayung/fonts/inter-latin-wght-normal.woff2") format("woff2");
+  font-weight: 400 600;
+  font-display: block;
+}
+
+:root {
+  --color-primary: #0F3D3E;
+  --color-secondary: #E2DCC8;
+  --color-accent: #F2A541;
+  --color-neutral-50: #FAF7F0;
+  --color-neutral-900: #1B1A17;
+  --font-heading: "Fraunces";
+  --font-body: "Inter";
+  --font-size-1: 24px;
+  --font-size-2: 32px;
+  --font-size-3: 44px;
+  --font-size-4: 60px;
+  --font-size-5: 84px;
+  --font-size-6: 112px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 48px;
+  --space-6: 64px;
+  --space-7: 96px;
+  --space-8: 128px;
+  --space-safe: 64px;
+  --shape-radius: 0px;
+  --shape-stroke: 2px;
+  --shape-shadow: none;
+}"
+`;
+
+exports[`brandCss > CSS ritme-run-club sesuai snapshot 1`] = `
+"@font-face {
+  font-family: "Anton";
+  src: url("file:///projects/ritme-run-club/fonts/anton-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Archivo";
+  src: url("file:///projects/ritme-run-club/fonts/archivo-latin-wght-normal.woff2") format("woff2");
+  font-weight: 400 600;
+  font-display: block;
+}
+
+:root {
+  --color-primary: #2B4BFF;
+  --color-secondary: #FFE14D;
+  --color-accent: #FF4D2E;
+  --color-neutral-50: #FAFAF5;
+  --color-neutral-900: #14141A;
+  --font-heading: "Anton";
+  --font-body: "Archivo";
+  --font-size-1: 24px;
+  --font-size-2: 36px;
+  --font-size-3: 52px;
+  --font-size-4: 76px;
+  --font-size-5: 112px;
+  --font-size-6: 160px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 48px;
+  --space-6: 64px;
+  --space-7: 96px;
+  --space-8: 128px;
+  --space-safe: 64px;
+  --shape-radius: 0px;
+  --shape-stroke: 4px;
+  --shape-shadow: none;
+}"
+`;
+
+exports[`brandCss > CSS seruni-skin sesuai snapshot 1`] = `
+"@font-face {
+  font-family: "Cormorant Garamond";
+  src: url("file:///projects/seruni-skin/fonts/cormorant-garamond-latin-wght-normal.woff2") format("woff2");
+  font-weight: 600;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Manrope";
+  src: url("file:///projects/seruni-skin/fonts/manrope-latin-wght-normal.woff2") format("woff2");
+  font-weight: 400 600;
+  font-display: block;
+}
+
+:root {
+  --color-primary: #233D63;
+  --color-secondary: #EAF1F4;
+  --color-accent: #EA9A84;
+  --color-neutral-50: #F8FAFB;
+  --color-neutral-900: #121A24;
+  --font-heading: "Cormorant Garamond";
+  --font-body: "Manrope";
+  --font-size-1: 24px;
+  --font-size-2: 30px;
+  --font-size-3: 40px;
+  --font-size-4: 56px;
+  --font-size-5: 76px;
+  --font-size-6: 104px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 48px;
+  --space-6: 64px;
+  --space-7: 96px;
+  --space-8: 128px;
+  --space-safe: 80px;
+  --shape-radius: 24px;
+  --shape-stroke: 1px;
+  --shape-shadow: 0 8px 24px color-mix(in srgb, var(--color-neutral-900) 16%, transparent);
+}"
+`;

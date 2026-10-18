@@ -1,4 +1,8 @@
 {
   "extends": "../../tsconfig.base.json",
-  "include": ["src", "feed", "carousel", "primitives", "tokens"]
+  "compilerOptions": {
+    "lib": ["es2023", "dom"]
+  },
+  "include": ["src", "feed", "carousel", "primitives", "tokens"],
+  "exclude": ["**/*.test.ts"]
 }

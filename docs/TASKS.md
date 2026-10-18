@@ -95,11 +95,11 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Verifikasi: test memvalidasi ketiga `brand.json` dengan skema `BrandKit`; font terbaca dan memuat glyph Latin dasar.
   - Catatan: brand fiktif. Usulkan tiga konsep brand ke pemilik sebelum membuat. Unduhan font butuh izin pemilik. Selesai 2026-10-18 (konsep, unduhan 12 file, skema `CopyGuide`, dan bahasa disetujui pemilik): `kopi-lembayung` (Fraunces + Inter, id), `seruni-skin` (Cormorant Garamond + Manrope, id), `ritme-run-club` (Anton + Archivo, en); font WOFF2 subset Latin dari Fontsource 5.3.0 beserta lisensi OFL; logo SVG geometris dengan `<title>`; skema baru `CopyGuide` di `shared`; pembaca glyph font `packages/sidecar/src/storage/fonts.ts` (WOFF2/TTF/OTF, tanpa dependency baru). Test: 6 test `CopyGuide`, 9 test pembaca font, 13 test integritas fixture.
 
-- [ ] T-105 Token brand ke CSS variables
+- [x] T-105 Token brand ke CSS variables
   - Rujukan: ARCH 6.1, ARCH 6.2, CLAUDE.md (Desain dan Template)
   - AC: fungsi di `packages/templates/tokens` mengubah `BrandKit` menjadi CSS variables (`--color-*`, `--font-heading`, `--font-body`, `--space-*`) dan `@font-face` dari file lokal.
   - Verifikasi: test snapshot CSS untuk ketiga brand fixture; `pnpm typecheck && pnpm lint && pnpm test` lolos.
-  - Catatan:
+  - Catatan: Selesai 2026-10-18. `brandCss(brand, { assetBaseUrl })` menghasilkan `@font-face` (rentang bobot, `font-display: block`, format dari ekstensi) dan `:root` dengan kontrak variabel di ARCH 6.1. Keputusan pemilik: spacing terkurasi `--space-1`…`--space-8` + `--space-safe`; `shape.shadow` jadi enum `none | soft` (PRD F2 diperbarui); `--font-size-*` dan namespace baru `--shape-*` ikut T-105. Path font dicek dari hasil resolve URL (`%2e%2e`). `packages/templates` memakai lib `dom` dan `tsconfig.test.json`. Test: 3 snapshot, 3 URL font ke file fixture, 4 test escape/format/path, 1 test enum bayangan. Dicek juga di browser bawaan: keenam font termuat dan bayangan `soft` valid.
 
 - [ ] T-106 Primitives template
   - Rujukan: ARCH 3 (`templates/primitives`), ARCH 6.2

@@ -558,7 +558,7 @@ Komponen tidak boleh memakai kelas warna bawaan Tailwind seperti `bg-blue-500`.
 
 ### Isolasi dari token brand
 
-Token di bagian ini hanya berlaku di jendela aplikasi. Template postingan memakai token brand (`--color-*`, `--font-heading`, `--font-body`, `--space-*`; lihat ARCHITECTURE 6.1) dan selalu dirender di `<iframe>` (preview) atau page Playwright terpisah, sehingga nama yang sama seperti `--space-1` tidak saling menimpa. `--font-brand` di sini berarti font identitas Laras (Plus Jakarta Sans), bukan font brand pengguna.
+Token di bagian ini hanya berlaku di jendela aplikasi. Template postingan memakai token brand (`--color-*`, `--font-*`, `--space-*`, `--shape-*`; lihat ARCHITECTURE 6.1) dan selalu dirender di `<iframe>` (preview) atau page Playwright terpisah, sehingga nama yang sama seperti `--space-1` tidak saling menimpa. `--font-brand` di sini berarti font identitas Laras (Plus Jakarta Sans), bukan font brand pengguna.
 
 ---
 

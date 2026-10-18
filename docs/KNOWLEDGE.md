@@ -185,6 +185,11 @@ Panggilan yang dipakai (fixture di `packages/sidecar/test/fixtures/codex/`):
 - **Biome 2.5 juga me-lint file SVG:** aturan `a11y/noSvgWithoutTitle` mewajibkan `<title>` di setiap SVG.
 - **`exactOptionalPropertyTypes`:** `Object.values()` pada objek dengan properti opsional bertipe `T | undefined`; saring dulu sebelum dipakai.
 
+- **Parser URL (WHATWG) membaca segmen `%2e%2e` sebagai `..`.** `new URL("fonts/%2e%2e/%2e%2e/x.woff2", "file:///p/q/")` menjadi `file:///x.woff2`, padahal teksnya lolos cek `RelativePath` (tanpa segmen `..` literal). Path yang di-resolve dengan `new URL` harus dicek dari hasil resolve-nya (`href` diawali base), seperti di `brandCss`.
+- **`lib` di `tsconfig.base.json` hanya `es2023`**, jadi global web seperti `URL` tidak dikenal tanpa lib `dom` atau tipe Node. `packages/templates` memakai `"lib": ["es2023", "dom"]` (konten web) dan sengaja tanpa tipe Node; test-nya memakai `tsconfig.test.json` seperti `shared`.
+- **Diverifikasi di browser bawaan (Chromium), 2026-10-18:** `@font-face` dengan `font-weight: 400 600` pada font variabel fixture termuat (`document.fonts` berstatus `loaded`), dan `color-mix(in srgb, var(--color-neutral-900) 16%, transparent)` di `box-shadow` dihitung menjadi `color(srgb … / 0.16)`.
+- **Browser bawaan menampilkan halaman `file://` sebagai snapshot statis**; `javascript_tool` dan alat halaman lain tidak bisa dipakai. Sajikan lewat server `localhost` sementara bila perlu memeriksa DOM.
+
 ## Keputusan kecil (tanggal, keputusan, alasan)
 
 | Tanggal | Keputusan | Alasan |
@@ -196,3 +201,6 @@ Panggilan yang dipakai (fixture di `packages/sidecar/test/fixtures/codex/`):
 | 2026-10-17 | `.agents/`, `.kiro/`, `.claude/skills/` di-gitignore; `skills-lock.json` di-commit | Repo tetap bersih, sumber skill tetap tercatat (Q7) |
 | 2026-10-17 | Branch utama `main` | Konvensi umum; `init.defaultBranch` global belum diset |
 | 2026-10-17 | Keputusan arsitektur dicatat sebagai ADR-008 (path Node), ADR-009 (identifier dan folder data), ADR-010 (Tailwind v4), ADR-011 (cwd Claude) di ARCHITECTURE 12 | Q3, Q5, c-7, c-12 |
+| 2026-10-18 | Spacing brand terkurasi: `--space-1`…`--space-8` = `spacing.unit` × 1, 2, 3, 4, 6, 8, 12, 16, ditambah `--space-safe` | Ritme lebih konsisten dan pilihan AI terbatas; pola sama dengan skala DESIGN 4 (pemilik, sesi #8) |
+| 2026-10-18 | `BrandKit.shape.shadow` menjadi enum `none` atau `soft` (PRD F2 ikut diperbarui) | Brand tidak valid gagal saat validasi, bukan saat render; nilai baru bisa ditambah nanti (pemilik, sesi #8) |
+| 2026-10-18 | Skala tipografi dan bentuk ikut T-105 sebagai `--font-size-*` dan namespace baru `--shape-*` | T-106 (Text, Badge) langsung membutuhkannya (pemilik, sesi #8) |

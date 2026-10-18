@@ -95,7 +95,7 @@ Verifikasi sebelum menandai task selesai: lihat Protokol Sesi, bagian "Akhir set
 
 ### Desain dan Template (anti AI-slop)
 - Teks di gambar SELALU dirender HTML/CSS. Jangan pernah meminta model gambar membuat teks, huruf, logo, atau watermark.
-- Template hanya boleh memakai CSS variables dari token (`--color-*`, `--font-*`, `--space-*`). Tanpa warna/font hard-coded.
+- Template hanya boleh memakai CSS variables dari token (`--color-*`, `--font-*`, `--space-*`, `--shape-*`; daftar lengkap di ARCH 6.1). Tanpa warna/font hard-coded.
 - Setiap template wajib mengekspor `meta` (id, format, slot + batas karakter, opsi) dan komponen render.
 - Ukuran dasar 1080 × 1350 (4:5), render `deviceScaleFactor: 2`. Safe margin default 64 px. Font minimum 24 px.
 - Setelah membuat atau mengubah template: jalankan `pnpm render:demo`, buka PNG hasilnya dengan Read tool, dan periksa sendiri hierarki, keterbacaan, dan keseimbangan sebelum melapor selesai.

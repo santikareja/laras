@@ -51,7 +51,7 @@ export const BrandKit = z.strictObject({
   shape: z.strictObject({
     radius: z.number().min(0),
     stroke: z.number().min(0),
-    shadow: z.string().min(1),
+    shadow: z.enum(["none", "soft"], { error: "Bayangan harus none atau soft" }),
   }),
   spacing: z.strictObject({
     unit: z.int().positive(),

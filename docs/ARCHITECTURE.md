@@ -286,7 +286,20 @@ interface AssetProvider {
 }
 ```
 
-Token diubah menjadi CSS variables (`--color-primary`, `--font-heading`, `--space-1`, dst.) yang disuntikkan ke setiap template.
+Token diubah oleh `brandCss(brand, { assetBaseUrl })` (`packages/templates/tokens`) menjadi `@font-face` untuk font heading dan body, ditambah CSS variables di `:root` yang disuntikkan ke setiap template. Nama variabel berikut adalah kontrak antara token dan template:
+
+| Variabel | Sumber di `brand.json` | Nilai |
+|---|---|---|
+| `--color-primary`, `--color-secondary`, `--color-accent` | `colors` | hex apa adanya |
+| `--color-neutral-<kunci>` | `colors.neutral` | satu variabel per kunci, mis. `--color-neutral-50` |
+| `--font-heading`, `--font-body` | `typography.heading/body.family` | nama family tanpa font cadangan, agar fallback tertangkap QA (7.2) |
+| `--font-size-1` … `--font-size-N` | `typography.scale` | px, urut dari terkecil |
+| `--space-1` … `--space-8` | `spacing.unit` | unit × 1, 2, 3, 4, 6, 8, 12, 16 (8–128 px bila unit 8) |
+| `--space-safe` | `spacing.safeMargin` | px |
+| `--shape-radius`, `--shape-stroke` | `shape.radius`, `shape.stroke` | px |
+| `--shape-shadow` | `shape.shadow` (`none` atau `soft`) | `none`, atau untuk `soft`: `0 8px 24px` dengan warna netral tergelap 16% |
+
+`@font-face` memakai `url()` hasil resolve `file` terhadap `assetBaseUrl` (URL folder project berakhiran `/`, ditentukan renderer atau preview), `font-weight` berupa rentang bobot yang diizinkan (mis. `400 600`), dan `font-display: block`. File font yang hasil resolve-nya keluar dari folder project ditolak.
 
 ### 6.2 Template
 

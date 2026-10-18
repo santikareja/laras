@@ -56,6 +56,15 @@ describe("BrandKit", () => {
     expect(issuesOf(BrandKit, neutral)).toContain("Minimal dua warna netral (terang dan gelap)");
   });
 
+  it("menerima bayangan none dan soft saja", () => {
+    const soft = valid();
+    soft.shape.shadow = "soft";
+    expect(issuesOf(BrandKit, soft)).toEqual([]);
+    expect(issuesOf(BrandKit, { ...soft, shape: { ...soft.shape, shadow: "hard" } })).toContain(
+      "Bayangan harus none atau soft",
+    );
+  });
+
   it("menolak key yang tidak dikenal", () => {
     expect(BrandKit.safeParse({ ...valid(), gradient: true }).success).toBe(false);
   });
