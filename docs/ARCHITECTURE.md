@@ -196,6 +196,7 @@ codex exec "<prompt aset>" \
 - `image_gen` tidak menerima path tujuan; hasilnya tersimpan di `~/.codex/generated_images/<thread_id>/exec-<uuid>.png`, dengan `<thread_id>` dari event `thread.started` di stream `--json` (stream ini tidak memuat event khusus gambar). Adapter mencari file di folder itu, memvalidasi path-nya berada di dalam `generated_images/<thread_id>/`, lalu menyalinnya ke `jobs/<job-id>/assets/`.
 - Ukuran tidak bisa diatur di mode bawaan; rasio diminta lewat prompt. Permintaan 4:5 menghasilkan 1122 × 1402 px, lalu renderer (sharp) melakukan resize dan crop ke ukuran slot.
 - Adapter memastikan file gambar benar-benar tersalin ke folder job; bila tidak, tahap dianggap gagal.
+- Implementasi: `runCodex()` di `packages/sidecar/src/cli/codex.ts` (stream `--json` lewat `cli/stream.ts`; exit non-zero menjadi `CodexRunError` atau `LimitReachedError` bila pesan cocok pola kuota). Prompt aset `prompts/asset-image.md` berbahasa Inggris seperti prompt yang terbukti di T-101/T-108/T-109; deskripsi dari tahap layout dibungkus `<description>` sebagai data.
 - Satu panggilan menghasilkan satu gambar dalam sekitar 45 detik dan memakai puluhan ribu token input; jumlah aset per job perlu dibatasi demi kuota.
 - Bila generasi gambar via Codex tidak tersedia, adapter aset dapat diganti dengan sumber lain (foto pengguna, library lokal) tanpa mengubah pipeline (lihat `AssetProvider` di 5.3).
 
@@ -255,6 +256,8 @@ interface AssetProvider {
 }
 // Implementasi: CodexAssetProvider, UserUploadAssetProvider, LocalLibraryAssetProvider
 ```
+
+Kode di `packages/sidecar/src/pipeline/assets.ts` (`LocalLibraryAssetProvider` menunggu PRD 12 pertanyaan 4). Setiap aset menjadi `jobs/<id>/assets/<asset-id>.jpg` (JPG 92 sRGB) yang dipotong ke `aspectRatio` permintaan tanpa memperbesar, dengan smart crop sharp `attention` dan orientasi EXIF diterapkan. Gambar Codex asli disimpan sebagai `<asset-id>.original.png` agar revisi ke rasio lain cukup dipotong ulang. Sumber divalidasi: `thread_id` berformat UUID dan file (setelah `realpath`) di dalam `generated_images/<thread_id>/`; foto pengguna hanya dari folder yang diizinkan dan harus PNG/JPG/WebP.
 
 ### 5.4 Strategi revisi
 

@@ -143,11 +143,11 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Verifikasi: test Vitest memakai fixture T-102, tanpa memanggil CLI asli.
   - Catatan: bergantung T-102 dan T-111. Selesai 2026-10-18. `runClaude()` di `packages/sidecar/src/cli/claude.ts`: argumen persis T-102/ADR-013 (`claudeArgs`), stream dibaca baris per baris lewat `cli/stream.ts` (event diteruskan ke `onEvent`, dibaca sampai proses selesai), `--json-schema` dari skema Zod tahap, validasi ulang Zod dengan retry maksimal 2 memakai `prompts/retry-invalid-output.md`, `InvalidOutputError`, `ClaudeRunError`, dan `LimitReachedError` (`cli/limits.ts`, kebijakan disetujui pemilik). `zod` ditambahkan ke sidecar (disetujui pemilik). Test: 14 test (argumen, parsing ketiga fixture T-102, retry, error, dan batas kuota dengan fixture sintetis berlabel karena perilaku kuota habis belum teramati).
 
-- [ ] T-113 Adapter Codex dan AssetProvider
+- [x] T-113 Adapter Codex dan AssetProvider
   - Rujukan: ARCH 4.5 (Codex adapter), ARCH 5.3, ARCH 9
   - AC: `CodexAssetProvider` menyalin gambar dari `~/.codex/generated_images/` ke folder job dengan validasi path sumber dan tujuan; `UserUploadAssetProvider` untuk foto pengguna; crop dan resize ke ukuran slot.
   - Verifikasi: test Vitest memakai fixture T-101, termasuk kasus path di luar folder yang diizinkan.
-  - Catatan: bergantung T-101 dan T-111.
+  - Catatan: bergantung T-101 dan T-111. Selesai 2026-10-18. `runCodex()` (`cli/codex.ts`, pemanggilan ADR-012), `CodexAssetProvider` dan `UserUploadAssetProvider` (`pipeline/assets.ts`) dengan validasi `thread_id`, `realpath`, folder yang diizinkan, dan id aset; prompt `prompts/asset-image.md`. Keputusan pemilik: smart crop `attention`, JPG 92 + PNG asli, prompt Inggris. Parsing baris JSON dipindah ke `cli/stream.ts` (dipakai Claude dan Codex). Smart crop dibandingkan dengan crop tengah pada ketiga foto demo (perbandingan pertama tidak sah karena `.resize()` berantai; diulang). Test: 5 adapter Codex (fixture T-101, error, kuota sintetis), 7 aset (salin dan crop, smart crop menyimpan subjek, `thread_id` jahat, symlink keluar, thread kosong, id aset, prompt, unggahan pengguna).
 
 - [ ] T-114 Prompt tahap plan, copy, layout, QA visual, revise
   - Rujukan: ARCH 5.2, ARCH 5.4, ARCH 9, PRD F7, CLAUDE.md (Prompt Agent)

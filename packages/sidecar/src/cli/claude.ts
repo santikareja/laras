@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { isAbsolute } from "node:path";
 import { z } from "zod";
 import { LimitReachedError, limitInText } from "./limits.ts";
-import { type SpawnLines, spawnLines } from "./stream.ts";
+import { parseEventLine, type SpawnLines, type StreamEvent, spawnLines } from "./stream.ts";
 
 // Adapter Claude CLI (ARCH 4.5, ADR-011, ADR-013): satu tahap pipeline = satu panggilan
 // `claude -p` dengan output tervalidasi skema Zod tahap, diulang maksimal 2 kali (PRD F7).
@@ -14,7 +14,7 @@ const RETRY_PROMPT = readFileSync(
   "utf8",
 );
 
-export type ClaudeEvent = { type: string; subtype?: string; [key: string]: unknown };
+export type ClaudeEvent = StreamEvent;
 export type RateLimitInfo = { status: string; resetsAt: number | null };
 export type PermissionDenial = { toolName: string; toolInput: unknown };
 
@@ -73,16 +73,6 @@ export function claudeArgs(prompt: string, model: string, jsonSchema: object): s
     "--json-schema",
     JSON.stringify(jsonSchema),
   ];
-}
-
-export function parseLine(line: string): ClaudeEvent | null {
-  try {
-    const value: unknown = JSON.parse(line);
-    if (typeof value !== "object" || value === null || !("type" in value)) return null;
-    return typeof value.type === "string" ? (value as ClaudeEvent) : null;
-  } catch {
-    return null;
-  }
 }
 
 const num = (value: unknown) => (typeof value === "number" ? value : null);
@@ -182,7 +172,7 @@ async function invoke<T>(options: RunClaudeOptions<T>, args: string[]): Promise<
       ...(options.signal ? { signal: options.signal } : {}),
     },
     (line) => {
-      const event = parseLine(line);
+      const event = parseEventLine(line);
       if (!event) return;
       events.push(event);
       options.onEvent?.(event);

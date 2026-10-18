@@ -5,12 +5,11 @@ import {
   ClaudeRunError,
   claudeArgs,
   InvalidOutputError,
-  parseLine,
   runClaude,
   summarizeStream,
 } from "./claude.ts";
 import { LimitReachedError, limitInText } from "./limits.ts";
-import type { SpawnLines } from "./stream.ts";
+import { parseEventLine, type SpawnLines } from "./stream.ts";
 
 // Fixture asli T-102 (test/fixtures/claude/README.md).
 const fixture = (file: string) =>
@@ -76,7 +75,7 @@ describe("claudeArgs", () => {
 
 describe("parsing stream-json", () => {
   it("meringkas result, structured_output, dan rate_limit_event dari fixture JSON Schema", () => {
-    const events = lines("print-json-schema.jsonl").map(parseLine);
+    const events = lines("print-json-schema.jsonl").map(parseEventLine);
     expect(events.every((event) => event !== null)).toBe(true);
     const stream = summarizeStream(events.flatMap((e) => (e ? [e] : [])));
     expect(stream.result).toMatchObject({
@@ -90,7 +89,7 @@ describe("parsing stream-json", () => {
   });
 
   it("mencatat penolakan izin dan tetap membaca event sesudah result", () => {
-    const events = lines("print-permission-denied.jsonl").flatMap((l) => parseLine(l) ?? []);
+    const events = lines("print-permission-denied.jsonl").flatMap((l) => parseEventLine(l) ?? []);
     expect(events.at(-1)?.type).toBe("system");
     const stream = summarizeStream(events);
     expect(stream.permissionDenials).toEqual([
@@ -99,8 +98,8 @@ describe("parsing stream-json", () => {
   });
 
   it("mengabaikan baris yang bukan event JSON", () => {
-    expect(parseLine("Peringatan: bukan JSON")).toBeNull();
-    expect(parseLine('{"tanpa":"type"}')).toBeNull();
+    expect(parseEventLine("Peringatan: bukan JSON")).toBeNull();
+    expect(parseEventLine('{"tanpa":"type"}')).toBeNull();
   });
 });
 
