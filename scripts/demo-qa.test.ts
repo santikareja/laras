@@ -1,0 +1,28 @@
+import { afterAll, describe, expect, it } from "vitest";
+import { renderLayoutHtml } from "../packages/sidecar/src/render/layout.ts";
+import { createRenderer } from "../packages/sidecar/src/render/renderer.ts";
+import { specimen, type Template, templates } from "../packages/templates/src/index.ts";
+import { BRANDS, demoBrand, demoCases } from "./demo-content.ts";
+
+// Fixture patuh untuk QA deterministik (T-110): setiap template katalog dan spesimen, untuk
+// ketiga brand, dengan isi contoh dan maks (setiap slot teks tepat maxChars), lolos semua aturan.
+const catalog: Template[] = [specimen, ...templates];
+const renderer = createRenderer();
+afterAll(() => renderer.close());
+
+describe.each(catalog.map((t) => [t.meta.id, t] as const))("QA isi demo %s", (_, template) => {
+  it.each(BRANDS)("lolos untuk %s", { timeout: 60_000 }, async (slug) => {
+    const { folders, qa } = demoBrand(slug);
+    const failures: string[] = [];
+    for (const { variant, spec, assets } of demoCases(template, slug, qa.brand)) {
+      const pages = renderLayoutHtml(spec, { brand: qa.brand, assets, templates: catalog });
+      for (const html of pages) {
+        const { checks } = await renderer.render(html, folders, qa);
+        for (const check of checks.filter((c) => !c.passed)) {
+          failures.push(`${variant}: ${check.rule} ${check.target} ${check.message}`);
+        }
+      }
+    }
+    expect(failures).toEqual([]);
+  });
+});

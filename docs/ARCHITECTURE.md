@@ -336,15 +336,18 @@ Claude dapat diminta merancang template baru dalam alur terpisah, ditinjau pengg
 
 ### 7.2 QA deterministik (dijalankan di dalam page sebelum screenshot)
 
-Skrip QA mengevaluasi DOM dan menghasilkan `RenderReport`:
+Kode di `packages/sidecar/src/render/qa/`. Renderer menjalankan kolektor di page (string, bukan fungsi, karena tsx/esbuild menyisipkan helper `__name` yang tidak ada di page), membaca font yang benar-benar dipakai lewat CDP, lalu menilai aturan sebagai fungsi murni di Node (`rules.ts`) dan menghasilkan `RenderCheck` per slide; `buildRenderReport()` menyusun `RenderReport`. Elemen teks = elemen dengan node teks langsung; elemen penting = `[data-slot]` dengan `data-slot-type` selain `image` (ditulis primitives). Setiap pelanggaran menjadi satu cek gagal; aturan tanpa pelanggaran menghasilkan satu cek lolos.
 
-- Kontras setiap elemen teks terhadap latar efektifnya (warna latar elemen; untuk teks di atas gambar, sampling piksel dari screenshot area tersebut).
-- Overflow: `scrollWidth > clientWidth` atau `scrollHeight > clientHeight` pada elemen teks.
-- Safe margin: bounding box elemen penting dibandingkan dengan batas aman.
-- Ukuran font minimum.
-- Font terpakai sesuai Brand Kit (cek `document.fonts` dan computed style; deteksi fallback font).
-- Warna terpakai berasal dari token (computed style dibandingkan dengan palet).
-- Kata terlarang dan aturan emoji/hashtag pada teks.
+- **Kontras** ≥ 4.5:1, atau ≥ 3:1 untuk teks ≥ 32 px (PRD F9). Latar efektif dicari dengan `elementsFromPoint` di beberapa titik tiap baris: mulai dari elemen teks itu sendiri, elemen pertama yang berupa gambar atau berlatar opaque. Bila teks berada di atas gambar (atau latar transparan sebagian), renderer mengambil screenshot kedua dengan teks disembunyikan dan menghitung kontras terhadap piksel latar di area baris teks; nilai yang dinilai adalah persentil ke-5 (95% piksel latar memenuhi rasio itu).
+- **Overflow:** gagal bila teks lebih lebar dari kotaknya (`scrollWidth > clientWidth`), baris teks (`Range.getClientRects`) keluar dari kanvas, atau kotak dua elemen penting saling bertabrakan. `scrollHeight` tidak dipakai karena heading dengan `line-height` < ascent + descent selalu "overflow" tanpa terpotong (KNOWLEDGE).
+- **Safe margin:** kotak elemen penting berjarak ≥ `spacing.safeMargin` brand dari setiap tepi.
+- **Ukuran font** semua teks ≥ 24 px.
+- **Font Brand Kit:** CDP `CSS.getPlatformFontsForNode` per elemen teks; glyph dari font non-`@font-face` berarti font cadangan (kecuali font emoji sistem untuk glyph emoji). Family pertama di computed `font-family` harus font heading atau body, dan bobotnya termasuk yang diizinkan peran itu.
+- **Warna Brand Kit:** warna teks, latar, dan border (bila tebal > 0) persis salah satu warna palet; yang transparan dan bayangan diabaikan.
+- **Kata terlarang** `forbiddenWords` (tanpa beda huruf besar/kecil, batas kata Unicode), **emoji** per slide ≤ `emoji.max` copy guide (0 bila tidak diizinkan), dan **hashtag** tidak boleh di gambar (tempatnya di caption).
+- **Aset:** gambar dengan `naturalWidth` 0 atau `@font-face` berstatus `error`.
+
+`pnpm render:demo` ikut menjalankan QA dan keluar dengan kode 1 bila ada cek gagal; isi demo seluruh katalog × 3 brand juga menjadi fixture patuh di `scripts/demo-qa.test.ts`.
 
 ### 7.3 Pasca-proses (sharp)
 

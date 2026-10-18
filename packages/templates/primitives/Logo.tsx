@@ -11,6 +11,7 @@ export function Logo({ src, height, alt = "", slot }: LogoProps) {
   return (
     <img
       data-slot={slot}
+      data-slot-type={slot ? "logo" : undefined}
       src={src}
       alt={alt}
       style={{ display: "block", height: space(height), width: "auto" }}

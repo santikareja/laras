@@ -1,6 +1,16 @@
 import { readFile } from "node:fs/promises";
 import { extname, resolve, sep } from "node:path";
-import { type Browser, chromium, type Route } from "playwright-core";
+import type { RenderCheck } from "@laras/shared";
+import { type Browser, chromium, type Page, type Route } from "playwright-core";
+import { COLLECT_SCRIPT, HIDE_TEXT_CSS } from "./qa/collect.ts";
+import {
+  evaluateQa,
+  type Measurements,
+  type PlatformFont,
+  type QaContext,
+  type SampledContrast,
+} from "./qa/rules.ts";
+import { sampleContrast } from "./qa/sample.ts";
 
 // Renderer slide (ARCH 7.1, ADR-014). Halaman dimuat dari origin palsu yang hanya dilayani
 // route Playwright: /project/ dan /job/ dibaca dari disk, request lain diblokir.
@@ -28,27 +38,50 @@ Promise.all([document.fonts.ready, ...Array.from(document.images, (img) => img.d
 
 export type SlideFolders = { projectDir: string; jobDir: string };
 
+export type SlideRender = { png: Buffer; checks: RenderCheck[] };
+
 export type Renderer = {
-  render(html: string, folders: SlideFolders): Promise<Buffer>;
+  render(html: string, folders: SlideFolders, qa: QaContext): Promise<SlideRender>;
   close(): Promise<void>;
 };
 
-// Satu browser dipakai ulang; setiap slide mendapat context dan page baru.
+const DEVICE_SCALE = 2;
+const SCREENSHOT = { type: "png", animations: "disabled", caret: "hide" } as const;
+
+// Satu browser dipakai ulang; setiap slide mendapat context dan page baru. QA deterministik
+// (ARCH 7.2) diukur di page sebelum screenshot; teks di atas foto disampling dari screenshot
+// kedua tanpa teks.
 export function createRenderer(): Renderer {
   let browser: Promise<Browser> | undefined;
   return {
-    async render(html, folders) {
+    async render(html, folders, qa) {
       browser ??= chromium.launch();
       const context = await (await browser).newContext({
         viewport: SLIDE_SIZE,
-        deviceScaleFactor: 2,
+        deviceScaleFactor: DEVICE_SCALE,
       });
       try {
         await context.route("**/*", (route) => handleRequest(route, html, folders));
         const page = await context.newPage();
         await page.goto(`${RENDER_ORIGIN}${SLIDE_PATH}`, { waitUntil: "load" });
         await page.evaluate(READY_SCRIPT);
-        return await page.screenshot({ type: "png", animations: "disabled", caret: "hide" });
+        const measurements = await page.evaluate<Measurements>(COLLECT_SCRIPT);
+        const fonts = await platformFonts(page);
+        for (const text of measurements.texts) text.platformFonts = fonts.get(text.id) ?? [];
+        const png = await page.screenshot(SCREENSHOT);
+        const overImage = measurements.texts.filter((t) =>
+          t.backgrounds.some((b) => b.kind === "image"),
+        );
+        let sampled: SampledContrast = new Map();
+        if (overImage.length > 0) {
+          await page.addStyleTag({ content: HIDE_TEXT_CSS });
+          sampled = await sampleContrast(
+            await page.screenshot(SCREENSHOT),
+            overImage,
+            DEVICE_SCALE,
+          );
+        }
+        return { png, checks: evaluateQa(measurements, qa, sampled) };
       } finally {
         await context.close();
       }
@@ -59,6 +92,38 @@ export function createRenderer(): Renderer {
       if (running) await (await running).close();
     },
   };
+}
+
+// Font yang benar-benar dipakai tiap elemen teks (CDP), untuk mendeteksi glyph yang jatuh ke
+// font cadangan sistem walaupun computed font-family berisi font brand.
+async function platformFonts(page: Page): Promise<Map<number, PlatformFont[]>> {
+  const cdp = await page.context().newCDPSession(page);
+  try {
+    await cdp.send("DOM.enable");
+    await cdp.send("CSS.enable");
+    const { root } = await cdp.send("DOM.getDocument", { depth: -1 });
+    const { nodeIds } = await cdp.send("DOM.querySelectorAll", {
+      nodeId: root.nodeId,
+      selector: "[data-qa-text]",
+    });
+    const fonts = new Map<number, PlatformFont[]>();
+    for (const nodeId of nodeIds) {
+      const { attributes } = await cdp.send("DOM.getAttributes", { nodeId });
+      const id = Number(attributes[attributes.indexOf("data-qa-text") + 1]);
+      const result = await cdp.send("CSS.getPlatformFontsForNode", { nodeId });
+      fonts.set(
+        id,
+        result.fonts.map((f) => ({
+          family: f.familyName,
+          custom: f.isCustomFont,
+          glyphs: f.glyphCount,
+        })),
+      );
+    }
+    return fonts;
+  } finally {
+    await cdp.detach();
+  }
 }
 
 export async function handleRequest(route: Route, html: string, folders: SlideFolders) {

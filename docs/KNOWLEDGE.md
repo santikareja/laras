@@ -209,6 +209,11 @@ Panggilan yang dipakai (fixture di `packages/sidecar/test/fixtures/codex/`):
 - **Uji generasi gambar T-109 (1 panggilan):** prompt yang meminta "satu foto utuh dari tepi ke tepi, tanpa bingkai, padding, foto sisipan, atau kolase" menghasilkan foto 4:5 utuh tanpa tempelan (Seruni, 69.7k input, 43k cached). Subjek mengikuti arahan komposisi ("subjek di tengah dan atas, sepertiga bawah tenang"), jadi foto yang sama belum tentu cocok untuk potongan 3:2 di tengah; aset sebaiknya diminta per rasio slot.
 - **Glyph font fixture (subset Latin Fontsource, dicek T-109 dengan `fontCodepoints`):** keenam font memuat “ ” ‘ ’ — – … × ·, tetapi **tidak memuat panah →** (U+2192). Template jangan memakai panah sebagai teks; karakter di luar font memicu font cadangan.
 
+- **CDP `CSS.getPlatformFontsForNode` (Chromium 148, diuji T-110):** butuh `DOM.enable` lalu `CSS.enable`; mengembalikan `{ familyName, postScriptName, isCustomFont, glyphCount }` per font yang benar-benar menggambar glyph elemen itu. Font `@font-face` brand berstatus `isCustomFont: true`; glyph "→" di Inter jatuh ke `Lucida Grande` (`isCustomFont: false`, 1 glyph); `font-family: Georgia` muncul sebagai Georgia non-custom. Computed `font-family` saja tidak bisa mendeteksi fallback per glyph.
+- **`document.elementsFromPoint` untuk latar efektif teks:** urutan dari atas; elemen teks itu sendiri ikut di dalam daftar (latar badge milik elemen teks, jadi pencarian harus mulai dari elemen itu, bukan sesudahnya). Teks langsung di atas foto mendapati `IMG`; teks di panel mendapati `DIV` panel sebelum `IMG`.
+- **Fungsi yang diserialisasi ke `page.evaluate` rusak di bawah tsx:** esbuild (keepNames) menulis `const f = __name((n) => …, "f")` di dalam fungsi, dan page gagal dengan `ReferenceError: __name is not defined` (diuji T-110). Di Vitest tidak terjadi, jadi test tidak menangkapnya. Skrip page di sidecar ditulis sebagai string (`String.raw`).
+- **Durasi `pnpm test` sejak T-110 ~12,5 detik** (sebelumnya ~1,4 detik): 25 render Chromium untuk fixture QA dan isi demo seluruh katalog × 3 brand.
+
 ## Keputusan kecil (tanggal, keputusan, alasan)
 
 | Tanggal | Keputusan | Alasan |
@@ -231,3 +236,5 @@ Panggilan yang dipakai (fixture di `packages/sidecar/test/fixtures/codex/`):
 | 2026-10-18 | Template feed pertama: `feed-foto-teks` dan `feed-sorotan`; T-109 untuk foto penuh dan kutipan tipografis | Komposisi berbeda untuk varian (PRD F7) (pemilik, sesi #8) |
 | 2026-10-18 | `feed-foto-penuh` memakai panel teks solid (opsi `tone`, `position`), bukan teks langsung di atas foto | Kontras terjamin tanpa sampling foto dan patuh aturan "Tanpa gradient" (pemilik, sesi #8) |
 | 2026-10-18 | Foto Seruni 4:5 baru dari 1 panggilan Codex disimpan sebagai `foto-4x5.jpg`, bukan menggantikan `foto.jpg` | Foto baru cocok untuk 4:5 tetapi potongan 3:2 di tengah memotong wajah; demo memilih foto per rasio slot (keputusan agent saat implementasi, dilaporkan ke pemilik) |
+| 2026-10-18 | Definisi overflow QA: luber horizontal, baris keluar kanvas, atau elemen penting bertabrakan; `scrollHeight` tidak dipakai (ARCH 7.2 diperbarui) | `scrollHeight > clientHeight` salah lapor untuk heading; tabrakan antarslot lebih mewakili teks yang "meluber" (pemilik, sesi #8) |
+| 2026-10-18 | Teks di gambar: emoji ≤ `emoji.max` copy guide (0 bila tidak diizinkan), hashtag dilarang | Hashtag tempatnya di caption (PRD US-13) (pemilik, sesi #8) |

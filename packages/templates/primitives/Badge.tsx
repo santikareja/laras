@@ -11,6 +11,7 @@ export function Badge({ background, color: tone, slot, children }: BadgeProps) {
   return (
     <span
       data-slot={slot}
+      data-slot-type={slot ? "badge" : undefined}
       style={{
         display: "block",
         width: "fit-content",

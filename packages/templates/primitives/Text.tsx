@@ -24,6 +24,7 @@ export function Text({ font, size, color: tone, strong = false, as, slot, childr
   return (
     <Tag
       data-slot={slot}
+      data-slot-type={slot ? "text" : undefined}
       style={{
         margin: 0,
         fontFamily: fontFamily(font),

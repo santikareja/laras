@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { BrandKit, LayoutSpec } from "@laras/shared";
+import { BrandKit, CopyGuide, LayoutSpec } from "@laras/shared";
 import { specimen } from "@laras/templates";
 import { chromium, type Route } from "playwright-core";
 import sharp from "sharp";
@@ -15,11 +15,14 @@ const folders: SlideFolders = {
   projectDir: join(BRANDS_DIR, "kopi-lembayung"),
   jobDir: "/laras/job",
 };
+const readJson = (file: string): unknown =>
+  JSON.parse(readFileSync(join(folders.projectDir, file), "utf8"));
+const qa = {
+  brand: BrandKit.parse(readJson("brand.json")),
+  copyGuide: CopyGuide.parse(readJson("copy-guide.json")),
+};
 
 function specimenHtml(): string {
-  const brand = BrandKit.parse(
-    JSON.parse(readFileSync(join(folders.projectDir, "brand.json"), "utf8")),
-  );
   const spec = LayoutSpec.parse({
     templateId: "specimen",
     format: "feed-4x5",
@@ -36,7 +39,11 @@ function specimenHtml(): string {
     ],
     assetRequests: [],
   });
-  const [html] = renderLayoutHtml(spec, { brand, assets: { assets: [] }, templates: [specimen] });
+  const [html] = renderLayoutHtml(spec, {
+    brand: qa.brand,
+    assets: { assets: [] },
+    templates: [specimen],
+  });
   return html ?? "";
 }
 
@@ -72,24 +79,25 @@ describe("createRenderer", () => {
   const renderer = createRenderer();
   afterAll(() => renderer.close());
 
-  it("merender slide ke PNG 2160 × 2700 dengan satu browser untuk beberapa slide", {
+  it("merender slide ke PNG 2160 × 2700 yang lolos QA, dengan satu browser untuk beberapa slide", {
     timeout: 30_000,
   }, async () => {
     const html = specimenHtml();
-    const first = await renderer.render(html, folders);
-    const second = await renderer.render(html, folders);
-    for (const png of [first, second]) {
+    const first = await renderer.render(html, folders, qa);
+    const second = await renderer.render(html, folders, qa);
+    for (const { png, checks } of [first, second]) {
       expect(await describeImage(png)).toMatchObject({ format: "png", width: 2160, height: 2700 });
+      expect(checks.filter((check) => !check.passed)).toEqual([]);
     }
     expect(launch).toHaveBeenCalledTimes(1);
 
-    expect(await describeImage(await toMaster(first))).toEqual({
+    expect(await describeImage(await toMaster(first.png))).toEqual({
       format: "png",
       width: 2160,
       height: 2700,
       profile: "sRGB",
     });
-    const master = await toMaster(first);
+    const master = await toMaster(first.png);
     expect(await describeImage(await toUpload(master, "png"))).toEqual({
       format: "png",
       width: 1080,

@@ -11,6 +11,7 @@ export function Image({ src, fit = "cover", rounded = false, alt = "", slot }: I
   return (
     <img
       data-slot={slot}
+      data-slot-type={slot ? "image" : undefined}
       src={src}
       alt={alt}
       style={{
