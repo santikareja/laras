@@ -1,20 +1,22 @@
 # STATUS
-Terakhir diperbarui: 2026-10-18, sesi #8
+Terakhir diperbarui: 2026-10-19, sesi #8
 
 ## Fase saat ini
-Fase 1: Spike pipeline. Fase 0 selesai. Verifikasi CLI selesai: T-101 (generasi gambar Codex, ADR-012) dan T-102 (Claude headless dan isolasi, ADR-013). T-103 (skema Zod inti), T-104 (tiga brand fixture, skema `CopyGuide`), T-105 (token brand ke CSS), T-106 (primitives template), T-107 (renderer Playwright, sharp, `pnpm render:demo`), T-108 (template `feed-foto-teks` dan `feed-sorotan`, skema `TemplateMeta`), T-109 (template `feed-foto-penuh` dan `feed-kutipan`), T-110 (QA deterministik di renderer), T-111 (deteksi CLI, skema `CliStatus`), T-112 (adapter Claude), T-113 (adapter Codex dan AssetProvider), T-114 (prompt tahap, skema `Revision`), T-115 (pipeline engine), T-116 (`pnpm spike`; satu jalan sungguhan Kopi Lembayung lolos QA dalam 97 detik dengan 4 panggilan Claude dan 1 Codex), dan T-118 (perbaikan temuan spike: perbaikan QA bertingkat `wajib`/`saran`, larangan pengulangan informasi di prompt, logo `feed-foto-penuh` lebih besar) selesai. Katalog berisi 4 template feed. Tersisa T-117, evaluasi spike yang memakai kuota besar.
+Fase 1: Spike pipeline. Fase 0 selesai. Verifikasi CLI selesai: T-101 (generasi gambar Codex, ADR-012) dan T-102 (Claude headless dan isolasi, ADR-013). T-103 (skema Zod inti), T-104 (tiga brand fixture, skema `CopyGuide`), T-105 (token brand ke CSS), T-106 (primitives template), T-107 (renderer Playwright, sharp, `pnpm render:demo`), T-108 (template `feed-foto-teks` dan `feed-sorotan`, skema `TemplateMeta`), T-109 (template `feed-foto-penuh` dan `feed-kutipan`), T-110 (QA deterministik di renderer), T-111 (deteksi CLI, skema `CliStatus`), T-112 (adapter Claude), T-113 (adapter Codex dan AssetProvider), T-114 (prompt tahap, skema `Revision`), T-115 (pipeline engine), T-116 (`pnpm spike`; satu jalan sungguhan Kopi Lembayung lolos QA dalam 97 detik dengan 4 panggilan Claude dan 1 Codex), dan T-118 (perbaikan temuan spike: perbaikan QA bertingkat `wajib`/`saran`, larangan pengulangan informasi di prompt, logo `feed-foto-penuh` lebih besar) selesai. Katalog berisi 4 template feed. T-117 (evaluasi spike, 9 percobaan) selesai dijalankan dengan keputusan **NO-GO**: 0 dari 9 layak menurut pemilik ("terlalu generik, kaku dan AI slop"), walau QA meloloskan 5. Fase 2 belum dimulai; Fase 1 berlanjut dengan perbaikan kualitas desain (T-120).
 
 ## Sedang dikerjakan
 Tidak ada.
 
 ## Berikutnya (urut)
-1. T-117 Evaluasi spike, gerbang go/no-go (3 brand × 3 brief; MEMAKAI KUOTA BESAR, jadwalkan bersama pemilik; perkiraan 4–8 panggilan Claude dan 0–3 Codex per brief 1 varian). Temuan spike pertama sudah ditangani T-118; T-117 sekaligus memeriksa efeknya pada model asli. Karena QA kini menolak perbaikan wajib, revisi diperkirakan lebih sering terjadi, jadi jumlah panggilan bisa mendekati batas atas.
+1. T-120 Arah ulang kualitas desain setelah NO-GO: menunggu masukan pemilik tentang standar "kelas dunia" (referensi dan kriteria), lalu dipecah menjadi task template, art direction foto, dan rubric QA visual. Hasil dan temuan T-117 di KNOWLEDGE "Evaluasi spike T-117".
+2. T-119 Validasi varian logo terhadap Brand Kit (bug R3; kecil, tanpa kuota).
+3. Evaluasi ulang spike setelah perbaikan (memakai kuota; izin pemilik). T-117 memakai Claude 61 dan Codex 15 panggilan untuk 9 percobaan; revisi karena skor saja menaikkan jumlahnya.
 
 ## Blocker
 - Tidak ada.
 
 ## Menunggu keputusan pemilik
-- Jadwal dan anggaran kuota T-117 (9 percobaan).
+- Arah perbaikan kualitas desain setelah NO-GO T-117 (T-120).
 - Jumlah template awal per format (PRD 12 pertanyaan 3; usulan 8 feed, 4 sistem carousel).
 - Penamaan token skala tipografi UI: DESIGN 4 mendefinisikan `--text-caption` … `--text-display` (ukuran), tetapi `tokens.css` di DESIGN 15 tidak memuatnya; prefix `--text-*` juga dipakai untuk warna (`--text-primary`) dan merupakan namespace ukuran font di Tailwind v4. Usulan: ganti nama token ukuran menjadi `--type-*` (dibutuhkan paling lambat E-201).
 
