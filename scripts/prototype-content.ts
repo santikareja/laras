@@ -55,42 +55,39 @@ const CASES: Record<string, Record<Brand, Case>> = {
       logo: "primary",
     },
   },
-  // v3: headline tiga tingkat dan subjek berinteraksi (cut-out T-122 v3).
+  // v4: lima elemen, aksen hanya untuk sorotan dan CTA, fakta masuk ke penutup (PRD 4 P8–P11).
   "proto-bidang-warna": {
     "kopi-lembayung": {
       text: {
         pembuka: "Disangrai sendiri",
         headline: "MINGGU INI",
-        penutup: "bukan bulan lalu.",
-        cta: "Ambil sekantong di kedai",
+        penutup: "Rp85.000 per 200 g.",
+        cta: "Ambil sekantong",
       },
-      badge: { fakta: "Rp85.000 / 200 g" },
       images: { image: "interaksi.webp" },
-      options: { tone: "secondary", mark: "accent", flip: "yes" },
+      options: { tone: "secondary", arch: "high", flip: "yes", text: "top" },
       logo: "primary",
     },
-    // Dua elemen visual utama saja: subjek dan lengkung (tanpa stiker fakta).
     "seruni-skin": {
       text: {
         pembuka: "Sebelum perawatan apa pun",
         headline: "KENALI",
         penutup: "kulitmu dulu.",
-        cta: "Jadwalkan konsultasi gratis",
+        cta: "Konsultasi gratis",
       },
       images: { image: "interaksi.webp" },
-      options: { tone: "secondary", mark: "primary", flip: "no" },
+      options: { tone: "secondary", arch: "high", flip: "no", text: "top", width: "medium" },
       logo: "primary",
     },
     "ritme-run-club": {
       text: {
         pembuka: "Never run before? Sunday,",
         headline: "5:45 AM",
-        penutup: "Any pace. Coffee after.",
+        penutup: "Free. Any pace.",
         cta: "Just show up",
       },
-      badge: { fakta: "Free · No sign-up" },
       images: { image: "interaksi.webp" },
-      options: { tone: "secondary", mark: "primary", flip: "no", width: "condensed", fact: "low" },
+      options: { tone: "secondary", arch: "low", flip: "no", width: "condensed", text: "bottom" },
       logo: "primary",
     },
   },
@@ -123,54 +120,43 @@ const CASES: Record<string, Record<Brand, Case>> = {
       logo: "primary",
     },
   },
-  // v3: bingkai bertepi sobek dengan selotip, subjek keluar bingkai, fakta dilingkari coretan.
+  // v4: kolase yang ditahan, maksimal lima elemen (bingkai, pita, subjek, CTA, logo; body hanya
+  // bila tanpa subjek); pita warna kedua, aksen hanya untuk CTA.
   "proto-kolase-diagonal": {
     "kopi-lembayung": {
       text: {
         headline: "SANGRAI SENDIRI",
-        body: "Tanggal sangrai tertulis di setiap kemasan.",
-        cta: "Mampir dan ambil sekantong",
+        cta: "Ambil sekantong, Rp85.000",
       },
-      badge: { fakta: "200 g · Rp85.000" },
       images: { image: "foto.jpg", subjek: "interaksi.webp" },
       // Bidang gelap: aturan Kopi melarang produk di latar putih polos.
-      options: {
-        tone: "primary",
-        band: "accent",
-        duotone: "secondary",
-        flip: "yes",
-        doodle: "yes",
-      },
+      options: { tone: "primary", band: "secondary", duotone: "secondary", flip: "yes" },
       logo: "onDark",
     },
-    // Dua elemen visual utama (bingkai dan pita) tanpa subjek dan kilau; tanpa duotone karena
-    // aturan Seruni meminta tekstur kulit asli tanpa filter berlebihan.
+    // Dua elemen visual utama (bingkai dan pita) tanpa subjek; tanpa duotone karena aturan
+    // Seruni meminta tekstur kulit asli tanpa filter berlebihan.
     "seruni-skin": {
       text: {
         headline: "KONSULTASI DULU",
-        body: "Terapis memotret kondisi kulitmu sebagai acuan perkembangan.",
-        cta: "Jadwalkan konsultasi gratis",
+        body: "Gratis, 30 menit. Kondisi kulitmu difoto sebagai acuan.",
+        cta: "Jadwalkan konsultasi",
       },
-      badge: { fakta: "Gratis · 30 menit" },
       images: { image: "foto-4x5.jpg" },
-      options: { tone: "neutral", band: "primary", duotone: "none", flip: "no", doodle: "no" },
+      options: { tone: "neutral", band: "primary", duotone: "none", flip: "no" },
       logo: "primary",
     },
     "ritme-run-club": {
       text: {
         headline: "SUNDAY 5:45 AM",
-        body: "Every pace has a group. Coffee after.",
-        cta: "Just show up",
+        cta: "Join for free",
       },
-      badge: { fakta: "Free" },
       images: { image: "foto.jpg", subjek: "interaksi.webp" },
       options: {
         tone: "primary",
-        band: "accent",
+        band: "secondary",
         width: "condensed",
         duotone: "primary",
         flip: "no",
-        doodle: "yes",
       },
       logo: "onDark",
     },

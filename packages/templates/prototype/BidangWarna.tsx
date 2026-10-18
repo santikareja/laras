@@ -2,22 +2,22 @@ import { Display, Image, Logo, Sticker, Text } from "../primitives/index.ts";
 import { color, space } from "../primitives/vars.ts";
 import { optionalSlot, type SlideProps, slot, type Template } from "../src/template.ts";
 
-// Prototipe A2 v3 (T-122, PRD 4 K2, K3, K4, K5, K7): bidang warna dengan lengkung besar,
-// headline tiga tingkat (pembuka kecil bersorot, frasa utama raksasa bertumpuk, penutup),
-// subjek cut-out berinteraksi yang menimpa frasa utama, fakta ditempel ke subjek, CTA tombol.
-// `flip` menukar sisi agar logo bisa di kanan bawah (aturan brand).
+// Prototipe A2 v4 (T-122, PRD 4 P2, P8–P11): bidang warna dominan, lengkung warna kedua di
+// belakang subjek cut-out, satu blok teks (pembuka bersorot, frasa utama bertumpuk, penutup)
+// di sudut bawah seberang subjek, CTA tombol aksen dan logo. Lima elemen: lengkung, subjek,
+// blok teks, CTA, logo. Fokus subjek di titik potong atas grid 3×3, blok teks di titik potong
+// bawah seberangnya. Tanpa kemiringan. `flip` menukar sisi (logo kanan bawah untuk Kopi).
 
 const EDGE = `calc(var(--space-safe) + ${space(1)})`;
+// Perkiraan lebar huruf kapital per font heading (em); fit-to-width terukur menyusul di T-123.
+const CHAR_WIDTH: Record<string, number> = { wide: 0.78, medium: 0.64, condensed: 0.5 };
 
 function BidangWarnaSlide({ slots, options }: SlideProps) {
   const flip = options.flip === "yes";
   const near = flip ? "right" : "left";
   const far = flip ? "left" : "right";
-  const mark = options.mark === "primary" ? "primary" : "accent";
-  const onMark = mark === "primary" ? "neutral-light" : "neutral-dark";
   const pembuka = optionalSlot(slots, "pembuka", "text");
   const penutup = optionalSlot(slots, "penutup", "text");
-  const fakta = optionalSlot(slots, "fakta", "badge");
   const cta = optionalSlot(slots, "cta", "text");
   return (
     <div
@@ -33,20 +33,29 @@ function BidangWarnaSlide({ slots, options }: SlideProps) {
           position: "absolute",
           [far]: "-4%",
           bottom: 0,
-          width: "52%",
-          height: "66%",
+          width: options.arch === "low" ? "46%" : "52%",
+          height: options.arch === "low" ? "50%" : "62%",
           borderRadius: "999px 999px 0 0",
-          background: color(mark),
+          background: color("primary"),
         }}
       />
       <div
+        style={{ position: "absolute", [far]: "-6%", bottom: "-3%", width: "60%", height: "82%" }}
+      >
+        <Image slot="image" src={slot(slots, "image", "image").src} fit="contain" />
+      </div>
+      {/* Blok teks di seberang diagonal titik fokus subjek (PRD 4 P8): atas bila fokus di bawah. */}
+      <div
         style={{
           position: "absolute",
-          top: EDGE,
+          ...(options.text === "top"
+            ? { top: EDGE }
+            : { bottom: `calc(${EDGE} + ${space(7)} + ${space(3)})` }),
           [near]: EDGE,
-          width: "64%",
+          width: "48%",
           display: "grid",
-          gap: space(2),
+          gridTemplateColumns: "minmax(0, 1fr)",
+          gap: space(3),
           justifyItems: flip ? "end" : "start",
           textAlign: near,
         }}
@@ -56,9 +65,14 @@ function BidangWarnaSlide({ slots, options }: SlideProps) {
             slot="pembuka"
             font="body"
             size={2}
-            color={onMark}
+            color="neutral-dark"
             strong
-            highlight={{ text: pembuka.value, background: mark, color: onMark, tilt: -2 }}
+            highlight={{
+              text: pembuka.value,
+              background: "accent",
+              color: "neutral-dark",
+              tilt: 0,
+            }}
           >
             {pembuka.value}
           </Text>
@@ -67,7 +81,7 @@ function BidangWarnaSlide({ slots, options }: SlideProps) {
           slot="headline"
           font="heading"
           scale={2}
-          charWidth={options.width === "condensed" ? 0.5 : 0.78}
+          charWidth={CHAR_WIDTH[options.width ?? "wide"] ?? 0.78}
           align={near}
           stack
           color="primary"
@@ -75,49 +89,23 @@ function BidangWarnaSlide({ slots, options }: SlideProps) {
           {slot(slots, "headline", "text").value}
         </Display>
         {penutup && (
-          <Text slot="penutup" font="heading" size={4} color="primary" measure={14} balance>
+          <Text slot="penutup" font="heading" size={3} color="primary" measure={18} balance>
             {penutup.value}
           </Text>
         )}
       </div>
       <div
-        style={{ position: "absolute", [far]: "-6%", bottom: "-3%", width: "66%", height: "76%" }}
-      >
-        <Image slot="image" src={slot(slots, "image", "image").src} fit="contain" />
-      </div>
-      {fakta && (
-        <div
-          style={{
-            position: "absolute",
-            bottom: options.fact === "low" ? "19%" : "30%",
-            [near]: "34%",
-          }}
-        >
-          <Sticker
-            slot="fakta"
-            background="primary"
-            color="neutral-light"
-            edge="neutral-light"
-            rotate={flip ? 6 : -6}
-            size={3}
-          >
-            {fakta.value}
-          </Sticker>
-        </div>
-      )}
-      <div
         style={{
           position: "absolute",
           bottom: EDGE,
           [near]: EDGE,
-          gridTemplateColumns: "minmax(0, 1fr)",
-          display: "grid",
-          gap: space(4),
-          justifyItems: flip ? "end" : "start",
+          display: "flex",
+          alignItems: "center",
+          gap: space(5),
         }}
       >
         {cta && (
-          <Sticker slot="cta" background="primary" color="neutral-light">
+          <Sticker slot="cta" background="accent" color="neutral-dark">
             {cta.value}
           </Sticker>
         )}
@@ -133,7 +121,7 @@ export const bidangWarna: Template = {
     name: "Bidang warna",
     format: "feed-4x5",
     description:
-      "Prototipe: lengkung warna, headline tiga tingkat dengan frasa utama raksasa, subjek cut-out yang menimpa frasa, fakta di subjek, CTA tombol.",
+      "Prototipe: bidang warna dominan, lengkung di belakang subjek cut-out, satu blok teks tiga tingkat di sudut bawah seberang subjek, CTA tombol.",
     slots: [
       {
         name: "image",
@@ -156,8 +144,13 @@ export const bidangWarna: Template = {
         description: "Frasa utama, satu sampai dua kata, ditumpuk satu kata per baris",
         maxChars: 16,
       },
-      { name: "penutup", type: "text", required: false, description: "Penutup", maxChars: 32 },
-      { name: "fakta", type: "badge", required: false, description: "Fakta pendek", maxChars: 20 },
+      {
+        name: "penutup",
+        type: "text",
+        required: false,
+        description: "Penutup, boleh berisi fakta",
+        maxChars: 32,
+      },
       { name: "cta", type: "text", required: false, description: "Ajakan", maxChars: 28 },
       { name: "logo", type: "logo", required: true, description: "Logo di atas latar terang" },
     ],
@@ -166,31 +159,31 @@ export const bidangWarna: Template = {
         name: "tone",
         values: ["secondary", "neutral"],
         default: "secondary",
-        description: "Warna bidang",
+        description: "Warna bidang dominan",
       },
       {
-        name: "mark",
-        values: ["accent", "primary"],
-        default: "accent",
-        description: "Warna lengkung dan sorot pembuka",
+        name: "arch",
+        values: ["high", "low"],
+        default: "high",
+        description: "Tinggi lengkung, untuk menjaga proporsi warna kedua",
       },
       {
         name: "width",
-        values: ["wide", "condensed"],
+        values: ["wide", "medium", "condensed"],
         default: "wide",
         description: "Lebar huruf font heading, untuk ukuran frasa utama",
       },
       {
-        name: "fact",
-        values: ["high", "low"],
-        default: "high",
-        description: "Tinggi stiker fakta, agar tidak menabrak penutup atau CTA",
+        name: "text",
+        values: ["bottom", "top"],
+        default: "bottom",
+        description: "Letak blok teks, di seberang diagonal titik fokus subjek",
       },
       {
         name: "flip",
         values: ["no", "yes"],
         default: "no",
-        description: "Subjek di kiri, kolom teks dan logo di kanan",
+        description: "Subjek di kiri, blok teks dan logo di kanan",
       },
     ],
   },
