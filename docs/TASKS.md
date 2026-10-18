@@ -149,17 +149,17 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Verifikasi: test Vitest memakai fixture T-101, termasuk kasus path di luar folder yang diizinkan.
   - Catatan: bergantung T-101 dan T-111. Selesai 2026-10-18. `runCodex()` (`cli/codex.ts`, pemanggilan ADR-012), `CodexAssetProvider` dan `UserUploadAssetProvider` (`pipeline/assets.ts`) dengan validasi `thread_id`, `realpath`, folder yang diizinkan, dan id aset; prompt `prompts/asset-image.md`. Keputusan pemilik: smart crop `attention`, JPG 92 + PNG asli, prompt Inggris. Parsing baris JSON dipindah ke `cli/stream.ts` (dipakai Claude dan Codex). Smart crop dibandingkan dengan crop tengah pada ketiga foto demo (perbandingan pertama tidak sah karena `.resize()` berantai; diulang). Test: 5 adapter Codex (fixture T-101, error, kuota sintetis), 7 aset (salin dan crop, smart crop menyimpan subjek, `thread_id` jahat, symlink keluar, thread kosong, id aset, prompt, unggahan pengguna).
 
-- [ ] T-114 Prompt tahap plan, copy, layout, QA visual, revise
+- [x] T-114 Prompt tahap plan, copy, layout, QA visual, revise
   - Rujukan: ARCH 5.2, ARCH 5.4, ARCH 9, PRD F7, CLAUDE.md (Prompt Agent)
   - AC: satu file `.md` per tahap di `packages/sidecar/src/prompts/`, masing-masing menyebut skema dan memberi satu contoh output valid; input pengguna dibungkus delimiter dan ditandai sebagai data.
   - Verifikasi: test statis memastikan setiap prompt memuat skema, contoh yang lolos validasi Zod, dan delimiter data.
-  - Catatan:
+  - Catatan: Selesai 2026-10-18. Lima prompt berbahasa Indonesia, `renderPrompt` dengan input bertipe per tahap, `brandContext`, dan skema baru `Revision` di `shared` (semuanya disetujui pemilik: konteks brand eksplisit di prompt, skema Revision, bahasa Indonesia). Contoh di setiap prompt lolos Zod; contoh layout dan revise juga lolos `layoutIssues` terhadap katalog. Prompt layout Kopi Lembayung yang dirender dengan katalog penuh sekitar 3,6 ribu token. Test: 20 test prompt, 2 test `Revision`, 1 test JSON Schema.
 
 - [ ] T-115 Pipeline engine dengan resume dan revisi
   - Rujukan: ARCH 5.1, ARCH 5.4, PRD F7
   - AC: tahap menyimpan output ke `jobs/<job-id>/<nn>-<tahap>.json`; resume dari tahap pertama yang belum punya output valid; `plan` sekali per brief dengan angle per varian; revisi maksimal 2 putaran yang masuk ulang di tahap terdampak.
   - Verifikasi: test Vitest dengan adapter palsu untuk transisi state, resume setelah gagal, dan revisi parsial.
-  - Catatan:
+  - Catatan: dari T-114: isi prompt lewat `renderPrompt` (input `PromptInputs`); `<catalog>` hanya meta template dengan format job; `<brand>` dari `brandContext`; `<knowledge>` dari `knowledge/business.md`; LayoutSpec divalidasi `layoutIssues` (kirim ulang seperti validasi Zod bila gagal); revise menghasilkan `Revision` lalu masuk ulang di `assets` (hanya `regenerateAssets`) atau `render`. Prompt aset dari T-113.
 
 - [ ] T-116 Skrip `pnpm spike`
   - Rujukan: PRD 11 (Fase 1), CLAUDE.md (Perintah)
@@ -186,6 +186,7 @@ Urutan mengikuti PRD 11. Setiap epic dipecah menjadi task saat dimulai.
 
 - [ ] E-301 Project dan Brand Kit (PRD US-01, US-02, F1, F2; DESIGN 6)
 - [ ] E-302 Knowledge dan Copy Guide (PRD US-03, US-04, F3, F4)
+  - Cakupan awal (ditemukan di T-114): generator konteks `CLAUDE.md` dan `AGENTS.md` project (ARCH 8.3) belum punya task; prompt tahap Claude sudah membawa konteks brand sendiri, jadi generator ini terutama untuk `AGENTS.md` Codex dan daftar file knowledge.
 - [ ] E-303 Brief dan varian (PRD US-10, US-11, US-12, US-13, F6, F7)
 - [ ] E-304 Revisi lewat chat (PRD US-20, F10)
 - [ ] E-305 QA di UI (PRD F9; DESIGN 10.3)

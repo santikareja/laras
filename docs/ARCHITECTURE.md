@@ -164,7 +164,7 @@ claude -p "<prompt>" \
 # cwd = folder project (ADR-011), stdin ditutup
 ```
 
-- Prompt disusun dari file di `packages/sidecar/src/prompts/` ditambah data job.
+- Prompt disusun dari file di `packages/sidecar/src/prompts/` (`plan`, `copy`, `layout`, `qa-visual`, `revise`, berbahasa Indonesia) lewat `renderPrompt(tahap, input)`: `{{schema}}` diisi JSON Schema dari Zod, data pengguna dan output AI sebelumnya ditaruh di blok `<tag>` yang ditandai sebagai data, dan tag penutup di dalam data dibuang. Konteks brand dikirim eksplisit di blok `<brand>` (`brandContext`: bahasa, tone, CTA, kata terlarang, emoji, hashtag, aturan desain, contoh copy) dan knowledge di `<knowledge>`, sehingga prompt tidak bergantung pada `CLAUDE.md` project.
 - Proses dijalankan dengan `cwd` di folder project (ADR-011), sehingga `CLAUDE.md` project (konteks brand) otomatis terbaca dan `Read` menjangkau `references/` serta `jobs/<job-id>/`. Output tahap ditulis oleh sidecar, bukan oleh Claude.
 - `--output-format stream-json` wajib disertai `--verbose`; tanpa itu CLI langsung keluar dengan error.
 - Tool dibatasi dengan `--tools` (membatasi tool yang tersedia). `--allowedTools` hanya menyetujui tool secara otomatis dan tidak membatasi, jadi tidak dipakai untuk tujuan ini. Tahap yang butuh melihat gambar (QA visual) memakai `Read` pada file PNG di folder job.
@@ -236,7 +236,7 @@ Status khusus: waiting_quota · interrupted · failed · cancelled
 | assets | Codex / pengguna | kebutuhan aset, brand, referensi | `AssetManifest`: path file, ukuran, sumber |
 | render | Kode | LayoutSpec, AssetManifest, tokens | HTML per slide, PNG master, `RenderReport` |
 | qa | Kode + Claude | PNG, RenderReport, brand, copy guide | `QaReport`: hasil cek deterministik, skor visual, daftar perbaikan |
-| revise | Claude | QaReport, LayoutSpec, CopyDraft | `LayoutSpec` / `CopyDraft` baru (hanya bagian yang perlu diubah) |
+| revise | Claude | QaReport, LayoutSpec, CopyDraft | `Revision`: `copy` dan `layout` utuh dengan hanya bagian yang diminta berubah, `regenerateAssets`, `summary` |
 
 ### 5.3 Abstraksi penting
 
@@ -407,7 +407,7 @@ Data utama (brand, knowledge, layout) tetap di file; database adalah index dan r
 
 ### 8.3 Generator konteks project
 
-`context/` menyusun `CLAUDE.md` dan `AGENTS.md` project setiap kali Brand Kit, knowledge, copy guide, atau referensi berubah. Isinya ringkas dan terstruktur: identitas brand, aturan desain, tone, kata terlarang, ringkasan bisnis, dan daftar file knowledge untuk dibaca bila perlu.
+`context/` menyusun `CLAUDE.md` dan `AGENTS.md` project setiap kali Brand Kit, knowledge, copy guide, atau referensi berubah. Sejak T-114 aturan brand untuk tahap Claude dikirim eksplisit di prompt, jadi `CLAUDE.md` project cukup memuat hal yang stabil (identitas, daftar file knowledge tambahan) agar tidak dobel; `AGENTS.md` tetap jadi konteks gaya untuk Codex. Isinya ringkas dan terstruktur: identitas brand, aturan desain, tone, kata terlarang, ringkasan bisnis, dan daftar file knowledge untuk dibaca bila perlu.
 
 ---
 

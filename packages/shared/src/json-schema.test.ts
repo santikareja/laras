@@ -4,9 +4,10 @@ import { ContentPlan } from "./content-plan.ts";
 import { CopyDraft } from "./copy-draft.ts";
 import { LayoutSpec } from "./layout-spec.ts";
 import { VisualQa } from "./qa-report.ts";
+import { Revision } from "./revision.ts";
 
 // Skema yang diisi Claude dikirim lewat --json-schema (ADR-013), jadi harus bisa dikonversi.
-const claudeOutputs = { ContentPlan, CopyDraft, LayoutSpec, VisualQa };
+const claudeOutputs = { ContentPlan, CopyDraft, LayoutSpec, Revision, VisualQa };
 
 describe("konversi ke JSON Schema untuk --json-schema", () => {
   for (const [name, schema] of Object.entries(claudeOutputs)) {
