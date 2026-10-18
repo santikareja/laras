@@ -185,10 +185,43 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - AC: layout dan revisi yang memakai varian logo yang tidak ada di Brand Kit ditolak saat validasi tahap (masuk retry validasi), dan prompt layout serta revise menyebut varian yang tersedia.
   - Verifikasi: test validasi tahap dan engine; dry-run spike lolos; tanpa kuota.
 
-- [ ] T-120 Arah ulang kualitas desain setelah NO-GO
+- [x] T-120 Arah ulang kualitas desain setelah NO-GO
   - Rujukan: KNOWLEDGE "Evaluasi spike T-117", PRD 4 (anti AI-slop), PRD 10, DESIGN
   - AC: standar "kelas dunia" pemilik ditulis konkret (referensi dan kriteria), lalu dipecah menjadi task template, art direction foto, dan rubric QA visual sebelum evaluasi ulang.
   - Catatan: masukan pemilik 2026-10-19: masalah utama adalah struktur yang selalu sama (foto + kartu teks, urutan badge–headline–body–CTA di setiap postingan); foto, tipografi, dan jumlah teks tidak dipilih sebagai masalah utama. Pemilik akan mengirim 5–10 referensi kelas dunia; kriteria konkret diturunkan dari referensi itu sebelum rencana disusun. Kandidat dari temuan T-117: QA visual membuka file logo, deskripsi foto membawa lokasi dan audiens brand, celah kosong `feed-foto-teks`, larangan fakta karangan di `qa-visual.md`, revisi karena skor saja.
+  - Hasil 2026-10-19: pemilik mengirim 59 referensi (lokasi di KNOWLEDGE); kriteria K1–K8 diturunkan, disetujui, dan ditulis di PRD 4 (prinsip 7; prinsip 3 diubah ke arketipe komposisi). Pendekatan arketipe parametrik dicatat sebagai ADR-015. Dipecah menjadi T-121 sampai T-127; urutan sesuai pilihan pemilik: verifikasi Codex dulu.
+
+- [ ] T-121 Verifikasi Codex: subjek cut-out transparan dan gambar konsep
+  - Rujukan: PRD 4 (K1, K3, K4), KNOWLEDGE Codex CLI ("Belum diuji": background transparan), ADR-012
+  - AC: diketahui apakah `image_gen` bawaan menghasilkan PNG dengan alpha untuk objek dan orang, seberapa bersih tepinya di atas bidang warna, dan apakah gambar konsep satu objek dengan ruang kosong untuk tipografi bisa diminta lewat prompt.
+  - Verifikasi: fakta (ukuran, alpha, durasi, token) dan penilaian tepi ditulis di KNOWLEDGE; gambar dibuka dan dinilai.
+  - Catatan: MEMAKAI KUOTA Codex. Minta izin pemilik dengan jumlah panggilan sebelum menjalankan.
+
+- [ ] T-122 Prototipe 4 arketipe komposisi dan perangkat grafis dasar
+  - Rujukan: PRD 4 (K1–K8), ADR-015, hasil T-121
+  - AC: 4 arketipe (tipografi raksasa yang menimpa foto, bidang warna dengan subjek dan kata bersorot, iklan minimal satu objek, kolase diagonal) dirender untuk 3 brand dengan aset demo atau hasil T-121; pemilik menilai arahnya sebelum sistem penuh dibangun.
+  - Verifikasi: `pnpm render:demo` lolos QA kode; PNG dinilai agent dan pemilik.
+
+- [ ] T-123 Sistem arketipe parametrik
+  - Rujukan: ADR-015, ARCH 6.2, ARCH 7.2
+  - AC: skema meta arketipe (lapisan, slot, parameter) di `shared`, renderer lapisan (termasuk teks di belakang subjek), validasi parameter, dan QA kode yang memahami lapisan. Rincian dan ADR diperbarui saat task dimulai.
+
+- [ ] T-124 Perangkat grafis dan peran font tambahan di Brand Kit
+  - Rujukan: PRD 4 (K2, K5), PRD F2, ARCH 6.1
+  - AC: Brand Kit dan token memuat perangkat grafis brand (gaya sorot, coretan, stiker) dan peran font aksen opsional; fixture tiga brand diperbarui.
+
+- [ ] T-125 Ide besar di tahap plan dan art direction aset
+  - Rujukan: PRD 4 (K1, K4, K7), temuan T-117 (lokasi brand)
+  - AC: plan menghasilkan konsep visual per varian; prompt aset meminta foto konsep, subjek cut-out bila arketipe membutuhkannya, dan lokasi serta audiens dari knowledge.
+
+- [ ] T-126 Rubric QA visual K1–K8 dan perbaikan QA dari T-117
+  - Rujukan: PRD 4, PRD F9, temuan T-117
+  - AC: skor QA visual mengikuti K1–K8 dengan contoh referensi; QA membuka file logo brand; larangan menyarankan fakta di luar knowledge; kebijakan revisi bila skor rendah tanpa perbaikan wajib diputuskan pemilik.
+
+- [ ] T-127 Evaluasi ulang spike
+  - Rujukan: PRD 11 (Fase 1), KNOWLEDGE "Evaluasi spike T-117"
+  - AC: brief yang sama dengan T-117 dijalankan ulang; pemilik menilai; keputusan go/no-go tertulis.
+  - Catatan: MEMAKAI KUOTA BESAR. Jadwalkan bersama pemilik.
 
 ## Fase 2: Walking skeleton (epic)
 

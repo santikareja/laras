@@ -79,10 +79,19 @@ Prinsip ini mengikat semua keputusan desain dan implementasi.
 
 1. **Teks tidak pernah dibuat oleh model gambar.** Semua headline, body, CTA, harga, dan logo dirender lewat HTML/CSS dengan font asli brand.
 2. **Brand Kit adalah hukum.** Agent hanya boleh memakai warna, font, dan aturan dari Brand Kit project. Pelanggaran dianggap bug.
-3. **Template dikurasi, bukan diimprovisasi.** Layout berasal dari library template yang dirancang dengan grid dan hierarki yang jelas. Agent mengisi dan mengatur template, bukan menggambar dari nol.
+3. **Komposisi dikurasi, bukan diimprovisasi.** Layout berasal dari arketipe komposisi yang dirancang dengan grid dan hierarki yang jelas. Agent memilih arketipe dan parameternya (posisi, rotasi, skala, urutan lapisan, perangkat grafis) sehingga struktur berganti antar postingan, tetapi tidak menggambar dari nol (ADR-015).
 4. **Selalu diperiksa sebelum ditampilkan.** Setiap render melewati QA deterministik (kode) dan QA visual (Claude melihat gambar).
 5. **Pengguna memegang keputusan akhir.** Selalu ada beberapa varian, revisi via chat, dan editor manual.
 6. **Transparan.** Pengguna selalu melihat agent sedang mengerjakan apa.
+7. **Standar visual kelas dunia, bukan sekadar rapi.** Hasil dinilai dengan kriteria berikut, diturunkan dari referensi pemilik setelah gerbang Fase 1 gagal (T-117, T-120):
+   - K1. Satu ide besar per postingan: metafora visual atau momen yang langsung membawa pesan, bukan foto suasana ditambah teks penjelas.
+   - K2. Tipografi sebagai elemen visual utama: headline besar, kontras skala yang tegas, dan campuran gaya huruf dari Brand Kit.
+   - K3. Teks dan gambar saling mengunci: teks di belakang subjek, subjek menimpa huruf, atau teks mengikuti bidang dan perspektif foto, bukan teks di kotak terpisah.
+   - K4. Subjek terpisah (cut-out) di atas bidang warna brand bila cocok, bukan selalu foto penuh dengan panel.
+   - K5. Perangkat grafis khas brand yang berulang, misalnya blok sorot di balik kata, coretan tangan, panah, stiker, atau sobekan kertas.
+   - K6. Komposisi berganti antar postingan dalam satu sistem: posisi, orientasi, dan hierarki berubah; palet, tipografi, dan perangkat grafis tetap.
+   - K7. Teks hemat: satu pesan utama, teks pendukung kecil, CTA berupa baris atau chip kecil.
+   - K8. Elemen informasi visual bila relevan, misalnya pin lokasi dengan waktu tempuh, chip fitur, kartu rating, atau mockup ponsel.
 
 ---
 

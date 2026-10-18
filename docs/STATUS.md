@@ -2,21 +2,22 @@
 Terakhir diperbarui: 2026-10-19, sesi #8
 
 ## Fase saat ini
-Fase 1: Spike pipeline. Fase 0 selesai. Verifikasi CLI selesai: T-101 (generasi gambar Codex, ADR-012) dan T-102 (Claude headless dan isolasi, ADR-013). T-103 (skema Zod inti), T-104 (tiga brand fixture, skema `CopyGuide`), T-105 (token brand ke CSS), T-106 (primitives template), T-107 (renderer Playwright, sharp, `pnpm render:demo`), T-108 (template `feed-foto-teks` dan `feed-sorotan`, skema `TemplateMeta`), T-109 (template `feed-foto-penuh` dan `feed-kutipan`), T-110 (QA deterministik di renderer), T-111 (deteksi CLI, skema `CliStatus`), T-112 (adapter Claude), T-113 (adapter Codex dan AssetProvider), T-114 (prompt tahap, skema `Revision`), T-115 (pipeline engine), T-116 (`pnpm spike`; satu jalan sungguhan Kopi Lembayung lolos QA dalam 97 detik dengan 4 panggilan Claude dan 1 Codex), dan T-118 (perbaikan temuan spike: perbaikan QA bertingkat `wajib`/`saran`, larangan pengulangan informasi di prompt, logo `feed-foto-penuh` lebih besar) selesai. Katalog berisi 4 template feed. T-117 (evaluasi spike, 9 percobaan) selesai dijalankan dengan keputusan **NO-GO**: 0 dari 9 layak menurut pemilik ("terlalu generik, kaku dan AI slop"), walau QA meloloskan 5. Fase 2 belum dimulai; Fase 1 berlanjut dengan perbaikan kualitas desain (T-120).
+Fase 1: Spike pipeline. Fase 0 selesai. Verifikasi CLI selesai: T-101 (generasi gambar Codex, ADR-012) dan T-102 (Claude headless dan isolasi, ADR-013). T-103 (skema Zod inti), T-104 (tiga brand fixture, skema `CopyGuide`), T-105 (token brand ke CSS), T-106 (primitives template), T-107 (renderer Playwright, sharp, `pnpm render:demo`), T-108 (template `feed-foto-teks` dan `feed-sorotan`, skema `TemplateMeta`), T-109 (template `feed-foto-penuh` dan `feed-kutipan`), T-110 (QA deterministik di renderer), T-111 (deteksi CLI, skema `CliStatus`), T-112 (adapter Claude), T-113 (adapter Codex dan AssetProvider), T-114 (prompt tahap, skema `Revision`), T-115 (pipeline engine), T-116 (`pnpm spike`; satu jalan sungguhan Kopi Lembayung lolos QA dalam 97 detik dengan 4 panggilan Claude dan 1 Codex), dan T-118 (perbaikan temuan spike: perbaikan QA bertingkat `wajib`/`saran`, larangan pengulangan informasi di prompt, logo `feed-foto-penuh` lebih besar) selesai. Katalog berisi 4 template feed. T-117 (evaluasi spike, 9 percobaan) selesai dijalankan dengan keputusan **NO-GO**: 0 dari 9 layak menurut pemilik ("terlalu generik, kaku dan AI slop"), walau QA meloloskan 5. Fase 2 belum dimulai; Fase 1 berlanjut dengan perbaikan kualitas desain: standar K1–K8 di PRD 4 (dari 59 referensi pemilik) dan arketipe komposisi parametrik (ADR-015), dipecah menjadi T-121 sampai T-127.
 
 ## Sedang dikerjakan
 Tidak ada.
 
 ## Berikutnya (urut)
-1. T-120 Arah ulang kualitas desain setelah NO-GO: menurut pemilik masalah utamanya struktur yang selalu sama; menunggu 5–10 referensi kelas dunia dari pemilik untuk diturunkan menjadi kriteria, lalu dipecah menjadi task template, art direction foto, dan rubric QA visual. Hasil dan temuan T-117 di KNOWLEDGE "Evaluasi spike T-117".
-2. T-119 Validasi varian logo terhadap Brand Kit (bug R3; kecil, tanpa kuota).
-3. Evaluasi ulang spike setelah perbaikan (memakai kuota; izin pemilik). T-117 memakai Claude 61 dan Codex 15 panggilan untuk 9 percobaan; revisi karena skor saja menaikkan jumlahnya.
+1. T-121 Verifikasi Codex: subjek cut-out transparan dan gambar konsep (MEMAKAI KUOTA Codex; usulan 3 panggilan, menunggu izin pemilik).
+2. T-122 Prototipe 4 arketipe komposisi (tanpa kuota), dinilai pemilik sebelum T-123.
+3. T-119, lalu T-123 sampai T-126 (sistem arketipe, perangkat grafis Brand Kit, ide besar dan art direction, rubric QA K1–K8).
+4. T-127 Evaluasi ulang spike (memakai kuota besar; izin pemilik).
 
 ## Blocker
 - Tidak ada.
 
 ## Menunggu keputusan pemilik
-- Arah perbaikan kualitas desain setelah NO-GO T-117 (T-120).
+- Izin kuota T-121 (verifikasi Codex).
 - Jumlah template awal per format (PRD 12 pertanyaan 3; usulan 8 feed, 4 sistem carousel).
 - Penamaan token skala tipografi UI: DESIGN 4 mendefinisikan `--text-caption` … `--text-display` (ukuran), tetapi `tokens.css` di DESIGN 15 tidak memuatnya; prefix `--text-*` juga dipakai untuk warna (`--text-primary`) dan merupakan namespace ukuran font di Tailwind v4. Usulan: ganti nama token ukuran menjadi `--type-*` (dibutuhkan paling lambat E-201).
 
