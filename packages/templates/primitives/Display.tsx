@@ -7,7 +7,7 @@ type DisplayProps = {
   scale: number;
   // Perkiraan lebar satu huruf dalam em, untuk membatasi ukuran agar muat satu baris.
   charWidth?: number;
-  align?: "center" | "left";
+  align?: "center" | "left" | "right";
   slot?: string;
   children: string;
 };

@@ -18,6 +18,10 @@ type TextProps = {
   slot?: string;
   // Bagian teks yang diberi blok sorot (PRD 4 K5); diabaikan bila tidak ada di teks.
   highlight?: HighlightStyle & { text: string };
+  // Panjang baris maksimal dalam karakter (PRD 4 P4), mis. 45 untuk body.
+  measure?: number;
+  // Ratakan panjang baris agar tidak ada baris yatim (PRD 4 P4).
+  balance?: boolean;
   children: string;
 };
 
@@ -30,6 +34,8 @@ export function Text({
   as,
   slot,
   highlight,
+  measure,
+  balance = false,
   children,
 }: TextProps) {
   const Tag = as ?? (font === "heading" ? "h2" : "p");
@@ -48,7 +54,8 @@ export function Text({
         fontSize: fontSize(size),
         fontSynthesis: "none",
         lineHeight: font === "heading" ? 1.1 : 1.4,
-        textWrap: font === "heading" ? "balance" : "pretty",
+        textWrap: font === "heading" || balance ? "balance" : "pretty",
+        maxWidth: measure ? `${measure}ch` : undefined,
         color: color(tone),
       }}
     >

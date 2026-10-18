@@ -18,6 +18,8 @@ type Case = {
   logo: "primary" | "onDark";
 };
 
+// Aturan brand yang dipatuhi (PRD 4 prinsip 8): Kopi logo kanan bawah dan tanpa latar putih
+// polos; Seruni maksimal dua elemen visual utama; Ritme angka dan waktu ditulis besar.
 const CASES: Record<string, Record<Brand, Case>> = {
   "proto-kata-raksasa": {
     "kopi-lembayung": {
@@ -27,7 +29,7 @@ const CASES: Record<string, Record<Brand, Case>> = {
         cta: "Ambil sekantong",
       },
       images: { image: "subjek.webp" },
-      options: { tone: "primary", side: "left", text: "bottom-right" },
+      options: { tone: "primary", side: "left", text: "middle-right", logo: "bottom-right" },
       logo: "onDark",
     },
     "seruni-skin": {
@@ -37,13 +39,19 @@ const CASES: Record<string, Record<Brand, Case>> = {
         cta: "Konsultasi gratis",
       },
       images: { image: "subjek.webp" },
-      options: { tone: "primary", side: "right", text: "bottom-left" },
+      options: { tone: "primary", side: "right", text: "bottom-left", logo: "top-left" },
       logo: "onDark",
     },
     "ritme-run-club": {
       text: { kata: "FIRST 5K", headline: "Any pace. No sign-up.", cta: "Show up Sunday" },
       images: { image: "subjek.webp" },
-      options: { tone: "secondary", side: "center", text: "bottom-left", width: "condensed" },
+      options: {
+        tone: "secondary",
+        side: "center",
+        text: "bottom-left",
+        logo: "top-left",
+        width: "condensed",
+      },
       logo: "primary",
     },
   },
@@ -56,21 +64,25 @@ const CASES: Record<string, Record<Brand, Case>> = {
       },
       badge: { stiker: "Rp85.000 / 200 g" },
       images: { image: "subjek.webp" },
-      options: { tone: "secondary", mark: "accent", size: "large" },
+      options: { tone: "secondary", mark: "accent", size: "large", flip: "yes", arrow: "yes" },
       logo: "primary",
     },
+    // Dua elemen visual utama saja: subjek dan lingkaran (tanpa panah dan stiker).
     "seruni-skin": {
-      text: { headline: "Kenali kulitmu dulu.", sorot: "dulu.", cta: "Reservasi lewat WhatsApp" },
-      badge: { stiker: "Konsultasi gratis" },
+      text: {
+        headline: "Kenali kulitmu dulu.",
+        sorot: "dulu.",
+        cta: "Jadwalkan konsultasi gratis",
+      },
       images: { image: "subjek.webp" },
-      options: { tone: "secondary", mark: "primary", size: "large" },
+      options: { tone: "secondary", mark: "primary", size: "large", flip: "no", arrow: "no" },
       logo: "primary",
     },
     "ritme-run-club": {
-      text: { headline: "Every pace has a group.", sorot: "Every pace", cta: "Show up Sunday" },
-      badge: { stiker: "5:45 AM" },
+      text: { headline: "First 5K at 5:45 AM.", sorot: "5:45 AM.", cta: "Show up Sunday" },
+      badge: { stiker: "Free · No sign-up" },
       images: { image: "subjek.webp" },
-      options: { tone: "secondary", mark: "primary", size: "medium" },
+      options: { tone: "secondary", mark: "primary", size: "medium", flip: "no", arrow: "yes" },
       logo: "primary",
     },
   },
@@ -81,8 +93,8 @@ const CASES: Record<string, Record<Brand, Case>> = {
         body: "Biji Jawa Barat, kami sangrai sendiri setiap minggu.",
       },
       images: { image: "subjek.webp" },
-      options: { mode: "object", tone: "neutral" },
-      logo: "primary",
+      options: { mode: "object", tone: "primary", logo: "bottom-right" },
+      logo: "onDark",
     },
     "seruni-skin": {
       text: {
@@ -90,16 +102,16 @@ const CASES: Record<string, Record<Brand, Case>> = {
         body: "Setiap perawatan diawali konsultasi gratis dan foto kondisi kulit.",
       },
       images: { image: "konsep.jpg" },
-      options: { mode: "full", tone: "neutral" },
+      options: { mode: "full", tone: "neutral", logo: "top-left" },
       logo: "primary",
     },
     "ritme-run-club": {
       text: {
         headline: "Your first 5K. Any pace.",
-        body: "The 8:30 group walks and runs. Free, no sign-up.",
+        body: "The slowest group walks and runs. Free, no sign-up.",
       },
       images: { image: "subjek.webp" },
-      options: { mode: "object", tone: "secondary" },
+      options: { mode: "object", tone: "secondary", logo: "bottom-center" },
       logo: "primary",
     },
   },
@@ -112,10 +124,11 @@ const CASES: Record<string, Record<Brand, Case>> = {
       },
       badge: { stiker: "200 g · Rp85.000" },
       images: { image: "foto.jpg", subjek: "subjek.webp" },
-      options: { tone: "neutral", band: "primary" },
-      logo: "primary",
+      // Bidang gelap: aturan Kopi melarang produk di latar putih polos.
+      options: { tone: "primary", band: "accent", flip: "yes", underline: "yes" },
+      logo: "onDark",
     },
-    // Tanpa subjek: aturan brand Seruni membatasi dua elemen visual utama per slide.
+    // Dua elemen visual utama saja: foto berbingkai dan pita (tanpa subjek dan coretan).
     "seruni-skin": {
       text: {
         headline: "KONSULTASI DULU",
@@ -124,18 +137,24 @@ const CASES: Record<string, Record<Brand, Case>> = {
       },
       badge: { stiker: "Gratis · 30 menit" },
       images: { image: "foto-4x5.jpg" },
-      options: { tone: "neutral", band: "primary" },
+      options: { tone: "neutral", band: "primary", flip: "no", underline: "no" },
       logo: "primary",
     },
     "ritme-run-club": {
       text: {
-        headline: "FIRST 5K SUNDAY",
-        body: "Pace groups from 5:00 to 8:30 min/km. Coffee after.",
-        cta: "Show up Sunday",
+        headline: "SUNDAY 5:45 AM",
+        body: "Every pace has a group. Coffee after.",
+        cta: "Just show up",
       },
-      badge: { stiker: "5:45 AM · Free" },
+      badge: { stiker: "Free" },
       images: { image: "foto.jpg", subjek: "subjek.webp" },
-      options: { tone: "primary", band: "accent", width: "condensed" },
+      options: {
+        tone: "primary",
+        band: "accent",
+        width: "condensed",
+        flip: "no",
+        underline: "yes",
+      },
       logo: "onDark",
     },
   },

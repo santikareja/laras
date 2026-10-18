@@ -3,19 +3,29 @@ import { color, space } from "../primitives/vars.ts";
 import { optionalSlot, type SlideProps, slot, type Template } from "../src/template.ts";
 
 // Prototipe A3 (T-122, PRD 4 K1, K7): satu objek atau gambar konsep dengan ruang kosong luas,
-// satu kalimat, satu baris pendukung. Mode "object" untuk cut-out, "full" untuk foto konsep.
+// satu kalimat, satu baris pendukung. Mode "object" untuk cut-out di bidang warna, "full" untuk
+// foto konsep. Letak logo mengikuti aturan brand.
+
+const BACKGROUND = {
+  neutral: "neutral-light",
+  secondary: "secondary",
+  primary: "primary",
+} as const;
 
 function SatuObjekSlide({ slots, options }: SlideProps) {
   const full = options.mode === "full";
+  const dark = !full && options.tone === "primary";
   const body = optionalSlot(slots, "body", "text");
   const src = slot(slots, "image", "image").src;
+  const tone = BACKGROUND[(options.tone ?? "neutral") as keyof typeof BACKGROUND];
+  const logo = options.logo ?? "bottom-center";
   return (
     <div
       style={{
         position: "relative",
         height: "100%",
         overflow: "hidden",
-        background: color(options.tone === "secondary" ? "secondary" : "neutral-light"),
+        background: color(tone ?? "neutral-light"),
       }}
     >
       {full ? (
@@ -33,7 +43,7 @@ function SatuObjekSlide({ slots, options }: SlideProps) {
               height: "3%",
               borderRadius: "50%",
               background: color("neutral-dark"),
-              opacity: 0.18,
+              opacity: dark ? 0.35 : 0.18,
               filter: "blur(14px)",
             }}
           />
@@ -62,11 +72,24 @@ function SatuObjekSlide({ slots, options }: SlideProps) {
           textAlign: "center",
         }}
       >
-        <Text slot="headline" as="h1" font="heading" size={5} color="primary">
+        <Text
+          slot="headline"
+          as="h1"
+          font="heading"
+          size={5}
+          color={dark ? "neutral-light" : "primary"}
+        >
           {slot(slots, "headline", "text").value}
         </Text>
         {body && (
-          <Text slot="body" font="body" size={2} color="neutral-dark">
+          <Text
+            slot="body"
+            font="body"
+            size={2}
+            color={dark ? "neutral-light" : "neutral-dark"}
+            measure={40}
+            balance
+          >
             {body.value}
           </Text>
         )}
@@ -74,12 +97,13 @@ function SatuObjekSlide({ slots, options }: SlideProps) {
       <div
         style={{
           position: "absolute",
-          // Mode full: gambar konsep mengisi bagian bawah, jadi logo pindah ke pojok kiri atas.
-          ...(full ? { top: "var(--space-safe)" } : { bottom: "var(--space-safe)" }),
-          left: full ? "var(--space-safe)" : 0,
-          right: full ? undefined : 0,
+          ...(logo === "top-left"
+            ? { top: "var(--space-safe)", left: "var(--space-safe)" }
+            : logo === "bottom-right"
+              ? { bottom: "var(--space-safe)", right: "var(--space-safe)" }
+              : { bottom: "var(--space-safe)", left: 0, right: 0 }),
           display: "flex",
-          justifyContent: full ? "flex-start" : "center",
+          justifyContent: "center",
         }}
       >
         <Logo slot="logo" src={slot(slots, "logo", "logo").src} height={5} />
@@ -105,7 +129,12 @@ export const satuObjek: Template = {
       },
       { name: "headline", type: "text", required: true, description: "Headline", maxChars: 40 },
       { name: "body", type: "text", required: false, description: "Satu baris", maxChars: 70 },
-      { name: "logo", type: "logo", required: true, description: "Logo di atas latar terang" },
+      {
+        name: "logo",
+        type: "logo",
+        required: true,
+        description: "Logo; varian onDark bila tone primary",
+      },
     ],
     options: [
       {
@@ -116,9 +145,15 @@ export const satuObjek: Template = {
       },
       {
         name: "tone",
-        values: ["neutral", "secondary"],
+        values: ["neutral", "secondary", "primary"],
         default: "neutral",
         description: "Warna bidang mode object",
+      },
+      {
+        name: "logo",
+        values: ["bottom-center", "bottom-right", "top-left"],
+        default: "bottom-center",
+        description: "Letak logo, mengikuti aturan brand",
       },
     ],
   },

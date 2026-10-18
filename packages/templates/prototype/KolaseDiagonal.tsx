@@ -3,9 +3,15 @@ import { color, space } from "../primitives/vars.ts";
 import { optionalSlot, type SlideProps, slot, type Template } from "../src/template.ts";
 
 // Prototipe A4 (T-122, PRD 4 K5, K6): foto berbingkai miring, pita diagonal berisi headline,
-// subjek cut-out opsional yang menimpa pita, stiker, dan coretan.
+// subjek cut-out opsional yang menimpa ujung pita, stiker, dan coretan. `flip` menukar sisi
+// sehingga kolom teks dan logo berada di kanan; coretan bisa dimatikan (PRD 4 P5).
+
+const EDGE = `calc(var(--space-safe) + ${space(1)})`;
 
 function KolaseDiagonalSlide({ slots, options }: SlideProps) {
+  const flip = options.flip === "yes";
+  const near = flip ? "right" : "left";
+  const far = flip ? "left" : "right";
   const dark = options.tone === "primary";
   const band = options.band === "accent" ? "accent" : "primary";
   const subjek = optionalSlot(slots, "subjek", "image");
@@ -23,29 +29,29 @@ function KolaseDiagonalSlide({ slots, options }: SlideProps) {
       }}
     >
       <div
-        style={{ position: "absolute", top: "7%", left: "9%", width: "54%", aspectRatio: "4 / 5" }}
+        style={{
+          position: "absolute",
+          top: "7%",
+          [near]: "9%",
+          width: "54%",
+          aspectRatio: "4 / 5",
+        }}
       >
         <Frame
           slot="image"
           src={slot(slots, "image", "image").src}
           edge="neutral-light"
-          rotate={-4}
+          rotate={flip ? 4 : -4}
         />
       </div>
       {stiker && (
-        <div
-          style={{
-            position: "absolute",
-            top: "11%",
-            right: `calc(var(--space-safe) + ${space(3)})`,
-          }}
-        >
+        <div style={{ position: "absolute", top: "11%", [far]: `calc(${EDGE} + ${space(2)})` }}>
           <Sticker
             slot="stiker"
             background="accent"
             color="neutral-dark"
             edge="neutral-light"
-            rotate={8}
+            rotate={flip ? -8 : 8}
             size={3}
           >
             {stiker.value}
@@ -58,26 +64,21 @@ function KolaseDiagonalSlide({ slots, options }: SlideProps) {
           top: "52%",
           left: "-10%",
           right: "-10%",
-          padding: `${space(3)} 0`,
+          padding: `${space(3)} calc(1080px * 0.1 + ${EDGE} + ${space(1)})`,
+          display: "flex",
+          justifyContent: flip ? "flex-end" : "flex-start",
           background: color(band),
-          transform: "rotate(-7deg)",
+          transform: `rotate(${flip ? 7 : -7}deg)`,
         }}
       >
-        <div
-          style={{
-            // Pita 120% lebar kanvas: teks mulai di safe margin dan berhenti sebelum subjek.
-            width: subjek
-              ? "calc(1080px * 0.58)"
-              : `calc(1080px - 2 * var(--space-safe) - 2 * ${space(3)})`,
-            marginLeft: `calc(1080px * 0.1 + var(--space-safe) + ${space(2)})`,
-          }}
-        >
+        {/* Dengan subjek, teks pita berhenti sebelum ujung yang ditimpa subjek. */}
+        <div style={{ width: subjek ? "calc(1080px * 0.58)" : "100%" }}>
           <Display
             slot="headline"
             font="heading"
             scale={1}
             charWidth={options.width === "condensed" ? 0.5 : 0.72}
-            align="left"
+            align={near}
             color={band === "primary" ? "neutral-light" : "neutral-dark"}
           >
             {slot(slots, "headline", "text").value}
@@ -86,7 +87,7 @@ function KolaseDiagonalSlide({ slots, options }: SlideProps) {
       </div>
       {subjek && (
         <div
-          style={{ position: "absolute", right: "-6%", bottom: "-5%", width: "50%", height: "50%" }}
+          style={{ position: "absolute", [far]: "-6%", bottom: "-5%", width: "50%", height: "50%" }}
         >
           <Image slot="subjek" src={subjek.src} fit="contain" />
         </div>
@@ -94,27 +95,30 @@ function KolaseDiagonalSlide({ slots, options }: SlideProps) {
       <div
         style={{
           position: "absolute",
-          left: "var(--space-safe)",
-          bottom: "var(--space-safe)",
+          [near]: EDGE,
+          bottom: EDGE,
           width: subjek ? "44%" : "70%",
           display: "grid",
           gap: space(3),
-          justifyItems: "start",
+          justifyItems: flip ? "end" : "start",
+          textAlign: near,
         }}
       >
         {body && (
-          <Text slot="body" font="body" size={2} color={ink}>
+          <Text slot="body" font="body" size={2} color={ink} measure={40} balance>
             {body.value}
           </Text>
         )}
         {cta && (
-          <div style={{ display: "grid", gap: space(1) }}>
+          <div style={{ display: "grid", gap: space(1), justifyItems: flip ? "end" : "start" }}>
             <Text slot="cta" font="body" size={2} color={ink} strong>
               {cta.value}
             </Text>
-            <div style={{ width: "70%" }}>
-              <Scribble shape="underline" color="accent" />
-            </div>
+            {options.underline !== "no" && (
+              <div style={{ width: "70%" }}>
+                <Scribble shape="underline" color="accent" flip={flip} />
+              </div>
+            )}
           </div>
         )}
         <Logo slot="logo" src={slot(slots, "logo", "logo").src} height={5} />
@@ -175,6 +179,18 @@ export const kolaseDiagonal: Template = {
         values: ["primary", "accent"],
         default: "primary",
         description: "Warna pita",
+      },
+      {
+        name: "flip",
+        values: ["no", "yes"],
+        default: "no",
+        description: "Bingkai di kanan, subjek di kiri, kolom teks dan logo di kanan",
+      },
+      {
+        name: "underline",
+        values: ["yes", "no"],
+        default: "yes",
+        description: "Coretan garis bawah di bawah CTA",
       },
     ],
   },

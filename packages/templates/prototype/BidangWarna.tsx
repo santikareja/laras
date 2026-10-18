@@ -4,13 +4,20 @@ import { optionalSlot, type SlideProps, slot, type Template } from "../src/templ
 
 // Prototipe A2 (T-122, PRD 4 K4, K5, K7): bidang warna, lingkaran besar di balik subjek
 // cut-out yang keluar bingkai, headline dengan kata bersorot, coretan panah, dan stiker fakta.
+// `flip` menukar sisi subjek dan kolom teks sehingga logo bisa di kanan bawah; panah bisa
+// dimatikan untuk brand dengan batas elemen visual (PRD 4 P5).
+
+const EDGE = `calc(var(--space-safe) + ${space(1)})`;
 
 function BidangWarnaSlide({ slots, options }: SlideProps) {
+  const flip = options.flip === "yes";
   const mark = options.mark === "primary" ? "primary" : "accent";
   const onMark = mark === "primary" ? "neutral-light" : "neutral-dark";
   const sorot = optionalSlot(slots, "sorot", "text");
   const stiker = optionalSlot(slots, "stiker", "badge");
   const cta = optionalSlot(slots, "cta", "text");
+  const near = flip ? "right" : "left";
+  const far = flip ? "left" : "right";
   return (
     <div
       style={{
@@ -25,23 +32,24 @@ function BidangWarnaSlide({ slots, options }: SlideProps) {
           position: "absolute",
           width: "88%",
           aspectRatio: "1",
-          right: "-30%",
+          [far]: "-30%",
           bottom: "-14%",
           borderRadius: "50%",
           background: color(mark),
         }}
       />
       <div
-        style={{ position: "absolute", right: "-12%", bottom: "-4%", width: "86%", height: "80%" }}
+        style={{ position: "absolute", [far]: "-18%", bottom: "-4%", width: "86%", height: "80%" }}
       >
         <Image slot="image" src={slot(slots, "image", "image").src} fit="contain" />
       </div>
       <div
         style={{
           position: "absolute",
-          top: "var(--space-safe)",
-          left: "var(--space-safe)",
+          top: EDGE,
+          [near]: EDGE,
           width: "62%",
+          textAlign: near,
         }}
       >
         <Text
@@ -55,23 +63,19 @@ function BidangWarnaSlide({ slots, options }: SlideProps) {
           {slot(slots, "headline", "text").value}
         </Text>
       </div>
-      <div style={{ position: "absolute", top: "44%", left: "30%", width: "22%" }}>
-        <Scribble shape="arrow" color="primary" rotate={24} />
-      </div>
+      {options.arrow !== "no" && (
+        <div style={{ position: "absolute", top: "44%", [near]: "30%", width: "22%" }}>
+          <Scribble shape="arrow" color="primary" rotate={flip ? -24 : 24} flip={flip} />
+        </div>
+      )}
       {stiker && (
-        <div
-          style={{
-            position: "absolute",
-            top: "58%",
-            left: `calc(var(--space-safe) + ${space(2)})`,
-          }}
-        >
+        <div style={{ position: "absolute", top: "58%", [near]: EDGE }}>
           <Sticker
             slot="stiker"
             background="primary"
             color="neutral-light"
             edge="neutral-light"
-            rotate={-6}
+            rotate={flip ? 4 : -4}
             size={3}
           >
             {stiker.value}
@@ -81,15 +85,18 @@ function BidangWarnaSlide({ slots, options }: SlideProps) {
       <div
         style={{
           position: "absolute",
-          bottom: "var(--space-safe)",
-          left: "var(--space-safe)",
+          bottom: EDGE,
+          [near]: EDGE,
+          // Kolom CTA tidak boleh masuk ke area lingkaran dan subjek (PRD 4 P6).
+          maxWidth: "36%",
           display: "grid",
           gap: space(3),
-          justifyItems: "start",
+          justifyItems: flip ? "end" : "start",
+          textAlign: near,
         }}
       >
         {cta && (
-          <Text slot="cta" font="body" size={2} color="primary" strong>
+          <Text slot="cta" font="body" size={2} color="primary" strong balance>
             {cta.value}
           </Text>
         )}
@@ -144,6 +151,18 @@ export const bidangWarna: Template = {
         values: ["large", "medium"],
         default: "large",
         description: "Ukuran headline",
+      },
+      {
+        name: "flip",
+        values: ["no", "yes"],
+        default: "no",
+        description: "Subjek di kiri dan kolom teks serta logo di kanan",
+      },
+      {
+        name: "arrow",
+        values: ["yes", "no"],
+        default: "yes",
+        description: "Panah coretan dari teks ke subjek",
       },
     ],
   },

@@ -3,15 +3,19 @@ import { color, space } from "../primitives/vars.ts";
 import { optionalSlot, type SlideProps, slot, type Template } from "../src/template.ts";
 
 // Prototipe A1 (T-122, PRD 4 K2, K3): kata raksasa di belakang subjek cut-out di atas bidang
-// warna brand. Bukan bagian katalog; dipakai `pnpm render:prototype` untuk menilai arah.
+// warna brand. Posisi subjek, teks, dan logo adalah parameter agar aturan brand (mis. logo
+// kanan bawah) dan P1 (maksimal dua sumbu perataan) bisa dipenuhi. Bukan bagian katalog.
 
 const SHIFT: Record<string, string> = { left: "-16%", center: "0%", right: "16%" };
+// Satu jarak tepi untuk semua elemen sudut, ditambah satu langkah karena stiker dimiringkan.
+const EDGE = `calc(var(--space-safe) + ${space(1)})`;
 
 function KataRaksasaSlide({ slots, options }: SlideProps) {
   const dark = options.tone === "primary";
   const cta = optionalSlot(slots, "cta", "text");
-  const textRight = options.text === "bottom-right";
-  const edge = `calc(var(--space-safe) + ${space(1)})`;
+  const text = options.text ?? "bottom-left";
+  const right = text !== "bottom-left";
+  const logoBottomRight = options.logo === "bottom-right";
   return (
     <div
       style={{
@@ -21,14 +25,7 @@ function KataRaksasaSlide({ slots, options }: SlideProps) {
         background: color(dark ? "primary" : "secondary"),
       }}
     >
-      <div
-        style={{
-          position: "absolute",
-          top: "17%",
-          left: "var(--space-safe)",
-          right: "var(--space-safe)",
-        }}
-      >
+      <div style={{ position: "absolute", top: "17%", left: EDGE, right: EDGE }}>
         <Display
           slot="kata"
           font="heading"
@@ -51,20 +48,24 @@ function KataRaksasaSlide({ slots, options }: SlideProps) {
       >
         <Image slot="image" src={slot(slots, "image", "image").src} fit="contain" />
       </div>
-      <div style={{ position: "absolute", top: "var(--space-safe)", left: "var(--space-safe)" }}>
+      <div
+        style={{
+          position: "absolute",
+          ...(logoBottomRight ? { right: EDGE, bottom: EDGE } : { left: EDGE, top: EDGE }),
+        }}
+      >
         <Logo slot="logo" src={slot(slots, "logo", "logo").src} height={6} />
       </div>
       <div
         style={{
           position: "absolute",
-          // Ditambah satu langkah karena stiker yang miring melebarkan kotaknya.
-          bottom: `calc(var(--space-safe) + ${space(2)})`,
-          ...(textRight ? { right: edge } : { left: edge }),
           width: "34%",
+          ...(right ? { right: EDGE } : { left: EDGE }),
+          ...(text === "middle-right" ? { top: "46%" } : { bottom: `calc(${EDGE} + ${space(1)})` }),
           display: "grid",
           gap: space(3),
-          justifyItems: textRight ? "end" : "start",
-          textAlign: textRight ? "right" : "left",
+          justifyItems: right ? "end" : "start",
+          textAlign: right ? "right" : "left",
         }}
       >
         <Text
@@ -97,7 +98,7 @@ export const kataRaksasa: Template = {
     name: "Kata raksasa",
     format: "feed-4x5",
     description:
-      "Prototipe: satu kata kunci raksasa di belakang subjek cut-out, headline pendek dan CTA di sudut bawah.",
+      "Prototipe: satu kata kunci raksasa di belakang subjek cut-out, headline pendek dan CTA di sudut.",
     slots: [
       {
         name: "image",
@@ -138,9 +139,15 @@ export const kataRaksasa: Template = {
       },
       {
         name: "text",
-        values: ["bottom-left", "bottom-right"],
+        values: ["bottom-left", "bottom-right", "middle-right"],
         default: "bottom-left",
         description: "Letak headline dan CTA",
+      },
+      {
+        name: "logo",
+        values: ["top-left", "bottom-right"],
+        default: "top-left",
+        description: "Letak logo, mengikuti aturan brand",
       },
     ],
   },

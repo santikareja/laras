@@ -150,6 +150,23 @@ describe("primitives", () => {
     expect(markup).not.toContain("nowrap");
   });
 
+  it("Text body dengan panjang baris dan baris seimbang (PRD 4 P4)", () => {
+    const markup = html(
+      <Text font="body" size={2} color="neutral-dark" measure={40} balance>
+        Setiap perawatan diawali konsultasi gratis dan foto kondisi kulit.
+      </Text>,
+    );
+    expect(markup).toContain("max-width:40ch");
+    expect(markup).toContain("text-wrap:balance");
+    expect(
+      html(
+        <Text font="body" size={2} color="primary">
+          Isi
+        </Text>,
+      ),
+    ).not.toContain("max-width");
+  });
+
   it("Sticker, Scribble, dan Frame", () => {
     expect(
       html(
