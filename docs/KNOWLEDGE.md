@@ -146,10 +146,20 @@ Panggilan yang dipakai (fixture di `packages/sidecar/test/fixtures/codex/`):
 - Apakah `~/.codex/AGENTS.md` global ikut terbaca walau `--ignore-user-config` dipakai (file ini ada, saat ini kosong; tidak diubah agar tidak menyentuh konfigurasi pemilik).
 - Perilaku daemon app-server bersama (`daemon_auto_start` aktif) saat `exec`. Tidak ada masalah terlihat di dua panggilan; `--no-daemon` hanya ada di level atas.
 - Pola pesan batas kuota (tidak terpicu).
-- Permintaan ukuran selain 4:5 dan background transparan.
+- Permintaan ukuran selain 4:5.
+
+**Hasil uji subjek cut-out dan gambar konsep (T-121, 2026-10-19, 3 panggilan lewat `runCodex`, Codex 0.163.0, cwd folder kosong, flag ADR-012)**
+- **Background transparan berhasil** untuk objek (V1, kantong kopi + sendok biji) dan orang (V2, pelari seluruh tubuh) dengan baris prompt "Transparent background: output a PNG with an alpha channel where everything except the subject is fully transparent. No background color, no floor, no cast shadow, no frame." Hasil PNG RGBA 1122 × 1402; piksel alpha 0 sebanyak 58,9% (V1) dan 83,9% (V2).
+- **Alpha subjek 253, bukan 255** (V1 36% piksel bernilai 253, hanya 0,1% bernilai 255). Tanpa normalisasi, teks di belakang subjek tembus 0,8%. Normalisasi alpha ≥ 250 menjadi 255 sebelum dipakai.
+- **Tepi bersih:** helai rambut halus tetap semi-transparan tanpa halo di atas kuning `#FFE14D`; tepi objek rapi di atas `#0F3D3E` (dilihat pada perbesaran 2×). Subjek utuh di dalam bingkai (jarak terdekat ke tepi 44 px) sesuai baris "The whole subject stays inside the frame with empty margin on every side". Tanpa teks.
+- **Tanpa permintaan transparan hasilnya RGB tanpa alpha** (V3), sama dengan T-101.
+- **Gambar konsep mengikuti komposisi yang diminta:** V3 (persik di bawah kaca pembesar, latar polos `#EAF1F4`) mengosongkan 40% atas persis (deviasi luminans 0,5) dengan subjek di separuh bawah; satu ide yang jelas.
+- **Durasi** 44,9 / 60,4 / 34,2 detik; **token input** 84,7k / 68,4k / 67,9k (cached 60,3k / 49,4k / 44,4k), output ±320–380.
+- Komposit uji (teks besar di belakang subjek di atas bidang warna brand) layak untuk K3 dan K4 PRD 4 tanpa library penghapus latar. Catatan untuk T-123/T-125: `CodexAssetProvider` sekarang mengubah aset ke JPG dan memotong dengan `attention`; aset cut-out harus tetap PNG beralpha dan ditempatkan tanpa crop. Gambar uji disimpan lokal di `out/t121/` (tidak di-commit).
 
 ## Gotcha dan pelajaran
 
+- **`tsx` mengompilasi file `.ts` di luar paket ber-`"type": "module"` sebagai CommonJS,** sehingga top-level await gagal (`Top-level await is currently not supported with the "cjs" output format`) sebelum kode berjalan. Skrip sementara di luar repo memakai ekstensi `.mts` (T-121).
 - **Salinan CLI bawaan jangan dipakai.** Claude desktop app membawa `claude` di `~/Library/Application Support/Claude/claude-code/<versi>/<hash>/claude.app/...`, dan ekstensi ChatGPT di VS Code, Kiro, dan Antigravity membawa `codex` versi alpha. Path-nya berubah setiap update. Sebelum instalasi standalone, inilah satu-satunya salinan di Mac ini.
 - **Konfigurasi global pengguna ikut terbawa ke panggilan CLI runtime.** Mac ini punya banyak plugin, hook (SessionStart, UserPromptSubmit), server MCP, dan `~/.claude/CLAUDE.md` global untuk Claude, serta puluhan agent GSD, hook, dan plugin di `~/.codex/config.toml`. Tanpa isolasi, semua ini masuk ke setiap panggilan Laras, memboroskan kuota, dan mencemari prompt. Lihat flag isolasi di atas (T-101, T-102).
 - **Paket Claude adalah Team** (dikelola organisasi), bukan langganan pribadi seperti asumsi PRD 2. Pemilik perlu memastikan kebijakan organisasi mengizinkan pemakaian ini.

@@ -191,11 +191,12 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Catatan: masukan pemilik 2026-10-19: masalah utama adalah struktur yang selalu sama (foto + kartu teks, urutan badge–headline–body–CTA di setiap postingan); foto, tipografi, dan jumlah teks tidak dipilih sebagai masalah utama. Pemilik akan mengirim 5–10 referensi kelas dunia; kriteria konkret diturunkan dari referensi itu sebelum rencana disusun. Kandidat dari temuan T-117: QA visual membuka file logo, deskripsi foto membawa lokasi dan audiens brand, celah kosong `feed-foto-teks`, larangan fakta karangan di `qa-visual.md`, revisi karena skor saja.
   - Hasil 2026-10-19: pemilik mengirim 59 referensi (lokasi di KNOWLEDGE); kriteria K1–K8 diturunkan, disetujui, dan ditulis di PRD 4 (prinsip 7; prinsip 3 diubah ke arketipe komposisi). Pendekatan arketipe parametrik dicatat sebagai ADR-015. Dipecah menjadi T-121 sampai T-127; urutan sesuai pilihan pemilik: verifikasi Codex dulu.
 
-- [ ] T-121 Verifikasi Codex: subjek cut-out transparan dan gambar konsep
+- [x] T-121 Verifikasi Codex: subjek cut-out transparan dan gambar konsep
   - Rujukan: PRD 4 (K1, K3, K4), KNOWLEDGE Codex CLI ("Belum diuji": background transparan), ADR-012
   - AC: diketahui apakah `image_gen` bawaan menghasilkan PNG dengan alpha untuk objek dan orang, seberapa bersih tepinya di atas bidang warna, dan apakah gambar konsep satu objek dengan ruang kosong untuk tipografi bisa diminta lewat prompt.
   - Verifikasi: fakta (ukuran, alpha, durasi, token) dan penilaian tepi ditulis di KNOWLEDGE; gambar dibuka dan dinilai.
   - Catatan: MEMAKAI KUOTA Codex. Minta izin pemilik dengan jumlah panggilan sebelum menjalankan.
+  - Hasil 2026-10-19 (izin pemilik, tepat 3 panggilan Codex, 0 Claude): PNG beralpha untuk objek dan orang dengan tepi bersih (alpha subjek 253 perlu dinormalisasi), gambar konsep mengikuti ruang kosong yang diminta. Library penghapus latar tidak diperlukan. Rincian di KNOWLEDGE Codex CLI; gambar di `out/t121/` untuk prototipe T-122.
 
 - [ ] T-122 Prototipe 4 arketipe komposisi dan perangkat grafis dasar
   - Rujukan: PRD 4 (K1–K8), ADR-015, hasil T-121
