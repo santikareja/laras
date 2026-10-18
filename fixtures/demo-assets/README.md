@@ -11,3 +11,15 @@ Satu foto per brand fixture, dipakai sebagai aset job (`foto.jpg`, 1122 × 1402,
 | `seruni-skin` (`foto-4x5.jpg`) | T-109, 2026-10-18, thread `01a14f8d-d0c7-76d1-9534-e91e0eb516b2` | Foto utuh dari tepi ke tepi: jari mengoleskan serum ke pipi, mata di luar bingkai, botol tanpa label, jubah biru pucat |
 
 Catatan: `seruni-skin/foto.jpg` berupa foto 3:2 yang ditempel di atas latar polos (garis potongan di sekitar y 265 dan y 1130). Aman untuk slot 3:2 yang dipotong di tengah, tetapi tidak untuk foto penuh; slot 4:5 memakai `foto-4x5.jpg`. `render:demo` memilih `foto-<rasio>.jpg` bila ada, selain itu `foto.jpg`.
+
+## Aset prototipe arketipe (T-122)
+
+Dipakai `pnpm render:prototype` (`scripts/prototype-content.ts`), semua 1122 × 1402. Cut-out disimpan sebagai WebP beralpha (kualitas 88, alpha 100) setelah alpha ≥ 250 dinormalisasi menjadi 255 (KNOWLEDGE, T-121).
+
+| File | Asal | Prompt (ringkas) |
+|---|---|---|
+| `kopi-lembayung/subjek.webp` | T-121 V1, 2026-10-19 | Kantong kopi kraft berlabel kosong, sendok kayu berisi biji, latar transparan |
+| `ritme-run-club/subjek.webp` | T-121 V2, 2026-10-19 | Perempuan Indonesia berlari seluruh tubuh, singlet biru brand, latar transparan |
+| `seruni-skin/konsep.jpg` | T-121 V3, 2026-10-19 | Persik di bawah kaca pembesar, latar polos `#EAF1F4`, 40% atas kosong (JPG 85) |
+| `seruni-skin/subjek.webp` | T-122, 2026-10-19 | Perempuan Indonesia setengah badan menyentuh pipi, tekstur kulit asli, atasan biru pucat, latar transparan |
+

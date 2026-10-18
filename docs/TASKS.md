@@ -198,10 +198,11 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Catatan: MEMAKAI KUOTA Codex. Minta izin pemilik dengan jumlah panggilan sebelum menjalankan.
   - Hasil 2026-10-19 (izin pemilik, tepat 3 panggilan Codex, 0 Claude): PNG beralpha untuk objek dan orang dengan tepi bersih (alpha subjek 253 perlu dinormalisasi), gambar konsep mengikuti ruang kosong yang diminta. Library penghapus latar tidak diperlukan. Rincian di KNOWLEDGE Codex CLI; gambar di `out/t121/` untuk prototipe T-122.
 
-- [ ] T-122 Prototipe 4 arketipe komposisi dan perangkat grafis dasar
+- [~] T-122 Prototipe 4 arketipe komposisi dan perangkat grafis dasar
   - Rujukan: PRD 4 (K1–K8), ADR-015, hasil T-121
   - AC: 4 arketipe (tipografi raksasa yang menimpa foto, bidang warna dengan subjek dan kata bersorot, iklan minimal satu objek, kolase diagonal) dirender untuk 3 brand dengan aset demo atau hasil T-121; pemilik menilai arahnya sebelum sistem penuh dibangun.
   - Verifikasi: `pnpm render:demo` lolos QA kode; PNG dinilai agent dan pemilik.
+  - Catatan 2026-10-19: atas izin pemilik, 1 panggilan Codex tambahan untuk cut-out Seruni. Dikerjakan: aset T-121 dan cut-out Seruni di `fixtures/demo-assets/`, primitives `Display`, `Highlight` (prop `highlight` di `Text`), `Scribble`, `Sticker`, `Frame`, empat arketipe di `packages/templates/prototype/` (di luar katalog), `pnpm render:prototype`, dan test QA prototipe. Pesan sama dengan T-117 K2/S1/R1 untuk pembanding. 12 render lolos QA kode; 279 test lolos. Menunggu penilaian pemilik.
 
 - [ ] T-123 Sistem arketipe parametrik
   - Rujukan: ADR-015, ARCH 6.2, ARCH 7.2

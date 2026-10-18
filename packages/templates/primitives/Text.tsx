@@ -1,3 +1,4 @@
+import { Highlight, type HighlightStyle } from "./Highlight.tsx";
 import {
   type ColorToken,
   color,
@@ -15,12 +16,27 @@ type TextProps = {
   strong?: boolean;
   as?: "h1" | "h2" | "h3" | "p" | "span";
   slot?: string;
+  // Bagian teks yang diberi blok sorot (PRD 4 K5); diabaikan bila tidak ada di teks.
+  highlight?: HighlightStyle & { text: string };
   children: string;
 };
 
 // Teks tidak pernah dipotong (tanpa line-clamp atau overflow hidden) agar overflow tertangkap QA.
-export function Text({ font, size, color: tone, strong = false, as, slot, children }: TextProps) {
+export function Text({
+  font,
+  size,
+  color: tone,
+  strong = false,
+  as,
+  slot,
+  highlight,
+  children,
+}: TextProps) {
   const Tag = as ?? (font === "heading" ? "h2" : "p");
+  const at = highlight?.text ? children.indexOf(highlight.text) : -1;
+  const end = at + (highlight?.text.length ?? 0);
+  // Karakter non-spasi tepat sesudah sorotan (mis. koma) disatukan agar tidak pindah baris sendiri.
+  const tail = children.slice(end).match(/^\S*/)?.[0] ?? "";
   return (
     <Tag
       data-slot={slot}
@@ -36,7 +52,18 @@ export function Text({ font, size, color: tone, strong = false, as, slot, childr
         color: color(tone),
       }}
     >
-      {children}
+      {highlight && at >= 0 ? (
+        <>
+          {children.slice(0, at)}
+          <span style={{ whiteSpace: "nowrap" }}>
+            <Highlight {...highlight}>{highlight.text}</Highlight>
+            {tail}
+          </span>
+          {children.slice(end + tail.length)}
+        </>
+      ) : (
+        children
+      )}
     </Tag>
   );
 }

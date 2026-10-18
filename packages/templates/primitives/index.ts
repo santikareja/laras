@@ -1,6 +1,11 @@
 export { Badge } from "./Badge.tsx";
+export { Display } from "./Display.tsx";
+export { Frame } from "./Frame.tsx";
 export { Grid } from "./Grid.tsx";
+export { Highlight } from "./Highlight.tsx";
 export { Image } from "./Image.tsx";
 export { Logo } from "./Logo.tsx";
+export { Scribble } from "./Scribble.tsx";
+export { Sticker } from "./Sticker.tsx";
 export { Text } from "./Text.tsx";
 export type { ColorToken, FontRole, FontSizeStep, SpaceStep } from "./vars.ts";

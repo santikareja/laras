@@ -3,6 +3,6 @@
   "compilerOptions": {
     "lib": ["es2023", "dom"]
   },
-  "include": ["src", "feed", "carousel", "primitives", "specimen", "tokens"],
+  "include": ["src", "feed", "carousel", "primitives", "specimen", "prototype", "tokens"],
   "exclude": ["**/*.test.ts", "**/*.test.tsx"]
 }

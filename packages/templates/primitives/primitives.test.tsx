@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { Badge, Grid, Image, Logo, Text } from "./index.ts";
+import { Badge, Display, Frame, Grid, Image, Logo, Scribble, Sticker, Text } from "./index.ts";
 import { fontSize } from "./vars.ts";
 
 const html = renderToStaticMarkup;
@@ -106,6 +106,102 @@ describe("primitives", () => {
     for (const [property, value] of governed) {
       expect(`${property}: ${value}`).toMatch(/: var\(--/);
     }
+  });
+
+  it("Display: kelipatan skala brand dibatasi lebar kotak", () => {
+    const markup = html(
+      <Display slot="kata" font="heading" scale={2.5} color="accent">
+        SANGRAI
+      </Display>,
+    );
+    expect(markup).toMatchSnapshot();
+    expect(markup).toContain("container-type:inline-size");
+    expect(markup).toContain("calc(100cqw / 4.90)");
+  });
+
+  it("Text dengan sorot: tanda baca sesudahnya tidak terpisah baris", () => {
+    const markup = html(
+      <Text
+        slot="headline"
+        font="heading"
+        size={6}
+        color="primary"
+        highlight={{ text: "minggu ini", background: "accent", color: "neutral-dark" }}
+      >
+        Disangrai minggu ini, bukan bulan lalu.
+      </Text>,
+    );
+    expect(markup).toMatchSnapshot();
+    expect(markup).toContain('<span style="white-space:nowrap"><span');
+    expect(markup).toMatch(/minggu ini<\/span>,<\/span> bukan bulan lalu\.</);
+  });
+
+  it("Text dengan sorot yang tidak ada di teks dirender biasa", () => {
+    const markup = html(
+      <Text
+        font="body"
+        size={2}
+        color="primary"
+        highlight={{ text: "x", background: "accent", color: "primary" }}
+      >
+        Tanpa sorot
+      </Text>,
+    );
+    expect(markup).not.toContain("nowrap");
+  });
+
+  it("Sticker, Scribble, dan Frame", () => {
+    expect(
+      html(
+        <Sticker
+          slot="stiker"
+          background="primary"
+          color="neutral-light"
+          edge="neutral-light"
+          rotate={-6}
+        >
+          5:45 AM
+        </Sticker>,
+      ),
+    ).toMatchSnapshot();
+    const scribble = html(<Scribble shape="underline" color="accent" rotate={4} flip />);
+    expect(scribble).toMatchSnapshot();
+    expect(scribble).toContain('aria-hidden="true"');
+    expect(scribble).not.toContain("data-slot");
+    expect(
+      html(<Frame slot="image" src="a.png" edge="neutral-light" rotate={-4} />),
+    ).toMatchSnapshot();
+  });
+
+  it("perangkat grafis juga hanya memakai CSS variables brand", () => {
+    const markup = html(
+      <div>
+        <Display font="heading" scale={2} color="primary">
+          5K
+        </Display>
+        <Text
+          font="heading"
+          size={5}
+          color="primary"
+          highlight={{ text: "5K", background: "accent", color: "neutral-dark" }}
+        >
+          First 5K
+        </Text>
+        <Sticker background="accent" color="neutral-dark" edge="neutral-light">
+          Gratis
+        </Sticker>
+        <Scribble shape="arrow" color="primary" />
+        <Frame src="a.png" edge="neutral-light" />
+      </div>,
+    );
+    const governed = styleDeclarations(markup).filter(([property]) =>
+      TOKEN_PROPERTIES.includes(property),
+    );
+    expect(governed.length).toBeGreaterThan(10);
+    for (const [property, value] of governed) {
+      expect(`${property}: ${value}`).toMatch(/: (?:var\(--|min\(calc\(var\(--)/);
+    }
+    expect(markup).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(/i);
   });
 
   it("ukuran font jatuh ke langkah terbesar yang ada di skala brand", () => {
