@@ -1,5 +1,11 @@
 # SESSION LOG
 
+## Sesi #8, 2026-10-18
+- Task: T-105
+- Hasil: `brandCss(brand, { assetBaseUrl })` di `packages/templates/tokens` mengubah `BrandKit` menjadi `@font-face` dan CSS variables di `:root`; kontrak nama variabel ditulis sebagai tabel di ARCH 6.1. Keputusan pemilik: spacing terkurasi (`--space-1`…`--space-8` = unit × 1, 2, 3, 4, 6, 8, 12, 16, plus `--space-safe`), `shape.shadow` menjadi enum `none | soft` (PRD F2 diperbarui), serta `--font-size-*` dan namespace baru `--shape-*` (CLAUDE.md dan DESIGN 15 diperbarui). 11 test baru (total repo 96), termasuk snapshot CSS ketiga fixture. Di browser bawaan, keenam font fixture termuat dengan rentang bobot dan bayangan `soft` valid.
+- Masalah dan solusinya: `URL` tidak dikenal saat typecheck karena `lib` dasar hanya `es2023`; `packages/templates` diberi lib `dom` (tanpa tipe Node) dan `tsconfig.test.json` seperti `shared`. Parser URL membaca `%2e%2e` sebagai `..` sehingga cek `RelativePath` tidak cukup; `brandCss` mengecek hasil resolve. Halaman `file://` di browser bawaan hanya snapshot statis; pemeriksaan DOM memakai server `localhost` sementara di scratchpad (tidak di-commit).
+- Commit: d8c3acc, docs: update status sesi #8
+
 ## Sesi #7, 2026-10-18
 - Task: T-104
 - Hasil: Tiga brand fixture fiktif sesuai usulan yang disetujui pemilik (Kopi Lembayung, Seruni Skin, Ritme Run Club), lengkap dengan `brand.json`, `copy-guide.json`, `knowledge/business.md`, logo SVG, dan font WOFF2 OFL dari Fontsource 5.3.0 (12 file diunduh dengan izin). Skema `CopyGuide` baru di `shared`; pembaca glyph font WOFF2/TTF/OTF di sidecar tanpa dependency baru. PRD 12 pertanyaan 2 terjawab (bahasa per project, `id`/`en`). Total test repo 85.
