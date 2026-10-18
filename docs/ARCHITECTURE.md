@@ -292,7 +292,9 @@ Token diubah oleh `brandCss(brand, { assetBaseUrl })` (`packages/templates/token
 |---|---|---|
 | `--color-primary`, `--color-secondary`, `--color-accent` | `colors` | hex apa adanya |
 | `--color-neutral-<kunci>` | `colors.neutral` | satu variabel per kunci, mis. `--color-neutral-50` |
+| `--color-neutral-light`, `--color-neutral-dark` | `colors.neutral` | alias ke kunci netral terendah dan tertinggi; template memakai alias ini, bukan kunci |
 | `--font-heading`, `--font-body` | `typography.heading/body.family` | nama family tanpa font cadangan, agar fallback tertangkap QA (7.2) |
+| `--font-heading-weight`, `--font-heading-weight-strong`, `--font-body-weight`, `--font-body-weight-strong` | `typography.heading/body.weights` | bobot terkecil dan terbesar yang diizinkan |
 | `--font-size-1` … `--font-size-N` | `typography.scale` | px, urut dari terkecil |
 | `--space-1` … `--space-8` | `spacing.unit` | unit × 1, 2, 3, 4, 6, 8, 12, 16 (8–128 px bila unit 8) |
 | `--space-safe` | `spacing.safeMargin` | px |
@@ -308,6 +310,7 @@ Token diubah oleh `brandCss(brand, { assetBaseUrl })` (`packages/templates/token
   - `meta`: id, nama, format, deskripsi kapan dipakai, daftar slot (nama, tipe, batas karakter), opsi yang diizinkan.
   - komponen render.
 - Template hanya boleh memakai CSS variables dari token, tidak boleh nilai warna atau font hard-coded (dicek oleh lint khusus).
+- Teks, badge, gambar, logo, dan grid dibangun dari primitives `Text`, `Badge`, `Image`, `Logo`, `Grid` (`packages/templates/primitives`). Props-nya hanya menerima nama token (warna, langkah ukuran 1–6, langkah spacing 1–8), jadi template tidak bisa memberi nilai mentah. Setiap elemen slot diberi `data-slot` agar QA (7.2) dan editor manual (PRD F11) bisa memetakannya kembali ke `LayoutSpec`. `Text` mengunci bobot dari token dengan `font-synthesis: none` dan tidak pernah memotong teks; `Image` dan `Logo` menerima URL yang sudah di-resolve. Penempatan elemen di dalam `Grid` diatur template.
 - Katalog template (`meta` semua template) dikirim ke Claude di tahap `layout`, sehingga Claude memilih dari opsi yang sudah dikurasi.
 - Template carousel didefinisikan sebagai **sistem**: kumpulan tipe slide (hook, isi, daftar, kutipan, CTA) yang berbagi grid dan elemen berulang.
 

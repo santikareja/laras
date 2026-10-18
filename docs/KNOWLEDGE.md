@@ -189,6 +189,10 @@ Panggilan yang dipakai (fixture di `packages/sidecar/test/fixtures/codex/`):
 - **`lib` di `tsconfig.base.json` hanya `es2023`**, jadi global web seperti `URL` tidak dikenal tanpa lib `dom` atau tipe Node. `packages/templates` memakai `"lib": ["es2023", "dom"]` (konten web) dan sengaja tanpa tipe Node; test-nya memakai `tsconfig.test.json` seperti `shared`.
 - **Diverifikasi di browser bawaan (Chromium), 2026-10-18:** `@font-face` dengan `font-weight: 400 600` pada font variabel fixture termuat (`document.fonts` berstatus `loaded`), dan `color-mix(in srgb, var(--color-neutral-900) 16%, transparent)` di `box-shadow` dihitung menjadi `color(srgb … / 0.16)`.
 - **Browser bawaan menampilkan halaman `file://` sebagai snapshot statis**; `javascript_tool` dan alat halaman lain tidak bisa dipakai. Sajikan lewat server `localhost` sementara bila perlu memeriksa DOM.
+- **React 19 `renderToStaticMarkup` menambahkan `<link rel="preload" as="image" href="…">` tepat sebelum setiap `<img>`** saat merender fragmen (terlihat di snapshot primitives). Untuk dokumen penuh dengan `<head>`, perilaku hoisting-nya belum diuji (T-107).
+- **Vitest 5 mentransformasi `.tsx` (runtime JSX otomatis) tanpa plugin atau konfigurasi**; `jsx: "react-jsx"` di tsconfig hanya dibutuhkan `tsc`. Node 22 tidak bisa menjalankan `.tsx` lewat type stripping; skrip sementara yang mengimpor komponen bisa dijalankan dengan `pnpm exec vitest run --root <folder-scratch> --globals` dan impor path absolut.
+- **Biome `a11y/useValidAriaRole` juga memeriksa prop `role` pada komponen React buatan sendiri**, jadi prop bernama `role` dengan nilai seperti `"body"` ditolak. Primitive `Text` memakai `font` (`"heading" | "body"`).
+- **Diverifikasi di browser bawaan, 2026-10-18:** primitives dengan token ketiga fixture menghasilkan bobot sesuai brand (Anton tetap 400 dengan `font-synthesis: none`, Fraunces 700, Cormorant 600), ukuran dari rantai `var(--font-size-N, …)`, dan padding `--space-safe` 64/80 px.
 
 ## Keputusan kecil (tanggal, keputusan, alasan)
 
@@ -204,3 +208,5 @@ Panggilan yang dipakai (fixture di `packages/sidecar/test/fixtures/codex/`):
 | 2026-10-18 | Spacing brand terkurasi: `--space-1`…`--space-8` = `spacing.unit` × 1, 2, 3, 4, 6, 8, 12, 16, ditambah `--space-safe` | Ritme lebih konsisten dan pilihan AI terbatas; pola sama dengan skala DESIGN 4 (pemilik, sesi #8) |
 | 2026-10-18 | `BrandKit.shape.shadow` menjadi enum `none` atau `soft` (PRD F2 ikut diperbarui) | Brand tidak valid gagal saat validasi, bukan saat render; nilai baru bisa ditambah nanti (pemilik, sesi #8) |
 | 2026-10-18 | Skala tipografi dan bentuk ikut T-105 sebagai `--font-size-*` dan namespace baru `--shape-*` | T-106 (Text, Badge) langsung membutuhkannya (pemilik, sesi #8) |
+| 2026-10-18 | `@laras/templates` memakai React 19.3 (`react` dependency; `react-dom`, `@types/react`, `@types/react-dom` devDependency), versi sama dengan `apps/desktop` | Template dan primitives adalah komponen JSX yang dirender `renderToStaticMarkup` (ARCH 6.2) (pemilik, sesi #8) |
+| 2026-10-18 | Token tambahan `--color-neutral-light`/`-dark` dan `--font-{heading,body}-weight[-strong]` | Kunci netral berbeda per brand; bobot eksplisit mencegah tebal palsu pada font satu bobot (pemilik, sesi #8) |

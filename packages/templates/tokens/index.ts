@@ -28,14 +28,18 @@ export function brandCss(brand: BrandKit, { assetBaseUrl }: BrandCssOptions): st
 function brandVariables(brand: BrandKit): Variable[] {
   const { colors, typography, spacing, shape } = brand;
   const neutrals = Object.entries(colors.neutral).sort(([a], [b]) => Number(a) - Number(b));
-  const darkestNeutral = `var(--color-neutral-${neutrals.at(-1)?.[0]})`;
   return [
     ["--color-primary", colors.primary],
     ["--color-secondary", colors.secondary],
     ["--color-accent", colors.accent],
     ...neutrals.map(([key, hex]): Variable => [`--color-neutral-${key}`, hex]),
+    // Kunci netral berbeda per brand; template memakai alias terang (kunci terendah) dan gelap.
+    ["--color-neutral-light", `var(--color-neutral-${neutrals.at(0)?.[0]})`],
+    ["--color-neutral-dark", `var(--color-neutral-${neutrals.at(-1)?.[0]})`],
     ["--font-heading", cssString(typography.heading.family)],
     ["--font-body", cssString(typography.body.family)],
+    ...weightVariables("heading", typography.heading.weights),
+    ...weightVariables("body", typography.body.weights),
     ...typography.scale.map((size, i): Variable => [`--font-size-${i + 1}`, px(size)]),
     ...SPACE_STEPS.map((step, i): Variable => [`--space-${i + 1}`, px(step * spacing.unit)]),
     ["--space-safe", px(spacing.safeMargin)],
@@ -44,9 +48,18 @@ function brandVariables(brand: BrandKit): Variable[] {
     [
       "--shape-shadow",
       shape.shadow === "soft"
-        ? `0 8px 24px color-mix(in srgb, ${darkestNeutral} 16%, transparent)`
+        ? "0 8px 24px color-mix(in srgb, var(--color-neutral-dark) 16%, transparent)"
         : "none",
     ],
+  ];
+}
+
+// Bobot eksplisit dari daftar yang diizinkan, agar browser tidak memakai bobot bawaan elemen
+// (mis. <h1> = 700) yang memicu tebal palsu pada font yang hanya punya satu bobot.
+function weightVariables(role: "heading" | "body", weights: number[]): Variable[] {
+  return [
+    [`--font-${role}-weight`, `${Math.min(...weights)}`],
+    [`--font-${role}-weight-strong`, `${Math.max(...weights)}`],
   ];
 }
 

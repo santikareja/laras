@@ -101,11 +101,11 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Verifikasi: test snapshot CSS untuk ketiga brand fixture; `pnpm typecheck && pnpm lint && pnpm test` lolos.
   - Catatan: Selesai 2026-10-18. `brandCss(brand, { assetBaseUrl })` menghasilkan `@font-face` (rentang bobot, `font-display: block`, format dari ekstensi) dan `:root` dengan kontrak variabel di ARCH 6.1. Keputusan pemilik: spacing terkurasi `--space-1`…`--space-8` + `--space-safe`; `shape.shadow` jadi enum `none | soft` (PRD F2 diperbarui); `--font-size-*` dan namespace baru `--shape-*` ikut T-105. Path font dicek dari hasil resolve URL (`%2e%2e`). `packages/templates` memakai lib `dom` dan `tsconfig.test.json`. Test: 3 snapshot, 3 URL font ke file fixture, 4 test escape/format/path, 1 test enum bayangan. Dicek juga di browser bawaan: keenam font termuat dan bayangan `soft` valid.
 
-- [ ] T-106 Primitives template
+- [x] T-106 Primitives template
   - Rujukan: ARCH 3 (`templates/primitives`), ARCH 6.2
   - AC: komponen `Text`, `Logo`, `Image`, `Grid`, `Badge` yang hanya memakai CSS variables brand; lint token lolos.
   - Verifikasi: test render HTML statis per komponen; `pnpm lint` lolos.
-  - Catatan:
+  - Catatan: Selesai 2026-10-18. Lima primitives di `packages/templates/primitives` dengan props bertipe nama token (warna, ukuran 1–6 dengan fallback ke langkah terbesar yang ada, spacing 1–8) dan `data-slot`; ringkasan perilaku di ARCH 6.2. Disetujui pemilik: dependency React 19.3 di `@laras/templates` dan enam token baru di `brandCss` (`--color-neutral-light/dark`, `--font-{heading,body}-weight[-strong]`). Test: 6 snapshot HTML, 1 test atribut kosong, 1 penjaga token (warna/font/ukuran wajib `var(--…)`), 1 test rantai ukuran; snapshot `brandCss` diperbarui. Dicek di browser bawaan dengan ketiga brand: bobot sesuai brand tanpa tebal palsu, tanpa overflow pada kanvas 1080 × 1350.
 
 - [ ] T-107 Renderer Playwright, pasca-proses sharp, dan `pnpm render:demo`
   - Rujukan: ARCH 7.1, ARCH 7.3, ADR-009, CLAUDE.md (Desain dan Template)
