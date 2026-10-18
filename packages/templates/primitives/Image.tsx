@@ -2,12 +2,21 @@ type ImageProps = {
   src: string;
   fit?: "cover" | "contain";
   rounded?: boolean;
+  // Hitam-putih, dasar perlakuan duotone di Frame (PRD 4 K5).
+  mono?: boolean;
   alt?: string;
   slot?: string;
 };
 
 // Mengisi penuh kotak induknya; ukuran dan posisi diatur template.
-export function Image({ src, fit = "cover", rounded = false, alt = "", slot }: ImageProps) {
+export function Image({
+  src,
+  fit = "cover",
+  rounded = false,
+  mono = false,
+  alt = "",
+  slot,
+}: ImageProps) {
   return (
     <img
       data-slot={slot}
@@ -20,6 +29,7 @@ export function Image({ src, fit = "cover", rounded = false, alt = "", slot }: I
         height: "100%",
         objectFit: fit,
         borderRadius: rounded ? "var(--shape-radius)" : undefined,
+        filter: mono ? "grayscale(1) contrast(1.1)" : undefined,
       }}
     />
   );

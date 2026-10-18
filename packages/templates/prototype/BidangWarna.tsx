@@ -1,23 +1,24 @@
-import { Image, Logo, Scribble, Sticker, Text } from "../primitives/index.ts";
+import { Display, Image, Logo, Sticker, Text } from "../primitives/index.ts";
 import { color, space } from "../primitives/vars.ts";
 import { optionalSlot, type SlideProps, slot, type Template } from "../src/template.ts";
 
-// Prototipe A2 (T-122, PRD 4 K4, K5, K7): bidang warna, lingkaran besar di balik subjek
-// cut-out yang keluar bingkai, headline dengan kata bersorot, coretan panah, dan stiker fakta.
-// `flip` menukar sisi subjek dan kolom teks sehingga logo bisa di kanan bawah; panah bisa
-// dimatikan untuk brand dengan batas elemen visual (PRD 4 P5).
+// Prototipe A2 v3 (T-122, PRD 4 K2, K3, K4, K5, K7): bidang warna dengan lengkung besar,
+// headline tiga tingkat (pembuka kecil bersorot, frasa utama raksasa bertumpuk, penutup),
+// subjek cut-out berinteraksi yang menimpa frasa utama, fakta ditempel ke subjek, CTA tombol.
+// `flip` menukar sisi agar logo bisa di kanan bawah (aturan brand).
 
 const EDGE = `calc(var(--space-safe) + ${space(1)})`;
 
 function BidangWarnaSlide({ slots, options }: SlideProps) {
   const flip = options.flip === "yes";
-  const mark = options.mark === "primary" ? "primary" : "accent";
-  const onMark = mark === "primary" ? "neutral-light" : "neutral-dark";
-  const sorot = optionalSlot(slots, "sorot", "text");
-  const stiker = optionalSlot(slots, "stiker", "badge");
-  const cta = optionalSlot(slots, "cta", "text");
   const near = flip ? "right" : "left";
   const far = flip ? "left" : "right";
+  const mark = options.mark === "primary" ? "primary" : "accent";
+  const onMark = mark === "primary" ? "neutral-light" : "neutral-dark";
+  const pembuka = optionalSlot(slots, "pembuka", "text");
+  const penutup = optionalSlot(slots, "penutup", "text");
+  const fakta = optionalSlot(slots, "fakta", "badge");
+  const cta = optionalSlot(slots, "cta", "text");
   return (
     <div
       style={{
@@ -30,55 +31,77 @@ function BidangWarnaSlide({ slots, options }: SlideProps) {
       <div
         style={{
           position: "absolute",
-          width: "88%",
-          aspectRatio: "1",
-          [far]: "-30%",
-          bottom: "-14%",
-          borderRadius: "50%",
+          [far]: "-4%",
+          bottom: 0,
+          width: "52%",
+          height: "66%",
+          borderRadius: "999px 999px 0 0",
           background: color(mark),
         }}
       />
-      <div
-        style={{ position: "absolute", [far]: "-18%", bottom: "-4%", width: "86%", height: "80%" }}
-      >
-        <Image slot="image" src={slot(slots, "image", "image").src} fit="contain" />
-      </div>
       <div
         style={{
           position: "absolute",
           top: EDGE,
           [near]: EDGE,
-          width: "62%",
+          width: "64%",
+          display: "grid",
+          gap: space(2),
+          justifyItems: flip ? "end" : "start",
           textAlign: near,
         }}
       >
-        <Text
+        {pembuka && (
+          <Text
+            slot="pembuka"
+            font="body"
+            size={2}
+            color={onMark}
+            strong
+            highlight={{ text: pembuka.value, background: mark, color: onMark, tilt: -2 }}
+          >
+            {pembuka.value}
+          </Text>
+        )}
+        <Display
           slot="headline"
-          as="h1"
           font="heading"
-          size={options.size === "medium" ? 5 : 6}
+          scale={2}
+          charWidth={options.width === "condensed" ? 0.5 : 0.78}
+          align={near}
+          stack
           color="primary"
-          {...(sorot ? { highlight: { text: sorot.value, background: mark, color: onMark } } : {})}
         >
           {slot(slots, "headline", "text").value}
-        </Text>
+        </Display>
+        {penutup && (
+          <Text slot="penutup" font="heading" size={4} color="primary" measure={14} balance>
+            {penutup.value}
+          </Text>
+        )}
       </div>
-      {options.arrow !== "no" && (
-        <div style={{ position: "absolute", top: "44%", [near]: "30%", width: "22%" }}>
-          <Scribble shape="arrow" color="primary" rotate={flip ? -24 : 24} flip={flip} />
-        </div>
-      )}
-      {stiker && (
-        <div style={{ position: "absolute", top: "58%", [near]: EDGE }}>
+      <div
+        style={{ position: "absolute", [far]: "-6%", bottom: "-3%", width: "66%", height: "76%" }}
+      >
+        <Image slot="image" src={slot(slots, "image", "image").src} fit="contain" />
+      </div>
+      {fakta && (
+        <div
+          style={{
+            position: "absolute",
+            bottom: options.fact === "low" ? "19%" : "30%",
+            [near]: "34%",
+          }}
+        >
           <Sticker
-            slot="stiker"
+            slot="fakta"
             background="primary"
             color="neutral-light"
             edge="neutral-light"
-            rotate={flip ? 4 : -4}
+            rotate={flip ? 6 : -6}
             size={3}
           >
-            {stiker.value}
+            {fakta.value}
           </Sticker>
         </div>
       )}
@@ -87,18 +110,16 @@ function BidangWarnaSlide({ slots, options }: SlideProps) {
           position: "absolute",
           bottom: EDGE,
           [near]: EDGE,
-          // Kolom CTA tidak boleh masuk ke area lingkaran dan subjek (PRD 4 P6).
-          maxWidth: "36%",
+          gridTemplateColumns: "minmax(0, 1fr)",
           display: "grid",
-          gap: space(3),
+          gap: space(4),
           justifyItems: flip ? "end" : "start",
-          textAlign: near,
         }}
       >
         {cta && (
-          <Text slot="cta" font="body" size={2} color="primary" strong balance>
+          <Sticker slot="cta" background="primary" color="neutral-light">
             {cta.value}
-          </Text>
+          </Sticker>
         )}
         <Logo slot="logo" src={slot(slots, "logo", "logo").src} height={6} />
       </div>
@@ -112,24 +133,31 @@ export const bidangWarna: Template = {
     name: "Bidang warna",
     format: "feed-4x5",
     description:
-      "Prototipe: subjek cut-out keluar bingkai di atas lingkaran warna, headline dengan kata bersorot, panah coretan, stiker fakta.",
+      "Prototipe: lengkung warna, headline tiga tingkat dengan frasa utama raksasa, subjek cut-out yang menimpa frasa, fakta di subjek, CTA tombol.",
     slots: [
       {
         name: "image",
         type: "image",
         required: true,
-        description: "Subjek cut-out berlatar transparan",
+        description: "Subjek cut-out berlatar transparan yang berinteraksi",
         aspectRatio: "4:5",
       },
-      { name: "headline", type: "text", required: true, description: "Headline", maxChars: 40 },
       {
-        name: "sorot",
+        name: "pembuka",
         type: "text",
         required: false,
-        description: "Bagian headline yang diberi blok sorot",
+        description: "Kalimat pembuka kecil bersorot",
+        maxChars: 28,
+      },
+      {
+        name: "headline",
+        type: "text",
+        required: true,
+        description: "Frasa utama, satu sampai dua kata, ditumpuk satu kata per baris",
         maxChars: 16,
       },
-      { name: "stiker", type: "badge", required: false, description: "Fakta pendek", maxChars: 20 },
+      { name: "penutup", type: "text", required: false, description: "Penutup", maxChars: 32 },
+      { name: "fakta", type: "badge", required: false, description: "Fakta pendek", maxChars: 20 },
       { name: "cta", type: "text", required: false, description: "Ajakan", maxChars: 28 },
       { name: "logo", type: "logo", required: true, description: "Logo di atas latar terang" },
     ],
@@ -144,25 +172,25 @@ export const bidangWarna: Template = {
         name: "mark",
         values: ["accent", "primary"],
         default: "accent",
-        description: "Warna lingkaran dan blok sorot",
+        description: "Warna lengkung dan sorot pembuka",
       },
       {
-        name: "size",
-        values: ["large", "medium"],
-        default: "large",
-        description: "Ukuran headline",
+        name: "width",
+        values: ["wide", "condensed"],
+        default: "wide",
+        description: "Lebar huruf font heading, untuk ukuran frasa utama",
+      },
+      {
+        name: "fact",
+        values: ["high", "low"],
+        default: "high",
+        description: "Tinggi stiker fakta, agar tidak menabrak penutup atau CTA",
       },
       {
         name: "flip",
         values: ["no", "yes"],
         default: "no",
-        description: "Subjek di kiri dan kolom teks serta logo di kanan",
-      },
-      {
-        name: "arrow",
-        values: ["yes", "no"],
-        default: "yes",
-        description: "Panah coretan dari teks ke subjek",
+        description: "Subjek di kiri, kolom teks dan logo di kanan",
       },
     ],
   },

@@ -7,5 +7,6 @@ export { Image } from "./Image.tsx";
 export { Logo } from "./Logo.tsx";
 export { Scribble } from "./Scribble.tsx";
 export { Sticker } from "./Sticker.tsx";
+export { Tape } from "./Tape.tsx";
 export { Text } from "./Text.tsx";
 export type { ColorToken, FontRole, FontSizeStep, SpaceStep } from "./vars.ts";

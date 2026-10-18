@@ -1,6 +1,17 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { Badge, Display, Frame, Grid, Image, Logo, Scribble, Sticker, Text } from "./index.ts";
+import {
+  Badge,
+  Display,
+  Frame,
+  Grid,
+  Image,
+  Logo,
+  Scribble,
+  Sticker,
+  Tape,
+  Text,
+} from "./index.ts";
 import { fontSize } from "./vars.ts";
 
 const html = renderToStaticMarkup;
@@ -188,6 +199,35 @@ describe("primitives", () => {
     expect(
       html(<Frame slot="image" src="a.png" edge="neutral-light" rotate={-4} />),
     ).toMatchSnapshot();
+  });
+
+  it("Display bertumpuk: setiap kata satu baris dengan ukuran pas sendiri", () => {
+    const markup = html(
+      <Display slot="headline" font="heading" scale={2} stack color="primary">
+        MINGGU INI
+      </Display>,
+    );
+    expect(markup.match(/display:block;font-size:min\(/g)).toHaveLength(2);
+    expect(markup).toContain("calc(100cqw / 4.20)");
+    expect(markup).toContain("calc(100cqw / 2.10)");
+  });
+
+  it("Frame bertepi sobek dan duotone, Tape, dan Scribble yang mengisi kotak", () => {
+    const frame = html(
+      <Frame slot="image" src="a.png" edge="neutral-light" torn duotone="primary" />,
+    );
+    expect(frame).toContain("clip-path:polygon(");
+    expect(frame).toContain("filter:grayscale(1)");
+    expect(frame).toContain("mix-blend-mode:color");
+    expect(frame).toContain("background:var(--color-primary)");
+    expect(html(<Frame src="a.png" edge="neutral-light" />)).not.toContain("grayscale");
+    const tape = html(<Tape color="secondary" rotate={30} />);
+    expect(tape).toContain('aria-hidden="true"');
+    expect(tape).toContain("background:var(--color-secondary)");
+    expect(html(<Scribble shape="circle" color="accent" fill />)).toContain(
+      'preserveAspectRatio="none"',
+    );
+    expect(html(<Scribble shape="sparkle" color="accent" />)).toContain('viewBox="40 0 120 100"');
   });
 
   it("perangkat grafis juga hanya memakai CSS variables brand", () => {

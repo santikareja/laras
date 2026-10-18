@@ -8,6 +8,8 @@ type DisplayProps = {
   // Perkiraan lebar satu huruf dalam em, untuk membatasi ukuran agar muat satu baris.
   charWidth?: number;
   align?: "center" | "left" | "right";
+  // Satu kata per baris, setiap baris dipaskan ke lebar kotak (tumpukan rata, PRD 4 K2).
+  stack?: boolean;
   slot?: string;
   children: string;
 };
@@ -20,10 +22,14 @@ export function Display({
   scale,
   charWidth = 0.7,
   align = "center",
+  stack = false,
   slot,
   children,
 }: DisplayProps) {
-  const fit = `calc(100cqw / ${(Math.max(children.length, 1) * charWidth).toFixed(2)})`;
+  const cap = `calc(${fontSize(6)} * ${scale})`;
+  const fit = (text: string) =>
+    `min(${cap}, calc(100cqw / ${(Math.max(text.length, 1) * charWidth).toFixed(2)}))`;
+  const words = stack ? children.split(/\s+/).filter(Boolean) : [];
   return (
     <div style={{ containerType: "inline-size", width: "100%" }}>
       <p
@@ -33,7 +39,7 @@ export function Display({
           margin: 0,
           fontFamily: fontFamily(font),
           fontWeight: fontWeight(font, true),
-          fontSize: `min(calc(${fontSize(6)} * ${scale}), ${fit})`,
+          fontSize: fit(stack ? (words[0] ?? children) : children),
           fontSynthesis: "none",
           lineHeight: 0.9,
           whiteSpace: "nowrap",
@@ -41,7 +47,14 @@ export function Display({
           color: color(tone),
         }}
       >
-        {children}
+        {stack
+          ? words.map((word, index) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: kata boleh berulang, urutan tetap
+              <span key={index} style={{ display: "block", fontSize: fit(word) }}>
+                {word}
+              </span>
+            ))
+          : children}
       </p>
     </div>
   );

@@ -55,34 +55,42 @@ const CASES: Record<string, Record<Brand, Case>> = {
       logo: "primary",
     },
   },
+  // v3: headline tiga tingkat dan subjek berinteraksi (cut-out T-122 v3).
   "proto-bidang-warna": {
     "kopi-lembayung": {
       text: {
-        headline: "Disangrai minggu ini, bukan bulan lalu.",
-        sorot: "minggu ini",
+        pembuka: "Disangrai sendiri",
+        headline: "MINGGU INI",
+        penutup: "bukan bulan lalu.",
         cta: "Ambil sekantong di kedai",
       },
-      badge: { stiker: "Rp85.000 / 200 g" },
-      images: { image: "subjek.webp" },
-      options: { tone: "secondary", mark: "accent", size: "large", flip: "yes", arrow: "yes" },
+      badge: { fakta: "Rp85.000 / 200 g" },
+      images: { image: "interaksi.webp" },
+      options: { tone: "secondary", mark: "accent", flip: "yes" },
       logo: "primary",
     },
-    // Dua elemen visual utama saja: subjek dan lingkaran (tanpa panah dan stiker).
+    // Dua elemen visual utama saja: subjek dan lengkung (tanpa stiker fakta).
     "seruni-skin": {
       text: {
-        headline: "Kenali kulitmu dulu.",
-        sorot: "dulu.",
+        pembuka: "Sebelum perawatan apa pun",
+        headline: "KENALI",
+        penutup: "kulitmu dulu.",
         cta: "Jadwalkan konsultasi gratis",
       },
-      images: { image: "subjek.webp" },
-      options: { tone: "secondary", mark: "primary", size: "large", flip: "no", arrow: "no" },
+      images: { image: "interaksi.webp" },
+      options: { tone: "secondary", mark: "primary", flip: "no" },
       logo: "primary",
     },
     "ritme-run-club": {
-      text: { headline: "First 5K at 5:45 AM.", sorot: "5:45 AM.", cta: "Show up Sunday" },
-      badge: { stiker: "Free · No sign-up" },
-      images: { image: "subjek.webp" },
-      options: { tone: "secondary", mark: "primary", size: "medium", flip: "no", arrow: "yes" },
+      text: {
+        pembuka: "Never run before? Sunday,",
+        headline: "5:45 AM",
+        penutup: "Any pace. Coffee after.",
+        cta: "Just show up",
+      },
+      badge: { fakta: "Free · No sign-up" },
+      images: { image: "interaksi.webp" },
+      options: { tone: "secondary", mark: "primary", flip: "no", width: "condensed", fact: "low" },
       logo: "primary",
     },
   },
@@ -115,6 +123,7 @@ const CASES: Record<string, Record<Brand, Case>> = {
       logo: "primary",
     },
   },
+  // v3: bingkai bertepi sobek dengan selotip, subjek keluar bingkai, fakta dilingkari coretan.
   "proto-kolase-diagonal": {
     "kopi-lembayung": {
       text: {
@@ -122,22 +131,29 @@ const CASES: Record<string, Record<Brand, Case>> = {
         body: "Tanggal sangrai tertulis di setiap kemasan.",
         cta: "Mampir dan ambil sekantong",
       },
-      badge: { stiker: "200 g · Rp85.000" },
-      images: { image: "foto.jpg", subjek: "subjek.webp" },
+      badge: { fakta: "200 g · Rp85.000" },
+      images: { image: "foto.jpg", subjek: "interaksi.webp" },
       // Bidang gelap: aturan Kopi melarang produk di latar putih polos.
-      options: { tone: "primary", band: "accent", flip: "yes", underline: "yes" },
+      options: {
+        tone: "primary",
+        band: "accent",
+        duotone: "secondary",
+        flip: "yes",
+        doodle: "yes",
+      },
       logo: "onDark",
     },
-    // Dua elemen visual utama saja: foto berbingkai dan pita (tanpa subjek dan coretan).
+    // Dua elemen visual utama (bingkai dan pita) tanpa subjek dan kilau; tanpa duotone karena
+    // aturan Seruni meminta tekstur kulit asli tanpa filter berlebihan.
     "seruni-skin": {
       text: {
         headline: "KONSULTASI DULU",
         body: "Terapis memotret kondisi kulitmu sebagai acuan perkembangan.",
         cta: "Jadwalkan konsultasi gratis",
       },
-      badge: { stiker: "Gratis · 30 menit" },
+      badge: { fakta: "Gratis · 30 menit" },
       images: { image: "foto-4x5.jpg" },
-      options: { tone: "neutral", band: "primary", flip: "no", underline: "no" },
+      options: { tone: "neutral", band: "primary", duotone: "none", flip: "no", doodle: "no" },
       logo: "primary",
     },
     "ritme-run-club": {
@@ -146,14 +162,15 @@ const CASES: Record<string, Record<Brand, Case>> = {
         body: "Every pace has a group. Coffee after.",
         cta: "Just show up",
       },
-      badge: { stiker: "Free" },
-      images: { image: "foto.jpg", subjek: "subjek.webp" },
+      badge: { fakta: "Free" },
+      images: { image: "foto.jpg", subjek: "interaksi.webp" },
       options: {
         tone: "primary",
         band: "accent",
         width: "condensed",
+        duotone: "primary",
         flip: "no",
-        underline: "yes",
+        doodle: "yes",
       },
       logo: "onDark",
     },

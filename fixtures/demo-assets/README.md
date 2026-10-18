@@ -22,4 +22,6 @@ Dipakai `pnpm render:prototype` (`scripts/prototype-content.ts`), semua 1122 × 
 | `ritme-run-club/subjek.webp` | T-121 V2, 2026-10-19 | Perempuan Indonesia berlari seluruh tubuh, singlet biru brand, latar transparan |
 | `seruni-skin/konsep.jpg` | T-121 V3, 2026-10-19 | Persik di bawah kaca pembesar, latar polos `#EAF1F4`, 40% atas kosong (JPG 85) |
 | `seruni-skin/subjek.webp` | T-122, 2026-10-19 | Perempuan Indonesia setengah badan menyentuh pipi, tekstur kulit asli, atasan biru pucat, latar transparan |
-
+| `kopi-lembayung/interaksi.webp` | T-122 v3, 2026-10-19 | Tangan mengangkat kantong kopi kraft berlabel kosong, biji berjatuhan dari atas kantong, lengan masuk dari tepi bawah, latar transparan |
+| `seruni-skin/interaksi.webp` | T-122 v3, 2026-10-19 | Perempuan Indonesia sebatas dada memegang kaca pembesar di depan pipi (tekstur kulit asli diperbesar), latar transparan |
+| `ritme-run-club/interaksi.webp` | T-122 v3, 2026-10-19 | Laki-laki Indonesia melompat saat berlari, sudut rendah, seluruh tubuh, singlet biru brand, latar transparan |

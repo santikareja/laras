@@ -1,12 +1,14 @@
-import { Display, Frame, Image, Logo, Scribble, Sticker, Text } from "../primitives/index.ts";
+import { Display, Frame, Image, Logo, Scribble, Sticker, Tape, Text } from "../primitives/index.ts";
 import { color, space } from "../primitives/vars.ts";
 import { optionalSlot, type SlideProps, slot, type Template } from "../src/template.ts";
 
-// Prototipe A4 (T-122, PRD 4 K5, K6): foto berbingkai miring, pita diagonal berisi headline,
-// subjek cut-out opsional yang menimpa ujung pita, stiker, dan coretan. `flip` menukar sisi
-// sehingga kolom teks dan logo berada di kanan; coretan bisa dimatikan (PRD 4 P5).
+// Prototipe A4 v3 (T-122, PRD 4 K3, K5, K6): satu bingkai besar duotone bertepi sobek dengan
+// selotip, subjek cut-out yang keluar dari bingkai, pita diagonal di bawah bingkai, fakta yang
+// dilingkari coretan, dan CTA tombol. `flip` menukar sisi; `doodle` mematikan kilau untuk brand
+// dengan batas elemen visual (PRD 4 P5).
 
 const EDGE = `calc(var(--space-safe) + ${space(1)})`;
+const DUOTONE = { primary: "primary", secondary: "secondary", accent: "accent" } as const;
 
 function KolaseDiagonalSlide({ slots, options }: SlideProps) {
   const flip = options.flip === "yes";
@@ -15,9 +17,10 @@ function KolaseDiagonalSlide({ slots, options }: SlideProps) {
   const dark = options.tone === "primary";
   const band = options.band === "accent" ? "accent" : "primary";
   const subjek = optionalSlot(slots, "subjek", "image");
-  const stiker = optionalSlot(slots, "stiker", "badge");
+  const fakta = optionalSlot(slots, "fakta", "badge");
   const body = optionalSlot(slots, "body", "text");
   const cta = optionalSlot(slots, "cta", "text");
+  const duotone = DUOTONE[(options.duotone ?? "") as keyof typeof DUOTONE];
   const ink = dark ? "neutral-light" : "neutral-dark";
   return (
     <div
@@ -31,9 +34,9 @@ function KolaseDiagonalSlide({ slots, options }: SlideProps) {
       <div
         style={{
           position: "absolute",
-          top: "7%",
-          [near]: "9%",
-          width: "54%",
+          top: "6%",
+          [near]: "8%",
+          width: "62%",
           aspectRatio: "4 / 5",
         }}
       >
@@ -41,38 +44,31 @@ function KolaseDiagonalSlide({ slots, options }: SlideProps) {
           slot="image"
           src={slot(slots, "image", "image").src}
           edge="neutral-light"
-          rotate={flip ? 4 : -4}
+          rotate={flip ? 3 : -3}
+          torn
+          {...(duotone ? { duotone } : {})}
         />
-      </div>
-      {stiker && (
-        <div style={{ position: "absolute", top: "11%", [far]: `calc(${EDGE} + ${space(2)})` }}>
-          <Sticker
-            slot="stiker"
-            background="accent"
-            color="neutral-dark"
-            edge="neutral-light"
-            rotate={flip ? -8 : 8}
-            size={3}
-          >
-            {stiker.value}
-          </Sticker>
+        <div style={{ position: "absolute", top: "-2%", [near]: "-6%", width: "30%" }}>
+          <Tape color="secondary" rotate={flip ? 38 : -38} />
         </div>
-      )}
+        <div style={{ position: "absolute", top: "-1%", [far]: "-8%", width: "30%" }}>
+          <Tape color="secondary" rotate={flip ? -32 : 32} />
+        </div>
+      </div>
       <div
         style={{
           position: "absolute",
-          top: "52%",
+          top: "60%",
           left: "-10%",
           right: "-10%",
           padding: `${space(3)} calc(1080px * 0.1 + ${EDGE} + ${space(1)})`,
           display: "flex",
           justifyContent: flip ? "flex-end" : "flex-start",
           background: color(band),
-          transform: `rotate(${flip ? 7 : -7}deg)`,
+          transform: `rotate(${flip ? 6 : -6}deg)`,
         }}
       >
-        {/* Dengan subjek, teks pita berhenti sebelum ujung yang ditimpa subjek. */}
-        <div style={{ width: subjek ? "calc(1080px * 0.58)" : "100%" }}>
+        <div style={{ width: subjek ? "calc(1080px * 0.56)" : "100%" }}>
           <Display
             slot="headline"
             font="heading"
@@ -87,9 +83,37 @@ function KolaseDiagonalSlide({ slots, options }: SlideProps) {
       </div>
       {subjek && (
         <div
-          style={{ position: "absolute", [far]: "-6%", bottom: "-5%", width: "50%", height: "50%" }}
+          style={{ position: "absolute", [far]: "-4%", bottom: "-3%", width: "58%", height: "84%" }}
         >
           <Image slot="subjek" src={subjek.src} fit="contain" />
+        </div>
+      )}
+      {subjek && options.doodle !== "no" && (
+        <div style={{ position: "absolute", top: "8%", [far]: "10%", width: "9%" }}>
+          <Scribble shape="sparkle" color="accent" />
+        </div>
+      )}
+      {fakta && (
+        <div style={{ position: "absolute", top: "46%", [far]: `calc(${EDGE} + ${space(2)})` }}>
+          <div style={{ position: "relative" }}>
+            <Sticker
+              slot="fakta"
+              background="accent"
+              color="neutral-dark"
+              rotate={flip ? -5 : 5}
+              size={3}
+            >
+              {fakta.value}
+            </Sticker>
+            <div
+              style={{
+                position: "absolute",
+                inset: `calc(-1 * ${space(4)}) calc(-1 * ${space(5)})`,
+              }}
+            >
+              <Scribble shape="circle" color={dark ? "neutral-light" : "primary"} fill />
+            </div>
+          </div>
         </div>
       )}
       <div
@@ -97,7 +121,8 @@ function KolaseDiagonalSlide({ slots, options }: SlideProps) {
           position: "absolute",
           [near]: EDGE,
           bottom: EDGE,
-          width: subjek ? "44%" : "70%",
+          width: subjek ? "46%" : "70%",
+          gridTemplateColumns: "minmax(0, 1fr)",
           display: "grid",
           gap: space(3),
           justifyItems: flip ? "end" : "start",
@@ -105,21 +130,14 @@ function KolaseDiagonalSlide({ slots, options }: SlideProps) {
         }}
       >
         {body && (
-          <Text slot="body" font="body" size={2} color={ink} measure={40} balance>
+          <Text slot="body" font="body" size={2} color={ink} measure={34} balance>
             {body.value}
           </Text>
         )}
         {cta && (
-          <div style={{ display: "grid", gap: space(1), justifyItems: flip ? "end" : "start" }}>
-            <Text slot="cta" font="body" size={2} color={ink} strong>
-              {cta.value}
-            </Text>
-            {options.underline !== "no" && (
-              <div style={{ width: "70%" }}>
-                <Scribble shape="underline" color="accent" flip={flip} />
-              </div>
-            )}
-          </div>
+          <Sticker slot="cta" background="accent" color="neutral-dark">
+            {cta.value}
+          </Sticker>
         )}
         <Logo slot="logo" src={slot(slots, "logo", "logo").src} height={5} />
       </div>
@@ -133,7 +151,7 @@ export const kolaseDiagonal: Template = {
     name: "Kolase diagonal",
     format: "feed-4x5",
     description:
-      "Prototipe: foto berbingkai miring, pita diagonal berisi headline, subjek cut-out opsional, stiker, dan coretan.",
+      "Prototipe: bingkai duotone bertepi sobek dengan selotip, subjek keluar bingkai, pita diagonal, fakta dilingkari coretan.",
     slots: [
       {
         name: "image",
@@ -146,7 +164,7 @@ export const kolaseDiagonal: Template = {
         name: "subjek",
         type: "image",
         required: false,
-        description: "Subjek cut-out berlatar transparan",
+        description: "Subjek cut-out berlatar transparan yang keluar dari bingkai",
         aspectRatio: "4:5",
       },
       {
@@ -156,7 +174,7 @@ export const kolaseDiagonal: Template = {
         description: "Headline pita, satu baris",
         maxChars: 18,
       },
-      { name: "stiker", type: "badge", required: false, description: "Fakta pendek", maxChars: 20 },
+      { name: "fakta", type: "badge", required: false, description: "Fakta pendek", maxChars: 20 },
       { name: "body", type: "text", required: false, description: "Satu kalimat", maxChars: 80 },
       { name: "cta", type: "text", required: false, description: "Ajakan", maxChars: 28 },
       { name: "logo", type: "logo", required: true, description: "Logo" },
@@ -181,16 +199,22 @@ export const kolaseDiagonal: Template = {
         description: "Warna pita",
       },
       {
+        name: "duotone",
+        values: ["none", "primary", "secondary", "accent"],
+        default: "none",
+        description: "Warna duotone foto bingkai",
+      },
+      {
         name: "flip",
         values: ["no", "yes"],
         default: "no",
         description: "Bingkai di kanan, subjek di kiri, kolom teks dan logo di kanan",
       },
       {
-        name: "underline",
+        name: "doodle",
         values: ["yes", "no"],
         default: "yes",
-        description: "Coretan garis bawah di bawah CTA",
+        description: "Coretan kilau di dekat subjek",
       },
     ],
   },
