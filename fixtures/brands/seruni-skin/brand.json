@@ -16,6 +16,11 @@
       "file": "fonts/manrope-latin-wght-normal.woff2",
       "weights": [400, 600]
     },
+    "accent": {
+      "family": "IBM Plex Mono",
+      "file": "fonts/ibm-plex-mono-latin-500-normal.woff2",
+      "weights": [500]
+    },
     "scale": [24, 30, 40, 56, 76, 104]
   },
   "shape": { "radius": 24, "stroke": 1, "shadow": "soft" },

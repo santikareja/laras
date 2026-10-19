@@ -16,11 +16,12 @@ export type BrandCssOptions = {
 
 export function brandCss(brand: BrandKit, { assetBaseUrl }: BrandCssOptions): string {
   if (!assetBaseUrl.endsWith("/")) throw new Error("assetBaseUrl harus diakhiri /");
-  const { heading, body } = brand.typography;
+  const { heading, body, accent } = brand.typography;
   const declarations = brandVariables(brand).map(([name, value]) => `  ${name}: ${value};`);
   return [
     fontFace(heading, assetBaseUrl),
     fontFace(body, assetBaseUrl),
+    ...(accent ? [fontFace(accent, assetBaseUrl)] : []),
     `:root {\n${declarations.join("\n")}\n}`,
   ].join("\n\n");
 }
@@ -38,8 +39,11 @@ function brandVariables(brand: BrandKit): Variable[] {
     ["--color-neutral-dark", `var(--color-neutral-${neutrals.at(-1)?.[0]})`],
     ["--font-heading", cssString(typography.heading.family)],
     ["--font-body", cssString(typography.body.family)],
+    // Tanpa font aksen, peran aksen jatuh ke font body (T-134).
+    ["--font-accent", cssString((typography.accent ?? typography.body).family)],
     ...weightVariables("heading", typography.heading.weights),
     ...weightVariables("body", typography.body.weights),
+    ...weightVariables("accent", (typography.accent ?? typography.body).weights),
     ...typography.scale.map((size, i): Variable => [`--font-size-${i + 1}`, px(size)]),
     ...SPACE_STEPS.map((step, i): Variable => [`--space-${i + 1}`, px(step * spacing.unit)]),
     ["--space-safe", px(spacing.safeMargin)],
@@ -56,7 +60,7 @@ function brandVariables(brand: BrandKit): Variable[] {
 
 // Bobot eksplisit dari daftar yang diizinkan, agar browser tidak memakai bobot bawaan elemen
 // (mis. <h1> = 700) yang memicu tebal palsu pada font yang hanya punya satu bobot.
-function weightVariables(role: "heading" | "body", weights: number[]): Variable[] {
+function weightVariables(role: "heading" | "body" | "accent", weights: number[]): Variable[] {
   return [
     [`--font-${role}-weight`, `${Math.min(...weights)}`],
     [`--font-${role}-weight-strong`, `${Math.max(...weights)}`],

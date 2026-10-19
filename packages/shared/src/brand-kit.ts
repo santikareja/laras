@@ -46,6 +46,9 @@ export const BrandKit = z.strictObject({
   typography: z.strictObject({
     heading: FontRole,
     body: FontRole,
+    // Font aksen opsional (T-134): label, data, dan anotasi teknis gaya seperti Cyberpunk,
+    // Brutalisme, dan Retro. Tanpa font aksen, peran ini memakai font body.
+    accent: FontRole.optional(),
     scale: TypeScale,
   }),
   shape: z.strictObject({

@@ -16,6 +16,11 @@
       "file": "fonts/inter-latin-wght-normal.woff2",
       "weights": [400, 600]
     },
+    "accent": {
+      "family": "Courier Prime",
+      "file": "fonts/courier-prime-latin-700-normal.woff2",
+      "weights": [700]
+    },
     "scale": [24, 32, 44, 60, 84, 112]
   },
   "shape": { "radius": 0, "stroke": 2, "shadow": "none" },

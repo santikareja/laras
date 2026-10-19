@@ -164,6 +164,15 @@ describe("evaluateQa", () => {
     ]);
   });
 
+  it("font aksen Brand Kit diterima dengan bobot yang diizinkan (T-134)", () => {
+    const label = text({ slot: "label", fontFamily: '"Courier Prime"', fontWeight: 700 });
+    expect(failures(measure({ texts: [label] }))).toEqual([]);
+    const thin = text({ slot: "label", fontFamily: '"Courier Prime"', fontWeight: 400 });
+    expect(failures(measure({ texts: [thin] })).map((check) => check.message)).toEqual([
+      "Bobot 400 tidak diizinkan untuk Courier Prime (700)",
+    ]);
+  });
+
   it("font emoji sistem tidak dihitung sebagai font cadangan", () => {
     const withEmoji = text({
       text: "Kopi ☕",

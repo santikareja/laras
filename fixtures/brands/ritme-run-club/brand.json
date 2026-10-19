@@ -16,6 +16,11 @@
       "file": "fonts/archivo-latin-wght-normal.woff2",
       "weights": [400, 600]
     },
+    "accent": {
+      "family": "Space Mono",
+      "file": "fonts/space-mono-latin-700-normal.woff2",
+      "weights": [700]
+    },
     "scale": [24, 36, 52, 76, 112, 160]
   },
   "shape": { "radius": 0, "stroke": 4, "shadow": "none" },

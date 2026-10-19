@@ -1,6 +1,7 @@
 // Render spesimen brand dan arketipe katalog (isi contoh dan maks) × tiga brand fixture ke out/demo
 // (CLAUDE.md, ARCH 10), sekaligus menjalankan QA deterministik dan mencetak cek yang gagal.
-// Dijalankan lewat `pnpm render:demo` (tsx, karena template berupa JSX).
+// Dijalankan lewat `pnpm render:demo` (tsx, karena template berupa JSX); `pnpm render:demo --
+// <id arketipe> …` hanya merender arketipe tersebut tanpa spesimen dan tanpa menghapus hasil lain.
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { renderLayoutHtml } from "../packages/sidecar/src/render/layout.ts";
@@ -14,7 +15,8 @@ import { printChecks } from "./qa-print.ts";
 const OUT_DIR = resolve("out/demo");
 
 async function main() {
-  await rm(OUT_DIR, { recursive: true, force: true });
+  const only = process.argv.slice(2).filter((arg) => arg !== "--");
+  if (only.length === 0) await rm(OUT_DIR, { recursive: true, force: true });
   await mkdir(OUT_DIR, { recursive: true });
   const renderer = createRenderer();
   let failed = 0;
@@ -30,7 +32,7 @@ async function main() {
     advice += result.advice;
   };
   try {
-    for (const slug of BRANDS) {
+    for (const slug of only.length > 0 ? [] : BRANDS) {
       const { qa } = demoBrand(slug);
       for (const { variant, spec, assets } of demoCases(specimen, slug, qa.brand)) {
         const pages = renderLayoutHtml(spec, { brand: qa.brand, assets, templates: [specimen] });
@@ -41,6 +43,7 @@ async function main() {
     }
     // Arketipe = katalog Claude (T-131): isi contoh dan varian maks (setiap slot sampai maxChars).
     for (const template of templates) {
+      if (only.length > 0 && !only.includes(template.meta.id)) continue;
       for (const slug of BRANDS) {
         if (!hasArchetypeCase(template, slug)) continue;
         const { folders, qa } = demoBrand(slug);

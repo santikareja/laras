@@ -200,7 +200,8 @@ const firstFamily = (fontFamily: string) =>
 // Font brand: semua glyph dari @font-face (CDP), family dan bobot sesuai peran Brand Kit.
 // Glyph emoji boleh memakai font emoji sistem; jumlahnya diatur aturan emoji-hashtag.
 function brandFontChecks(m: Measurements, brand: BrandKit): RenderCheck[] {
-  const roles = [brand.typography.heading, brand.typography.body];
+  const { heading, body, accent } = brand.typography;
+  const roles = [heading, body, ...(accent ? [accent] : [])];
   return m.texts.flatMap((text) => {
     const out: RenderCheck[] = [];
     const hasEmoji = countEmoji(text.text) > 0;

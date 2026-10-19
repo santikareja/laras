@@ -43,8 +43,8 @@ function syntheticTtf(): Uint8Array {
 describe("fontCodepoints", () => {
   const fonts = fixtureFonts();
 
-  it("menemukan enam font WOFF2 di fixture brand", () => {
-    expect(fonts).toHaveLength(6);
+  it("menemukan sembilan font WOFF2 di fixture brand (heading, body, aksen)", () => {
+    expect(fonts).toHaveLength(9);
   });
 
   it.each(fonts.map((path) => [path.split("/").slice(-3).join("/"), path]))(

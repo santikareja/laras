@@ -1,5 +1,5 @@
-// Render contoh setiap gaya desain × tiga brand fixture ke out/styles (PRD F16, T-132): satu
-// postingan pola khas per gaya (PNG 1080 dan thumbnail 360 px), spesimen perangkat grafis per
+// Render contoh setiap gaya desain × tiga brand fixture ke out/styles (PRD F16, T-132, T-134):
+// postingan setiap pola khas gaya (PNG 1080; thumbnail 360 px dari pola pertama), spesimen perangkat grafis per
 // gaya, lembar ringkasan per brand dengan tanda "kurang cocok" dari styleFit, dan index.json.
 // QA deterministik dijalankan untuk postingan dan spesimen; keluar dengan kode 1 bila ada yang gagal.
 // Dijalankan lewat `pnpm render:styles` (tsx, karena template berupa JSX); `pnpm render:styles --
@@ -13,7 +13,7 @@ import { createRenderer, JOB_BASE_URL } from "../packages/sidecar/src/render/ren
 import { styles } from "../packages/templates/src/index.ts";
 import { BRANDS, type Brand, demoBrand } from "./demo-content.ts";
 import { printChecks } from "./qa-print.ts";
-import { STYLE_TEMPLATES, specimenCase, styleCase } from "./style-content.ts";
+import { STYLE_TEMPLATES, specimenCase, styleCase, stylePatterns } from "./style-content.ts";
 
 const OUT_DIR = resolve("out/styles");
 
@@ -23,7 +23,7 @@ type Entry = {
   brand: Brand;
   fit: "cocok" | "kurang-cocok";
   reasons: string[];
-  file: string;
+  files: string[];
   thumb: string;
   specimen: string;
 };
@@ -55,17 +55,25 @@ async function main() {
     for (const style of selected) {
       for (const slug of BRANDS) {
         const { folders, qa } = demoBrand(slug);
-        const post = await styleCase(style.id, slug, folders.jobDir);
-        const [html] = renderLayoutHtml(post.spec, {
-          brand: qa.brand,
-          assets: post.assets,
-          templates: STYLE_TEMPLATES,
-          style: post.style,
-        });
-        if (!html) throw new Error(`Gaya ${style.id} tanpa slide`);
         const name = `${style.id}-${slug}`;
-        const master = await report(name, html, slug, designLimits(style, post.style.variant));
-        await writeFile(join(OUT_DIR, `${name}-thumb.png`), await toThumbnail(master));
+        const files: string[] = [];
+        // Semua pola khas gaya (T-134); pola pertama menjadi thumbnail.
+        for (const [index, pattern] of stylePatterns(style.id).entries()) {
+          const post = await styleCase(style.id, pattern.id, slug, folders.jobDir);
+          const [html] = renderLayoutHtml(post.spec, {
+            brand: qa.brand,
+            assets: post.assets,
+            templates: STYLE_TEMPLATES,
+            style: post.style,
+          });
+          if (!html) throw new Error(`Pola ${style.id}/${pattern.id} tanpa slide`);
+          const file = `${style.id}-${pattern.id}-${slug}`;
+          const master = await report(file, html, slug, designLimits(style, post.style.variant));
+          files.push(`${file}.png`);
+          if (index === 0) {
+            await writeFile(join(OUT_DIR, `${name}-thumb.png`), await toThumbnail(master));
+          }
+        }
 
         const specimen = await specimenCase(
           style.id,
@@ -88,7 +96,7 @@ async function main() {
           name: style.name,
           brand: slug,
           ...fit,
-          file: `${name}.png`,
+          files,
           thumb: `${name}-thumb.png`,
           specimen: `perangkat-${name}.png`,
         });

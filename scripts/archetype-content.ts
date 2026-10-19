@@ -11,6 +11,7 @@ import {
 import { analyzeCutout, type SubjectKind } from "../packages/sidecar/src/pipeline/cutout.ts";
 import type { Template } from "../packages/templates/src/index.ts";
 import { type Brand, fill } from "./demo-content.ts";
+import { patternCaseFor } from "./style-cases/index.ts";
 
 export type Case = {
   text: Record<string, string>;
@@ -21,10 +22,28 @@ export type Case = {
 };
 
 // Jenis subjek setiap cut-out fixture, masukan analisis titik fokus.
+// Aset `gaya-*` dari Codex untuk konsep gaya (T-134).
 const CUTOUTS: Record<Brand, Record<string, SubjectKind>> = {
-  "kopi-lembayung": { "subjek.webp": "object", "interaksi.webp": "object" },
-  "seruni-skin": { "subjek.webp": "person", "interaksi.webp": "person" },
-  "ritme-run-club": { "subjek.webp": "person", "interaksi.webp": "person" },
+  "kopi-lembayung": {
+    "subjek.webp": "object",
+    "interaksi.webp": "object",
+    "gaya-corporate.webp": "person",
+    "gaya-cyberpunk.webp": "object",
+    "gaya-retro.webp": "person",
+  },
+  "seruni-skin": {
+    "subjek.webp": "person",
+    "interaksi.webp": "person",
+    "gaya-corporate.webp": "person",
+    "gaya-cyberpunk.webp": "person",
+  },
+  "ritme-run-club": {
+    "subjek.webp": "person",
+    "interaksi.webp": "person",
+    "gaya-corporate.webp": "person",
+    "gaya-cyberpunk.webp": "person",
+    "gaya-retro.webp": "person",
+  },
 };
 
 // Aturan brand yang dipatuhi (PRD 4 prinsip 8): Kopi logo kanan bawah dan tanpa latar putih
@@ -254,8 +273,13 @@ const CASES: Record<string, Partial<Record<Brand, Case>>> = {
 
 const assetId = (file: string) => file.replace(/\.\w+$/, "");
 
+// Arketipe khas gaya (T-134) tidak punya isi di sini: isi pola gaya yang memakainya dipakai,
+// dirender tanpa lapisan gaya, sehingga arketipe itu juga diuji contoh dan maks.
+const caseFor = (template: Template, slug: Brand): Case | undefined =>
+  CASES[template.meta.id]?.[slug] ?? patternCaseFor(template.meta.id, slug);
+
 export function hasArchetypeCase(template: Template, slug: Brand): boolean {
-  return CASES[template.meta.id]?.[slug] !== undefined;
+  return caseFor(template, slug) !== undefined;
 }
 
 // LayoutSpec dan AssetManifest satu arketipe untuk satu brand, dengan analisis cut-out.
@@ -267,7 +291,7 @@ export async function archetypeCase(
   assetsDir: string,
   max = false,
 ) {
-  const item = CASES[template.meta.id]?.[slug];
+  const item = caseFor(template, slug);
   if (!item) throw new Error(`Arketipe "${template.meta.id}" belum punya isi untuk ${slug}`);
   if (!max) return caseSpec(template, slug, item, assetsDir);
   const text = Object.fromEntries(

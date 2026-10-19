@@ -15,6 +15,13 @@ exports[`brandCss > CSS kopi-lembayung sesuai snapshot 1`] = `
   font-display: block;
 }
 
+@font-face {
+  font-family: "Courier Prime";
+  src: url("file:///projects/kopi-lembayung/fonts/courier-prime-latin-700-normal.woff2") format("woff2");
+  font-weight: 700;
+  font-display: block;
+}
+
 :root {
   --color-primary: #0F3D3E;
   --color-secondary: #E2DCC8;
@@ -25,10 +32,13 @@ exports[`brandCss > CSS kopi-lembayung sesuai snapshot 1`] = `
   --color-neutral-dark: var(--color-neutral-900);
   --font-heading: "Fraunces";
   --font-body: "Inter";
+  --font-accent: "Courier Prime";
   --font-heading-weight: 700;
   --font-heading-weight-strong: 700;
   --font-body-weight: 400;
   --font-body-weight-strong: 600;
+  --font-accent-weight: 700;
+  --font-accent-weight-strong: 700;
   --font-size-1: 24px;
   --font-size-2: 32px;
   --font-size-3: 44px;
@@ -65,6 +75,13 @@ exports[`brandCss > CSS ritme-run-club sesuai snapshot 1`] = `
   font-display: block;
 }
 
+@font-face {
+  font-family: "Space Mono";
+  src: url("file:///projects/ritme-run-club/fonts/space-mono-latin-700-normal.woff2") format("woff2");
+  font-weight: 700;
+  font-display: block;
+}
+
 :root {
   --color-primary: #2B4BFF;
   --color-secondary: #FFE14D;
@@ -75,10 +92,13 @@ exports[`brandCss > CSS ritme-run-club sesuai snapshot 1`] = `
   --color-neutral-dark: var(--color-neutral-900);
   --font-heading: "Anton";
   --font-body: "Archivo";
+  --font-accent: "Space Mono";
   --font-heading-weight: 400;
   --font-heading-weight-strong: 400;
   --font-body-weight: 400;
   --font-body-weight-strong: 600;
+  --font-accent-weight: 700;
+  --font-accent-weight-strong: 700;
   --font-size-1: 24px;
   --font-size-2: 36px;
   --font-size-3: 52px;
@@ -115,6 +135,13 @@ exports[`brandCss > CSS seruni-skin sesuai snapshot 1`] = `
   font-display: block;
 }
 
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("file:///projects/seruni-skin/fonts/ibm-plex-mono-latin-500-normal.woff2") format("woff2");
+  font-weight: 500;
+  font-display: block;
+}
+
 :root {
   --color-primary: #233D63;
   --color-secondary: #EAF1F4;
@@ -125,10 +152,13 @@ exports[`brandCss > CSS seruni-skin sesuai snapshot 1`] = `
   --color-neutral-dark: var(--color-neutral-900);
   --font-heading: "Cormorant Garamond";
   --font-body: "Manrope";
+  --font-accent: "IBM Plex Mono";
   --font-heading-weight: 600;
   --font-heading-weight-strong: 600;
   --font-body-weight: 400;
   --font-body-weight-strong: 600;
+  --font-accent-weight: 500;
+  --font-accent-weight-strong: 500;
   --font-size-1: 24px;
   --font-size-2: 30px;
   --font-size-3: 40px;

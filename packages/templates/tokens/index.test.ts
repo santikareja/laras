@@ -20,8 +20,21 @@ describe("brandCss", () => {
   it.each(SLUGS)("URL font %s menunjuk file yang ada di folder fixture", (slug) => {
     const assetBaseUrl = new URL(`${slug}/`, BRANDS_DIR).href;
     const urls = fontUrls(brandCss(loadBrand(slug), { assetBaseUrl }));
-    expect(urls).toHaveLength(2);
+    expect(urls).toHaveLength(3);
     for (const url of urls) expect(existsSync(fileURLToPath(url))).toBe(true);
+  });
+
+  it("font aksen opsional: tanpa font aksen, peran aksen memakai font body (T-134)", () => {
+    const brand = loadBrand("kopi-lembayung");
+    const withAccent = brandCss(brand, { assetBaseUrl: "file:///p/" });
+    expect(withAccent).toContain('--font-accent: "Courier Prime";');
+    expect(withAccent).toContain("--font-accent-weight: 700;");
+    delete brand.typography.accent;
+    const css = brandCss(brand, { assetBaseUrl: "file:///p/" });
+    expect(fontUrls(css)).toHaveLength(2);
+    expect(css).toContain('--font-accent: "Inter";');
+    expect(css).toContain("--font-accent-weight: 400;");
+    expect(css).toContain("--font-accent-weight-strong: 600;");
   });
 
   it("meng-encode spasi di folder project", () => {
