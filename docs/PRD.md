@@ -105,7 +105,7 @@ Prinsip ini mengikat semua keputusan desain dan implementasi.
    - P10. Ruang kosong: minimal 35% kanvas kosong (warna dominan tanpa elemen), maksimal lima elemen per postingan termasuk logo dan CTA.
    - P11. Konsistensi: satu jarak tepi, satu radius, satu gaya tombol atau stiker, satu keluarga dekorasi, dan satu sudut kemiringan per postingan.
 
-   P1, P2, P4, dan P8–P11 diperiksa QA kode sebagai saran (T-130) dengan ambang per gaya dari panduannya; kalibrasi dan pengecualian di atas diputuskan pemilik 2026-10-19. P2 dan P8–P11 diturunkan dari aturan desain pemilik (2026-10-19: hierarki visual, rule of thirds, 60-30-10, ruang kosong, konsistensi). Referensi yang paling memenuhi aturan ini (nomor 11, 13, 18, 20, 38, 40, 50, 51, 52, 56) menjadi standar default; gaya padat ala kolase disimpan untuk gaya Scrapbook/Digital Collage (F16).
+   P1, P2, P4, dan P8–P11 diperiksa QA kode sebagai saran (T-130) dengan ambang per gaya dari panduannya; kalibrasi dan pengecualian di atas diputuskan pemilik 2026-10-19. Ambang P9 dan P10 lima gaya (Corporate, Cyberpunk, Retro/Vintage, Brutalisme, Flat) dikalibrasi dari pengukuran referensi pemilik (keputusan 2026-10-19, T-134): warna dominan minimal = kuartil bawah referensi, warna kedua dan gambar maksimal = kuartil atas porsi selain dominan dikurangi aksen 12%, ruang kosong = dominan dikurangi 5%, elemen maksimal = hitungan referensi. P2 dan P8–P11 diturunkan dari aturan desain pemilik (2026-10-19: hierarki visual, rule of thirds, 60-30-10, ruang kosong, konsistensi). Referensi yang paling memenuhi aturan ini (nomor 11, 13, 18, 20, 38, 40, 50, 51, 52, 56) menjadi standar default; gaya padat ala kolase disimpan untuk gaya Scrapbook/Digital Collage (F16).
 
 ---
 
