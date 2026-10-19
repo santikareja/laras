@@ -242,14 +242,23 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - AC: skor QA visual mengikuti K1–K8 dengan contoh referensi; QA membuka file logo brand; larangan menyarankan fakta di luar knowledge; kebijakan revisi bila skor rendah tanpa perbaikan wajib diputuskan pemilik.
   - Tambahan dari T-122: QA visual juga menilai kepatuhan aturan brand, P1–P7, dan kesesuaian dengan gaya desain yang dipilih (PRD F16).
 
-- [ ] T-128 Gaya desain tahap 1 (enam gaya)
-  - Rujukan: PRD F16, US-17, PRD 4, ADR-015
-  - AC: definisi gaya (arketipe dan parameter, perangkat grafis, perlakuan tipografi dan foto) untuk Gaya Swiss, Bauhaus, Minimalism, Pop Art, Scrapbook/Digital Collage, dan Imperfect & Hand-drawn Aesthetics; pilihan default project dan per brief; pratinjau tiap gaya dirender dengan brand dan foto contoh project; gaya yang bertentangan dengan Brand Kit ditandai "kurang cocok".
-  - Catatan: bergantung pada T-123 dan T-124. Rincian skema dan ADR ditulis saat task dimulai.
+- [~] T-128 Panduan gaya tahap 1 (tujuh gaya)
+  - Rujukan: PRD F16, US-17, PRD 4, ADR-015; referensi pemilik di `~/Downloads/instagram reference design/<gaya>/` (tidak di-commit)
+  - AC: folder `packages/templates/styles/<id>/` untuk brutalism, corporate-clean, cyberpunk, flat-design, minimalism, glassmorphism-neumorphism, dan retro-vintage; masing-masing `PANDUAN.md` lengkap (asal-usul, kapan cocok, ciri visual, komposisi termasuk aturan P1–P11 yang tetap wajib dan yang dilonggarkan, tipografi, warna, perangkat grafis, foto dan frasa prompt gambar, minimal lima pola layout untuk jenis konten berbeda, carousel, do dan don't, kecocokan Brand Kit, checklist QA, referensi dengan sumber) dan `style.ts` yang lolos skema `StyleMeta` di `shared`.
+  - Verifikasi: test skema dan definisi gaya; panduan ditinjau agent dan pemilik; tanpa kuota CLI (riset lewat browsing).
+  - Catatan: keputusan pemilik 2026-10-19: tujuh gaya dari folder referensi, Glassmorphism dan Neumorphism satu gaya dua varian, lokasi `packages/templates/styles`, urutan T-128 → T-132 → T-130 → T-131 → T-133.
+
+- [ ] T-132 Render gaya dan thumbnail (tujuh gaya)
+  - Rujukan: T-128, PRD F16, ADR-015, ARCH 6.2
+  - AC: lapisan gaya di renderer dan perangkat grafis baru yang dibutuhkan panduan (mis. halftone, grain, glow neon, kaca buram, garis grid); `pnpm render:styles` menghasilkan thumbnail setiap gaya × 3 brand fixture dengan tanda "kurang cocok" bila Brand Kit bertentangan; pemilik menilai thumbnail.
+
+- [ ] T-133 Gaya desain di pipeline
+  - Rujukan: PRD F16, US-17, T-128, T-131
+  - AC: gaya default project dan pilihan per brief; panduan gaya masuk prompt copy, layout, aset, dan QA visual; tanda "kurang cocok" untuk brand; dry-run spike per gaya.
 
 - [ ] T-129 Gaya desain tahap 2 (enam belas gaya)
-  - Rujukan: PRD F16, T-128
-  - AC: enam belas gaya sisanya ditambahkan dengan pola yang sama dengan T-128, masing-masing dengan pratinjau.
+  - Rujukan: PRD F16, T-128, T-132
+  - AC: enam belas gaya tahap 2 ditambahkan dengan pola T-128 dan T-132, masing-masing dengan panduan dan thumbnail.
 
 - [ ] T-127 Evaluasi ulang spike
   - Rujukan: PRD 11 (Fase 1), KNOWLEDGE "Evaluasi spike T-117"

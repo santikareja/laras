@@ -312,8 +312,9 @@ AC: varian yang gagal QA setelah 2 putaran revisi tetap ditampilkan, dengan labe
 - Gaya mengatur arketipe komposisi yang dipakai beserta parameternya, perangkat grafis, serta perlakuan tipografi dan foto, di dalam token dan aturan Brand Kit.
 - Brand Kit menang: unsur gaya yang bertentangan dengan Brand Kit tidak dipakai, dan gaya yang ciri utamanya bertentangan (misalnya butuh gradient pada brand yang melarang gradient) ditandai "kurang cocok untuk brand ini".
 - Pratinjau: setiap gaya punya contoh tampilan yang dirender dengan brand dan foto contoh project pengguna, tanpa memakai kuota bila fotonya sudah ada.
-- Tahap 1 (enam gaya): Gaya Swiss, Bauhaus, Minimalism, Pop Art, Scrapbook/Digital Collage, Imperfect & Hand-drawn Aesthetics (Notes App Chic).
-- Tahap 2 (enam belas gaya): Modernisme, Art Deco, Art Nouveau, Psychedelic, Flat Design, Corporate Clean, Vintage/Retro, Y2K Nostalgia, Cyberpunk/Futuristik, Brutalisme, Anti-Design, Maksimalisme, Retro-Futurisme, Immersive 3D & Spatial Design, Chaos Packaging, Neo-Minimalisme.
+- Tahap 1 (tujuh gaya, sesuai folder referensi pemilik, keputusan 2026-10-19): Brutalisme, Corporate Clean, Cyberpunk/Futuristik, Flat Design, Minimalism, Glassmorphism/Neumorphism (satu gaya dengan dua varian), Vintage/Retro.
+- Tahap 2 (enam belas gaya): Gaya Swiss, Bauhaus, Pop Art, Scrapbook/Digital Collage, Imperfect & Hand-drawn Aesthetics (Notes App Chic), Modernisme, Art Deco, Art Nouveau, Psychedelic, Y2K Nostalgia, Anti-Design, Maksimalisme, Retro-Futurisme, Immersive 3D & Spatial Design, Chaos Packaging, Neo-Minimalisme.
+- Setiap gaya punya folder di `packages/templates/styles/<id>/` berisi `PANDUAN.md` (panduan lengkap untuk generate desain: komposisi, tipografi, warna, perangkat grafis, foto, pola layout untuk berbagai jenis konten, do dan don't, kecocokan Brand Kit, checklist QA) dan definisi mesin `style.ts`. Panduan bersifat umum untuk semua jenis konten, bukan satu desain khusus.
 - AC: pengguna melihat pratinjau setiap gaya dengan brand-nya sebelum memilih; hasil generasi memakai gaya yang dipilih; QA visual menilai kesesuaian dengan gaya selain K1–K8 dan P1–P7.
 
 ---

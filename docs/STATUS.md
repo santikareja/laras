@@ -9,10 +9,10 @@ Tidak ada. T-122 selesai: empat arketipe prototipe disetujui pemilik setelah rev
 T-123 selesai: arketipe ada di `packages/templates/feed/` (daftar `archetypes`, belum katalog Claude), cut-out dianalisis (`pipeline/cutout.ts`), dan renderer memaskan kata raksasa ke lebar kotaknya. `pnpm render:demo` kini juga merender arketipe.
 
 ## Berikutnya (urut)
-1. T-130 QA desain terukur, lalu T-131 pipeline dengan arketipe (T-123 fondasi selesai).
-2. T-124 sampai T-126 (aturan brand terstruktur dan perangkat grafis Brand Kit, ide besar dan art direction, rubric QA visual K1–K8 dan P1–P11).
-3. T-128 Gaya desain tahap 1 (enam gaya, PRD F16), lalu T-129 tahap 2.
-4. T-127 Evaluasi ulang spike (memakai kuota besar; izin pemilik).
+1. T-128 Panduan gaya tahap 1 (sedang dikerjakan), lalu T-132 render gaya dan thumbnail.
+2. T-130 QA desain terukur, T-131 pipeline dengan arketipe, T-133 gaya di pipeline.
+3. T-124 sampai T-126 (aturan brand terstruktur dan perangkat grafis Brand Kit, ide besar dan art direction, rubric QA visual K1–K8 dan P1–P11).
+4. T-129 gaya tahap 2, lalu T-127 evaluasi ulang spike (memakai kuota besar; izin pemilik).
 
 ## Blocker
 - Tidak ada.
