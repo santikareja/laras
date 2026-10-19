@@ -304,6 +304,7 @@ Token diubah oleh `brandCss(brand, { assetBaseUrl })` (`packages/templates/token
 | `--color-neutral-<kunci>` | `colors.neutral` | satu variabel per kunci, mis. `--color-neutral-50` |
 | `--color-neutral-light`, `--color-neutral-dark` | `colors.neutral` | alias ke kunci netral terendah dan tertinggi; template memakai alias ini, bukan kunci |
 | `--font-heading`, `--font-body` | `typography.heading/body.family` | nama family tanpa font cadangan, agar fallback tertangkap QA (7.2) |
+| `--font-accent`, `--font-accent-weight`, `--font-accent-weight-strong` | `typography.accent` (opsional, T-134) | family dan bobot font aksen; tanpa font aksen nilainya dari font body |
 | `--font-heading-weight`, `--font-heading-weight-strong`, `--font-body-weight`, `--font-body-weight-strong` | `typography.heading/body.weights` | bobot terkecil dan terbesar yang diizinkan |
 | `--font-size-1` … `--font-size-N` | `typography.scale` | px, urut dari terkecil |
 | `--space-1` … `--space-8` | `spacing.unit` | unit × 1, 2, 3, 4, 6, 8, 12, 16 (8–128 px bila unit 8) |

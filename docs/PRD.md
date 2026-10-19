@@ -202,7 +202,7 @@ Isi minimum:
 
 - Logo: varian utama, varian terang, varian gelap, ikon (SVG atau PNG transparan).
 - Warna: primer, sekunder, aksen, netral (terang dan gelap), dengan aturan pemakaian.
-- Tipografi: font heading dan body (file font lokal: OTF/TTF/WOFF2), bobot yang diizinkan, skala ukuran.
+- Tipografi: font heading dan body (file font lokal: OTF/TTF/WOFF2), font aksen opsional untuk label, data, dan anotasi teknis (tanpa font aksen, peran ini memakai font body), bobot yang diizinkan, skala ukuran.
 - Bentuk: radius sudut, gaya garis, gaya bayangan: tanpa bayangan (`none`) atau bayangan lembut (`soft`).
 - Aturan dan larangan desain dalam teks bebas (misalnya "jangan pakai gradient", "logo selalu kanan bawah").
 
