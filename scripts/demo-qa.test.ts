@@ -1,4 +1,5 @@
 import { afterAll, describe, expect, it } from "vitest";
+import { isBlocking } from "../packages/shared/src/index.ts";
 import { renderLayoutHtml } from "../packages/sidecar/src/render/layout.ts";
 import { createRenderer } from "../packages/sidecar/src/render/renderer.ts";
 import { specimen, type Template, templates } from "../packages/templates/src/index.ts";
@@ -18,7 +19,7 @@ describe.each(catalog.map((t) => [t.meta.id, t] as const))("QA isi demo %s", (_,
       const pages = renderLayoutHtml(spec, { brand: qa.brand, assets, templates: catalog });
       for (const html of pages) {
         const { checks } = await renderer.render(html, folders, qa);
-        for (const check of checks.filter((c) => !c.passed)) {
+        for (const check of checks.filter(isBlocking)) {
           failures.push(`${variant}: ${check.rule} ${check.target} ${check.message}`);
         }
       }

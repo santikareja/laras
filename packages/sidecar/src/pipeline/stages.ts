@@ -3,6 +3,7 @@ import {
   type ContentFormat,
   ContentPlan,
   CopyDraft,
+  isBlocking,
   type JobSpec,
   LayoutSpec,
   layoutIssues,
@@ -99,23 +100,30 @@ const RULE_TARGET: Record<RenderRule, QaFix["target"]> = {
   "forbidden-word": "copy",
   "emoji-hashtag": "copy",
   "asset-load": "assets",
+  // Aturan desain (T-130) diperbaiki di tahap layout.
+  alignment: "layout",
+  hierarchy: "layout",
+  typography: "layout",
+  thirds: "layout",
+  "color-balance": "layout",
+  whitespace: "layout",
+  "element-count": "layout",
+  consistency: "layout",
 };
 
 export function deterministicFixes(render: RenderReport): QaFix[] {
   return render.slides.flatMap((slide) =>
-    slide.checks
-      .filter((check) => !check.passed)
-      .map((check) => ({
-        target: RULE_TARGET[check.rule],
-        severity: "wajib" as const,
-        slideIndex: slide.index,
-        instruction: check.target ? `${check.message} (${check.target})` : check.message,
-      })),
+    slide.checks.filter(isBlocking).map((check) => ({
+      target: RULE_TARGET[check.rule],
+      severity: "wajib" as const,
+      slideIndex: slide.index,
+      instruction: check.target ? `${check.message} (${check.target})` : check.message,
+    })),
   );
 }
 
 export function qaReport(round: number, render: RenderReport, visual: VisualQa | null): QaReport {
-  const failures = render.slides.flatMap((slide) => slide.checks.filter((check) => !check.passed));
+  const failures = render.slides.flatMap((slide) => slide.checks.filter(isBlocking));
   const deterministicPassed = failures.length === 0;
   return QaReport.parse({
     round,

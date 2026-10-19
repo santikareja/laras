@@ -41,16 +41,27 @@ type PanelProps = SurfaceProps & {
   // 48–64 px (langkah 5–6).
   padding?: SpaceStep;
   justify?: "start" | "center" | "end";
+  // Nama grup untuk QA jumlah elemen (T-130): isi panel dihitung satu elemen.
+  group?: string;
   children?: ReactNode;
 };
 
 // Bidang warna bersudut brand (Corporate Panel, 12–25% kanvas); mengisi kotak induknya.
-export function Panel({ bleed, padding = 5, justify = "center", children, ...look }: PanelProps) {
+export function Panel({
+  bleed,
+  padding = 5,
+  justify = "center",
+  group,
+  children,
+  ...look
+}: PanelProps) {
   const cut = bleed ? CORNERS[bleed] : [false, false, false, false];
   const pad = (side: Side) =>
     side === bleed ? `max(var(--space-safe), ${space(padding)})` : space(padding);
   return (
     <div
+      data-qa-element={group ? "group" : undefined}
+      data-qa-name={group}
       style={{
         boxSizing: "border-box",
         display: "flex",

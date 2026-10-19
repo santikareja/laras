@@ -6,6 +6,8 @@ type ImageProps = {
   mono?: boolean;
   alt?: string;
   slot?: string;
+  // Titik fokus subjek (pecahan gambar) untuk QA rule of thirds (T-130); tidak tampil.
+  focus?: { x: number; y: number } | undefined;
 };
 
 // Mengisi penuh kotak induknya; ukuran dan posisi diatur template.
@@ -16,11 +18,13 @@ export function Image({
   mono = false,
   alt = "",
   slot,
+  focus,
 }: ImageProps) {
   return (
     <img
       data-slot={slot}
       data-slot-type={slot ? "image" : undefined}
+      data-qa-focus={focus ? `${focus.x} ${focus.y}` : undefined}
       src={src}
       alt={alt}
       style={{

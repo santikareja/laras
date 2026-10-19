@@ -1,6 +1,7 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
+import { isBlocking } from "../packages/shared/src/index.ts";
 import { renderLayoutHtml } from "../packages/sidecar/src/render/layout.ts";
 import { createRenderer } from "../packages/sidecar/src/render/renderer.ts";
 import { archetypes } from "../packages/templates/src/index.ts";
@@ -27,7 +28,7 @@ describe("arketipe demo", () => {
     const failures: string[] = [];
     for (const html of renderLayoutHtml(spec, { brand: qa.brand, assets, templates: archetypes })) {
       const { checks } = await renderer.render(html, folders, qa);
-      for (const check of checks.filter((c) => !c.passed)) {
+      for (const check of checks.filter(isBlocking)) {
         failures.push(`${check.rule} ${check.target} ${check.message}`);
       }
     }

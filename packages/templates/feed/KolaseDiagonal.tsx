@@ -58,6 +58,8 @@ function KolaseDiagonalSlide({ slots, options, style }: SlideProps) {
         )}
       </div>
       <div
+        data-qa-element="group"
+        data-qa-name="pita headline"
         style={{
           position: "absolute",
           top: "62%",
@@ -87,7 +89,13 @@ function KolaseDiagonalSlide({ slots, options, style }: SlideProps) {
         <div
           style={{ position: "absolute", [far]: "-4%", bottom: "-3%", width: "56%", height: "80%" }}
         >
-          <Photo slot="subjek" src={subjek.src} fit="contain" treatment={styleTreatment(style)} />
+          <Photo
+            slot="subjek"
+            src={subjek.src}
+            fit="contain"
+            treatment={styleTreatment(style)}
+            focus={subjek.subject?.focus}
+          />
         </div>
       )}
       <div

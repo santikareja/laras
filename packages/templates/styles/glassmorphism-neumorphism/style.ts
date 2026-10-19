@@ -103,4 +103,10 @@ export const glassmorphismNeumorphism: StyleMeta = {
     },
   ],
   options: [],
+  // Ambang QA desain dari bagian aturan PANDUAN.md (P9 per varian, P10 diperketat, dua radius).
+  limits: { centerAxis: true, emptyMin: 0.4, radii: 2 },
+  variantLimits: {
+    kaca: { accentMax: 0.08 },
+    timbul: { dominantMin: 0.7, accentMax: 0.06 },
+  },
 };

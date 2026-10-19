@@ -48,6 +48,7 @@ export function Grain({
 }: GrainProps) {
   return (
     <div
+      data-qa-element="decor"
       aria-hidden="true"
       style={{
         ...FILL,
@@ -74,6 +75,7 @@ export function PaperTexture({ tone = "neutral-dark", opacity = 0.1 }: PaperText
   );
   return (
     <div
+      data-qa-element="decor"
       aria-hidden="true"
       style={{ ...FILL, opacity, mixBlendMode: "multiply", isolation: "isolate" }}
     >
@@ -107,6 +109,7 @@ type ScanlineProps = {
 export function Scanline({ tone = "neutral-dark", opacity = 0.28, pitch = 6 }: ScanlineProps) {
   return (
     <div
+      data-qa-element="decor"
       aria-hidden="true"
       style={{
         ...FILL,
@@ -147,6 +150,7 @@ export function HalftonePattern({ tone, cell = 16, dot = 0.5, fade }: HalftonePa
     const disc = `radial-gradient(circle, ${color(tone)} ${r - 0.5}px, transparent ${r + 0.5}px)`;
     return (
       <div
+        data-qa-element="decor"
         aria-hidden="true"
         style={{
           ...FILL,
@@ -248,7 +252,7 @@ function PixelDots({
     .sort((a, b) => b.key - a.key)
     .slice(0, Math.min(count, ALONG * ACROSS));
   return (
-    <div aria-hidden="true" style={FILL}>
+    <div data-qa-element="decor" aria-hidden="true" style={FILL}>
       {slots.map(({ i }) => {
         const a = i % ALONG;
         const c = Math.floor(i / ALONG);
@@ -314,6 +318,7 @@ function PixelGrid({
   }
   return (
     <svg
+      data-qa-element="decor"
       aria-hidden="true"
       width={cols * cell}
       height={rows * cell}
@@ -364,6 +369,7 @@ export function DotGrid({
   }).join("");
   return (
     <svg
+      data-qa-element="decor"
       aria-hidden="true"
       width={width}
       height={height}
@@ -407,6 +413,7 @@ export function Sunburst({
   const soft = 0.1;
   return (
     <div
+      data-qa-element="decor"
       aria-hidden="true"
       style={{
         ...FILL,
@@ -436,6 +443,7 @@ export function Checker({ tone, alt, cell = 60, rows }: CheckerProps) {
   if (!rows) return <div aria-hidden="true" style={{ ...FILL, ...pattern }} />;
   return (
     <div
+      data-qa-element="decor"
       aria-hidden="true"
       style={{ display: "block", width: "100%", height: rows * cell, ...pattern }}
     />

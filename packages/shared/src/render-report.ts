@@ -12,6 +12,15 @@ export const RenderRule = z.enum([
   "forbidden-word",
   "emoji-hashtag",
   "asset-load",
+  // Aturan desain terukur PRD 4 (T-130), awalnya bertingkat saran.
+  "alignment",
+  "hierarchy",
+  "typography",
+  "thirds",
+  "color-balance",
+  "whitespace",
+  "element-count",
+  "consistency",
 ]);
 export type RenderRule = z.infer<typeof RenderRule>;
 
@@ -22,8 +31,16 @@ export const RenderCheck = z.strictObject({
   message: z.string().min(1),
   measured: z.number().optional(),
   threshold: z.number().optional(),
+  // `saran` tidak menggagalkan render (aturan desain baru sampai terkalibrasi, keputusan pemilik
+  // T-123); tanpa nilai berarti wajib.
+  severity: z.enum(["wajib", "saran"]).optional(),
 });
 export type RenderCheck = z.infer<typeof RenderCheck>;
+
+// Cek yang gagal dan wajib: menggagalkan render dan memicu revisi.
+export function isBlocking(check: RenderCheck): boolean {
+  return !check.passed && check.severity !== "saran";
+}
 
 export const RenderedSlide = z.strictObject({
   index: z.int().min(0),
@@ -48,7 +65,7 @@ export const RenderReport = z
         message: "Index slide harus berurutan mulai 0",
       });
     }
-    const allPassed = report.slides.every((slide) => slide.checks.every((check) => check.passed));
+    const allPassed = report.slides.every((slide) => !slide.checks.some(isBlocking));
     if (report.passed !== allPassed) {
       ctx.addIssue({
         code: "custom",

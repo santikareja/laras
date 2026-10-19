@@ -153,4 +153,10 @@ export const retroVintage: StyleMeta = {
       description: "Tekstur cetak di atas seluruh kanvas",
     },
   ],
+  // Ambang QA desain dari bagian aturan PANDUAN.md (sub-varian iklan cetak dan groovy lebih longgar).
+  limits: { fontSizes: 4 },
+  variantLimits: {
+    "iklan-cetak": { centerAxis: true, emptyMin: 0.25, elementsMax: 7 },
+    groovy: { centerAxis: true, emptyMin: 0.25, elementsMax: 7 },
+  },
 };

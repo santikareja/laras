@@ -118,4 +118,7 @@ export const corporateClean: StyleMeta = {
       description: "Satu swoosh warna brand di tepi kanvas",
     },
   ],
+  // Ambang QA desain dari bagian aturan PANDUAN.md (pola terpusat boleh, dua radius).
+  limits: { centerAxis: true, radii: 2 },
+  variantLimits: {},
 };

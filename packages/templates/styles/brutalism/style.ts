@@ -164,4 +164,15 @@ export const brutalism: StyleMeta = {
       description: "Tampilkan garis grid dan tanda register",
     },
   ],
+  // Ambang QA desain dari bagian aturan PANDUAN.md (P1, P2, P8, P9, P10, P11 dilonggarkan).
+  limits: {
+    axes: 3,
+    fontSizes: 4,
+    thirdsTolerance: 0.1,
+    dominantMin: 0.5,
+    accentMax: 0.18,
+    emptyMin: 0.2,
+    elementsMax: 7,
+  },
+  variantLimits: { neo: { emptyMin: 0.3, elementsMax: 6 } },
 };

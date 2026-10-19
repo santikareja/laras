@@ -28,6 +28,8 @@ type PhotoProps = {
   fit?: "cover" | "contain";
   treatment?: ImageTreatment;
   slot?: string;
+  // Titik fokus subjek untuk QA (T-130), diteruskan ke Image.
+  focus?: { x: number; y: number } | undefined;
 };
 
 const FILL: CSSProperties = { position: "absolute", inset: 0 };
@@ -37,14 +39,20 @@ const DECOR: CSSProperties = { ...FILL, pointerEvents: "none" };
 
 // Foto dengan perlakuan gaya; mengisi kotak induknya. Tanpa perlakuan (natural) hasilnya sama
 // dengan Image. Lapisan warna dimask ke alpha gambar agar cut-out tetap bertepi bersih.
-export function Photo({ src, fit = "cover", treatment = { kind: "natural" }, slot }: PhotoProps) {
+export function Photo({
+  src,
+  fit = "cover",
+  treatment = { kind: "natural" },
+  slot,
+  focus,
+}: PhotoProps) {
   const image = (filter?: string): ReactElement => (
     <div key="foto" style={{ ...FILL, filter }}>
-      <Image src={src} fit={fit} {...(slot ? { slot } : {})} />
+      <Image src={src} fit={fit} focus={focus} {...(slot ? { slot } : {})} />
     </div>
   );
   if (treatment.kind === "natural")
-    return <Image src={src} fit={fit} {...(slot ? { slot } : {})} />;
+    return <Image src={src} fit={fit} focus={focus} {...(slot ? { slot } : {})} />;
   const mask: CSSProperties = {
     maskImage: `url("${src}")`,
     maskSize: fit,

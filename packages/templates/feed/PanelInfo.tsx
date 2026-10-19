@@ -27,6 +27,7 @@ function PanelInfoSlide({ slots, options, style }: SlideProps) {
   const far = flip ? "left" : "right";
   const panel = options.panel === "dark" ? "neutral-dark" : "primary";
   const logoBottom = options.logo === "bottom";
+  const image = slot(slots, "image", "image");
   const eyebrow = optionalSlot(slots, "eyebrow", "text");
   const subjudul = optionalSlot(slots, "subjudul", "text");
   const cta = optionalSlot(slots, "cta", "text");
@@ -66,7 +67,7 @@ function PanelInfoSlide({ slots, options, style }: SlideProps) {
           gap: space(6),
         }}
       >
-        <Panel background={panel} bleed={near} padding={6} justify="start">
+        <Panel background={panel} bleed={near} padding={6} justify="start" group="panel teks">
           <div
             style={{
               display: "grid",
@@ -92,8 +93,13 @@ function PanelInfoSlide({ slots, options, style }: SlideProps) {
             )}
           </div>
         </Panel>
+
         {points.length > 0 && (
-          <div style={{ [`margin${flip ? "Right" : "Left"}`]: "var(--space-safe)" }}>
+          <div
+            data-qa-element="group"
+            data-qa-name="checklist"
+            style={{ [`margin${flip ? "Right" : "Left"}`]: "var(--space-safe)" }}
+          >
             <IconRow
               items={points}
               direction="column"
@@ -116,19 +122,30 @@ function PanelInfoSlide({ slots, options, style }: SlideProps) {
         >
           {/* Logo pertama: di tepi luar sisi panel (kanan bawah bila panel di kanan). */}
           {logoBottom && logo}
-          {cta && <Button slot="cta">{cta.value}</Button>}
-          {kontak && (
-            <div style={{ display: "flex", alignItems: "center", gap: space(2) }}>
-              <Icon
-                name={CONTACT_ICONS[options.kontak ?? "chat"] ?? "chat"}
-                size={40}
-                color="neutral-dark"
-              />
-              <Text slot="kontak" font="body" size={1} color="neutral-dark" strong>
-                {kontak.value}
-              </Text>
-            </div>
-          )}
+          <div
+            data-qa-element="group"
+            data-qa-name="blok aksi"
+            style={{
+              display: "flex",
+              flexDirection: flip ? "row-reverse" : "row",
+              alignItems: "center",
+              gap: space(5),
+            }}
+          >
+            {cta && <Button slot="cta">{cta.value}</Button>}
+            {kontak && (
+              <div style={{ display: "flex", alignItems: "center", gap: space(2) }}>
+                <Icon
+                  name={CONTACT_ICONS[options.kontak ?? "chat"] ?? "chat"}
+                  size={40}
+                  color="neutral-dark"
+                />
+                <Text slot="kontak" font="body" size={1} color="neutral-dark" strong>
+                  {kontak.value}
+                </Text>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       {/* Kotak 4:5 menempel ke tepi bawah agar tubuh atau lengan subjek tidak terputus. */}
@@ -143,9 +160,10 @@ function PanelInfoSlide({ slots, options, style }: SlideProps) {
       >
         <Photo
           slot="image"
-          src={slot(slots, "image", "image").src}
+          src={image.src}
           fit="contain"
           treatment={styleTreatment(style)}
+          focus={image.subject?.focus}
         />
       </div>
       <StyleOverlay

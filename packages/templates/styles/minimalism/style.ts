@@ -104,4 +104,15 @@ export const minimalism: StyleMeta = {
     },
   ],
   options: [],
+  // Ambang QA desain dari bagian aturan PANDUAN.md (hampir semua diperketat, fokus sumbu tengah).
+  limits: {
+    axes: 1,
+    fontSizes: 2,
+    centerAxis: true,
+    dominantMin: 0.65,
+    accentMax: 0.05,
+    emptyMin: 0.5,
+    elementsMax: 4,
+  },
+  variantLimits: { produk: { emptyMin: 0.6 } },
 };

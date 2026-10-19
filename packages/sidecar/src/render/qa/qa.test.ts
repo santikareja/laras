@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { BrandKit, CopyGuide, RenderReport } from "@laras/shared";
+import { BrandKit, CopyGuide, isBlocking, RenderReport } from "@laras/shared";
 import { brandCss } from "@laras/templates";
 import { afterAll, describe, expect, it } from "vitest";
 import { createRenderer, PROJECT_BASE_URL, type SlideFolders } from "../renderer.ts";
@@ -37,7 +37,7 @@ afterAll(() => renderer.close());
 
 async function failures(body: string): Promise<string[]> {
   const { checks } = await renderer.render(slide(body), folders, qa);
-  return checks.filter((check) => !check.passed).map((check) => `${check.rule} ${check.target}`);
+  return checks.filter(isBlocking).map((check) => `${check.rule} ${check.target}`);
 }
 
 describe("QA deterministik di Chromium", { timeout: 30_000 }, () => {
@@ -61,7 +61,7 @@ describe("QA deterministik di Chromium", { timeout: 30_000 }, () => {
       photo("foto.jpg") +
       text("left: 100px; top: 300px; color: var(--color-neutral-light)", "Di atas linen");
     const { checks } = await renderer.render(slide(overPhoto), folders, qa);
-    const contrast = checks.filter((check) => !check.passed);
+    const contrast = checks.filter(isBlocking);
     expect(contrast).toHaveLength(1);
     expect(contrast[0]?.message).toMatch(/^Kontras teks di atas foto [\d.]+:1, minimal 3:1$/);
   });

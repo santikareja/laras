@@ -118,6 +118,7 @@ export function Swoosh({
   const trim = ends === "round" ? Math.round(start * 1000) : 0;
   return (
     <svg
+      data-qa-element="shape"
       aria-hidden="true"
       viewBox={`0 0 ${CANVAS.width} ${CANVAS.height}`}
       preserveAspectRatio="xMidYMid slice"
@@ -174,6 +175,7 @@ function ShapedField({
   );
   return (
     <div
+      data-qa-element="shape"
       aria-hidden={children ? undefined : "true"}
       style={{
         position: "relative",
@@ -345,6 +347,7 @@ export function CurvedPanel({
   );
   return (
     <div
+      data-qa-element="shape"
       aria-hidden="true"
       style={{ position: "absolute", inset: 0, background: color(tone), clipPath: polygon(points) }}
     />
@@ -362,6 +365,7 @@ type DiscProps = Layer & {
 export function Disc({ color: tone, diameter }: DiscProps) {
   return (
     <div
+      data-qa-element="shape"
       aria-hidden="true"
       style={{
         width: `${diameter}px`,
@@ -382,6 +386,7 @@ type RingProps = DiscProps & {
 export function Ring({ color: tone, diameter, thickness = 0.1 }: RingProps) {
   return (
     <div
+      data-qa-element="shape"
       aria-hidden="true"
       style={{
         boxSizing: "border-box",
@@ -612,6 +617,7 @@ export function Rainbow({ colors, radius, band = 40, gap = 0, from = "bottom" }:
   }[from].join(" ");
   return (
     <svg
+      data-qa-element="shape"
       aria-hidden="true"
       viewBox={viewBox}
       style={{
@@ -667,6 +673,7 @@ export function FloorShadow({
   const side = (100 - width) / 2;
   return (
     <div
+      data-qa-element="decor"
       style={{
         position: "absolute",
         left: `${side + shift}%`,

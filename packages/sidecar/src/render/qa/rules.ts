@@ -1,8 +1,9 @@
-import { type BrandKit, type CopyGuide, type RenderCheck, RenderRule } from "@laras/shared";
+import type { BrandKit, CopyGuide, DesignLimits, RenderCheck, RenderRule } from "@laras/shared";
 
 // Aturan QA deterministik (PRD F9, ARCH 7.2) sebagai fungsi murni atas data ukur dari page.
 
-export type QaContext = { brand: BrandKit; copyGuide: CopyGuide };
+// `design`: ambang aturan desain (T-130); tanpa nilai memakai angka PRD 4.
+export type QaContext = { brand: BrandKit; copyGuide: CopyGuide; design?: DesignLimits };
 
 export type Rect = { left: number; top: number; right: number; bottom: number };
 
@@ -318,7 +319,20 @@ function assetChecks(m: Measurements): RenderCheck[] {
   ];
 }
 
-const PASSED: Record<RenderRule, string> = {
+// Aturan wajib PRD F9; aturan desain T-130 ada di design.ts.
+export const CORE_RULES = [
+  "contrast",
+  "overflow",
+  "safe-margin",
+  "font-size",
+  "brand-font",
+  "brand-color",
+  "forbidden-word",
+  "emoji-hashtag",
+  "asset-load",
+] as const satisfies readonly RenderRule[];
+
+const PASSED: Record<(typeof CORE_RULES)[number], string> = {
   contrast: "Kontras semua teks cukup",
   overflow: "Tidak ada teks yang luber, terpotong, atau bertabrakan",
   "safe-margin": "Semua elemen penting di dalam safe margin",
@@ -346,8 +360,8 @@ export function evaluateQa(
     ...copyRuleChecks(m, ctx.copyGuide),
     ...assetChecks(m),
   ];
-  const passed = RenderRule.options
-    .filter((rule) => !failures.some((check) => check.rule === rule))
-    .map((rule): RenderCheck => ({ rule, passed: true, message: PASSED[rule] }));
+  const passed = CORE_RULES.filter((rule) => !failures.some((check) => check.rule === rule)).map(
+    (rule): RenderCheck => ({ rule, passed: true, message: PASSED[rule] }),
+  );
   return [...failures, ...passed];
 }

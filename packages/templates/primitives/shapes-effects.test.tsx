@@ -152,7 +152,7 @@ describe("efek teks", () => {
 describe("bentuk", () => {
   it("bayangan lantai bawaan sama dengan elips feed-satu-objek", () => {
     expect(html(<FloorShadow />)).toBe(
-      '<div style="position:absolute;left:30%;right:30%;bottom:19%;height:3%;border-radius:50%;background:var(--color-neutral-dark);opacity:0.18;filter:blur(14px)"></div>',
+      '<div data-qa-element="decor" style="position:absolute;left:30%;right:30%;bottom:19%;height:3%;border-radius:50%;background:var(--color-neutral-dark);opacity:0.18;filter:blur(14px)"></div>',
     );
     expect(html(<FloorShadow dark shift={4} />)).toContain("left:34%;right:26%");
   });

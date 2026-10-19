@@ -9,6 +9,7 @@ import { createRenderer } from "../packages/sidecar/src/render/renderer.ts";
 import { archetypes, specimen, type Template, templates } from "../packages/templates/src/index.ts";
 import { archetypeCase, hasArchetypeCase } from "./archetype-content.ts";
 import { BRANDS, demoBrand, demoCases } from "./demo-content.ts";
+import { printChecks } from "./qa-print.ts";
 
 const OUT_DIR = resolve("out/demo");
 
@@ -17,17 +18,16 @@ async function main() {
   await mkdir(OUT_DIR, { recursive: true });
   const renderer = createRenderer();
   let failed = 0;
+  let advice = 0;
   const report = async (name: string, html: string, slug: (typeof BRANDS)[number]) => {
     const { folders, qa } = demoBrand(slug);
     const { png, checks } = await renderer.render(html, folders, qa);
     const master = await toMaster(png);
     await writeFile(join(OUT_DIR, `${name}.png`), master);
     await writeFile(join(OUT_DIR, `${name}-1080.png`), await toUpload(master, "png"));
-    const failures = checks.filter((check) => !check.passed);
-    failed += failures.length;
-    console.log(`out/demo/${name}.png ${failures.length === 0 ? "QA lolos" : "QA GAGAL"}`);
-    for (const check of failures)
-      console.log(`  - ${check.rule} ${check.target}: ${check.message}`);
+    const result = printChecks(`out/demo/${name}.png`, checks);
+    failed += result.blocking;
+    advice += result.advice;
   };
   try {
     const catalog: Template[] = [specimen, ...templates];
@@ -56,6 +56,7 @@ async function main() {
   } finally {
     await renderer.close();
   }
+  if (advice > 0) console.log(`${advice} saran desain (tidak menggagalkan, T-130)`);
   if (failed > 0) {
     console.log(`${failed} cek QA gagal`);
     process.exitCode = 1;

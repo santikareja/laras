@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { BrandKit } from "./brand-kit.ts";
 import { Slug } from "./common.ts";
+import { DEFAULT_DESIGN_LIMITS, type DesignLimits, DesignLimitsPatch } from "./design-limits.ts";
 import { TemplateOption } from "./template-meta.ts";
 
 // Definisi mesin gaya desain (PRD F16, T-128). Panduan lengkapnya ada di
@@ -111,10 +112,22 @@ export const StyleMeta = z
     // Opsi gaya yang dipilih per postingan (enum terkurasi, ADR-015), terutama penyesuaian
     // terhadap aturan brand, mis. glow padat untuk brand tanpa gradient (T-132).
     options: z.array(TemplateOption),
+    // Ambang QA desain gaya ini (T-130), turunan bagian aturan di PANDUAN.md; per varian menimpa.
+    limits: DesignLimitsPatch,
+    variantLimits: z.record(Slug, DesignLimitsPatch),
   })
   .superRefine((style, ctx) => {
     if (style.rules.some((r) => r.rule === "P7" && r.change === "relaxed")) {
       ctx.addIssue({ code: "custom", path: ["rules"], message: "P7 tidak boleh dilonggarkan" });
+    }
+    for (const variant of Object.keys(style.variantLimits)) {
+      if (!style.variants.some((v) => v.id === variant)) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["variantLimits", variant],
+          message: `Varian "${variant}" tidak ada`,
+        });
+      }
     }
     const names = style.options.map((o) => o.name);
     if (new Set(names).size !== names.length) {
@@ -212,4 +225,14 @@ export function resolveStyleChoice(choice: StyleChoice, style: StyleMeta): Style
   if (issues.length > 0) throw new Error(issues.join("; "));
   const defaults = Object.fromEntries(style.options.map((o) => [o.name, o.default]));
   return { ...choice, options: { ...defaults, ...choice.options } };
+}
+
+// Ambang QA desain untuk satu postingan: angka PRD 4, ditimpa ambang gaya lalu ambang varian.
+export function designLimits(style?: StyleMeta, variant?: string): DesignLimits {
+  const limits: DesignLimits = { ...DEFAULT_DESIGN_LIMITS };
+  if (!style) return limits;
+  for (const patch of [style.limits, variant ? style.variantLimits[variant] : undefined]) {
+    if (patch) Object.assign(limits, patch);
+  }
+  return limits;
 }

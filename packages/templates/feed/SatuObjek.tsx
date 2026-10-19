@@ -38,6 +38,8 @@ export function TopCaption({
   const body = optionalSlot(slots, "body", "text");
   return (
     <div
+      data-qa-element="group"
+      data-qa-name="teks"
       style={{
         position: "absolute",
         top: "calc(var(--space-safe) * 1.5)",
@@ -98,6 +100,7 @@ export function PlacedLogo({ src, at }: { src: string; at: string }) {
 function SatuObjekSlide({ slots, options, style }: SlideProps) {
   const dark = options.tone === "primary" || options.tone === "dark";
   const logoAt = options.logo ?? "bottom-center";
+  const image = slot(slots, "image", "image");
   const tone = BACKGROUND[(options.tone ?? "neutral") as keyof typeof BACKGROUND];
   return (
     <div
@@ -115,9 +118,10 @@ function SatuObjekSlide({ slots, options, style }: SlideProps) {
       >
         <Photo
           slot="image"
-          src={slot(slots, "image", "image").src}
+          src={image.src}
           fit="contain"
           treatment={styleTreatment(style)}
+          focus={image.subject?.focus}
         />
       </div>
       <TopCaption slots={slots} dark={dark} effect={styleEffect(style, "headline")} />

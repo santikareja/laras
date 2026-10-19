@@ -6,6 +6,7 @@ import {
   type ContentPlan,
   type CopyDraft,
   type CopyGuide,
+  isBlocking,
   JobEvent,
   type JobSpec,
   type JobStage,
@@ -343,7 +344,7 @@ async function renderSlides(step: Step, deps: PipelineDeps, work: Working, dir: 
 async function runQa(step: Step, spec: JobSpec, deps: PipelineDeps, work: Working, brand: string) {
   const render = work.render;
   if (!render) throw new Error("Tahap qa butuh hasil render");
-  const deterministicPassed = render.slides.every((s) => s.checks.every((c) => c.passed));
+  const deterministicPassed = render.slides.every((s) => !s.checks.some(isBlocking));
   if (!deterministicPassed) return { output: qaReport(step.round, render, null) };
   const prompt = renderPrompt("qa-visual", {
     brand,

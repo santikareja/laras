@@ -11,7 +11,11 @@ function FotoKonsepSlide({ slots, options, style }: SlideProps) {
   return (
     <div style={{ position: "relative", height: "100%", overflow: "hidden" }}>
       <StyleBackdrop style={style} />
-      <div style={{ position: "absolute", inset: 0 }}>
+      <div
+        data-qa-element="background"
+        data-qa-name="foto"
+        style={{ position: "absolute", inset: 0 }}
+      >
         <Photo
           slot="image"
           src={slot(slots, "image", "image").src}

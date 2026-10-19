@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { BrandKit, CopyGuide, LayoutSpec } from "@laras/shared";
+import { BrandKit, CopyGuide, isBlocking, LayoutSpec } from "@laras/shared";
 import { specimen } from "@laras/templates";
 import { chromium, type Route } from "playwright-core";
 import sharp from "sharp";
@@ -87,7 +87,7 @@ describe("createRenderer", () => {
     const second = await renderer.render(html, folders, qa);
     for (const { png, checks } of [first, second]) {
       expect(await describeImage(png)).toMatchObject({ format: "png", width: 2160, height: 2700 });
-      expect(checks.filter((check) => !check.passed)).toEqual([]);
+      expect(checks.filter(isBlocking)).toEqual([]);
     }
     expect(launch).toHaveBeenCalledTimes(1);
 

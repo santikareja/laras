@@ -20,7 +20,11 @@ function KartuKacaSlide({ slots, options, style }: SlideProps) {
   const logoBottom = options.logo === "bottom-right";
   return (
     <div style={{ position: "relative", height: "100%", overflow: "hidden" }}>
-      <div style={{ position: "absolute", inset: 0 }}>
+      <div
+        data-qa-element="background"
+        data-qa-name="foto"
+        style={{ position: "absolute", inset: 0 }}
+      >
         <Photo
           slot="image"
           src={slot(slots, "image", "image").src}
@@ -39,7 +43,11 @@ function KartuKacaSlide({ slots, options, style }: SlideProps) {
         }}
       >
         <GlassPanel tone={dark ? "dark" : "light"} padding={6}>
-          <div style={{ display: "grid", gap: space(3), justifyItems: "start" }}>
+          <div
+            data-qa-element="group"
+            data-qa-name="panel kaca"
+            style={{ display: "grid", gap: space(3), justifyItems: "start" }}
+          >
             {chip && (
               <Badge slot="chip" background="primary" color="neutral-light">
                 {chip.value}
@@ -58,14 +66,14 @@ function KartuKacaSlide({ slots, options, style }: SlideProps) {
                 {body.value}
               </Text>
             )}
-            {cta && (
-              <div style={{ marginTop: space(3) }}>
-                <Button slot="cta" shape="pill" iconStroke="brand">
-                  {cta.value}
-                </Button>
-              </div>
-            )}
           </div>
+          {cta && (
+            <div style={{ marginTop: space(3), alignSelf: "flex-start" }}>
+              <Button slot="cta" shape="pill" iconStroke="brand">
+                {cta.value}
+              </Button>
+            </div>
+          )}
         </GlassPanel>
       </div>
       <div

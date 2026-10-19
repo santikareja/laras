@@ -1,7 +1,9 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { BrandKit } from "./brand-kit.ts";
+import { DEFAULT_DESIGN_LIMITS } from "./design-limits.ts";
 import {
+  designLimits,
   relativeLuminance,
   resolveStyleChoice,
   StyleMeta,
@@ -59,6 +61,8 @@ const style = (): StyleMeta => ({
       description: "Glow lunak, atau padat untuk brand tanpa gradient",
     },
   ],
+  limits: { centerAxis: true },
+  variantLimits: { utama: { elementsMax: 6 } },
 });
 
 describe("StyleMeta (T-128)", () => {
@@ -136,5 +140,20 @@ describe("StyleChoice (T-132)", () => {
     expect(() =>
       resolveStyleChoice({ id: "lain", variant: "utama", options: {} }, style()),
     ).toThrow('Pilihan untuk gaya "lain"');
+  });
+});
+
+describe("designLimits (T-130)", () => {
+  it("angka PRD tanpa gaya; gaya lalu varian menimpa", () => {
+    expect(designLimits()).toEqual(DEFAULT_DESIGN_LIMITS);
+    const limits = designLimits(style(), "utama");
+    expect(limits.centerAxis).toBe(true);
+    expect(limits.elementsMax).toBe(6);
+    expect(limits.emptyMin).toBe(DEFAULT_DESIGN_LIMITS.emptyMin);
+  });
+
+  it("menolak ambang untuk varian yang tidak ada", () => {
+    const wrong = { ...style(), variantLimits: { lain: { axes: 3 } } };
+    expect(issuesOf(StyleMeta, wrong)).toContain('Varian "lain" tidak ada');
   });
 });

@@ -36,6 +36,8 @@ function BidangWarnaSlide({ slots, options, style }: SlideProps) {
       <StyleBackdrop style={style} subjectSide={far} />
       {options.arch !== "none" && (
         <div
+          data-qa-element="shape"
+          data-qa-name="lengkung"
           style={{
             position: "absolute",
             [far]: "-4%",
@@ -56,9 +58,17 @@ function BidangWarnaSlide({ slots, options, style }: SlideProps) {
           height: `${SUBJECT.height}%`,
         }}
       >
-        <Photo slot="image" src={image.src} fit="contain" treatment={styleTreatment(style)} />
+        <Photo
+          slot="image"
+          src={image.src}
+          fit="contain"
+          treatment={styleTreatment(style)}
+          focus={image.subject?.focus}
+        />
       </div>
       <div
+        data-qa-element="group"
+        data-qa-name="blok teks"
         style={{
           position: "absolute",
           ...(textBottom ? { bottom: `calc(${EDGE} + ${space(7)} + ${space(3)})` } : { top: EDGE }),

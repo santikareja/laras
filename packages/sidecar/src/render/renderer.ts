@@ -1,9 +1,12 @@
 import { readFile } from "node:fs/promises";
 import { extname, resolve, sep } from "node:path";
-import type { RenderCheck } from "@laras/shared";
+import { DEFAULT_DESIGN_LIMITS, type RenderCheck } from "@laras/shared";
 import { type Browser, chromium, type Page, type Route } from "playwright-core";
 import { FIT_SCRIPT } from "./fit.ts";
 import { COLLECT_SCRIPT, HIDE_TEXT_CSS } from "./qa/collect.ts";
+import { type DesignMeasurements, designChecks } from "./qa/design.ts";
+import { DESIGN_SCRIPT } from "./qa/design-collect.ts";
+import { pixelStats } from "./qa/pixels.ts";
 import {
   evaluateQa,
   type Measurements,
@@ -68,6 +71,7 @@ export function createRenderer(): Renderer {
         await page.evaluate(READY_SCRIPT);
         await page.evaluate(FIT_SCRIPT);
         const measurements = await page.evaluate<Measurements>(COLLECT_SCRIPT);
+        const design = await page.evaluate<DesignMeasurements>(DESIGN_SCRIPT);
         const fonts = await platformFonts(page);
         for (const text of measurements.texts) text.platformFonts = fonts.get(text.id) ?? [];
         const png = await page.screenshot(SCREENSHOT);
@@ -83,7 +87,18 @@ export function createRenderer(): Renderer {
             DEVICE_SCALE,
           );
         }
-        return { png, checks: evaluateQa(measurements, qa, sampled) };
+        const { primary, secondary, accent, neutral } = qa.brand.colors;
+        const pixels = await pixelStats(
+          png,
+          [primary, secondary, accent, ...Object.values(neutral)],
+          design.excluded,
+          design.canvas,
+        );
+        const checks = [
+          ...evaluateQa(measurements, qa, sampled),
+          ...designChecks(design, pixels, qa.design ?? DEFAULT_DESIGN_LIMITS, qa.brand),
+        ];
+        return { png, checks };
       } finally {
         await context.close();
       }

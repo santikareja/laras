@@ -289,6 +289,7 @@ export function NeonRail({
   const apart = line + RING.gap;
   return (
     <div
+      data-qa-element="decor"
       aria-hidden="true"
       style={{
         width: `${Math.min(Math.max(length, 40), 100)}%`,

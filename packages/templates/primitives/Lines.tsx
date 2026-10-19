@@ -48,6 +48,7 @@ export function Rule({ color: tone, length, vertical = false, weight }: RuleProp
   const across = weight === undefined ? HAIRLINE : `${weight}px`;
   return (
     <span
+      data-qa-element="decor"
       aria-hidden="true"
       style={{
         display: "block",
@@ -99,7 +100,11 @@ export function GridLines({
     <span key={key} style={{ position: "absolute", background: fill, ...style }} />
   );
   return (
-    <div aria-hidden="true" style={{ position: "absolute", inset: "var(--space-safe)" }}>
+    <div
+      data-qa-element="decor"
+      aria-hidden="true"
+      style={{ position: "absolute", inset: "var(--space-safe)" }}
+    >
       {indices(columns).map((i) =>
         bar(`c${i}`, {
           top: 0,
@@ -186,6 +191,7 @@ export function OutlineFrame({ color: tone, offset = 24, side = "left" }: Outlin
   const at = (s: Side) => `${s === side ? d : -d}px`;
   return (
     <span
+      data-qa-element="decor"
       aria-hidden="true"
       style={{
         position: "absolute",
@@ -267,7 +273,11 @@ export function HudFrame({ color: tone, arm = 56, opacity = 1, ticks, plus = [] 
     return <span key={`${vertical}-${horizontal}`} style={style} />;
   };
   return (
-    <div aria-hidden="true" style={{ position: "absolute", inset: "var(--space-safe)" }}>
+    <div
+      data-qa-element="decor"
+      aria-hidden="true"
+      style={{ position: "absolute", inset: "var(--space-safe)" }}
+    >
       {corner("top", "left")}
       {corner("top", "right")}
       {corner("bottom", "left")}
@@ -383,7 +393,7 @@ export function CanvasFrame({
     />
   );
   return (
-    <div aria-hidden="true" style={FILL}>
+    <div data-qa-element="decor" aria-hidden="true" style={FILL}>
       {ring(`${d}px`, double ? THICK : STROKE, "var(--shape-radius)")}
       {double &&
         ring(

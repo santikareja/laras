@@ -25,7 +25,11 @@ export const COLLECT_SCRIPT = String.raw`(() => {
     const start = stack.indexOf(el);
     if (start < 0) return null;
     for (const node of stack.slice(start)) {
-      if (node.tagName === "IMG") return { kind: "image" };
+      // Bentuk SVG (swoosh, pelangi) di belakang teks: kontras diukur dari piksel (T-130). Hanya
+      // geometri yang tergambar di titik itu; kotak <svg> sendiri menutupi seluruh lapisannya.
+      if (node.tagName === "IMG" || (node instanceof SVGElement && node.tagName.toLowerCase() !== "svg")) {
+        return { kind: "image" };
+      }
       const color = getComputedStyle(node).backgroundColor;
       const a = alpha(color);
       if (a >= 1) return { kind: "color", color };

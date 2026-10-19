@@ -114,4 +114,7 @@ export const flatDesign: StyleMeta = {
     },
   ],
   options: [],
+  // Ambang QA desain dari bagian aturan PANDUAN.md (P8, P9, P10, P11 dilonggarkan).
+  limits: { centerAxis: true, dominantMin: 0.5, secondMax: 0.4, emptyMin: 0.25, radii: 2 },
+  variantLimits: {},
 };

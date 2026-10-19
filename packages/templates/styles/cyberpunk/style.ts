@@ -158,4 +158,10 @@ export const cyberpunk: StyleMeta = {
       description: "Tekstur layar di atas seluruh kanvas",
     },
   ],
+  // Ambang QA desain dari bagian aturan PANDUAN.md (P2 diperketat, fokus sumbu tengah boleh).
+  limits: { headlineRatio: 3, centerAxis: true },
+  variantLimits: {
+    "neon-jalanan": { emptyMin: 0.25, elementsMax: 6 },
+    "poster-tekno": { emptyMin: 0.25, elementsMax: 6, centerAxis: false },
+  },
 };

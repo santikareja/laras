@@ -41,6 +41,7 @@ export function Scribble({
 }: ScribbleProps) {
   return (
     <svg
+      data-qa-element="decor"
       viewBox={VIEW_BOX[shape]}
       aria-hidden="true"
       preserveAspectRatio={fill ? "none" : undefined}

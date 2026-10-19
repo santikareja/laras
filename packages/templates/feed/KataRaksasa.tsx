@@ -60,7 +60,13 @@ function KataRaksasaSlide({ slots, options, style }: SlideProps) {
           transform: `translateX(${shift}%)`,
         }}
       >
-        <Photo slot="image" src={image.src} fit="contain" treatment={styleTreatment(style)} />
+        <Photo
+          slot="image"
+          src={image.src}
+          fit="contain"
+          treatment={styleTreatment(style)}
+          focus={image.subject?.focus}
+        />
       </div>
       <div
         style={{

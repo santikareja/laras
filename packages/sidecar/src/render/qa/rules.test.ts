@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
-import { BrandKit, CopyGuide, RenderRule } from "@laras/shared";
+import { BrandKit, CopyGuide } from "@laras/shared";
 import { describe, expect, it } from "vitest";
 import {
+  CORE_RULES,
   contrastRatio,
   countEmoji,
   evaluateQa,
@@ -92,7 +93,7 @@ describe("evaluateQa", () => {
   it("meloloskan slide patuh dengan satu cek lolos per aturan", () => {
     const checks = evaluateQa(measure(), ctx, new Map());
     expect(checks.every((check) => check.passed)).toBe(true);
-    expect(checks.map((check) => check.rule).sort()).toEqual([...RenderRule.options].sort());
+    expect(checks.map((check) => check.rule).sort()).toEqual([...CORE_RULES].sort());
   });
 
   it("kontras: warna latar, ambang teks besar, dan sampling foto", () => {

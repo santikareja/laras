@@ -9,6 +9,7 @@ type TapeProps = {
 export function Tape({ color: tone, rotate = 0 }: TapeProps) {
   return (
     <span
+      data-qa-element="decor"
       aria-hidden="true"
       style={{
         display: "block",

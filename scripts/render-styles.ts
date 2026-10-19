@@ -6,12 +6,13 @@
 // <id gaya> …` hanya merender gaya tertentu tanpa menghapus hasil gaya lain.
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
-import { styleFit } from "../packages/shared/src/index.ts";
+import { type DesignLimits, designLimits, styleFit } from "../packages/shared/src/index.ts";
 import { renderLayoutHtml } from "../packages/sidecar/src/render/layout.ts";
 import { toMaster, toThumbnail, toUpload } from "../packages/sidecar/src/render/postprocess.ts";
 import { createRenderer, JOB_BASE_URL } from "../packages/sidecar/src/render/renderer.ts";
 import { styles } from "../packages/templates/src/index.ts";
 import { BRANDS, type Brand, demoBrand } from "./demo-content.ts";
+import { printChecks } from "./qa-print.ts";
 import { STYLE_TEMPLATES, specimenCase, styleCase } from "./style-content.ts";
 
 const OUT_DIR = resolve("out/styles");
@@ -35,16 +36,19 @@ async function main() {
   const renderer = createRenderer();
   const entries: Entry[] = [];
   let failed = 0;
-  const report = async (name: string, html: string, slug: Brand) => {
+  let advice = 0;
+  // `design`: ambang aturan desain gaya dan varian (T-130); spesimen tanpa saran desain.
+  const report = async (name: string, html: string, slug: Brand, design?: DesignLimits) => {
     const { folders, qa } = demoBrand(slug);
-    const { png, checks } = await renderer.render(html, folders, qa);
+    const { png, checks } = await renderer.render(html, folders, {
+      ...qa,
+      ...(design ? { design } : {}),
+    });
     const master = await toMaster(png);
     await writeFile(join(OUT_DIR, `${name}.png`), await toUpload(master, "png"));
-    const failures = checks.filter((check) => !check.passed);
-    failed += failures.length;
-    console.log(`out/styles/${name}.png ${failures.length === 0 ? "QA lolos" : "QA GAGAL"}`);
-    for (const check of failures)
-      console.log(`  - ${check.rule} ${check.target}: ${check.message}`);
+    const result = printChecks(`out/styles/${name}.png`, checks, design !== undefined);
+    failed += result.blocking;
+    advice += result.advice;
     return master;
   };
   try {
@@ -60,7 +64,7 @@ async function main() {
         });
         if (!html) throw new Error(`Gaya ${style.id} tanpa slide`);
         const name = `${style.id}-${slug}`;
-        const master = await report(name, html, slug);
+        const master = await report(name, html, slug, designLimits(style, post.style.variant));
         await writeFile(join(OUT_DIR, `${name}-thumb.png`), await toThumbnail(master));
 
         const specimen = await specimenCase(
@@ -105,6 +109,7 @@ async function main() {
   } finally {
     await renderer.close();
   }
+  if (advice > 0) console.log(`${advice} saran desain (tidak menggagalkan, T-130)`);
   if (failed > 0) {
     console.log(`${failed} cek QA gagal`);
     process.exitCode = 1;
