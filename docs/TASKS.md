@@ -252,9 +252,16 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Pertanyaan untuk pemilik: (1) blur kaca dianggap material, bukan gradient, sedangkan kolam cahaya neon yang berpendar dianggap gradient (`gradient: subtle`) sehingga tidak dipakai pada brand yang melarang gradient; (2) Flat Design ingin tint warna lewat `color-mix` dari token; (3) Brutalisme, Cyberpunk, dan Vintage/Retro mengandalkan font aksen ketiga (T-124) untuk label; (4) cek mesin menilai Kopi cocok untuk Cyberpunk dari warnanya, padahal panduan menilainya kurang cocok karena heading serif, aturan "Tanpa gradient", dan foto produk wajib cahaya alami; aturan brand berbentuk teks bebas baru bisa dicek mesin setelah T-124.
   - Keputusan pemilik 2026-10-19: panduan disetujui dan keempat usulan diterima: (1) blur kaca adalah material, kolam cahaya neon adalah gradient; (2) tint turunan token lewat `color-mix` antara dua token brand boleh untuk pola tone-on-tone; (3) label Brutalisme, Cyberpunk, dan Vintage/Retro memakai font aksen ketiga dari T-124; (4) `styleFit` tetap hanya mengecek data terukur, aturan brand teks bebas menyusul T-124.
 
-- [ ] T-132 Render gaya dan thumbnail (tujuh gaya)
+- [~] T-132 Render gaya dan thumbnail (tujuh gaya)
   - Rujukan: T-128, PRD F16, ADR-015, ARCH 6.2
   - AC: lapisan gaya di renderer dan perangkat grafis baru yang dibutuhkan panduan (mis. halftone, grain, glow neon, kaca buram, garis grid); `pnpm render:styles` menghasilkan thumbnail setiap gaya × 3 brand fixture dengan tanda "kurang cocok" bila Brand Kit bertentangan; pemilik menilai thumbnail.
+  - Keputusan pemilik 2026-10-19: semua perangkat grafis berstatus `perlu-dibuat` di ketujuh `style.ts` dibuat di task ini; satu thumbnail per gaya (varian paling khas) × 3 brand; pola khas: Brutalisme `feed-kolase-diagonal`, Corporate Clean `feed-panel-info` (baru), Cyberpunk `feed-satu-objek`, Flat `feed-bidang-warna`, Minimalism `feed-satu-objek`, Glassmorphism `feed-kartu-kaca` (baru), Vintage/Retro `feed-kata-raksasa`; pola bertepi tajam (halftone, scanline, grain) boleh pada brand "Tanpa gradient".
+  - Rencana: pilihan gaya `StyleChoice` dan opsi gaya di `shared`; lapisan gaya (variabel CSS turunan gaya dan Brand Kit mengikuti bagian 12 panduan) yang tidak mengubah render tanpa gaya; perangkat grafis di `primitives`; renderer menerima gaya; cek warna Brand Kit menerima tint campuran dua token pada latar dan border; spesimen perangkat per gaya; `pnpm render:styles` (21 render, thumbnail 360 px, lembar ringkasan dengan tanda "kurang cocok"); tanpa kuota dan tanpa dependency baru.
+
+- [ ] T-134 Arketipe baru dari panduan gaya
+  - Rujukan: T-128 (`plannedArchetypes` di setiap `style.ts`), T-132, ADR-015
+  - AC: arketipe usulan panduan selain `feed-panel-info` dan `feed-kartu-kaca` (mis. `feed-poster-grid`, `feed-indeks`, `feed-panel-hud`, `feed-panel-lengkung`, `feed-minimal-tipografi`, `feed-iklan-cetak`) dibuat dari perangkat T-132, dengan isi demo untuk tiga brand dan QA lolos; pemilik menilai hasilnya.
+  - Catatan: ditemukan saat merencanakan T-132 (keputusan pemilik 2026-10-19: perangkat di T-132, arketipe lain menyusul).
 
 - [ ] T-133 Gaya desain di pipeline
   - Rujukan: PRD F16, US-17, T-128, T-131
