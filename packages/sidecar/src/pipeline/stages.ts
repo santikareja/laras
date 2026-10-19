@@ -13,6 +13,8 @@ import {
   type RenderReport,
   type RenderRule,
   Revision,
+  type StyleMeta,
+  styleChoiceIssues,
   type TemplateMeta,
   type VisualQa,
 } from "@laras/shared";
@@ -49,17 +51,47 @@ export function catalogFor(catalog: TemplateMeta[], format: ContentFormat): Temp
   return catalog.filter((meta) => meta.format === format);
 }
 
-type LayoutContext = { catalog: TemplateMeta[]; slideCount: number; logo: BrandKit["logo"] };
+type LayoutContext = {
+  catalog: TemplateMeta[];
+  slideCount: number;
+  logo: BrandKit["logo"];
+  // Gaya job dan variannya (T-133); null tanpa gaya.
+  style: { meta: StyleMeta; variant: string } | null;
+};
+
+// Katalog untuk prompt: arketipe gaya job lebih dulu (T-133), sisanya tetap boleh dipilih.
+export function catalogForStyle(catalog: TemplateMeta[], style: StyleMeta | null): TemplateMeta[] {
+  if (!style) return catalog;
+  const own = catalog.filter((meta) => style.archetypes.includes(meta.id));
+  return [...own, ...catalog.filter((meta) => !style.archetypes.includes(meta.id))];
+}
+
+// styleOptions hanya sah untuk job bergaya dan hanya memakai opsi gaya itu (T-133).
+function styleOptionIssues(layout: LayoutSpec, style: LayoutContext["style"]): string[] {
+  const options = layout.styleOptions ?? {};
+  if (!style) {
+    return Object.keys(options).length > 0 ? ["Tanpa gaya desain, styleOptions harus kosong"] : [];
+  }
+  return styleChoiceIssues({ id: style.meta.id, variant: style.variant, options }, style.meta);
+}
 
 // Layout harus cocok dengan katalog dan Brand Kit: template, slot, opsi, jumlah slide, dan varian
 // logo yang benar-benar ada (T-119), agar kesalahan masuk retry validasi, bukan gagal di render.
-function layoutContextIssues(layout: LayoutSpec, { catalog, slideCount, logo }: LayoutContext) {
+function layoutContextIssues(
+  layout: LayoutSpec,
+  { catalog, slideCount, logo, style }: LayoutContext,
+) {
   const meta = catalog.find((t) => t.id === layout.templateId && t.format === layout.format);
   if (!meta)
     return [`Template "${layout.templateId}" tidak ada di katalog format ${layout.format}`];
   const count =
     layout.slides.length === slideCount ? [] : [`Layout harus berisi ${slideCount} slide`];
-  return [...layoutIssues(layout, meta), ...count, ...logoIssues(layout, logo)];
+  return [
+    ...layoutIssues(layout, meta),
+    ...count,
+    ...logoIssues(layout, logo),
+    ...styleOptionIssues(layout, style),
+  ];
 }
 
 export function layoutSchema(context: LayoutContext) {

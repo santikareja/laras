@@ -16,16 +16,19 @@ import {
   QaReport,
   type RenderCheck,
   RenderReport,
+  type StyleChoice,
   type TemplateMeta,
   VisualQa,
 } from "@laras/shared";
 import type { z } from "zod";
 import { LimitReachedError } from "../cli/limits.ts";
 import { brandContext, renderPrompt, type Stage } from "../prompts/index.ts";
+import { findStyle, styleContext } from "../prompts/style-context.ts";
 import { buildRenderReport } from "../render/qa/report.ts";
 import type { AssetProvider } from "./assets.ts";
 import {
   catalogFor,
+  catalogForStyle,
   copySchema,
   layoutSchema,
   planSchema,
@@ -59,10 +62,12 @@ export type PipelineDeps = {
   catalog: TemplateMeta[];
   claude: StageCall;
   assetsFor: (spec: JobSpec) => AssetProvider;
+  // `style`: gaya job beserta styleOptions layout (T-133); undefined tanpa gaya.
   render: (
     layout: LayoutSpec,
     assets: AssetManifest,
     jobDir: string,
+    style: StyleChoice | undefined,
   ) => Promise<SlideRenderOutput[]>;
   signal?: AbortSignal;
   onEvent?: (jobId: string, event: JobEvent) => void;
@@ -223,7 +228,8 @@ async function runStep(
   dir: string,
 ): Promise<{ output: unknown; costUsd?: number }> {
   const brand = brandContext(deps.brand, deps.copyGuide);
-  const catalog = catalogFor(deps.catalog, spec.format);
+  const catalog = jobCatalog(spec, deps);
+  const style = (stage: Stage) => styleContext(spec.style, deps.brand, stage);
   const json = (value: unknown) => JSON.stringify(value, null, 2);
   const need = <T>(value: T | undefined, name: string): T => {
     if (value === undefined) throw new Error(`Tahap ${step.stage} butuh ${name}`);
@@ -246,6 +252,7 @@ async function runStep(
           format: spec.format,
           slideCount: String(spec.slideCount),
           variantCount: String(spec.variantCount),
+          style: style("plan"),
         }),
         planSchema(spec),
       );
@@ -257,6 +264,7 @@ async function runStep(
         knowledge: deps.knowledge,
         plan: json(plan),
         angle: json(angle()),
+        style: style("copy"),
       });
       return ask("copy", prompt, copySchema(plan));
     }
@@ -270,15 +278,16 @@ async function runStep(
         templatePreference: spec.templatePreference ?? "Tidak ada preferensi",
         usedTemplates: await usedTemplates(spec, deps),
         userAssets: userAssets.length > 0 ? userAssets.join(", ") : "Tidak ada",
+        style: style("layout"),
       });
       return ask("layout", prompt, layoutSchema(layoutContext(spec, deps, catalog)));
     }
     case "assets":
       return { output: await produceAssets(spec, deps, work, dir) };
     case "render":
-      return { output: await renderSlides(step, deps, work, dir) };
+      return { output: await renderSlides(step, spec, deps, work, dir) };
     case "qa":
-      return runQa(step, spec, deps, work, brand);
+      return runQa(step, spec, deps, work, brand, style("qa-visual"));
     case "revise": {
       const prompt = renderPrompt("revise", {
         brand,
@@ -286,6 +295,7 @@ async function runStep(
         layout: json(need(work.layout, "layout")),
         catalog: json(catalog),
         fixes: json(fixesForRevision(need(work.qa, "qa"))),
+        style: style("revise"),
       });
       return ask("revise", prompt, revisionSchema(layoutContext(spec, deps, catalog)));
     }
@@ -311,7 +321,7 @@ async function produceAssets(spec: JobSpec, deps: PipelineDeps, work: Working, d
       assets.push(previous);
       continue;
     }
-    const ctx = { projectDir: deps.projectDir, jobDir: dir, brand: deps.brand };
+    const ctx = { projectDir: deps.projectDir, jobDir: dir, brand: deps.brand, style: spec.style };
     assets.push(
       await provider.generate(request, deps.signal ? { ...ctx, signal: deps.signal } : ctx),
     );
@@ -319,10 +329,17 @@ async function produceAssets(spec: JobSpec, deps: PipelineDeps, work: Working, d
   return AssetManifest.parse({ assets });
 }
 
-async function renderSlides(step: Step, deps: PipelineDeps, work: Working, dir: string) {
+async function renderSlides(
+  step: Step,
+  spec: JobSpec,
+  deps: PipelineDeps,
+  work: Working,
+  dir: string,
+) {
   const { layout, assets } = work;
   if (!layout || !assets) throw new Error("Tahap render butuh layout dan aset");
-  const slides = await deps.render(layout, assets, dir);
+  const style = spec.style ? { ...spec.style, options: layout.styleOptions ?? {} } : undefined;
+  const slides = await deps.render(layout, assets, dir, style);
   await mkdir(join(dir, "slides"), { recursive: true });
   const prefix = String(step.n).padStart(2, "0");
   const rendered = [];
@@ -342,7 +359,14 @@ async function renderSlides(step: Step, deps: PipelineDeps, work: Working, dir: 
 }
 
 // QA visual hanya bila cek deterministik lolos (hemat kuota; keputusan pemilik).
-async function runQa(step: Step, spec: JobSpec, deps: PipelineDeps, work: Working, brand: string) {
+async function runQa(
+  step: Step,
+  spec: JobSpec,
+  deps: PipelineDeps,
+  work: Working,
+  brand: string,
+  style: string,
+) {
   const render = work.render;
   if (!render) throw new Error("Tahap qa butuh hasil render");
   const deterministicPassed = render.slides.every((s) => !s.checks.some(isBlocking));
@@ -354,6 +378,7 @@ async function runQa(step: Step, spec: JobSpec, deps: PipelineDeps, work: Workin
     deterministic: "Semua cek kode lolos.",
     references: "Tidak ada referensi visual.",
     slides: render.slides.map((s) => `jobs/${spec.id}/${s.pngPath}`).join("\n"),
+    style,
   });
   const { data, costUsd } = await deps.claude("qa-visual", prompt, VisualQa);
   return {
@@ -415,12 +440,20 @@ const layoutContext = (spec: JobSpec, deps: PipelineDeps, catalog: TemplateMeta[
   catalog,
   slideCount: spec.slideCount,
   logo: deps.brand.logo,
+  style: spec.style ? { meta: findStyle(spec.style.id), variant: spec.style.variant } : null,
 });
+
+// Katalog format job, arketipe gaya job lebih dulu (T-133).
+const jobCatalog = (spec: JobSpec, deps: PipelineDeps) =>
+  catalogForStyle(
+    catalogFor(deps.catalog, spec.format),
+    spec.style ? findStyle(spec.style.id) : null,
+  );
 
 // Output langkah yang tersimpan, divalidasi skema tahap; undefined bila belum ada atau rusak.
 async function readStep(dir: string, step: Step, spec: JobSpec, deps: PipelineDeps, work: Working) {
   const path = join(dir, stepFile(step));
-  const catalog = catalogFor(deps.catalog, spec.format);
+  const catalog = jobCatalog(spec, deps);
   switch (step.stage) {
     case "plan":
       return validJson(path, planSchema(spec));

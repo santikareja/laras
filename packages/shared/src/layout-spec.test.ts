@@ -38,6 +38,13 @@ describe("LayoutSpec", () => {
     expect(issuesOf(LayoutSpec, s)).toEqual([]);
   });
 
+  it("opsi gaya opsional untuk seluruh postingan, nilainya slug (T-133)", () => {
+    expect(issuesOf(LayoutSpec, { ...spec(), styleOptions: { glow: "solid" } })).toEqual([]);
+    expect(issuesOf(LayoutSpec, { ...spec(), styleOptions: { glow: "Padat Sekali" } })).not.toEqual(
+      [],
+    );
+  });
+
   it("menolak slot gambar yang merujuk aset tidak dikenal", () => {
     const s = spec();
     s.assetRequests = [];

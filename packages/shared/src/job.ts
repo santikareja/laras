@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { ContentFormat, NonEmptyText, RelativePath, Slug, slideCountError } from "./common.ts";
+import { StyleSelection } from "./project-settings.ts";
 
 // Job pipeline (ARCH 5.1): satu job = satu varian dari satu brief. Disimpan di
 // jobs/<job-id>/job.json; event per tahap di jobs/<job-id>/events.jsonl.
@@ -28,6 +29,9 @@ export const JobSpec = z
     variant: z.int().min(1).max(4),
     variantCount: z.int().min(1).max(4),
     templatePreference: z.string().min(1).nullable(),
+    // Gaya terpilih untuk brief ini (default project atau pilihan per brief, PRD F16, T-133);
+    // null tanpa gaya. Job lama tanpa field ini dibaca sebagai tanpa gaya.
+    style: StyleSelection.nullable().default(null),
     // Foto milik pengguna per id aset, relatif terhadap folder project (PRD US-15).
     userAssets: z.record(Slug, RelativePath),
   })

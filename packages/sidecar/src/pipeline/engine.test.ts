@@ -2,12 +2,19 @@ import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "no
 import { mkdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { BrandKit, CopyGuide, type JobSpec, type RenderCheck } from "@laras/shared";
+import {
+  BrandKit,
+  CopyGuide,
+  type JobSpec,
+  type RenderCheck,
+  type StyleChoice,
+} from "@laras/shared";
 import { templates } from "@laras/templates";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { ClaudeRunError } from "../cli/claude.ts";
 import { LimitReachedError } from "../cli/limits.ts";
 import type { Stage } from "../prompts/index.ts";
+import { findStyle } from "../prompts/style-context.ts";
 import type { AssetProvider } from "./assets.ts";
 import { jobDir, type PipelineDeps, runBrief, runJob, type StageCall } from "./engine.ts";
 import { layoutSchema, planSchema, revisionSchema } from "./stages.ts";
@@ -87,6 +94,8 @@ type Fake = {
   calls: { stage: Stage; prompt: string }[];
   assetCalls: string[];
   renders: number;
+  // Pilihan gaya yang diterima render per panggilan (T-133).
+  styles: (StyleChoice | undefined)[];
 };
 
 let tmp = "";
@@ -140,6 +149,7 @@ function fake(options: {
     calls,
     assetCalls,
     renders: 0,
+    styles: [],
     deps: undefined as unknown as PipelineDeps,
   };
   result.deps = {
@@ -150,7 +160,8 @@ function fake(options: {
     catalog,
     claude,
     assetsFor: () => provider,
-    render: async () => {
+    render: async (_layout, _assets, _dir, style) => {
+      result.styles.push(style);
       const list = options.renderChecks ?? [[PASSED]];
       const checks = list[Math.min(result.renders, list.length - 1)] ?? [PASSED];
       result.renders++;
@@ -173,6 +184,7 @@ const spec = (overrides: Partial<JobSpec> = {}): JobSpec => ({
   variant: 1,
   variantCount: 1,
   templatePreference: null,
+  style: null,
   userAssets: {},
   ...overrides,
 });
@@ -369,6 +381,53 @@ describe("runJob", () => {
   });
 });
 
+describe("gaya desain di pipeline (T-133)", () => {
+  const CYBERPUNK = { id: "cyberpunk", variant: "neon-gelap" };
+
+  it("konteks gaya di setiap prompt Claude, katalog arketipe gaya dulu, styleOptions ke render", async () => {
+    const styled = { ...structuredClone(layout), styleOptions: { glow: "solid" } };
+    const f = fake({ answers: { layout: [styled], "qa-visual": [visual(9)] } });
+    const result = await runJob(spec({ style: CYBERPUNK }), f.deps);
+    expect(result.status).toBe("done");
+    for (const stage of ["plan", "copy", "layout", "qa-visual"] as const) {
+      const prompt = f.calls.find((c) => c.stage === stage)?.prompt ?? "";
+      expect(prompt, stage).toContain("Gaya: Cyberpunk/Futuristik, varian neon-gelap");
+    }
+    const layoutPrompt = f.calls.find((c) => c.stage === "layout")?.prompt ?? "";
+    const catalogBlock = layoutPrompt.slice(layoutPrompt.indexOf("<catalog>"));
+    expect(catalogBlock.indexOf('"feed-kata-terbelah"')).toBeLessThan(
+      catalogBlock.indexOf('"feed-bidang-warna"'),
+    );
+    expect(f.styles).toEqual([{ ...CYBERPUNK, options: { glow: "solid" } }]);
+  });
+
+  it("tanpa gaya: prompt menyebut tanpa gaya dan render tanpa pilihan gaya", async () => {
+    const f = fake({});
+    await runJob(spec(), f.deps);
+    expect(f.calls.find((c) => c.stage === "layout")?.prompt).toContain("Tanpa gaya:");
+    expect(f.styles).toEqual([undefined]);
+  });
+
+  it("styleOptions divalidasi terhadap gaya job; tanpa gaya harus kosong", () => {
+    const withOptions = (styleOptions: Record<string, string>) => ({
+      ...structuredClone(layout),
+      styleOptions,
+    });
+    const styled = layoutSchema(
+      layoutContext({ meta: findStyle("cyberpunk"), variant: "neon-gelap" }),
+    );
+    expect(styled.safeParse(withOptions({ glow: "solid" })).success).toBe(true);
+    expect(
+      styled.safeParse(withOptions({ kilau: "solid" })).error?.issues.map((i) => i.message),
+    ).toEqual(['Gaya "cyberpunk" tidak punya opsi "kilau"']);
+    expect(
+      layoutSchema(layoutContext())
+        .safeParse(withOptions({ glow: "solid" }))
+        .error?.issues.map((i) => i.message),
+    ).toEqual(["Tanpa gaya desain, styleOptions harus kosong"]);
+  });
+});
+
 describe("runBrief", () => {
   it("menjalankan plan sekali untuk semua varian, masing-masing dengan angle-nya", async () => {
     const f = fake({ variants: 3 });
@@ -387,10 +446,11 @@ describe("runBrief", () => {
   });
 });
 
-const layoutContext = () => ({
+const layoutContext = (style: Parameters<typeof layoutSchema>[0]["style"] = null) => ({
   catalog,
   slideCount: 1,
   logo: BrandKit.parse(read("brand.json")).logo,
+  style,
 });
 
 describe("skema tahap", () => {

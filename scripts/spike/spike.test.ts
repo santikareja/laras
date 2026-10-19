@@ -1,7 +1,10 @@
-import { existsSync, mkdtempSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
+import { QaReport } from "../../packages/shared/src/index.ts";
+import { styles } from "../../packages/templates/src/index.ts";
+import { stylePatterns } from "../style-cases/index.ts";
 import { spike } from "./spike.ts";
 
 // Dry-run spike (tanpa kuota): seluruh rangkaian kecuali panggilan CLI asli.
@@ -57,4 +60,37 @@ describe("spike --dry-run", () => {
     }
     expect(lines.at(-1)).toContain("laporan.md");
   });
+});
+
+// AC T-133: dry-run per gaya. Layout dari pola demo pertama gaya, render dengan lapisan dan ambang
+// gaya; render pertama lolos semua cek wajib.
+describe("spike --dry-run per gaya (T-133)", () => {
+  it.each(styles.map((style) => [style.id, style] as const))(
+    "%s",
+    { timeout: 60_000 },
+    async (id, style) => {
+      const variant = style.variants[0]?.id ?? "";
+      const report = await spike({
+        brand: "kopi-lembayung",
+        brief: "Kenalkan biji kopi sangrai 200 g.",
+        variants: 1,
+        template: null,
+        style: { id, variant },
+        dryRun: true,
+        maxClaude: 12,
+        maxCodex: 3,
+        outDir,
+        log: () => {},
+      });
+      expect(report.style).toEqual({ id, variant });
+      expect(report.styleFit?.fit).toMatch(/^(cocok|kurang-cocok)$/);
+      const [job] = report.jobs;
+      expect(job?.status).toBe("done");
+      const dir = join(outDir, "kopi-lembayung", "project", "jobs", `${report.briefId}-v1`);
+      const layout = JSON.parse(readFileSync(join(dir, "03-layout.json"), "utf8"));
+      expect(layout.templateId).toBe(stylePatterns(id)[0]?.cases["kopi-lembayung"].archetype);
+      const firstQa = QaReport.parse(JSON.parse(readFileSync(join(dir, "06-qa.json"), "utf8")));
+      expect(firstQa.deterministic.failures).toEqual([]);
+    },
+  );
 });

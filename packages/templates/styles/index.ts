@@ -28,3 +28,9 @@ export const styles: StyleMeta[] = [
   glassmorphismNeumorphism,
   retroVintage,
 ];
+
+// Lokasi PANDUAN.md gaya (T-133): sidecar membaca bagian yang relevan per tahap untuk prompt.
+export function styleGuideUrl(id: string): URL {
+  if (!styles.some((style) => style.id === id)) throw new Error(`Gaya "${id}" tidak ada`);
+  return new URL(`./${id}/PANDUAN.md`, import.meta.url);
+}

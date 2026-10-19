@@ -49,6 +49,9 @@ export const LayoutSpec = z
     format: ContentFormat,
     slides: z.array(LayoutSlide),
     assetRequests: z.array(AssetRequest),
+    // Opsi gaya untuk seluruh postingan (enum StyleMeta.options gaya job, T-133); hanya bila job
+    // memakai gaya. Divalidasi terhadap gaya di tahap layout dan revise.
+    styleOptions: z.record(z.string(), Slug).optional(),
   })
   .superRefine((spec, ctx) => {
     const countError = slideCountError(spec.format, spec.slides.length);

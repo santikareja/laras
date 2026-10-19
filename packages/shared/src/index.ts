@@ -8,6 +8,7 @@ export * from "./copy-guide.ts";
 export * from "./design-limits.ts";
 export * from "./job.ts";
 export * from "./layout-spec.ts";
+export * from "./project-settings.ts";
 export * from "./qa-report.ts";
 export * from "./render-report.ts";
 export * from "./revision.ts";

@@ -23,7 +23,14 @@ export const cyberpunk: StyleMeta = {
       description: "Bidang token jenuh terang, label vertikal, HUD lebih banyak.",
     },
   ],
-  archetypes: ["feed-kata-terbelah", "feed-kata-raksasa", "feed-satu-objek", "feed-foto-konsep"],
+  archetypes: [
+    "feed-kata-terbelah",
+    "feed-panggung-neon",
+    "feed-poster-tekno",
+    "feed-kata-raksasa",
+    "feed-satu-objek",
+    "feed-foto-konsep",
+  ],
   plannedArchetypes: [
     { id: "feed-panel-hud", name: "Panel HUD", description: "Informasi dalam bingkai HUD." },
     {

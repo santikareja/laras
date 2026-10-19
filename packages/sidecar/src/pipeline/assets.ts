@@ -1,10 +1,11 @@
 import { copyFile, mkdir, readdir, readFile, realpath } from "node:fs/promises";
 import { homedir } from "node:os";
 import { dirname, extname, join, relative, sep } from "node:path";
-import type { AssetManifest, AssetRequest, BrandKit } from "@laras/shared";
+import type { AssetManifest, AssetRequest, BrandKit, StyleSelection } from "@laras/shared";
 import sharp from "sharp";
 import { runCodex } from "../cli/codex.ts";
 import type { SpawnLines } from "../cli/stream.ts";
+import { styleImageDirection } from "../prompts/style-context.ts";
 import { analyzeCutout, normalizeCutout } from "./cutout.ts";
 
 // Tahap assets (ARCH 5.2, 5.3): setiap AssetRequest menjadi file di jobs/<id>/assets/. Foto
@@ -16,6 +17,8 @@ export type JobContext = {
   projectDir: string;
   jobDir: string;
   brand: BrandKit;
+  // Gaya job (T-133): arahan perlakuan gambar di prompt Codex.
+  style?: StyleSelection | null;
   signal?: AbortSignal;
 };
 export type AssetProvider = {
@@ -123,7 +126,11 @@ export async function storeAsset(
   return { ...entry(ctx, request.id, path, size, origin), subject };
 }
 
-export async function assetPrompt(request: AssetRequest, brand: BrandKit): Promise<string> {
+export async function assetPrompt(
+  request: AssetRequest,
+  brand: BrandKit,
+  style: StyleSelection | null = null,
+): Promise<string> {
   const [w = 1, h = 1] = request.aspectRatio.split(":").map(Number);
   const { primary, secondary, accent } = brand.colors;
   const values: Record<string, string> = {
@@ -133,6 +140,7 @@ export async function assetPrompt(request: AssetRequest, brand: BrandKit): Promi
     aspectRatio: request.aspectRatio,
     palette: `primary ${primary}, secondary ${secondary}, accent ${accent}`,
     subject: SUBJECT_WORDS[request.subject ?? "object"],
+    styleDirection: styleImageDirection(style),
   };
   const kind = request.kind === "cutout" ? "cutout" : "photo";
   const template = await readFile(PROMPT_TEMPLATES[kind], "utf8");
@@ -174,7 +182,7 @@ export class CodexAssetProvider implements AssetProvider {
     const run = await runCodex({
       codexPath: this.#codexPath,
       cwd: ctx.projectDir,
-      prompt: await assetPrompt(request, ctx.brand),
+      prompt: await assetPrompt(request, ctx.brand, ctx.style ?? null),
       ...(ctx.signal ? { signal: ctx.signal } : {}),
       ...(this.#spawn ? { spawn: this.#spawn } : {}),
     });

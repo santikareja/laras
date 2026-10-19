@@ -31,8 +31,9 @@ const SAMPLE_INPUTS: PromptInputs = {
     format: "feed-4x5",
     slideCount: "1",
     variantCount: "3",
+    style: "g",
   },
-  copy: { brief: "b", brand: "b", knowledge: "k", plan: "{}", angle: "{}" },
+  copy: { brief: "b", brand: "b", knowledge: "k", plan: "{}", angle: "{}", style: "g" },
   layout: {
     brand: "b",
     copy: "{}",
@@ -41,6 +42,7 @@ const SAMPLE_INPUTS: PromptInputs = {
     templatePreference: "-",
     usedTemplates: "-",
     userAssets: "-",
+    style: "g",
   },
   "qa-visual": {
     brand: "b",
@@ -49,8 +51,9 @@ const SAMPLE_INPUTS: PromptInputs = {
     deterministic: "[]",
     references: "-",
     slides: "s.png",
+    style: "g",
   },
-  revise: { brand: "b", copy: "{}", layout: "{}", catalog: "[]", fixes: "-" },
+  revise: { brand: "b", copy: "{}", layout: "{}", catalog: "[]", fixes: "-", style: "g" },
 };
 
 const stages = Object.keys(STAGE_SCHEMAS) as Stage[];

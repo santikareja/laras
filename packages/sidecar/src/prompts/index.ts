@@ -32,8 +32,16 @@ export type PromptInputs = {
     format: string;
     slideCount: string;
     variantCount: string;
+    style: string;
   };
-  copy: { brief: string; brand: string; knowledge: string; plan: string; angle: string };
+  copy: {
+    brief: string;
+    brand: string;
+    knowledge: string;
+    plan: string;
+    angle: string;
+    style: string;
+  };
   layout: {
     brand: string;
     copy: string;
@@ -42,6 +50,7 @@ export type PromptInputs = {
     templatePreference: string;
     usedTemplates: string;
     userAssets: string;
+    style: string;
   };
   "qa-visual": {
     brand: string;
@@ -50,8 +59,16 @@ export type PromptInputs = {
     deterministic: string;
     references: string;
     slides: string;
+    style: string;
   };
-  revise: { brand: string; copy: string; layout: string; catalog: string; fixes: string };
+  revise: {
+    brand: string;
+    copy: string;
+    layout: string;
+    catalog: string;
+    fixes: string;
+    style: string;
+  };
 };
 
 // Blok data: tag pembuka, satu placeholder, tag penutup, masing-masing di barisnya sendiri.

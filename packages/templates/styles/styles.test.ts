@@ -2,6 +2,21 @@ import { readFileSync } from "node:fs";
 import { StyleMeta } from "@laras/shared";
 import { describe, expect, it } from "vitest";
 import { archetypes } from "../src/archetypes.ts";
+import type { Template } from "../src/template.ts";
+import { brutalismArchetypes } from "./brutalism/archetypes.ts";
+import { corporateCleanArchetypes } from "./corporate-clean/archetypes.ts";
+import { cyberpunkArchetypes } from "./cyberpunk/archetypes.ts";
+import { flatDesignArchetypes } from "./flat-design/archetypes.ts";
+import { retroVintageArchetypes } from "./retro-vintage/archetypes.ts";
+
+const OWN_ARCHETYPES: Record<string, Template[]> = {
+  brutalism: brutalismArchetypes,
+  "corporate-clean": corporateCleanArchetypes,
+  cyberpunk: cyberpunkArchetypes,
+  "flat-design": flatDesignArchetypes,
+  "retro-vintage": retroVintageArchetypes,
+};
+
 import { styles } from "./index.ts";
 
 // Folder gaya tahap 1 (PRD F16, T-128): definisi mesin sah dan panduan lengkap dengan struktur
@@ -49,6 +64,11 @@ describe("gaya tahap 1", () => {
     }
     for (const archetype of style.archetypes) {
       expect(archetypes.map((a) => a.meta.id)).toContain(archetype);
+    }
+    // T-133: arketipe khas gaya (styles/<id>/archetypes.ts) wajib tercantum di daftar gayanya,
+    // karena katalog layout mengutamakan daftar itu.
+    for (const own of OWN_ARCHETYPES[id] ?? []) {
+      expect(style.archetypes).toContain(own.meta.id);
     }
     const text = guide(id);
     expect(text.startsWith(`# ${style.name}`)).toBe(true);

@@ -1,18 +1,25 @@
 // Spike pipeline tanpa UI (PRD 11 Fase 1, T-116): brief → plan → copy → layout → aset → render →
 // QA → revisi, untuk satu brand fixture. MEMAKAI KUOTA kecuali dryRun; jumlah panggilan CLI
 // dibatasi (termasuk retry validasi) sebagai pengaman kuota.
+
+import { existsSync } from "node:fs";
 import { copyFile, cp, mkdir, readFile, writeFile } from "node:fs/promises";
 import { extname, join, resolve } from "node:path";
 import {
   type AssetManifest,
   BrandKit,
   CopyGuide,
+  designLimits,
   type JobEvent,
   type JobSpec,
   LayoutSpec,
+  ProjectSettings,
   type QaFix,
   RenderReport,
   Revision,
+  type StyleChoice,
+  type StyleSelection,
+  styleFit,
 } from "../../packages/shared/src/index.ts";
 import { runClaude } from "../../packages/sidecar/src/cli/claude.ts";
 import { resolveClis } from "../../packages/sidecar/src/cli/resolvePath.ts";
@@ -31,16 +38,22 @@ import {
   type StageCall,
 } from "../../packages/sidecar/src/pipeline/engine.ts";
 import { promptTemplate, type Stage } from "../../packages/sidecar/src/prompts/index.ts";
+import { findStyle } from "../../packages/sidecar/src/prompts/style-context.ts";
 import { renderLayoutHtml } from "../../packages/sidecar/src/render/layout.ts";
 import { toMaster, toUpload } from "../../packages/sidecar/src/render/postprocess.ts";
 import { createRenderer, SLIDE_SIZE } from "../../packages/sidecar/src/render/renderer.ts";
 import { templates } from "../../packages/templates/src/index.ts";
+import { caseSpec } from "../archetype-content.ts";
+import type { Brand } from "../demo-content.ts";
+import { stylePatterns } from "../style-cases/index.ts";
 
 export type SpikeOptions = {
   brand: string;
   brief: string;
   variants: number;
   template: string | null;
+  // Gaya brief (T-133): undefined memakai gaya default project.json, null tanpa gaya.
+  style?: StyleSelection | null;
   dryRun: boolean;
   maxClaude: number;
   maxCodex: number;
@@ -54,6 +67,9 @@ export type SpikeReport = {
   briefId: string;
   brand: string;
   brief: string;
+  style: StyleSelection | null;
+  // Kecocokan gaya dengan brand (styleFit, PRD F16); null tanpa gaya.
+  styleFit: { fit: "cocok" | "kurang-cocok"; reasons: string[] } | null;
   dryRun: boolean;
   startedAt: string;
   durationMs: number;
@@ -95,6 +111,10 @@ export async function spike(options: SpikeOptions): Promise<SpikeReport> {
   const brand = BrandKit.parse(JSON.parse(await read("brand.json")));
   const copyGuide = CopyGuide.parse(JSON.parse(await read("copy-guide.json")));
   const knowledge = await read("knowledge/business.md");
+  const settings = existsSync(join(projectDir, "project.json"))
+    ? ProjectSettings.parse(JSON.parse(await read("project.json")))
+    : { style: null };
+  const style = options.style === undefined ? settings.style : options.style;
 
   const calls = { claude: 0, codex: 0 };
   let retries = 0;
@@ -126,7 +146,11 @@ export async function spike(options: SpikeOptions): Promise<SpikeReport> {
         }
       : async (stage, _prompt, schema) => {
           calls.claude++;
-          return { data: schema.parse(dryRunAnswer(stage, options.variants)) };
+          const answer =
+            stage === "layout" && style
+              ? await styleLayoutAnswer(style.id, options.brand)
+              : dryRunAnswer(stage, options.variants);
+          return { data: schema.parse(answer) };
         };
 
     const codex: AssetProvider = live
@@ -137,26 +161,44 @@ export async function spike(options: SpikeOptions): Promise<SpikeReport> {
           async generate(request, ctx) {
             calls.codex++;
             const cutout = request.kind === "cutout";
-            const fixture = cutout ? "subjek.webp" : "foto.jpg";
+            // Aset pola demo gaya (id = nama file demo, mis. gaya-retro) dipakai apa adanya agar
+            // dry-run bergaya setia pada polanya; selain itu cut-out atau foto demo brand.
+            const demoDir = join(ROOT, "fixtures/demo-assets", options.brand);
+            const named = [".webp", ".jpg"]
+              .map((ext) => `${request.id}${ext}`)
+              .find((file) => existsSync(join(demoDir, file)));
+            const fixture = named ?? (cutout ? "subjek.webp" : "foto.jpg");
             const original = join(
               ctx.jobDir,
               "assets",
               `${request.id}.original${extname(fixture)}`,
             );
             await mkdir(join(ctx.jobDir, "assets"), { recursive: true });
-            await copyFile(join(ROOT, "fixtures/demo-assets", options.brand, fixture), original);
+            await copyFile(join(demoDir, fixture), original);
             return storeAsset(request, original, ctx, "codex");
           },
         };
 
-    const render = async (layout: LayoutSpec, assets: AssetManifest, dir: string) => {
-      const pages = renderLayoutHtml(layout, { brand, assets, templates });
+    // Render bergaya: lapisan gaya dan ambang QA desain gaya serta variannya (T-133).
+    const render = async (
+      layout: LayoutSpec,
+      assets: AssetManifest,
+      dir: string,
+      choice: StyleChoice | undefined,
+    ) => {
+      const pages = renderLayoutHtml(layout, {
+        brand,
+        assets,
+        templates,
+        ...(choice ? { style: choice } : {}),
+      });
+      const design = choice ? designLimits(findStyle(choice.id), choice.variant) : undefined;
       const slides: SlideRenderOutput[] = [];
       for (const html of pages) {
         const { png, checks } = await renderer.render(
           html,
           { projectDir, jobDir: dir },
-          { brand, copyGuide },
+          { brand, copyGuide, ...(design ? { design } : {}) },
         );
         slides.push({ png: await toMaster(png), html, ...MASTER, checks });
       }
@@ -182,15 +224,19 @@ export async function spike(options: SpikeOptions): Promise<SpikeReport> {
       slideCount: 1,
       variantCount: options.variants,
       templatePreference: options.template,
+      style,
       userAssets: {},
     };
+    const styleLabel = style ? `${style.id}/${style.variant}` : "tanpa gaya";
     log(
-      `Spike ${briefId} · ${options.brand} · ${options.variants} varian${options.dryRun ? " · DRY-RUN" : ""}`,
+      `Spike ${briefId} · ${options.brand} · ${styleLabel} · ${options.variants} varian${options.dryRun ? " · DRY-RUN" : ""}`,
     );
     const results = await runBrief(input, deps);
     const report = await buildReport(results, {
       briefId,
       options,
+      style,
+      fit: style ? styleFit(findStyle(style.id), brand) : null,
       projectDir,
       runDir,
       started,
@@ -215,6 +261,21 @@ async function liveClis() {
     return status.path;
   };
   return { claude: path("claude"), codex: path("codex") };
+}
+
+// Dry-run bergaya: layout dari pola demo pertama gaya untuk brand ini (scripts/style-cases), karena
+// contoh di prompt belum tentu memakai arketipe gaya itu (T-133).
+async function styleLayoutAnswer(styleId: string, brand: string): Promise<LayoutSpec> {
+  const item = stylePatterns(styleId)[0]?.cases[brand as Brand];
+  const template = templates.find((t) => t.meta.id === item?.archetype);
+  if (!item || !template) throw new Error(`Gaya ${styleId} tanpa pola demo untuk ${brand}`);
+  const { spec } = await caseSpec(
+    template,
+    brand as Brand,
+    item,
+    join(ROOT, "fixtures/demo-assets", brand),
+  );
+  return item.styleOptions ? { ...spec, styleOptions: item.styleOptions } : spec;
 }
 
 // Dry-run: contoh output di prompt T-114, disesuaikan jumlah angle. Contoh QA visual berada di
@@ -246,6 +307,8 @@ async function buildReport(
   ctx: {
     briefId: string;
     options: SpikeOptions;
+    style: StyleSelection | null;
+    fit: SpikeReport["styleFit"];
     projectDir: string;
     runDir: string;
     started: Date;
@@ -290,6 +353,8 @@ async function buildReport(
     briefId: ctx.briefId,
     brand: ctx.options.brand,
     brief: ctx.options.brief,
+    style: ctx.style,
+    styleFit: ctx.fit,
     dryRun: ctx.options.dryRun,
     startedAt: ctx.started.toISOString(),
     durationMs: Date.now() - ctx.started.getTime(),
@@ -338,6 +403,7 @@ function reportMarkdown(report: SpikeReport): string {
     "",
     `- Brand: ${report.brand}`,
     `- Brief: ${report.brief}`,
+    `- Gaya: ${report.style ? `${report.style.id}/${report.style.variant}` : "tanpa gaya"}${report.styleFit ? ` (${report.styleFit.fit}${report.styleFit.reasons.length > 0 ? `: ${report.styleFit.reasons.join("; ")}` : ""})` : ""}`,
     `- Mulai: ${report.startedAt}, durasi ${(report.durationMs / 1000).toFixed(1)} s`,
     `- Panggilan: Claude ${report.calls.claude} (retry validasi ${report.retries}), Codex ${report.calls.codex}; estimasi biaya Claude $${report.costUsd}`,
     "",

@@ -28,6 +28,15 @@ describe("Job", () => {
     expect(JobStatus.options).toContain("waiting_quota");
   });
 
+  it("gaya terpilih opsional: job lama tanpa gaya dibaca null (T-133)", () => {
+    expect(JobSpec.parse(spec).style).toBeNull();
+    const styled = { ...spec, style: { id: "retro-vintage", variant: "editorial-hangat" } };
+    expect(JobSpec.parse(styled).style).toEqual(styled.style);
+    expect(
+      issuesOf(JobSpec, { ...spec, style: { id: "Retro Vintage", variant: "x" } }),
+    ).not.toEqual([]);
+  });
+
   it("menolak jumlah slide yang tidak cocok format, varian berlebih, dan path aset absolut", () => {
     expect(issuesOf(JobSpec, { ...spec, slideCount: 2 })).toContain(
       "Format feed-4x5 harus berisi tepat 1 slide",

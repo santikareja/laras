@@ -200,6 +200,13 @@ describe("assetPrompt", () => {
     expect(prompt).toContain("no text, letters, numbers, logos");
     expect(prompt).not.toMatch(/\{\{\w+\}\}/);
   });
+
+  it("arahan gaya job di prompt gambar; tanpa gaya: natural (T-133)", async () => {
+    expect(await assetPrompt(request, brand)).toContain("- Visual style: Natural, as described.");
+    const styled = await assetPrompt(request, brand, { id: "brutalism", variant: "cetak" });
+    expect(styled).toMatch(/- Visual style: Treatment that suits this style: .*mono/);
+    expect(styled).not.toMatch(/\{\{\w+\}\}/);
+  });
 });
 
 describe("UserUploadAssetProvider", () => {

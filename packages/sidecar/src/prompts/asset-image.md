@@ -10,4 +10,5 @@ Requirements:
 - {{orientation}} orientation, aspect ratio {{aspectRatio}}.
 - One continuous photograph or illustration that fills the whole frame edge to edge: no borders, no padding, no inset picture, no collage.
 - Use the brand palette where it fits naturally: {{palette}}.
+- Visual style: {{styleDirection}}
 - Absolutely no text, letters, numbers, logos, labels, signs, or watermarks anywhere in the image.

@@ -12,4 +12,5 @@ Requirements:
 - Transparent background: output a PNG with an alpha channel where everything except the subject is fully transparent. No background color, no floor, no cast shadow, no frame.
 - The whole subject stays inside the frame with empty margin on every side, unless the description says a part of it (for example a forearm) enters from an edge.
 - Clothing, props, and materials may use the brand palette where it fits naturally: {{palette}}.
+- Visual style: {{styleDirection}}
 - Absolutely no text, letters, numbers, logos, labels, signs, or watermarks anywhere in the image.
