@@ -211,11 +211,21 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Hasil v4 2026-10-19 (tanpa kuota): A2 lima elemen (lengkung warna kedua, subjek, blok teks tiga tingkat, CTA aksen, logo), letak blok teks atas atau bawah menjadi parameter agar berseberangan diagonal dengan titik fokus subjek; A4 lima elemen (bingkai bertepi sobek dengan selotip, pita warna kedua, subjek, CTA, logo; body hanya bila tanpa subjek), kilau, lingkaran, dan stiker dihapus. Proporsi warna terukur: A2 67/31/2, 69/26/4, 63/34/2; A4 59/34/2, 65/31/4, 67/27/1 (dominan / warna kedua dan gambar / aksen) sehingga semua memenuhi P9. Titik fokus dicek dengan grid 3×3. 12 render lolos QA kode, 282 test lolos. Menunggu penilaian pemilik.
   - Selesai 2026-10-19: pemilik menyatakan A2 dan A4 v4 sudah sesuai (A1 dan A3 diterima sebelumnya). Pelajaran untuk T-123: penempatan dan ukuran masih diatur manual per brand lewat parameter (sisi subjek, letak teks, tinggi lengkung, lebar huruf); sistem arketipe perlu menghitungnya dari kotak alpha subjek dan ukuran teks terukur, lalu memeriksa P8–P11 secara otomatis.
 
-- [ ] T-123 Sistem arketipe parametrik
-  - Rujukan: ADR-015, ARCH 6.2, ARCH 7.2
-  - AC: skema meta arketipe (lapisan, slot, parameter) di `shared`, renderer lapisan (termasuk teks di belakang subjek), validasi parameter, dan QA kode yang memahami lapisan. Rincian dan ADR diperbarui saat task dimulai.
-  - Tambahan dari T-122: fit-to-width yang mengukur lebar teks sebenarnya untuk kata raksasa; penempatan teks dan subjek memakai kotak alpha subjek; aturan QA kode untuk PRD 4 P1, P2, P4, dan P5 (sumbu perataan, jumlah ukuran huruf, rasio headline dan body, baris yatim, panjang baris, jumlah elemen visual).
-  - Tambahan 2026-10-19: cek QA kode untuk P8 (jarak titik fokus ke titik potong grid 3×3, memakai kotak alpha subjek dan kotak kata utama), P9 (proporsi warna dari piksel render terhadap Brand Kit; cara ukur awal ada di catatan T-122), P10 (rasio ruang kosong dan jumlah elemen), dan P11 (jarak tepi, radius, sudut kemiringan yang konsisten).
+- [~] T-123 Fondasi sistem arketipe parametrik
+  - Rujukan: ADR-015, ARCH 6.2, ARCH 7.1, catatan T-122
+  - AC: aset cut-out dianalisis (normalisasi alpha, kotak alpha, titik fokus) dan datanya ada di `AssetManifest` serta slot gambar yang di-resolve; slot gambar bisa menandai `cutout` dan `layoutIssues` memeriksa jenis aset (`AssetRequest.kind`); renderer menjalankan langkah fit-to-width terukur sebelum QA dan screenshot; keempat arketipe yang disetujui di T-122 pindah ke `packages/templates/feed/` dengan meta final, letak teks dihitung dari titik fokus subjek, dan tanpa parameter lebar huruf manual; `render:demo` merender arketipe × 3 brand (`render:prototype` digabung).
+  - Verifikasi: test skema, analisis cut-out (dikalibrasi pada 6 cut-out fixture), fit-to-width, dan QA demo; `render:demo` lolos QA dan render arketipe setara atau lebih baik dari v4 yang disetujui; dry-run spike lolos; tanpa kuota.
+  - Catatan: dipecah 2026-10-19 atas persetujuan pemilik menjadi T-123 (fondasi), T-130 (QA desain terukur), dan T-131 (pipeline dengan arketipe). Katalog Claude belum diganti di task ini.
+
+- [ ] T-130 QA desain terukur
+  - Rujukan: PRD 4 (P1, P2, P4, P8–P11), ARCH 7.2, catatan T-122
+  - AC: aturan QA kode baru untuk sumbu perataan (P1), hierarki dan jumlah ukuran huruf (P2), baris yatim dan panjang baris (P4), titik fokus terhadap grid 3×3 memakai titik fokus subjek dan kotak kata utama (P8), proporsi warna dari piksel render terhadap Brand Kit (P9), ruang kosong dan jumlah elemen (P10), serta jarak tepi, radius, dan kemiringan yang konsisten (P11); elemen non-slot ditandai agar bisa dihitung; kedua belas render arketipe yang disetujui lolos semua aturan.
+  - Catatan: keputusan pemilik 2026-10-19: aturan baru awalnya bertingkat saran (tidak menggagalkan QA) sampai terkalibrasi, lalu dinaikkan menjadi wajib.
+
+- [ ] T-131 Pipeline dengan arketipe
+  - Rujukan: ADR-015, PRD F7, ARCH 5, T-121 (cut-out Codex)
+  - AC: katalog Claude berisi arketipe; empat template lama dipensiunkan (keputusan pemilik 2026-10-19); prompt dan contoh layout serta revise diperbarui; tahap layout meminta aset `cutout` bila slot membutuhkannya; prompt Codex untuk cut-out transparan; `CodexAssetProvider` menjaga alpha, menganalisis cut-out, dan tidak memotongnya; dry-run spike lolos.
+  - Catatan: uji Codex sungguhan hanya dengan izin pemilik.
 
 - [ ] T-124 Perangkat grafis dan peran font tambahan di Brand Kit
   - Rujukan: PRD 4 (K2, K5), PRD F2, ARCH 6.1

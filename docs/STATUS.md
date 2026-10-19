@@ -8,9 +8,10 @@ Fase 1: Spike pipeline. Fase 0 selesai. Verifikasi CLI selesai: T-101 (generasi 
 Tidak ada. T-122 selesai: empat arketipe prototipe (`pnpm render:prototype`) disetujui pemilik setelah revisi v4 sesuai aturan desain P8–P11. T-119 selesai: varian logo divalidasi terhadap Brand Kit di skema tahap layout dan revise.
 
 ## Berikutnya (urut)
-1. T-123 sampai T-126 (sistem arketipe dengan fit-to-width dan penempatan berdasarkan bentuk subjek, aturan brand terstruktur dan perangkat grafis Brand Kit, ide besar dan art direction, rubric QA K1–K8 dan P1–P7).
-2. T-128 Gaya desain tahap 1 (enam gaya, PRD F16), lalu T-129 tahap 2.
-3. T-127 Evaluasi ulang spike (memakai kuota besar; izin pemilik).
+1. T-123 fondasi arketipe (sedang dikerjakan), T-130 QA desain terukur, T-131 pipeline dengan arketipe.
+2. T-124 sampai T-126 (aturan brand terstruktur dan perangkat grafis Brand Kit, ide besar dan art direction, rubric QA visual K1–K8 dan P1–P11).
+3. T-128 Gaya desain tahap 1 (enam gaya, PRD F16), lalu T-129 tahap 2.
+4. T-127 Evaluasi ulang spike (memakai kuota besar; izin pemilik).
 
 ## Blocker
 - Tidak ada.
