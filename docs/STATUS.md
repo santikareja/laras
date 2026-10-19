@@ -9,10 +9,11 @@ Tidak ada. T-122 selesai: empat arketipe prototipe disetujui pemilik setelah rev
 T-123 selesai: arketipe ada di `packages/templates/feed/` (daftar `archetypes`, belum katalog Claude), cut-out dianalisis (`pipeline/cutout.ts`), dan renderer memaskan kata raksasa ke lebar kotaknya. `pnpm render:demo` kini juga merender arketipe.
 T-128 selesai: panduan tujuh gaya tahap 1 di `packages/templates/styles/<id>/PANDUAN.md` dan definisi mesin `style.ts` (skema `StyleMeta`, `styleFit` di `shared`) disetujui pemilik, termasuk keempat usulannya (TASKS T-128).
 T-132 selesai (thumbnail disetujui pemilik): lapisan gaya, 54 perangkat grafis, arketipe `feed-panel-info` dan `feed-kartu-kaca`, dan `pnpm render:styles` (21 postingan pola khas, 21 spesimen, thumbnail 360 px, lembar ringkasan `out/styles/ringkasan-<brand>.png`) selesai dan lolos QA.
+T-130 selesai: QA kode mengukur aturan desain PRD 4 (P1, P2, P4, P8–P11) sebagai saran dengan ambang per gaya; render yang disetujui lolos semua cek wajib, saran nyata yang tersisa menjadi bagian T-131. Repo GitHub bersih dari workflow Datadog.
 
 ## Berikutnya (urut)
-1. T-130 QA desain terukur (sedang direncanakan).
-2. T-130 QA desain terukur, T-131 pipeline dengan arketipe, T-133 gaya di pipeline, T-134 arketipe baru dari panduan.
+1. T-131 pipeline dengan arketipe (termasuk saran desain nyata dari T-130).
+2. T-133 gaya di pipeline, T-134 arketipe baru dari panduan.
 3. T-124 sampai T-126 (aturan brand terstruktur dan perangkat grafis Brand Kit, ide besar dan art direction, rubric QA visual K1–K8 dan P1–P11).
 4. T-129 gaya tahap 2, lalu T-127 evaluasi ulang spike (memakai kuota besar; izin pemilik).
 
