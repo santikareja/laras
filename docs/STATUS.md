@@ -7,9 +7,10 @@ Fase 1: Spike pipeline. Fase 0 selesai. Verifikasi CLI selesai: T-101 (generasi 
 ## Sedang dikerjakan
 Tidak ada. T-122 selesai: empat arketipe prototipe disetujui pemilik setelah revisi v4 sesuai aturan desain P8–P11. T-119 selesai: varian logo divalidasi terhadap Brand Kit di skema tahap layout dan revise.
 T-123 selesai: arketipe ada di `packages/templates/feed/` (daftar `archetypes`, belum katalog Claude), cut-out dianalisis (`pipeline/cutout.ts`), dan renderer memaskan kata raksasa ke lebar kotaknya. `pnpm render:demo` kini juga merender arketipe.
+T-128 [~] menunggu tinjauan pemilik: panduan tujuh gaya tahap 1 di `packages/templates/styles/<id>/PANDUAN.md` dan definisi mesin `style.ts` (skema `StyleMeta`, `styleFit` di `shared`); verifikasi kode lolos. Empat pertanyaan pemilik dicatat di T-128 (TASKS).
 
 ## Berikutnya (urut)
-1. T-128 Panduan gaya tahap 1 (sedang dikerjakan), lalu T-132 render gaya dan thumbnail.
+1. Tinjauan pemilik atas panduan T-128, lalu T-132 render gaya dan thumbnail (termasuk perangkat grafis `perlu-dibuat` di `style.ts`).
 2. T-130 QA desain terukur, T-131 pipeline dengan arketipe, T-133 gaya di pipeline.
 3. T-124 sampai T-126 (aturan brand terstruktur dan perangkat grafis Brand Kit, ide besar dan art direction, rubric QA visual K1–K8 dan P1–P11).
 4. T-129 gaya tahap 2, lalu T-127 evaluasi ulang spike (memakai kuota besar; izin pemilik).
@@ -19,6 +20,7 @@ T-123 selesai: arketipe ada di `packages/templates/feed/` (daftar `archetypes`, 
 
 ## Menunggu keputusan pemilik
 - Jumlah template awal per format (PRD 12 pertanyaan 3; usulan 8 feed, 4 sistem carousel).
+- Tinjauan panduan gaya T-128 dan empat pertanyaannya (gradient pada blur dan glow, tint `color-mix`, font aksen ketiga, kecocokan Kopi untuk Cyberpunk).
 - Penamaan token skala tipografi UI: DESIGN 4 mendefinisikan `--text-caption` … `--text-display` (ukuran), tetapi `tokens.css` di DESIGN 15 tidak memuatnya; prefix `--text-*` juga dipakai untuk warna (`--text-primary`) dan merupakan namespace ukuran font di Tailwind v4. Usulan: ganti nama token ukuran menjadi `--type-*` (dibutuhkan paling lambat E-201).
 
 ## Catatan untuk sesi berikutnya
