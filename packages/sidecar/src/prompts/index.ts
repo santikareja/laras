@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import {
+  ArtDirection,
   type BrandKit,
   ContentPlan,
   CopyDraft,
@@ -21,6 +22,8 @@ export const STAGE_SCHEMAS = {
   layout: LayoutSpec,
   "qa-visual": VisualQa,
   revise: Revision,
+  // Spike T-140: karya latar penuh dari model gambar dengan teks HTML berlapis.
+  "art-direction": ArtDirection,
 } as const;
 export type Stage = keyof typeof STAGE_SCHEMAS;
 
@@ -71,6 +74,15 @@ export type PromptInputs = {
     catalog: string;
     fixes: string;
     style: string;
+  };
+  "art-direction": {
+    brand: string;
+    knowledge: string;
+    style: string;
+    plan: string;
+    angle: string;
+    copy: string;
+    palette: string;
   };
 };
 

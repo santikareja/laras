@@ -136,6 +136,8 @@ function fake(options: {
     layout,
     "qa-visual": visual(9),
     revise: revision([]),
+    // Tahap spike T-140, tidak dipakai engine.
+    "art-direction": null,
   };
   const claude: StageCall = async (stage, prompt, schema) => {
     calls.push({ stage, prompt });

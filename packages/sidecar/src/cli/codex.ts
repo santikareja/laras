@@ -26,13 +26,21 @@ export type RunCodexOptions = {
   codexPath: string;
   cwd: string;
   prompt: string;
+  // Gambar yang dilampirkan ke prompt (path absolut), mis. untuk edit gambar di spike T-140.
+  images?: string[];
   env?: Record<string, string>;
   signal?: AbortSignal;
   onEvent?: (event: StreamEvent) => void;
   spawn?: SpawnLines;
 };
 
-export function codexArgs(cwd: string, prompt: string): string[] {
+// Lampiran memakai bentuk `--image=<path>` dan `--` sebelum prompt: `-i` menerima banyak nilai,
+// jadi tanpa itu prompt bisa terbaca sebagai gambar berikutnya.
+export function codexArgs(cwd: string, prompt: string, images: string[] = []): string[] {
+  const attached = images.map((image) => {
+    if (!isAbsolute(image)) throw new Error("Lampiran gambar Codex harus path absolut");
+    return `--image=${image}`;
+  });
   return [
     "exec",
     "--cd",
@@ -43,6 +51,7 @@ export function codexArgs(cwd: string, prompt: string): string[] {
     "--json",
     "--ephemeral",
     "--ignore-user-config",
+    ...(attached.length > 0 ? [...attached, "--"] : []),
     prompt,
   ];
 }
@@ -59,7 +68,7 @@ export async function runCodex(options: RunCodexOptions): Promise<CodexRun> {
   const spawn = options.spawn ?? spawnLines;
   const { exitCode, stderr } = await spawn(
     options.codexPath,
-    codexArgs(options.cwd, options.prompt),
+    codexArgs(options.cwd, options.prompt, options.images),
     {
       cwd: options.cwd,
       ...(options.env ? { env: options.env } : {}),

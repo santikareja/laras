@@ -26,6 +26,16 @@ const options = (spawn: SpawnLines) => ({
 });
 
 describe("codexArgs", () => {
+  it("melampirkan gambar dengan bentuk --image= dan memisahkan prompt (T-140)", () => {
+    const args = codexArgs(CWD, "Ambil subjek", [`${CWD}/jobs/a/assets/latar.png`]);
+    expect(args.slice(-3)).toEqual([
+      `--image=${CWD}/jobs/a/assets/latar.png`,
+      "--",
+      "Ambil subjek",
+    ]);
+    expect(() => codexArgs(CWD, "x", ["relatif.png"])).toThrow("path absolut");
+  });
+
   it("memakai pemanggilan ADR-012", () => {
     expect(codexArgs(CWD, "Satu foto")).toEqual([
       "exec",

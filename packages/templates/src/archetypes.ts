@@ -3,6 +3,7 @@ import { fotoKonsep } from "../feed/FotoKonsep.tsx";
 import { kartuKaca } from "../feed/KartuKaca.tsx";
 import { kataRaksasa } from "../feed/KataRaksasa.tsx";
 import { kolaseDiagonal } from "../feed/KolaseDiagonal.tsx";
+import { latarPenuh } from "../feed/LatarPenuh.tsx";
 import { panelInfo } from "../feed/PanelInfo.tsx";
 import { satuObjek } from "../feed/SatuObjek.tsx";
 import { brutalismArchetypes } from "../styles/brutalism/archetypes.ts";
@@ -29,3 +30,7 @@ export const archetypes: Template[] = [
   ...brutalismArchetypes,
   ...flatDesignArchetypes,
 ];
+
+// Arketipe eksperimen yang tidak masuk katalog Claude; dirender skrip spike dengan katalog sendiri.
+export const experimentalArchetypes: Template[] = [latarPenuh];
+export { TEXT_ZONES } from "../feed/LatarPenuh.tsx";

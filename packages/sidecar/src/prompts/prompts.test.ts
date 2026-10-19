@@ -57,6 +57,15 @@ const SAMPLE_INPUTS: PromptInputs = {
     style: "g",
   },
   revise: { brand: "b", copy: "{}", layout: "{}", catalog: "[]", fixes: "-", style: "g" },
+  "art-direction": {
+    brand: "b",
+    knowledge: "k",
+    style: "g",
+    plan: "{}",
+    angle: "{}",
+    copy: "{}",
+    palette: "primary #000000",
+  },
 };
 
 const stages = Object.keys(STAGE_SCHEMAS) as Stage[];

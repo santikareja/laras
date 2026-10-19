@@ -32,7 +32,7 @@ import {
 import type { z } from "zod";
 import { LimitReachedError } from "../cli/limits.ts";
 import { brandContext, renderPrompt, type Stage } from "../prompts/index.ts";
-import { findStyle, styleContext } from "../prompts/style-context.ts";
+import { findStyle, type StyleStage, styleContext } from "../prompts/style-context.ts";
 import { buildRenderReport } from "../render/qa/report.ts";
 import type { AssetProvider } from "./assets.ts";
 import { logoPreviews } from "./logo-preview.ts";
@@ -248,7 +248,7 @@ async function runStep(
 ): Promise<{ output: unknown; costUsd?: number }> {
   const brand = brandContext(deps.brand, deps.copyGuide);
   const catalog = jobCatalog(spec, deps);
-  const style = (stage: Stage) => styleContext(spec.style, deps.brand, stage);
+  const style = (stage: StyleStage) => styleContext(spec.style, deps.brand, stage);
   const json = (value: unknown) => JSON.stringify(value, null, 2);
   const need = <T>(value: T | undefined, name: string): T => {
     if (value === undefined) throw new Error(`Tahap ${step.stage} butuh ${name}`);
