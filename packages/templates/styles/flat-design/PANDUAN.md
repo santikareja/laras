@@ -165,7 +165,7 @@
 
 **Gradien.** Tidak pernah, bahkan bila brand mengizinkannya. Bila aturan brand mewajibkan gradien, gaya ditandai "kurang cocok". Duotone foto dengan warna brand boleh, karena itu perlakuan foto, bukan gradien grafis.
 
-**Tint.** Default hanya memakai token murni. Tint turunan token (misalnya `color-mix` antara `primary` dan `neutral-light` untuk pola tone-on-tone) perlu keputusan di T-132 sebelum dipakai.
+**Tint.** Default memakai token murni. Tint turunan token boleh untuk pola tone-on-tone, hanya lewat `color-mix` antara dua token brand (misalnya `primary` dan `neutral-light`), tanpa nilai warna lain (keputusan pemilik 2026-10-19).
 
 **Bayangan.** `--shape-shadow` tidak dipakai pada bentuk dan teks.
 
