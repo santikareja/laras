@@ -15,6 +15,8 @@ export const TemplateSlot = z
     description: z.string().min(1),
     maxChars: z.int().positive().optional(),
     aspectRatio: AspectRatio.optional(),
+    // Slot gambar yang membutuhkan subjek cut-out berlatar transparan (T-123).
+    cutout: z.boolean().optional(),
   })
   .superRefine((slot, ctx) => {
     const textual = slot.type === "text" || slot.type === "badge";
@@ -31,6 +33,9 @@ export const TemplateSlot = z
         path: ["aspectRatio"],
         message: "aspectRatio wajib untuk slot image, dan hanya untuk image",
       });
+    }
+    if (slot.cutout !== undefined && slot.type !== "image") {
+      ctx.addIssue({ code: "custom", path: ["cutout"], message: "cutout hanya untuk slot image" });
     }
   });
 export type TemplateSlot = z.infer<typeof TemplateSlot>;
@@ -91,6 +96,12 @@ export function layoutIssues(spec: LayoutSpec, meta: TemplateMeta): string[] {
         const request = spec.assetRequests.find((r) => r.id === value.assetId);
         if (request && request.aspectRatio !== slot.aspectRatio) {
           issues.push(`${at}: aset "${value.assetId}" harus berasio ${slot.aspectRatio}`);
+        }
+        const cutout = (request?.kind ?? "photo") === "cutout";
+        if (request && cutout !== (slot.cutout ?? false)) {
+          issues.push(
+            `${at}: slot "${slot.name}" membutuhkan aset ${slot.cutout ? "cutout" : "foto"} (kind "${slot.cutout ? "cutout" : "photo"}")`,
+          );
         }
       }
     }

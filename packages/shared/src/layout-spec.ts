@@ -13,11 +13,16 @@ export const SlotValue = z.discriminatedUnion("type", [
 ]);
 export type SlotValue = z.infer<typeof SlotValue>;
 
-// Kebutuhan aset gambar tanpa teks (ARCH 4.5, PRD 4 prinsip 1).
+// Jenis aset: foto utuh, atau subjek cut-out berlatar transparan (T-121, T-123).
+export const AssetKind = z.enum(["photo", "cutout"]);
+export type AssetKind = z.infer<typeof AssetKind>;
+
+// Kebutuhan aset gambar tanpa teks (ARCH 4.5, PRD 4 prinsip 1). Tanpa `kind` berarti foto.
 export const AssetRequest = z.strictObject({
   id: Slug,
   description: z.string().min(1),
   aspectRatio: AspectRatio,
+  kind: AssetKind.optional(),
 });
 export type AssetRequest = z.infer<typeof AssetRequest>;
 

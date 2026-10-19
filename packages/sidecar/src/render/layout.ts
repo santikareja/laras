@@ -42,7 +42,10 @@ export function resolveSlot(value: SlotValue, { brand, assets }: LayoutContext):
     case "image": {
       const asset = assets.assets.find((a) => a.id === value.assetId);
       if (!asset) throw new Error(`Aset "${value.assetId}" tidak ada di manifest`);
-      return { type: "image", src: childUrl(JOB_BASE_URL, asset.path) };
+      const src = childUrl(JOB_BASE_URL, asset.path);
+      return asset.subject
+        ? { type: "image", src, subject: asset.subject }
+        : { type: "image", src };
     }
     case "logo": {
       const path = brand.logo[value.variant];

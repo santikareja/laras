@@ -1,4 +1,4 @@
-import type { TemplateMeta } from "@laras/shared";
+import type { SubjectInfo, TemplateMeta } from "@laras/shared";
 import type { ReactElement } from "react";
 
 // Kontrak antara renderer dan template (ARCH 6.2). Meta divalidasi skema TemplateMeta.
@@ -7,7 +7,7 @@ import type { ReactElement } from "react";
 export type ResolvedSlot =
   | { type: "text"; value: string }
   | { type: "badge"; value: string }
-  | { type: "image"; src: string }
+  | { type: "image"; src: string; subject?: SubjectInfo }
   | { type: "logo"; src: string };
 
 export type SlideProps = {

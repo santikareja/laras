@@ -71,6 +71,22 @@ describe("resolveSlot", () => {
     });
   });
 
+  it("meneruskan data subjek cut-out ke template (T-123)", () => {
+    const subject = {
+      box: { left: 0.1, top: 0.05, right: 0.9, bottom: 1 },
+      focus: { x: 0.5, y: 0.2 },
+    };
+    const base = withAsset("assets/subjek.webp");
+    const asset = base.assets.assets[0];
+    if (!asset) throw new Error("fixture tanpa aset");
+    const withSubject = { ...base, assets: { assets: [{ ...asset, subject }] } };
+    expect(resolveSlot({ type: "image", assetId: "hero" }, withSubject)).toEqual({
+      type: "image",
+      src: "http://laras.invalid/job/assets/subjek.webp",
+      subject,
+    });
+  });
+
   it("menolak aset yang tidak ada, varian logo yang tidak dimiliki brand, dan path keluar folder", () => {
     expect(() => resolveSlot({ type: "image", assetId: "hero" }, context)).toThrow(
       'Aset "hero" tidak ada di manifest',

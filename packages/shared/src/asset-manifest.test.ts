@@ -31,4 +31,21 @@ describe("AssetManifest", () => {
       false,
     );
   });
+
+  it("menerima data subjek cut-out dan menolak kotak tanpa ukuran (T-123)", () => {
+    const first = manifest().assets[0];
+    const subject = {
+      box: { left: 0.1, top: 0.05, right: 0.9, bottom: 1 },
+      focus: { x: 0.5, y: 0.2 },
+    };
+    expect(issuesOf(AssetManifest, { assets: [{ ...first, subject }] })).toEqual([]);
+    const flat = { ...subject, box: { ...subject.box, bottom: 0.05 } };
+    expect(issuesOf(AssetManifest, { assets: [{ ...first, subject: flat }] })).toContain(
+      "Kotak subjek harus punya lebar dan tinggi",
+    );
+    const outside = { ...subject, focus: { x: 1.2, y: 0.2 } };
+    expect(AssetManifest.safeParse({ assets: [{ ...first, subject: outside }] }).success).toBe(
+      false,
+    );
+  });
 });

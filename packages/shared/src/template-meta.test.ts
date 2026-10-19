@@ -91,6 +91,26 @@ describe("layoutIssues", () => {
     ]);
   });
 
+  it("slot cutout hanya untuk gambar dan jenis aset harus cocok (T-123)", () => {
+    const badMeta = meta();
+    badMeta.slots[1] = { ...badMeta.slots[1], cutout: true } as TemplateMeta["slots"][number];
+    expect(issuesOf(TemplateMeta, badMeta)).toContain("cutout hanya untuk slot image");
+    const cutoutMeta = meta();
+    cutoutMeta.slots[0] = { ...cutoutMeta.slots[0], cutout: true } as TemplateMeta["slots"][number];
+    expect(issuesOf(TemplateMeta, cutoutMeta)).toEqual([]);
+    expect(layoutIssues(spec(validSlots), cutoutMeta)).toEqual([
+      'Slide 1: slot "image" membutuhkan aset cutout (kind "cutout")',
+    ]);
+    const withCutout = spec(validSlots);
+    withCutout.assetRequests = [
+      { ...withCutout.assetRequests[0], kind: "cutout" } as LayoutSpec["assetRequests"][number],
+    ];
+    expect(layoutIssues(withCutout, cutoutMeta)).toEqual([]);
+    expect(layoutIssues(withCutout, meta())).toEqual([
+      'Slide 1: slot "image" membutuhkan aset foto (kind "photo")',
+    ]);
+  });
+
   it("menolak LayoutSpec untuk template atau format lain", () => {
     expect(layoutIssues({ ...spec(validSlots), templateId: "lain" }, meta())).toEqual([
       'LayoutSpec untuk template "lain"',
