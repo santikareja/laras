@@ -325,6 +325,8 @@ Temuan teknis:
 
 Keputusan: **GO** untuk Fase 2 (PRD 11: ≥ 6 dari 9).
 
+Derau QA visual (T-137, 2026-10-20, izin pemilik): sembilan PNG akhir T-127 dinilai ulang dua kali dengan prompt dan masukan yang sama (job disalin ke `<id>-ulang1/2`, hanya langkah QA yang dijalankan ulang; 18 panggilan Claude, $3,70). Rentang skor rata-rata per postingan dari tiga penilaian: median 0,25, maksimum 0,75 (R3: 7,63 / 7,75 / 7,00). Skor `idea` tidak pernah berubah; `interlock` paling labil (rentang sampai 2), aspek lain sampai 1. **Perbaikan wajib tidak stabil**: jumlahnya berubah antarpenilaian di 4 dari 9 postingan (K3 2/2/1, R1 0/0/2, R2 0/0/1, R3 1/0/1), sehingga syarat "tanpa perbaikan wajib" bisa menggagalkan postingan yang sama secara acak. Ambang dengan presisi di bawah ±0,4 pada rata-rata tidak bermakna.
+
 ## Keputusan kecil (tanggal, keputusan, alasan)
 
 | Tanggal | Keputusan | Alasan |

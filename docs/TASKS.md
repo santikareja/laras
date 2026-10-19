@@ -323,10 +323,11 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - AC: `pnpm dev` dari Terminal pengguna membuka jendela Laras; perubahan file di `apps/desktop/src` tetap memicu HMR.
   - Catatan: ditemukan 2026-10-20 saat pemilik ingin mengecek aplikasi di tengah T-127; sementara dijalankan dari shell agent. Pilihan: `server.watch.usePolling` di `vite.config.ts` (biaya CPU polling), atau cari penyebab fsevents di macOS 27.
 
-- [ ] T-137 Kalibrasi QA visual dan putaran revisi terhadap penilaian pemilik T-127
+- [~] T-137 Kalibrasi QA visual dan putaran revisi terhadap penilaian pemilik T-127
   - Rujukan: KNOWLEDGE "Evaluasi ulang spike T-127", PRD F9, PRD 3 (waktu ≤ 5 menit), T-126
   - AC: aturan lolos QA dan berhentinya revisi dikalibrasi ulang dengan sembilan render T-127 yang sudah dinilai pemilik (tanpa kuota baru bila memungkinkan); revisi tidak memperburuk hasil putaran sebelumnya.
   - Catatan: QA visual meloloskan 0/9 sementara pemilik menerima 6/9; skor tidak memisahkan pilihan pemilik (K1 7,4 ditolak, S3 6,6 dan R1 6,5 diterima). Kesembilan percobaan memakai dua putaran revisi penuh, skor turun dari putaran 1 ke 2 di K2, K3, S2, dan 8 dari 9 percobaan melewati 5 menit. Pilihan yang perlu keputusan pemilik: ambang, revisi hanya untuk perbaikan wajib, atau mempertahankan putaran terbaik.
+  - Keputusan pemilik 2026-10-20 (rencana disetujui): data kalibrasi dari lembar putaran buta (27 render putaran 0, 1, 2 tanpa skor; pemilik menandai layak dan terbaik per percobaan); derau QA visual diukur sekarang dengan menilai ulang 9 PNG akhir masing-masing 2 kali (18 panggilan Claude, ±$3,5); larangan membuat ulang gambar saat revisi bila tidak ada perbaikan bertarget `assets` masuk task ini (ARCH 5.4). Ambang dan kebijakan putaran diputuskan pemilik setelah analisis.
 
 - [ ] T-138 Gaya terpilih harus tampak di arketipe yang dipilih
   - Rujukan: KNOWLEDGE "Evaluasi ulang spike T-127", ADR-016, T-133
