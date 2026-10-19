@@ -9,7 +9,11 @@ import { PlacedLogo, TopCaption } from "./SatuObjek.tsx";
 
 function FotoKonsepSlide({ slots, options, style }: SlideProps) {
   return (
-    <div style={{ position: "relative", height: "100%", overflow: "hidden" }}>
+    // Komposisi terpusat: rule of thirds tidak dicek (keputusan pemilik T-130).
+    <div
+      data-qa-composition="center"
+      style={{ position: "relative", height: "100%", overflow: "hidden" }}
+    >
       <StyleBackdrop style={style} />
       <div
         data-qa-element="background"

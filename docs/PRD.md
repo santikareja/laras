@@ -96,16 +96,16 @@ Prinsip ini mengikat semua keputusan desain dan implementasi.
    - P1. Grid dan perataan: semua blok menempel ke grid 12 kolom di dalam safe margin, maksimal dua sumbu perataan per postingan.
    - P2. Hierarki: tepat satu elemen dominan, elemen tingkat kedua maksimal setengah ukurannya, maksimal tiga ukuran huruf, headline minimal dua kali ukuran body; urutan baca fokus → headline → CTA.
    - P3. Kedekatan dan ritme: elemen yang berhubungan dikelompokkan dengan jarak token yang sama, tanpa celah kosong mati di antara grup.
-   - P4. Tipografi: maksimal dua keluarga huruf, tanpa baris yatim (baris terakhir minimal dua kata), baris body 30–45 karakter, tanda baca tidak terpisah dari katanya.
+   - P4. Tipografi: maksimal dua keluarga huruf, tanpa baris yatim (baris terakhir minimal dua kata), baris body maksimal 45 karakter dan minimal 30 karakter untuk paragraf tiga baris atau lebih, tanda baca tidak terpisah dari katanya.
    - P5. Anggaran elemen visual: maksimal tiga elemen visual utama, atau batas brand bila lebih ketat; jumlah total elemen dibatasi P10.
    - P6. Keseimbangan: berat visual seimbang, subjek dan teks tidak saling menutup bagian penting.
    - P7. Kontras dan keterbacaan sesuai QA deterministik (F9).
-   - P8. Rule of thirds: titik fokus utama (wajah, produk, atau kata utama) berada dalam ±8% dari salah satu titik potong grid 3×3; elemen kedua di titik seberang secara diagonal.
-   - P9. 60-30-10, diukur dari piksel render yang dipetakan ke warna Brand Kit: warna dominan ≥ 55%, warna kedua beserta gambar 20–35%, aksen ≤ 12%. Aksen hanya untuk CTA dan sorotan, tidak untuk bidang besar.
+   - P8. Rule of thirds: titik fokus utama (wajah, produk, atau kata utama) berada dalam ±8% dari salah satu titik potong grid 3×3; elemen kedua di titik seberang secara diagonal. Komposisi terpusat yang disengaja (arketipe satu objek dan foto konsep) dikecualikan.
+   - P9. 60-30-10, diukur dari piksel render yang dipetakan ke warna Brand Kit: warna dominan ≥ 55%, warna kedua beserta gambar 20–35% (batas bawah tidak berlaku bila dominan ≥ 65%, desain lapang), aksen ≤ 12%. Aksen hanya untuk CTA dan sorotan, tidak untuk bidang besar.
    - P10. Ruang kosong: minimal 35% kanvas kosong (warna dominan tanpa elemen), maksimal lima elemen per postingan termasuk logo dan CTA.
    - P11. Konsistensi: satu jarak tepi, satu radius, satu gaya tombol atau stiker, satu keluarga dekorasi, dan satu sudut kemiringan per postingan.
 
-   P2 dan P8–P11 diturunkan dari aturan desain pemilik (2026-10-19: hierarki visual, rule of thirds, 60-30-10, ruang kosong, konsistensi). Referensi yang paling memenuhi aturan ini (nomor 11, 13, 18, 20, 38, 40, 50, 51, 52, 56) menjadi standar default; gaya padat ala kolase disimpan untuk gaya Scrapbook/Digital Collage (F16).
+   P1, P2, P4, dan P8–P11 diperiksa QA kode sebagai saran (T-130) dengan ambang per gaya dari panduannya; kalibrasi dan pengecualian di atas diputuskan pemilik 2026-10-19. P2 dan P8–P11 diturunkan dari aturan desain pemilik (2026-10-19: hierarki visual, rule of thirds, 60-30-10, ruang kosong, konsistensi). Referensi yang paling memenuhi aturan ini (nomor 11, 13, 18, 20, 38, 40, 50, 51, 52, 56) menjadi standar default; gaya padat ala kolase disimpan untuk gaya Scrapbook/Digital Collage (F16).
 
 ---
 

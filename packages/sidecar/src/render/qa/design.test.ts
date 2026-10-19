@@ -49,6 +49,7 @@ const design = (overrides: Partial<DesignMeasurements> = {}): DesignMeasurements
     { kind: "logo", name: "logo" },
   ],
   photoBackground: false,
+  centered: false,
   radii: [],
   angles: [],
   excluded: [],
@@ -123,6 +124,29 @@ describe("aturan desain (T-130)", () => {
     const centered = design({ focus: { x: 540, y: 450 } });
     expect(advice(centered).map((c) => c.target)).toEqual(["fokus subjek"]);
     expect(advice(centered, pixels, { ...DEFAULT_DESIGN_LIMITS, centerAxis: true })).toEqual([]);
+    // Arketipe terpusat (keputusan pemilik): P8 tidak dicek sama sekali.
+    expect(advice(design({ focus: { x: 540, y: 700 }, centered: true }))).toEqual([]);
+  });
+
+  it("P4 dan P9: minimal panjang baris hanya untuk paragraf, desain lapang tanpa batas bawah", () => {
+    const short = design({
+      texts: [
+        {
+          slot: "body",
+          size: 32,
+          role: "body",
+          rect: rect(72, 400, 600, 520),
+          lines: ["Konsultasi kulit", "gratis 30 menit."],
+        },
+      ],
+    });
+    expect(advice(short)).toEqual([]);
+    const calm = {
+      tokens: { "#faf7f0": 0.86, "#0f3d3e": 0.1, "#f2a541": 0.02 },
+      image: 0.02,
+      outside: { "#faf7f0": 0.8 },
+    };
+    expect(advice(design(), calm)).toEqual([]);
   });
 
   it("P9: dominan, warna kedua dan gambar, aksen", () => {

@@ -22,6 +22,8 @@ export type DesignMeasurements = {
   focus: { x: number; y: number } | null;
   elements: { kind: string; name: string }[];
   photoBackground: boolean;
+  // Arketipe berkomposisi terpusat (Satu objek, Foto konsep): P8 tidak dicek.
+  centered: boolean;
   // Radius bidang yang terlihat (-1 = pil) dan sudut rotasi elemen.
   radii: number[];
   angles: number[];
@@ -56,6 +58,10 @@ const EDGE_TOLERANCE = 12;
 const BLEED = 8;
 const SIZE_TOLERANCE = 2;
 const PUNCTUATION = /^[.,;:!?)\]»”’%]/;
+// Keputusan pemilik T-130: batas minimal panjang baris hanya untuk paragraf body ≥ 3 baris, dan
+// batas bawah warna kedua tidak berlaku pada desain lapang (dominan ≥ 65%).
+const PARAGRAPH_LINES = 3;
+const CALM_DOMINANT = 0.65;
 
 const percent = (value: number) => `${Math.round(value * 100)}%`;
 
@@ -167,7 +173,11 @@ function typographyChecks(d: DesignMeasurements, limits: DesignLimits): RenderCh
     if (text.role === "body") {
       text.lines.forEach((line, index) => {
         const isLast = index === text.lines.length - 1;
-        if (line.length > limits.bodyLineMax || (!isLast && line.length < limits.bodyLineMin)) {
+        const paragraph = text.lines.length >= PARAGRAPH_LINES;
+        if (
+          line.length > limits.bodyLineMax ||
+          (paragraph && !isLast && line.length < limits.bodyLineMin)
+        ) {
           out.push(
             saran(
               "typography",
@@ -190,6 +200,7 @@ function thirdsPoints(limits: DesignLimits): [number, number][] {
 }
 
 function thirdsChecks(d: DesignMeasurements, limits: DesignLimits): RenderCheck[] {
+  if (d.centered) return [];
   const { width, height } = d.canvas;
   const points = thirdsPoints(limits);
   const out: RenderCheck[] = [];
@@ -263,7 +274,8 @@ function colorChecks(
       ),
     );
   }
-  if (second < limits.secondMin || second > limits.secondMax) {
+  const calm = dominant.share >= CALM_DOMINANT;
+  if ((second < limits.secondMin && !calm) || second > limits.secondMax) {
     out.push(
       saran(
         "color-balance",

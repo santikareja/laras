@@ -104,6 +104,8 @@ function SatuObjekSlide({ slots, options, style }: SlideProps) {
   const tone = BACKGROUND[(options.tone ?? "neutral") as keyof typeof BACKGROUND];
   return (
     <div
+      // Komposisi terpusat: rule of thirds tidak dicek (keputusan pemilik T-130).
+      data-qa-composition="center"
       style={{
         position: "relative",
         height: "100%",

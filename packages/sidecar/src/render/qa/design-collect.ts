@@ -155,6 +155,7 @@ export const DESIGN_SCRIPT = String.raw`(() => {
     focus,
     elements,
     photoBackground: document.querySelector('[data-qa-element="background"]') !== null,
+    centered: document.querySelector('[data-qa-composition="center"]') !== null,
     radii,
     angles,
     excluded: [

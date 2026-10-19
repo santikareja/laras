@@ -366,6 +366,12 @@ Kode di `packages/sidecar/src/render/qa/`. Renderer menjalankan kolektor di page
 
 `pnpm render:demo` ikut menjalankan QA dan keluar dengan kode 1 bila ada cek gagal; isi demo seluruh katalog × 3 brand juga menjadi fixture patuh di `scripts/demo-qa.test.ts`.
 
+**Aturan desain terukur (T-130, PRD 4 P1, P2, P4, P8–P11).** Setiap `RenderCheck` punya `severity`: `wajib` (bawaan, aturan di atas) atau `saran`. Aturan desain bertingkat saran sampai terkalibrasi: dilaporkan di `RenderReport` dan skrip render, tetapi tidak menggagalkan render, revisi otomatis, atau gerbang QA visual (`isBlocking` di `shared`). Ambangnya `DesignLimits` (angka PRD 4), ditimpa `StyleMeta.limits` dan `variantLimits` gaya (`designLimits`), dikirim lewat `QaContext.design`.
+- Data ukur dari `qa/design-collect.ts` di page: blok untuk perataan dan jarak tepi (grup dan slot teks, badge, logo yang berdiri sendiri; teks diukur dari tintanya, tombol berlatar dari kotaknya), ukuran dan baris setiap slot teks, titik fokus subjek (`data-qa-focus` di `Image`, dihitung dengan object-fit), elemen yang dihitung, radius bidang, dan sudut rotasi.
+- Penanda di arketipe dan primitives: `data-qa-element="group"` (dihitung satu, slot di dalamnya tidak), `shape` (bentuk yang dihitung), `background` (foto latar penuh: ruang kosong P10 tidak diukur dan foto boleh menjadi warna dominan P9), `decor` (tekstur, garis, bingkai: tidak dihitung). `data-qa-composition="center"` di arketipe terpusat melewati P8.
+- Statistik piksel `qa/pixels.ts`: render diperkecil ke 216 × 270, setiap piksel dipetakan ke warna palet terdekat (jarak RGB ≤ 40, selain itu gambar); ruang kosong = piksel warna dominan di luar kotak teks dan logo.
+- Lapisan dekoratif harus `pointer-events: none` agar tidak terbaca sebagai latar teks; bentuk SVG di belakang teks (bukan kotak `<svg>`-nya) membuat kontras diukur dari piksel.
+
 ### 7.3 Pasca-proses (sharp)
 
 - Konversi ke profil warna sRGB.
