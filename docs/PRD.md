@@ -243,7 +243,7 @@ Urutan tahap per varian:
 4. **Assets:** membuat aset gambar via Codex bila dibutuhkan, atau memakai aset milik pengguna.
 5. **Render:** menghasilkan PNG lewat Playwright.
 6. **QA:** pemeriksaan deterministik dan visual.
-7. **Revise:** perbaikan otomatis bila QA gagal (maksimal 2 putaran), lalu render ulang.
+7. **Revise:** perbaikan otomatis bila QA gagal (maksimal 1 putaran), lalu render ulang. Hasil akhir adalah putaran terbaik, bukan selalu putaran terakhir (keputusan pemilik 2026-10-20, T-137).
 
 AC:
 - Setiap tahap menyimpan output-nya, sehingga kegagalan di tahap N bisa diulang mulai dari tahap N.
@@ -271,9 +271,10 @@ AC:
 - Penilaian delapan aspek dari kriteria PRD 4 (keputusan pemilik 2026-10-20, T-126): ide besar (K1), tipografi dan teks hemat (K2, K7), teks dan gambar mengunci (K3, K4), brand (perangkat K5, aturan brand teks bebas, kesesuaian gaya), hierarki (P2), keseimbangan (P3, P5, P6), keterbacaan (P7), dan kesan profesional bukan generik. Setiap aspek punya definisi dan contoh bagus/buruk di prompt.
 - QA visual membuka pratinjau logo brand, menerima knowledge dan hasil cek kode (saran desain terukur, aturan brand terstruktur), dan tidak boleh menyarankan fakta di luar copy dan knowledge.
 - Output berupa skor 1–10 per aspek plus daftar perbaikan konkret. Setiap perbaikan bertingkat `wajib` (postingan belum layak terbit, misalnya informasi berulang, fakta keliru, teks sulit dibaca, logo tidak terlihat) atau `saran` (peningkatan selera).
-- Ambang lolos default: skor rata-rata ≥ 8, tidak ada aspek < 7, ide (K1) dan kesan profesional ≥ 8, dan tidak ada perbaikan wajib. Saran tetap disimpan di laporan QA. QA yang gagal karena skor saja tetap direvisi otomatis maksimal 2 putaran dengan semua saran (keputusan pemilik 2026-10-20).
+- Ambang lolos default: skor ide (K1) ≥ 7, skor rata-rata ≥ 6, dan tidak ada perbaikan wajib (keputusan pemilik 2026-10-20, T-137; dikalibrasi dengan penilaian pemilik atas evaluasi T-127, di mana skor ide paling sejalan dengan pemilik dan rata-rata bergeser ±0,4 saat dinilai ulang). Saran tetap disimpan di laporan QA. QA yang gagal karena skor saja direvisi otomatis dengan semua saran, maksimal 1 putaran.
+- Revisi otomatis hanya membuat ulang gambar bila ada perbaikan bertarget aset; masalah komposisi diperbaiki lewat layout (T-137).
 
-AC: varian yang gagal QA setelah 2 putaran revisi tetap ditampilkan, dengan label peringatan dan daftar masalahnya.
+AC: varian yang gagal QA setelah 1 putaran revisi tetap ditampilkan (putaran terbaiknya), dengan label peringatan dan daftar masalahnya.
 
 ### F10. Revisi via Chat
 

@@ -12,7 +12,7 @@ const outDir = mkdtempSync(join(tmpdir(), "laras-spike-"));
 afterAll(() => rmSync(outDir, { recursive: true, force: true }));
 
 describe("spike --dry-run", () => {
-  it("menjalankan pipeline penuh, dua putaran revisi, dan menulis laporan serta PNG", {
+  it("menjalankan pipeline penuh, satu putaran revisi, dan menulis laporan serta PNG", {
     timeout: 60_000,
   }, async () => {
     const lines: string[] = [];
@@ -27,12 +27,12 @@ describe("spike --dry-run", () => {
       outDir,
       log: (line) => lines.push(line),
     });
-    expect(report.calls).toEqual({ claude: 8, codex: 3 });
+    expect(report.calls).toEqual({ claude: 6, codex: 2 });
     expect(report.retries).toBe(0);
     const [job] = report.jobs;
     expect(job).toMatchObject({
       status: "done",
-      round: 2,
+      round: 1,
       templateId: "feed-bidang-warna",
       qaPassed: false,
       failures: [],
@@ -42,10 +42,6 @@ describe("spike --dry-run", () => {
       "plan",
       "copy",
       "layout",
-      "assets",
-      "render",
-      "qa",
-      "revise",
       "assets",
       "render",
       "qa",

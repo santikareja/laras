@@ -36,7 +36,7 @@ Aturan:
 - Opsi arketipe tetap mematuhi aturan brand (posisi logo, latar, pasangan warna). Cut-out tetap `kind` `"cutout"` dengan `subject` yang sama.
 - Bila `<style>` memuat gaya, `styleOptions` disalin apa adanya kecuali perbaikan menyebutnya, dan tetap memakai nama dan nilai dari "Opsi gaya". Arketipe pengganti diutamakan dari daftar "Arketipe gaya ini".
 - Deskripsi aset yang diubah tetap mewujudkan ide visual yang sama dengan deskripsi lamanya; perbaiki eksekusinya (pose, cahaya, ruang kosong), jangan mengganti idenya.
-- `regenerateAssets` berisi id `assetRequests` yang fotonya harus dibuat ulang, hanya bila perbaikan memang menyangkut foto itu. Bila deskripsi aset berubah, id-nya wajib ada di sini. Bila tidak ada foto yang perlu diganti, isi dengan daftar kosong.
+- `regenerateAssets` berisi id `assetRequests` yang fotonya harus dibuat ulang, hanya bila daftar perbaikan memuat perbaikan bertarget `assets` untuk foto itu. Bila deskripsi aset berubah, id-nya wajib ada di sini. Tanpa perbaikan bertarget `assets`, isi dengan daftar kosong dan salin deskripsi aset persis; masalah komposisi diperbaiki lewat layout (opsi, fokus, posisi), bukan dengan membuat foto baru.
 - `summary` menjelaskan singkat apa saja yang berubah, dalam bahasa Indonesia.
 
 Kirim hasil lewat tool StructuredOutput sesuai skema berikut:

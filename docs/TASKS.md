@@ -323,16 +323,29 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - AC: `pnpm dev` dari Terminal pengguna membuka jendela Laras; perubahan file di `apps/desktop/src` tetap memicu HMR.
   - Catatan: ditemukan 2026-10-20 saat pemilik ingin mengecek aplikasi di tengah T-127; sementara dijalankan dari shell agent. Pilihan: `server.watch.usePolling` di `vite.config.ts` (biaya CPU polling), atau cari penyebab fsevents di macOS 27.
 
-- [~] T-137 Kalibrasi QA visual dan putaran revisi terhadap penilaian pemilik T-127
+- [x] T-137 Kalibrasi QA visual dan putaran revisi terhadap penilaian pemilik T-127
   - Rujukan: KNOWLEDGE "Evaluasi ulang spike T-127", PRD F9, PRD 3 (waktu ≤ 5 menit), T-126
   - AC: aturan lolos QA dan berhentinya revisi dikalibrasi ulang dengan sembilan render T-127 yang sudah dinilai pemilik (tanpa kuota baru bila memungkinkan); revisi tidak memperburuk hasil putaran sebelumnya.
   - Catatan: QA visual meloloskan 0/9 sementara pemilik menerima 6/9; skor tidak memisahkan pilihan pemilik (K1 7,4 ditolak, S3 6,6 dan R1 6,5 diterima). Kesembilan percobaan memakai dua putaran revisi penuh, skor turun dari putaran 1 ke 2 di K2, K3, S2, dan 8 dari 9 percobaan melewati 5 menit. Pilihan yang perlu keputusan pemilik: ambang, revisi hanya untuk perbaikan wajib, atau mempertahankan putaran terbaik.
   - Keputusan pemilik 2026-10-20 (rencana disetujui): data kalibrasi dari lembar putaran buta (27 render putaran 0, 1, 2 tanpa skor; pemilik menandai layak dan terbaik per percobaan); derau QA visual diukur sekarang dengan menilai ulang 9 PNG akhir masing-masing 2 kali (18 panggilan Claude, ±$3,5); larangan membuat ulang gambar saat revisi bila tidak ada perbaikan bertarget `assets` masuk task ini (ARCH 5.4). Ambang dan kebijakan putaran diputuskan pemilik setelah analisis.
+  - Penilaian buta pemilik 2026-10-20 (per percobaan, berlaku untuk ketiga putaran): layak K1, K2, S1, S2, S3, R2, R3; kurang layak K3, R1. Tiga berubah dari T-127 (K1, S1, R1). Skor `idea` (stabil saat dinilai ulang) paling sejalan: ide 7 layak 11 dari 12 penilaian, ide 6 berubah-ubah, ide 5 ditolak. Aturan "ide ≥ 7 dan rata ≥ 6" cocok 15 dari 18 penilaian; ketiga yang meleset adalah postingan yang dinilai berbeda oleh pemilik di dua kesempatan.
+  - Keputusan pemilik 2026-10-20 (kebijakan): lolos = cek kode lolos, `idea` ≥ 7, rata-rata ≥ 6, tanpa perbaikan wajib; revisi maksimal 1 putaran; hasil akhir = putaran terbaik (bukan selalu terakhir); gambar dibuat ulang saat revisi hanya bila ada perbaikan bertarget `assets`. Simulasi pada T-127: ±48 panggilan Claude (dari 71), lima percobaan tanpa revisi, semua ≤ 5 menit.
+  - Selesai 2026-10-20: `VISUAL_PASS` ide ≥ 7 dan rata ≥ 6, `MAX_ROUNDS` 1, `bestQa` memilih putaran terbaik sebagai `JobResult.qa`, `revisionSchema(context, allowRegenerate)` melarang `regenerateAssets` tanpa perbaikan bertarget `assets`, prompt revise diperbarui, spike menyalin PNG dan template dari putaran terbaik (`stepOf`). PRD F7 dan F9, ARCH 5.1 dan 5.4, ADR-017. Replay sembilan job T-127 dengan engine baru tanpa kuota: 48 panggilan Claude, semua ≤ 5 menit, cocok 8/9 dengan penilaian buta pemilik (KNOWLEDGE). Kuota terpakai di task ini hanya ukur derau: 18 panggilan Claude, $3,70. typecheck, lint, 673 test lolos; dry-run spike lolos.
 
 - [ ] T-138 Gaya terpilih harus tampak di arketipe yang dipilih
   - Rujukan: KNOWLEDGE "Evaluasi ulang spike T-127", ADR-016, T-133
   - AC: postingan bergaya selalu menampakkan ciri gayanya; arketipe di luar daftar gaya hanya dipakai dengan alasan yang tertulis atau tidak dipakai sama sekali (keputusan pemilik).
   - Catatan: S1 (Corporate) memakai `feed-kartu-kaca` yang bukan arketipe Corporate; QA hanya memberi saran mengganti dan revisi tidak melakukannya. Keputusan T-133 ("arketipe gaya lebih dulu, lalu semua") perlu ditinjau ulang bersama pemilik.
+
+- [ ] T-139 Perbaiki temuan visual pemilik T-137 (S3 dan K3)
+  - Rujukan: TASKS T-137 (penilaian buta), PRD 4, DESIGN arketipe `feed-satu-objek` dan `feed-subjek-lingkar`
+  - AC: posisi teks `feed-satu-objek` tidak menempel ke atas dan menyisakan ruang logo; subjek `feed-subjek-lingkar` cukup besar untuk menonjol, teks terbaca dan letaknya estetik; tombol CTA tidak kaku (bukan kotak tombol generik); dicek dengan `pnpm render:demo` dan dilihat pemilik.
+  - Catatan pemilik 2026-10-20: S3 "teksnya terlalu ke atas, terlalu rapat ke atas dan tidak menyisakan ruang untuk logo"; K3 "ukuran objek gambar terlalu kecil sehingga objek visual tidak menonjol", teks kurang jelas terbaca dan posisinya kurang estetik, "CTA button di K3 terlalu terlihat AI-slop dan kaku".
+
+- [ ] T-140 Spike: latar penuh dari model gambar dengan teks HTML berlapis
+  - Rujukan: PRD 4, ADR-012, ADR-015, KNOWLEDGE bagian Codex CLI, CLAUDE.md (teks selalu HTML)
+  - AC: model gambar Codex membuat seluruh karya visual satu postingan (adegan, ilustrasi, elemen grafis, ruang kosong untuk teks) sesuai art direction; headline, CTA, dan logo tetap lapisan HTML di atasnya; dibandingkan dengan hasil arketipe T-127 pada brief yang sama dan dinilai pemilik.
+  - Catatan: arah dari pemilik 2026-10-20: hasil sudah meningkat tetapi belum setara desainer profesional; model gambar di Codex (menurut pemilik gpt-image 2 dan 2.5) dinilai mampu menghasilkan desain setara desainer, jadi yang dioptimasi adalah workflow, instruksi sistem, dan sistem lapisan. Pemilik memilih "latar penuh + teks HTML" (bukan desain utuh dari model). Model yang dipakai tool `image_gen` bawaan belum terverifikasi; cek dulu sebelum spike. MEMAKAI KUOTA: rencana dan perkiraan disetujui pemilik dulu. Kemungkinan mengubah ADR-015.
 
 ## Fase 2: Walking skeleton (epic)
 

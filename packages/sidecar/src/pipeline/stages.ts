@@ -119,7 +119,10 @@ export function layoutSchema(context: LayoutContext) {
   });
 }
 
-export function revisionSchema(context: LayoutContext) {
+// `allowRegenerate` false bila tidak ada perbaikan bertarget assets: gambar tidak boleh dibuat ulang
+// (ARCH 5.4, keputusan pemilik T-137), karena di T-127 revisi membuat ulang gambar untuk perbaikan
+// layout saja.
+export function revisionSchema(context: LayoutContext, allowRegenerate = true) {
   const { slideCount } = context;
   return Revision.superRefine((revision, ctx) => {
     for (const message of layoutContextIssues(revision.layout, context)) {
@@ -128,20 +131,56 @@ export function revisionSchema(context: LayoutContext) {
     if (revision.copy.slides.length !== slideCount) {
       issue(ctx, "copy", `Copy harus berisi ${slideCount} slide`);
     }
+    if (!allowRegenerate && revision.regenerateAssets.length > 0) {
+      issue(
+        ctx,
+        "regenerateAssets",
+        "Tidak ada perbaikan bertarget assets: regenerateAssets harus kosong",
+      );
+    }
   });
 }
 
-// Ambang lolos QA visual default (PRD F9, keputusan pemilik T-126): rata-rata ≥ 8, tidak ada aspek
-// < 7, dan ide serta kesan profesional ≥ 8 (inti keluhan T-117: generik dan AI-slop).
-export const VISUAL_PASS = { average: 8, minimum: 7, core: { idea: 8, professionalism: 8 } };
+// Ambang lolos QA visual (PRD F9, keputusan pemilik T-137): ide ≥ 7 dan rata-rata ≥ 6. Dikalibrasi
+// dengan penilaian pemilik atas T-127: skor ide stabil saat dinilai ulang dan paling sejalan dengan
+// pemilik, sedangkan rata-rata bergeser hingga ±0,4 sehingga ambang per aspek tidak bermakna.
+export const VISUAL_PASS = { average: 6, core: { idea: 7 } };
+
+const averageScore = (visual: VisualQa) => {
+  const scores = Object.values(visual.scores);
+  return scores.reduce((sum, score) => sum + score, 0) / scores.length;
+};
 
 export function visualPassed(visual: VisualQa): boolean {
-  const scores = Object.values(visual.scores);
-  const average = scores.reduce((sum, score) => sum + score, 0) / scores.length;
   const core = Object.entries(VISUAL_PASS.core).every(
     ([aspect, min]) => visual.scores[aspect as keyof VisualQa["scores"]] >= min,
   );
-  return average >= VISUAL_PASS.average && Math.min(...scores) >= VISUAL_PASS.minimum && core;
+  return averageScore(visual) >= VISUAL_PASS.average && core;
+}
+
+// Putaran terbaik menjadi hasil akhir job (keputusan pemilik T-137): revisi bisa memperburuk hasil
+// (T-127), jadi urutannya lolos, cek kode lolos, tanpa perbaikan wajib, skor ide, lalu rata-rata;
+// seri dimenangkan putaran yang lebih baru karena perbaikannya sudah diterapkan.
+export function bestQa(reports: QaReport[]): QaReport | null {
+  const rank = (qa: QaReport) => [
+    qa.passed ? 1 : 0,
+    qa.deterministic.passed ? 1 : 0,
+    qa.fixes.some((fix) => fix.severity === "wajib") ? 0 : 1,
+    qa.visual?.scores.idea ?? 0,
+    qa.visual ? averageScore(qa.visual) : 0,
+    qa.round,
+  ];
+  let best: QaReport | null = null;
+  for (const qa of reports) {
+    if (!best) {
+      best = qa;
+      continue;
+    }
+    const [a, b] = [rank(qa), rank(best)];
+    const index = a.findIndex((value, i) => value !== b[i]);
+    if (index >= 0 && (a[index] ?? 0) > (b[index] ?? 0)) best = qa;
+  }
+  return best;
 }
 
 // Tahap tempat perbaikan untuk cek deterministik yang gagal (ARCH 5.4).

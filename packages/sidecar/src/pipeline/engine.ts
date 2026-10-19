@@ -37,6 +37,7 @@ import { buildRenderReport } from "../render/qa/report.ts";
 import type { AssetProvider } from "./assets.ts";
 import { logoPreviews } from "./logo-preview.ts";
 import {
+  bestQa,
   catalogFor,
   catalogForStyle,
   copySchema,
@@ -47,8 +48,9 @@ import {
 } from "./stages.ts";
 
 // Engine pipeline (ARCH 5.1, 5.4; PRD F7). Satu job = satu varian. Setiap langkah menulis
-// jobs/<job-id>/<nn>-<tahap>.json; resume mengulang langkah dari file. Revisi maksimal 2 putaran
-// masuk ulang di assets (revise menghasilkan copy dan layout baru sekaligus).
+// jobs/<job-id>/<nn>-<tahap>.json; resume mengulang langkah dari file. Revisi maksimal 1 putaran
+// masuk ulang di assets (revise menghasilkan copy dan layout baru sekaligus); hasil akhir job adalah
+// putaran terbaik, bukan selalu yang terakhir (T-137).
 
 export type StageCall = <T>(
   stage: Stage,
@@ -91,7 +93,9 @@ export type JobResult = {
   error: string | null;
 };
 
-export const MAX_ROUNDS = 2;
+// Satu putaran revisi (keputusan pemilik T-137): di T-127 putaran kedua tidak memperbaiki hasil dan
+// membuat job melewati target 5 menit (PRD 3).
+export const MAX_ROUNDS = 1;
 
 type Step = { n: number; stage: JobStage; round: number };
 
@@ -108,6 +112,9 @@ export function jobSteps(): Step[] {
 }
 
 export const stepFile = (step: Step) => `${String(step.n).padStart(2, "0")}-${step.stage}.json`;
+// Langkah suatu tahap pada putaran tertentu, untuk membaca hasil putaran terbaik (T-137).
+export const stepOf = (stage: JobStage, round: number) =>
+  jobSteps().find((step) => step.stage === stage && step.round === round);
 export const jobDir = (projectDir: string, jobId: string) => join(projectDir, "jobs", jobId);
 
 // Hasil kerja yang sedang berlaku selama langkah diputar ulang.
@@ -118,6 +125,8 @@ type Working = {
   assets?: AssetManifest;
   render?: RenderReport;
   qa?: QaReport;
+  // Laporan QA setiap putaran, untuk memilih putaran terbaik di akhir job.
+  rounds: QaReport[];
   regenerate: Set<string>;
 };
 
@@ -125,7 +134,7 @@ export async function runJob(spec: JobSpec, deps: PipelineDeps): Promise<JobResu
   const dir = jobDir(deps.projectDir, spec.id);
   await mkdir(dir, { recursive: true });
   const now = () => (deps.now ?? (() => new Date()))().toISOString();
-  const work: Working = { regenerate: new Set() };
+  const work: Working = { rounds: [], regenerate: new Set() };
   let current: Step | null = null;
   let fresh = false; // setelah satu langkah dijalankan ulang, file langkah sesudahnya basi
   try {
@@ -160,7 +169,7 @@ export async function runJob(spec: JobSpec, deps: PipelineDeps): Promise<JobResu
       current = null;
     }
     await saveState(dir, spec, "done", null, null, now());
-    return { jobId: spec.id, status: "done", qa: work.qa ?? null, error: null };
+    return { jobId: spec.id, status: "done", qa: bestQa(work.rounds), error: null };
   } catch (error) {
     // Detail (mis. stderr ClaudeRunError/CodexRunError) ikut dicatat agar penyebab terbaca.
     const detail =
@@ -308,7 +317,7 @@ async function runStep(
         fixes: json(fixesForRevision(need(work.qa, "qa"))),
         style: style("revise"),
       });
-      return ask("revise", prompt, revisionSchema(layoutContext(spec, deps, catalog)));
+      return ask("revise", prompt, reviseSchema(spec, deps, work, catalog));
     }
   }
 }
@@ -319,6 +328,13 @@ function fixesForRevision(qa: QaReport) {
   const required = qa.fixes.filter((fix) => fix.severity === "wajib");
   return required.length > 0 ? required : qa.fixes;
 }
+
+// Gambar hanya boleh dibuat ulang bila ada perbaikan bertarget assets yang dikirim ke revisi (T-137).
+const reviseSchema = (spec: JobSpec, deps: PipelineDeps, work: Working, catalog: TemplateMeta[]) =>
+  revisionSchema(
+    layoutContext(spec, deps, catalog),
+    work.qa ? fixesForRevision(work.qa).some((fix) => fix.target === "assets") : true,
+  );
 
 // Aset lama dipakai ulang kecuali diminta dibuat ulang lewat revise atau belum ada.
 async function produceAssets(spec: JobSpec, deps: PipelineDeps, work: Working, dir: string) {
@@ -467,6 +483,7 @@ function apply(work: Working, stage: JobStage, output: unknown) {
       break;
     case "qa":
       work.qa = output as QaReport;
+      work.rounds.push(work.qa);
       break;
     case "revise": {
       const revision = output as {
@@ -539,7 +556,7 @@ async function readStep(dir: string, step: Step, spec: JobSpec, deps: PipelineDe
     case "qa":
       return validJson(path, QaReport);
     case "revise":
-      return validJson(path, revisionSchema(layoutContext(spec, deps, catalog)));
+      return validJson(path, reviseSchema(spec, deps, work, catalog));
   }
 }
 

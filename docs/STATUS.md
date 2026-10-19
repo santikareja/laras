@@ -18,9 +18,10 @@ T-124 selesai: aturan brand terstruktur (posisi logo, tanpa gradient, maksimal e
 T-125 selesai: plan menulis satu ide visual besar per varian dan setting dari knowledge; layout wajib mewujudkannya; setting dikirim ke setiap prompt Codex; klaim visual yang tidak bisa digambar dilarang.
 T-126 selesai: QA visual menilai delapan aspek K dan P dengan ambang ide dan profesional ≥ 8, membuka pratinjau logo, menerima knowledge dan hasil cek kode, dan dilarang menyarankan fakta di luar knowledge.
 T-127 selesai (GO): Claude 71, Codex 25, ±$18,81, 52 menit; QA visual meloloskan 0/9 padahal pemilik menerima 6/9, revisi dua putaran tidak konvergen, dan 8 dari 9 percobaan melewati 5 menit (T-137); gaya Corporate tidak tampak karena arketipe di luar gaya (T-138). `pnpm dev` dari Terminal pemilik macet di fsevents (T-136).
+T-137 selesai: QA lolos bila ide ≥ 7, rata ≥ 6, tanpa wajib; revisi 1 putaran; hasil akhir putaran terbaik; gambar dibuat ulang hanya untuk perbaikan aset (ADR-017). Replay T-127: 48 panggilan Claude dari 71, semua ≤ 5 menit. Pemilik menilai hasil sudah meningkat tetapi belum setara desainer profesional, dan mengarahkan ke latar penuh dari model gambar Codex dengan teks HTML berlapis (T-140).
 
 ## Berikutnya (urut)
-1. Menunggu keputusan pemilik setelah GO: Fase 2 (E-201) atau perbaikan Fase 1 lebih dulu (T-137 kalibrasi QA dan revisi, T-138 gaya tampak, T-129 gaya tahap 2, T-136 `pnpm dev`).
+1. Menunggu keputusan pemilik: Fase 2 (E-201) atau perbaikan Fase 1 lebih dulu (T-140 spike latar penuh dari model gambar dengan teks HTML, arah pemilik; T-139 temuan visual S3 dan K3; T-138 gaya tampak; T-129 gaya tahap 2; T-136 `pnpm dev`).
 
 ## Blocker
 - Tidak ada.

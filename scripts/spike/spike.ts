@@ -36,6 +36,8 @@ import {
   runBrief,
   type SlideRenderOutput,
   type StageCall,
+  stepFile,
+  stepOf,
 } from "../../packages/sidecar/src/pipeline/engine.ts";
 import { promptTemplate, type Stage } from "../../packages/sidecar/src/prompts/index.ts";
 import { findStyle } from "../../packages/sidecar/src/prompts/style-context.ts";
@@ -331,13 +333,19 @@ async function buildReport(
         durationMs: e.durationMs ?? 0,
         costUsd: e.costUsd ?? null,
       }));
-    const pngs = await copyFinalPngs(dir, result.jobId, ctx.runDir, steps);
+    const round = result.qa?.round ?? null;
+    const pngs = await copyFinalPngs(
+      dir,
+      result.jobId,
+      ctx.runDir,
+      finalFile("render", round, steps),
+    );
     jobs.push({
       id: result.jobId,
       status: result.status,
       error: result.error,
-      round: result.qa?.round ?? null,
-      templateId: await finalTemplateId(dir, steps),
+      round,
+      templateId: await finalTemplateId(dir, round, steps),
       qaPassed: result.qa?.passed ?? null,
       scores: result.qa?.visual?.scores ?? null,
       failures: (result.qa?.deterministic.failures ?? []).map(
@@ -365,26 +373,29 @@ async function buildReport(
   };
 }
 
-// Template akhir: dari layout, atau dari revisi terakhir bila ada.
-async function finalTemplateId(dir: string, steps: { step: number; stage: string }[]) {
-  const last = steps.filter((s) => s.stage === "layout" || s.stage === "revise").at(-1);
-  if (!last) return null;
-  const file = `${String(last.step).padStart(2, "0")}-${last.stage}.json`;
-  const data: unknown = JSON.parse(await readFile(join(dir, file), "utf8"));
-  return (last.stage === "revise" ? Revision.parse(data).layout : LayoutSpec.parse(data))
-    .templateId;
+type DoneStep = { step: number; stage: string };
+
+// File langkah hasil akhir: tahap pada putaran terbaik job (T-137), atau langkah terakhir tahap itu
+// bila job berhenti sebelum QA.
+function finalFile(stage: "render" | "layout" | "revise", round: number | null, steps: DoneStep[]) {
+  const best = round === null ? undefined : stepOf(stage, round);
+  if (best) return stepFile(best);
+  const last = steps.filter((s) => s.stage === stage).at(-1);
+  return last ? `${String(last.step).padStart(2, "0")}-${stage}.json` : null;
 }
 
-// PNG render terakhir job disalin ke folder laporan: master dan versi unggah 1080.
-async function copyFinalPngs(
-  dir: string,
-  jobId: string,
-  runDir: string,
-  steps: { step: number; stage: string }[],
-) {
-  const lastRender = steps.filter((s) => s.stage === "render").at(-1);
-  if (!lastRender) return [];
-  const file = `${String(lastRender.step).padStart(2, "0")}-render.json`;
+// Template akhir: dari layout putaran 0, atau dari revisi putaran terbaik.
+async function finalTemplateId(dir: string, round: number | null, steps: DoneStep[]) {
+  const revised = (round ?? steps.filter((s) => s.stage === "revise").length) > 0;
+  const file = finalFile(revised ? "revise" : "layout", round, steps);
+  if (!file) return null;
+  const data: unknown = JSON.parse(await readFile(join(dir, file), "utf8"));
+  return (revised ? Revision.parse(data).layout : LayoutSpec.parse(data)).templateId;
+}
+
+// PNG render putaran terbaik job disalin ke folder laporan: master dan versi unggah 1080.
+async function copyFinalPngs(dir: string, jobId: string, runDir: string, file: string | null) {
+  if (!file) return [];
   const report = RenderReport.parse(JSON.parse(await readFile(join(dir, file), "utf8")));
   const names: string[] = [];
   for (const slide of report.slides) {

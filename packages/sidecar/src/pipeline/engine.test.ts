@@ -270,21 +270,49 @@ describe("runJob", () => {
     expect(files()("10-qa.json")).toBe(true);
   });
 
-  it("membuat ulang hanya aset yang diminta revise", async () => {
+  it("membuat ulang hanya aset yang diminta revise bila ada perbaikan bertarget assets", async () => {
+    const assetFix = {
+      ...visual(9),
+      fixes: [{ target: "assets", severity: "wajib", instruction: "Ganti foto yang buram" }],
+    };
     const f = fake({
-      renderChecks: [[FAILED_CONTRAST], [PASSED]],
-      answers: { revise: [revision(["hero"])] },
+      answers: { "qa-visual": [assetFix, visual(9)], revise: [revision(["hero"])] },
     });
     await runJob(spec(), f.deps);
     expect(f.assetCalls).toEqual(["hero", "hero"]);
   });
 
-  it("berhenti setelah 2 putaran revisi dan tetap selesai dengan QA gagal", async () => {
+  it("tanpa perbaikan bertarget assets, revisi tidak boleh membuat ulang gambar (T-137)", async () => {
+    expect(
+      revisionSchema(layoutContext(), false)
+        .safeParse(revision(["hero"]))
+        .error?.issues.map((i) => i.message),
+    ).toEqual(["Tidak ada perbaikan bertarget assets: regenerateAssets harus kosong"]);
+    // Perbaikan kontras bertarget layout: engine memvalidasi revisi dengan larangan buat ulang.
+    const f = fake({
+      renderChecks: [[FAILED_CONTRAST], [PASSED]],
+      answers: { revise: [revision(["hero"])] },
+    });
+    const result = await runJob(spec(), f.deps);
+    expect(result.status).toBe("failed");
+    expect(result.error).toContain("regenerateAssets harus kosong");
+    expect(f.assetCalls).toEqual(["hero"]);
+  });
+
+  it("berhenti setelah 1 putaran revisi dan tetap selesai dengan QA gagal (T-137)", async () => {
     const f = fake({ renderChecks: [[FAILED_CONTRAST]] });
     const result = await runJob(spec(), f.deps);
-    expect(result).toMatchObject({ status: "done", qa: { round: 2, passed: false } });
-    expect(f.calls.filter((c) => c.stage === "revise")).toHaveLength(2);
-    expect(files()("14-qa.json")).toBe(true);
+    expect(result).toMatchObject({ status: "done", qa: { round: 1, passed: false } });
+    expect(f.calls.filter((c) => c.stage === "revise")).toHaveLength(1);
+    expect(files()("10-qa.json")).toBe(true);
+    expect(files()("11-revise.json")).toBe(false);
+  });
+
+  it("revisi yang memperburuk skor: hasil akhir tetap putaran terbaik (T-137)", async () => {
+    const scored = (idea: number) => ({ ...visual(7), scores: { ...visual(7).scores, idea } });
+    const f = fake({ answers: { "qa-visual": [scored(6), scored(5)] } });
+    const result = await runJob(spec(), f.deps);
+    expect(result.qa).toMatchObject({ round: 0, passed: false, visual: { scores: { idea: 6 } } });
   });
 
   it("skor lolos tetapi ada perbaikan wajib: revisi hanya dengan perbaikan wajib (T-118)", async () => {
@@ -544,15 +572,14 @@ describe("skema tahap", () => {
     expect(messages).toContain('Slide 1: slot "headline" melebihi 40 karakter');
   });
 
-  it("ambang QA visual: rata-rata ≥ 8, semua ≥ 7, ide dan profesional ≥ 8 (T-126)", () => {
+  it("ambang QA visual: ide ≥ 7 dan rata-rata ≥ 6, tanpa batas per aspek (T-137)", () => {
     const scored = (score: number, overrides: Record<string, number> = {}) =>
       VisualQa.parse({ ...visual(score), scores: { ...visual(score).scores, ...overrides } });
-    expect(visualPassed(scored(8))).toBe(true);
-    expect(visualPassed(scored(9, { idea: 7 }))).toBe(false);
-    expect(visualPassed(scored(9, { professionalism: 7 }))).toBe(false);
-    expect(visualPassed(scored(9, { balance: 7 }))).toBe(true);
-    expect(visualPassed(scored(9, { balance: 6 }))).toBe(false);
-    expect(visualPassed(scored(7))).toBe(false);
+    expect(visualPassed(scored(7))).toBe(true);
+    expect(visualPassed(scored(9, { idea: 6 }))).toBe(false);
+    expect(visualPassed(scored(6, { idea: 7 }))).toBe(true);
+    expect(visualPassed(scored(6, { idea: 7, balance: 4, interlock: 4 }))).toBe(false);
+    expect(visualPassed(scored(7, { interlock: 4 }))).toBe(true);
   });
 
   it("layout dan revisi hanya boleh memakai varian logo yang ada di Brand Kit (T-119)", () => {
