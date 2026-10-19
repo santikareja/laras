@@ -204,7 +204,9 @@ Isi minimum:
 - Warna: primer, sekunder, aksen, netral (terang dan gelap), dengan aturan pemakaian.
 - Tipografi: font heading dan body (file font lokal: OTF/TTF/WOFF2), font aksen opsional untuk label, data, dan anotasi teknis (tanpa font aksen, peran ini memakai font body), bobot yang diizinkan, skala ukuran.
 - Bentuk: radius sudut, gaya garis, gaya bayangan: tanpa bayangan (`none`) atau bayangan lembut (`soft`).
-- Aturan dan larangan desain dalam teks bebas (misalnya "jangan pakai gradient", "logo selalu kanan bawah").
+- Aturan brand terstruktur yang ditegakkan kode (keputusan pemilik 2026-10-20, T-124): posisi logo, larangan gradient, maksimal elemen visual utama per slide, dan arahan foto (cahaya alami, tanpa latar putih polos, kulit asli, gerak). Pelanggaran yang terukur menjadi cek QA wajib; arahan foto selalu dikirim ke pembuat gambar.
+- Perangkat grafis khas brand (T-124): warna dan kemiringan sorot, rotasi stiker, coretan dan selotip yang boleh dipakai; menjadi default perangkat di semua postingan.
+- Aturan dan larangan desain lain dalam teks bebas (misalnya "tidak ada klaim medis berlebihan"), untuk Claude dan QA visual.
 
 AC:
 - Brand Kit disimpan sebagai design token (`brand.json`) dan dapat diubah lewat form di UI.

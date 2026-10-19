@@ -14,9 +14,10 @@ T-134 selesai (disetujui pemilik): 15 arketipe khas lima gaya, panduan dengan ko
 T-131 selesai: katalog Claude = arketipe, cut-out Codex lewat pipeline, variasi antarvarian; uji sungguhan tiga brand × 2 varian (Claude 38, Codex 11, ±$8,28) membuktikan mekanismenya, QA lolos 2/6 dan temuannya diteruskan ke T-125, T-126, T-133, T-135.
 T-133 selesai: gaya desain mengalir di pipeline (ADR-016): `project.json` gaya default, `JobSpec.style`, konteks gaya per tahap di prompt Claude dan Codex, `styleOptions`, render dan ambang QA bergaya, spike `--style` dan dry-run tujuh gaya. Uji sungguhan bergaya belum dijalankan (perlu izin kuota).
 T-135 selesai: judul `feed-sel-wajah` tidak lagi tampak di celah sel; fokus foto mengikuti letak yang diminta Claude di deskripsi aset (default atas).
+T-124 selesai: aturan brand terstruktur (posisi logo, tanpa gradient, maksimal elemen visual, arahan foto) ditegakkan kode sebagai cek wajib dan arahan Codex; perangkat grafis brand sebagai token `--device-*`; stiker miring digeser renderer ke dalam safe margin.
 
 ## Berikutnya (urut)
-1. T-124 sampai T-126 (aturan brand terstruktur dan perangkat grafis Brand Kit, ide besar dan art direction, rubric QA visual K1–K8 dan P1–P11).
+1. T-125 dan T-126 (ide besar dan art direction, rubric QA visual K1–K8 dan P1–P11 beserta perbaikan QA visual dari uji T-131).
 2. T-129 gaya tahap 2, lalu T-127 evaluasi ulang spike (memakai kuota besar; izin pemilik).
 
 ## Blocker

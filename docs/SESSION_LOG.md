@@ -1,7 +1,9 @@
 # SESSION LOG
 
 ## Sesi #8, 2026-10-18
-- Task: T-105, T-106, T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116, T-118, T-117, T-120, T-121, T-122, T-119, T-123, T-128, T-132, T-130, T-131, T-134, T-133, T-135
+- Task: T-105, T-106, T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116, T-118, T-117, T-120, T-121, T-122, T-119, T-123, T-128, T-132, T-130, T-131, T-134, T-133, T-135, T-124
+- Hasil T-124: aturan brand terstruktur dan perangkat grafis brand sesuai keputusan pemilik (empat aturan wajib, teks dipindah, perangkat sebagai token). Render yang sudah disetujui tidak melanggar aturan brand baru. 664 test, tanpa kuota.
+- Masalah dan solusinya T-124: rotasi stiker brand membuat 12 render gagal safe margin, diselesaikan dengan langkah geser di renderer; kolektor gradient awalnya akan menghitung pola halftone dan papan catur, diselesaikan dengan penanda pola dan aturan gradient berulang atau satu warna; lembar spesimen perangkat dikecualikan dari cek aturan brand.
 - Hasil T-135: kaki huruf judul `feed-sel-wajah` dipotong di garis gigitan sel (celah antarsel bersih), fokus foto lewat panduan Claude dengan default atas. 651 test, tanpa kuota.
 - Masalah dan solusinya T-135: saliency `attention` sharp dicoba sebagai penentu fokus otomatis dan terbukti menunjuk kaki, bukan wajah; potongan `clip-path` pertama akan memotong puncak huruf karena kotak judul dipangkas ke tinggi kapital, dicegah dengan inset negatif.
 - Hasil T-133: gaya desain di pipeline sesuai keputusan pemilik (project.json, katalog arketipe gaya lebih dulu tetapi utuh, opsi gaya dipilih Claude, opsi geometri tetap dipilih Claude). Konteks gaya per tahap dari `style.ts` dan bagian PANDUAN (bukan panduan utuh) di semua prompt Claude dan prompt gambar Codex; validasi `styleOptions`; render dan QA bergaya; spike `--style` dan dry-run tujuh gaya. 650 test, tanpa kuota. T-131 ditutup sebelumnya atas keputusan pemilik setelah uji sungguhan tiga brand.
