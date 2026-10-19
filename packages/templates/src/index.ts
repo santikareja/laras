@@ -1,5 +1,6 @@
 export * from "../primitives/index.ts";
 export * from "../specimen/Specimen.tsx";
+export * from "../styles/index.ts";
 export * from "../tokens/index.ts";
 export * from "./archetypes.ts";
 export * from "./catalog.ts";

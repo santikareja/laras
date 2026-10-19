@@ -10,4 +10,5 @@ export * from "./layout-spec.ts";
 export * from "./qa-report.ts";
 export * from "./render-report.ts";
 export * from "./revision.ts";
+export * from "./style-meta.ts";
 export * from "./template-meta.ts";

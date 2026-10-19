@@ -82,6 +82,7 @@ laras/
 │       ├── feed/                 # template feed 4:5 (komponen JSX)
 │       ├── carousel/             # sistem carousel 4:5
 │       ├── primitives/           # komponen dasar: Text, Logo, Image, Grid, Badge
+│       ├── styles/               # gaya desain: <id>/PANDUAN.md + style.ts (PRD F16)
 │       └── tokens/               # brand.json → CSS variables
 ├── scripts/
 │   ├── spike/                    # skrip Fase 1 (pipeline tanpa UI)
@@ -325,6 +326,7 @@ Token diubah oleh `brandCss(brand, { assetBaseUrl })` (`packages/templates/token
 - Katalog template (`meta` semua template) dikirim ke Claude di tahap `layout`, sehingga Claude memilih dari opsi yang sudah dikurasi.
 - **Arketipe komposisi (ADR-015, T-123):** `feed-kata-raksasa`, `feed-bidang-warna`, `feed-satu-objek`, `feed-foto-konsep`, dan `feed-kolase-diagonal` di `packages/templates/feed/`, didaftarkan di `src/archetypes.ts` (belum menjadi katalog Claude sampai T-131). Parameter berupa enum di `options` (warna bidang, sisi subjek, posisi logo sesuai aturan brand, dan sejenisnya). Geometri dihitung sendiri: `src/geometry.ts` menghitung titik fokus subjek di kanvas (`containedFocus`) sehingga teks diletakkan berseberangan diagonal (PRD 4 P8), dan kata raksasa dipaskan renderer (7.1). Slot gambar bertanda `cutout: true` membutuhkan aset `kind: "cutout"` yang membawa `subject` (kotak alpha dan titik fokus).
 - Perangkat grafis tambahan sejak T-122: `Display` (kata raksasa, bertumpuk, bertanda `data-fit`), sorot di `Text` (`highlight`), `measure` dan `balance` di `Text` (PRD 4 P4), `Sticker`, `Scribble`, `Frame` (tepi sobek dan duotone), dan `Tape`. Semuanya hanya menerima nama token.
+- **Gaya desain (PRD F16, T-128):** `packages/templates/styles/<id>/` berisi `PANDUAN.md` (panduan lengkap 14 bagian untuk generate desain) dan `style.ts` yang lolos skema `StyleMeta` di `shared`: varian, arketipe yang dipakai dan yang direncanakan, kategori tipografi, peran token warna (60-30-10), bentuk, perangkat grafis (`ada` atau `perlu-dibuat`), arahan foto dan frasa prompt gambar, aturan P1–P11 yang dilonggarkan atau diperketat (P7 tidak boleh dilonggarkan), dan cek kecocokan Brand Kit. `styleFit(style, brand)` memberi `cocok` atau `kurang-cocok` beserta alasan dari cek warna (gelap, terang, jenuh), sudut (≥ 16 px membulat, ≤ 8 px siku), dan bayangan lembut. Daftar gaya: `styles` di `styles/index.ts`. Lapisan render gaya menyusul di T-132.
 - Template carousel didefinisikan sebagai **sistem**: kumpulan tipe slide (hook, isi, daftar, kutipan, CTA) yang berbagi grid dan elemen berulang.
 
 ### 6.3 Mode template kustom (setelah MVP)
