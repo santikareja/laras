@@ -259,6 +259,8 @@ Panggilan yang dipakai (fixture di `packages/sidecar/test/fixtures/codex/`):
 - **Teks miring dan cek baris yatim (T-134):** tag miring 6–10° dengan teks pendek dipecah kolektor menjadi baris palsu (saran yatim "kta"); kemiringan 3–4° pada teks satu baris masih aman (diuji T-131). Derau ini hanya saran.
 - **Durasi `pnpm test` sejak T-134 ±85 detik** (sebelumnya ±30 detik): QA arketipe merender contoh dan maks untuk 22 arketipe × brand.
 - **Dry-run bergaya dan aset pengganti (T-133):** dry-run spike mengganti setiap cut-out dengan `subjek.webp`; untuk pola `feed-kata-dilompati` Kopi, kata raksasa lalu menimpa kantong kopi dan gagal kontras (1,5–1,8:1), padahal dengan `gaya-retro.webp` (pria melompat) lolos. Dry-run kini memakai file demo bernama sama dengan id aset bila ada. Pelajaran untuk pipeline sungguhan: arketipe yang huruf dan subjeknya berselang bergantung pada bentuk cut-out; QA kontras menangkapnya, tetapi revisi hanya bisa mengganti opsi atau aset.
+- **Memotong teks yang kotaknya dipangkas `text-box` (T-135):** `clip-path: inset()` diukur dari kotak elemen; dengan `text-box: trim-both cap alphabetic` kotaknya setinggi huruf kapital, sehingga inset atas 0 memotong puncak huruf kecil dan padding blok di atasnya. Pakai inset negatif untuk sisi yang tidak ingin dipotong (mis. `inset(-1em -1em 16% -1em)`).
+- **Saliency sharp bukan detektor wajah (T-135):** `position: "attention"` pada pita 30% tinggi menunjuk y ≈ 0,84 (kaki) pada foto kelompok pelari dan pada foto cangkir dari atas; letak wajah di foto penuh tidak bisa dihitung andal tanpa pustaka deteksi wajah, jadi `feed-sel-wajah` memakai letak yang diminta Claude di deskripsi aset.
 
 ## Evaluasi spike T-117 (2026-10-18/19, gerbang Fase 1)
 

@@ -5,8 +5,8 @@ import { archetypes } from "./archetypes.ts";
 import { templates } from "./catalog.ts";
 import type { ResolvedSlot, Template } from "./template.ts";
 
-// Arketipe yang disetujui di T-122 (ADR-015): meta sah, bisa dirender, belum di katalog Claude
-// (diganti di T-131), dan letak teks mengikuti titik fokus subjek (PRD 4 P8).
+// Arketipe (ADR-015): meta sah, bisa dirender, menjadi katalog Claude (T-131), dan letak teks
+// mengikuti titik fokus subjek (PRD 4 P8).
 
 const focusAt = (y: number) => ({
   box: { left: 0.2, top: 0.05, right: 0.8, bottom: 1 },
@@ -64,5 +64,16 @@ describe("arketipe", () => {
     if (!kata) throw new Error("arketipe kata raksasa tidak ada");
     expect(render(kata, 0.1)).not.toContain("top:46%");
     expect(render(kata, 0.9)).toContain("top:46%");
+  });
+
+  it("sel wajah: judul dipotong di garis gigitan sel, fokus foto default atas (T-135)", () => {
+    const sel = archetypes.find((a) => a.meta.id === "feed-sel-wajah");
+    if (!sel) throw new Error("arketipe sel wajah tidak ada");
+    const html = render(sel);
+    // Sel mulai di 84% tinggi kapital judul; bagian judul di bawahnya tidak dirender sama sekali,
+    // jadi kaki huruf tidak tampak di celah antarsel.
+    expect(html).toContain("top:anchor(--sel-judul 84%)");
+    expect(html).toContain("clip-path:inset(-1em -1em 16% -1em)");
+    expect(sel.meta.options.find((o) => o.name === "fokus")?.default).toBe("atas");
   });
 });

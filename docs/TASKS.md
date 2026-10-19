@@ -284,10 +284,12 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Keputusan pemilik 2026-10-19: render disetujui dan ketiga pelonggaran panduan T-128 diterima: (1) Corporate boleh satu label vertikal (nama brand dan kota, font aksen), sebelumnya dilarang; (2) Flat boleh satu tag gantung miring 6–10°, sebelumnya semua 0°; (3) Flat cut-out boleh menembus bentuk, sebelumnya foto di dalam bentuk maksimal 35% kanvas.
   - Kekurangan yang diakui: atmosfer foto (kabut, cahaya berlapis) Cyberpunk dan kedalaman latar Corporate masih lebih grafis daripada referensi; poster tekno Cyberpunk condong ke gaya sporty; Seruni tetap lebih lapang karena aturan maksimal dua elemen visual; `AccentText` dibuat terpisah di beberapa gaya dan `HudLabel` belum memakai `--font-accent` (sebaiknya disatukan di primitives, T-124).
 
-- [ ] T-135 Perbaikan `feed-sel-wajah` dari uji T-131
+- [x] T-135 Perbaikan `feed-sel-wajah` dari uji T-131
   - Rujukan: T-134, KNOWLEDGE "Uji layout Claude T-131"
   - AC: kaki huruf judul tidak tampak di celah antarsel; sel pertama tidak memotong wajah (fokus foto memakai area tenang atau titik fokus yang diketahui, atau Claude diberi panduan memilih `fokus`); render contoh, maks, dan gaya lolos QA.
   - Catatan: ditemukan QA visual pada uji sungguhan T-131 (Ritme v2).
+  - Keputusan pemilik 2026-10-20 (rencana disetujui): judul dipotong di garis gigitan (`clip-path` sama dengan anchor 84%) agar celah antarsel selalu kertas; fokus foto lewat panduan Claude (deskripsi slot `foto` meminta bagian penting di sepertiga atas, opsi `fokus` = letak yang diminta di deskripsi aset), default `fokus` menjadi `atas`. Saliency `attention` sharp tidak dipakai: pada foto kelompok pelari ia menunjuk kaki (y ≈ 0,84).
+  - Hasil (2026-10-20): judul `feed-sel-wajah` dipotong di garis gigitan (`clip-path: inset(-1em -1em 16% -1em)`, satu konstanta dengan anchor sel 84%); perbandingan piksel sebelum-sesudah menunjukkan kaki N, H, G tidak lagi tampak di celah, puncak huruf dan blok knock-out utuh. Deskripsi slot `foto` meminta bagian terpenting di sepertiga atas, opsi `fokus` dijelaskan sebagai letak yang diminta di deskripsi aset, default `atas`. Render contoh, maks, dan Brutalisme lolos QA; typecheck, lint, 651 test.
 
 - [x] T-133 Gaya desain di pipeline
   - Rujukan: PRD F16, US-17, T-128, T-131

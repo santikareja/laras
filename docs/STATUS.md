@@ -13,11 +13,11 @@ T-130 selesai: QA kode mengukur aturan desain PRD 4 (P1, P2, P4, P8–P11) sebag
 T-134 selesai (disetujui pemilik): 15 arketipe khas lima gaya, panduan dengan konsep dan ambang dari referensi, font aksen Brand Kit, 9 aset gaya Codex, dan tiga pelonggaran panduan T-128 diterima.
 T-131 selesai: katalog Claude = arketipe, cut-out Codex lewat pipeline, variasi antarvarian; uji sungguhan tiga brand × 2 varian (Claude 38, Codex 11, ±$8,28) membuktikan mekanismenya, QA lolos 2/6 dan temuannya diteruskan ke T-125, T-126, T-133, T-135.
 T-133 selesai: gaya desain mengalir di pipeline (ADR-016): `project.json` gaya default, `JobSpec.style`, konteks gaya per tahap di prompt Claude dan Codex, `styleOptions`, render dan ambang QA bergaya, spike `--style` dan dry-run tujuh gaya. Uji sungguhan bergaya belum dijalankan (perlu izin kuota).
+T-135 selesai: judul `feed-sel-wajah` tidak lagi tampak di celah sel; fokus foto mengikuti letak yang diminta Claude di deskripsi aset (default atas).
 
 ## Berikutnya (urut)
-1. T-135 perbaikan `feed-sel-wajah` (kecil, tanpa kuota).
-2. T-124 sampai T-126 (aturan brand terstruktur dan perangkat grafis Brand Kit, ide besar dan art direction, rubric QA visual K1–K8 dan P1–P11).
-3. T-129 gaya tahap 2, lalu T-127 evaluasi ulang spike (memakai kuota besar; izin pemilik).
+1. T-124 sampai T-126 (aturan brand terstruktur dan perangkat grafis Brand Kit, ide besar dan art direction, rubric QA visual K1–K8 dan P1–P11).
+2. T-129 gaya tahap 2, lalu T-127 evaluasi ulang spike (memakai kuota besar; izin pemilik).
 
 ## Blocker
 - Tidak ada.

@@ -22,7 +22,8 @@ import { StyleBackdrop, StyleOverlay, styleTreatment } from "../styles/layer.tsx
 
 const ANCHOR = { judul: "--sel-judul", kaki: "--sel-kaki" };
 // Sel teratas menimpa judul mulai titik ini dari puncak huruf kapital: 16% kaki huruf terpotong.
-const BITE = "84%";
+// Judul juga dipotong di garis yang sama, agar kaki huruf tidak tampak di celah antarsel (T-135).
+const BITE = 84;
 const GRID = { columns: 4, rows: 3, gap: 12 };
 const ZOOM: Record<string, number> = { "1": 1, "2": 1.25, "3": 1.6 };
 
@@ -62,6 +63,9 @@ function Judul({ text, tone }: { text: string; tone: ColorToken }) {
           fontSize: `calc(100cqw / ${(Math.max(text.length, 1) * 0.6).toFixed(2)})`,
           // Kotak baris = tinggi huruf kapital sampai garis dasar (sama untuk semua font).
           textBox: "trim-both cap alphabetic",
+          // Hanya bawah yang dipotong: puncak huruf kecil dan padding blok knock-out di atas kotak
+          // tinggi kapital tetap utuh (inset negatif).
+          clipPath: `inset(-1em -1em ${100 - BITE}% -1em)`,
           color: color(tone),
           anchorName: ANCHOR.judul,
         }}
@@ -101,10 +105,11 @@ function SelWajahSlide({ slots, options, style }: SlideProps) {
   const logoTop = options.logo !== "bottom";
   const tone = TONES[options.nada ?? "primer"] ?? "primary";
   const zoom = ZOOM[options.zoom ?? "1"] ?? 1;
-  // Titik fokus foto penuh dari opsi; diletakkan di sisi `side` grid sel.
+  // Titik fokus foto penuh dari opsi (letak yang diminta Claude di deskripsi aset, T-135);
+  // diletakkan di sisi `side` grid sel.
   const focus = {
     x: 0.5,
-    y: options.fokus === "atas" ? 0.32 : options.fokus === "bawah" ? 0.62 : 0.48,
+    y: options.fokus === "tengah" ? 0.48 : options.fokus === "bawah" ? 0.62 : 0.32,
   };
   const treatment: ImageTreatment = (() => {
     const base = styleTreatment(style);
@@ -234,7 +239,7 @@ function SelWajahSlide({ slots, options, style }: SlideProps) {
           position: "absolute",
           left: "var(--space-safe)",
           right: "var(--space-safe)",
-          top: `anchor(${ANCHOR.judul} ${BITE})`,
+          top: `anchor(${ANCHOR.judul} ${BITE}%)`,
           bottom: `calc(anchor(${ANCHOR.kaki} top) + ${space(4)})`,
         }}
       >
@@ -275,7 +280,7 @@ export const selWajah: Template = {
         type: "image",
         required: true,
         description:
-          "Foto penuh dengan bentuk besar yang tetap terbaca bila dipotong: close-up wajah atau kulit, kelompok orang, benda dari atas",
+          "Foto penuh dengan bentuk besar yang tetap terbaca bila dipotong: close-up wajah atau kulit, kelompok orang, benda dari atas. Minta di deskripsi aset letak bagian terpenting (wajah kelompok, mata pada close-up, produk) di sepertiga atas foto, dengan ruang tubuh atau latar di bawahnya",
         aspectRatio: "4:5",
       },
       {
@@ -331,8 +336,9 @@ export const selWajah: Template = {
       {
         name: "fokus",
         values: ["atas", "tengah", "bawah"],
-        default: "tengah",
-        description: "Letak bagian penting foto (wajah, cangkir, kelompok) secara vertikal",
+        default: "atas",
+        description:
+          "Letak vertikal bagian penting foto, sama dengan yang diminta di deskripsi aset (biasanya atas); salah pilih memotong wajah di baris sel pertama",
       },
       {
         name: "sel",
