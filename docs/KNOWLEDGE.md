@@ -125,6 +125,7 @@ Versi teruji: **0.163.0** (standalone). Diverifikasi dari `codex --help`, `codex
 - Kontrol ukuran dan kualitas hanya ada di mode cadangan. Di mode bawaan, rasio hanya bisa diminta lewat prompt.
 - Background transparan didukung oleh tool bawaan.
 - Sumber: teks instruksi skill `$imagegen` di dalam binary Codex (`strings`), diperiksa pada 0.162.0-alpha dan 0.163.0, ditambah `codex features list`.
+- **Model di balik `image_gen` (dicek 2026-10-20, T-140, tanpa kuota):** Codex 0.163.0 adalah versi terbaru di npm (`npm view @openai/codex version`). Binary menyebut `gpt-image-2` (default mode cadangan CLI, "the latest model"; tanpa background transparan, sisi maks 3840 px, sisi kelipatan 16), `gpt-image-1.5`, `gpt-image-1`, dan `gpt-image-1-mini`; string `gpt-image-2.5` tidak ada. Model `image_gen` bawaan tidak disebut di binary. Metadata C2PA di PNG `~/.codex/generated_images/` menulis `softwareAgent` name `ChatGPT`, version `gpt-image` tanpa nomor versi. Karena tool bawaan mendukung transparansi sedangkan `gpt-image-2` CLI tidak, model bawaan belum tentu `gpt-image-2`. Ukuran dan kualitas tetap tidak bisa diatur di mode bawaan (4:5 menghasilkan 1122 × 1402 px, di-upscale ±1,93× ke master 2160 × 2700).
 
 **Hasil uji generasi gambar (T-101, 2026-10-18, 2 panggilan `codex exec`, Codex 0.163.0)**
 
