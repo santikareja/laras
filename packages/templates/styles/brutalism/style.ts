@@ -144,4 +144,24 @@ export const brutalism: StyleMeta = {
       message: "Brand tidak punya warna cukup gelap untuk tinta dan teks berkontras tinggi.",
     },
   ],
+  options: [
+    {
+      name: "foto",
+      values: ["mono", "halftone", "fotokopi", "natural"],
+      default: "mono",
+      description: "Perlakuan foto; natural untuk brand yang melarang filter berat",
+    },
+    {
+      name: "tekstur",
+      values: ["kertas", "none"],
+      default: "kertas",
+      description: "Tekstur kertas di atas bidang latar",
+    },
+    {
+      name: "grid",
+      values: ["yes", "no"],
+      default: "yes",
+      description: "Tampilkan garis grid dan tanda register",
+    },
+  ],
 };

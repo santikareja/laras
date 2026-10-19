@@ -56,6 +56,9 @@ export function Text({
         lineHeight: font === "heading" ? 1.1 : 1.4,
         textWrap: font === "heading" || balance ? "balance" : "pretty",
         maxWidth: measure ? `${measure}ch` : undefined,
+        // Huruf kapital dan jarak huruf heading dari lapisan gaya (T-132); tanpa gaya: bawaan.
+        textTransform: font === "heading" ? "var(--style-heading-transform, none)" : undefined,
+        letterSpacing: font === "heading" ? "var(--style-heading-tracking, normal)" : undefined,
         color: color(tone),
       }}
     >

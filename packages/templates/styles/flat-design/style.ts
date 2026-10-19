@@ -113,4 +113,5 @@ export const flatDesign: StyleMeta = {
       message: "Brand tidak punya warna jangkar gelap untuk teks dan kontras.",
     },
   ],
+  options: [],
 };

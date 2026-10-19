@@ -1,7 +1,13 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { BrandKit } from "./brand-kit.ts";
-import { relativeLuminance, StyleMeta, styleFit } from "./style-meta.ts";
+import {
+  relativeLuminance,
+  resolveStyleChoice,
+  StyleMeta,
+  styleChoiceIssues,
+  styleFit,
+} from "./style-meta.ts";
 import { issuesOf } from "./test-utils.ts";
 
 const brand = (slug: string) =>
@@ -45,6 +51,14 @@ const style = (): StyleMeta => ({
     { check: "dark-color", message: "Brand tidak punya warna gelap untuk latar" },
     { check: "vivid-color", message: "Brand tidak punya warna jenuh untuk neon" },
   ],
+  options: [
+    {
+      name: "glow",
+      values: ["soft", "solid"],
+      default: "soft",
+      description: "Glow lunak, atau padat untuk brand tanpa gradient",
+    },
+  ],
 });
 
 describe("StyleMeta (T-128)", () => {
@@ -85,5 +99,42 @@ describe("StyleMeta (T-128)", () => {
       "Sudut brand terlalu tajam",
       "Brand tanpa bayangan lembut",
     ]);
+  });
+
+  it("menolak nama opsi gaya ganda", () => {
+    const base = style();
+    const doubled = { ...base, options: [...base.options, ...base.options] };
+    expect(issuesOf(StyleMeta, doubled)).toContain("Nama opsi gaya harus unik");
+  });
+});
+
+describe("StyleChoice (T-132)", () => {
+  it("memeriksa varian dan opsi terhadap definisi gaya", () => {
+    expect(styleChoiceIssues({ id: "contoh", variant: "utama", options: {} }, style())).toEqual([]);
+    expect(
+      styleChoiceIssues(
+        { id: "contoh", variant: "lain", options: { glow: "keras", tekstur: "grain" } },
+        style(),
+      ),
+    ).toEqual([
+      'Gaya "contoh" tidak punya varian "lain"',
+      'Opsi "glow" gaya "contoh" tidak menerima "keras"',
+      'Gaya "contoh" tidak punya opsi "tekstur"',
+    ]);
+  });
+
+  it("mengisi opsi yang tidak dipilih dengan default", () => {
+    expect(resolveStyleChoice({ id: "contoh", variant: "utama", options: {} }, style())).toEqual({
+      id: "contoh",
+      variant: "utama",
+      options: { glow: "soft" },
+    });
+    expect(
+      resolveStyleChoice({ id: "contoh", variant: "utama", options: { glow: "solid" } }, style())
+        .options,
+    ).toEqual({ glow: "solid" });
+    expect(() =>
+      resolveStyleChoice({ id: "lain", variant: "utama", options: {} }, style()),
+    ).toThrow('Pilihan untuk gaya "lain"');
   });
 });

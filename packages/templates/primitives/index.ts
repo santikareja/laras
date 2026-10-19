@@ -5,6 +5,7 @@ export { Grid } from "./Grid.tsx";
 export { Highlight } from "./Highlight.tsx";
 export { Image } from "./Image.tsx";
 export { Logo } from "./Logo.tsx";
+export { type ImageTreatment, Photo } from "./Photo.tsx";
 export { Scribble } from "./Scribble.tsx";
 export { Sticker } from "./Sticker.tsx";
 export { Tape } from "./Tape.tsx";

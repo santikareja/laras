@@ -7,8 +7,10 @@ import { glassmorphismNeumorphism } from "./glassmorphism-neumorphism/style.ts";
 import { minimalism } from "./minimalism/style.ts";
 import { retroVintage } from "./retro-vintage/style.ts";
 
+export { StyleBackdrop, StyleOverlay, styleCss, styleRender, styleTreatment } from "./layer.tsx";
+
 // Gaya desain tahap 1 (PRD F16, T-128). Setiap folder berisi PANDUAN.md (panduan lengkap untuk
-// generate desain) dan style.ts (definisi mesin). Render dan thumbnail menyusul di T-132.
+// generate desain), style.ts (definisi mesin), dan render.tsx (lapisan gaya, T-132).
 export const styles: StyleMeta[] = [
   brutalism,
   corporateClean,

@@ -1,6 +1,7 @@
-import { Display, Frame, Image, Logo, Sticker, Tape, Text } from "../primitives/index.ts";
+import { Display, Frame, Logo, Photo, Sticker, Tape, Text } from "../primitives/index.ts";
 import { color, space } from "../primitives/vars.ts";
 import { optionalSlot, type SlideProps, slot, type Template } from "../src/template.ts";
+import { StyleBackdrop, StyleOverlay, styleTreatment } from "../styles/layer.tsx";
 
 // Arketipe A4 Kolase diagonal (T-122 v4, ADR-015; PRD 4 K3, P2, P8–P11): kolase yang ditahan. Lima elemen: bingkai foto
 // (tepi sobek dan selotip sebagai satu keluarga dekorasi kertas), subjek cut-out yang keluar dari
@@ -11,7 +12,7 @@ const EDGE = `calc(var(--space-safe) + ${space(1)})`;
 const DUOTONE = { primary: "primary", secondary: "secondary", accent: "accent" } as const;
 const BAND_INK = { primary: "neutral-light", secondary: "primary" } as const;
 
-function KolaseDiagonalSlide({ slots, options }: SlideProps) {
+function KolaseDiagonalSlide({ slots, options, style }: SlideProps) {
   const flip = options.flip === "yes";
   const near = flip ? "right" : "left";
   const far = flip ? "left" : "right";
@@ -31,6 +32,7 @@ function KolaseDiagonalSlide({ slots, options }: SlideProps) {
         background: color(dark ? "primary" : "neutral-light"),
       }}
     >
+      <StyleBackdrop style={style} />
       <div
         style={{
           position: "absolute",
@@ -47,10 +49,13 @@ function KolaseDiagonalSlide({ slots, options }: SlideProps) {
           rotate={tilt}
           torn
           {...(duotone ? { duotone } : {})}
+          {...(style ? { treatment: styleTreatment(style) } : {})}
         />
-        <div style={{ position: "absolute", top: "-2%", [near]: "-8%", width: "34%" }}>
-          <Tape color="secondary" rotate={-tilt * 7} />
-        </div>
+        {options.tape !== "no" && (
+          <div style={{ position: "absolute", top: "-2%", [near]: "-8%", width: "34%" }}>
+            <Tape color="secondary" rotate={-tilt * 7} />
+          </div>
+        )}
       </div>
       <div
         style={{
@@ -75,7 +80,7 @@ function KolaseDiagonalSlide({ slots, options }: SlideProps) {
         <div
           style={{ position: "absolute", [far]: "-4%", bottom: "-3%", width: "56%", height: "80%" }}
         >
-          <Image slot="subjek" src={subjek.src} fit="contain" />
+          <Photo slot="subjek" src={subjek.src} fit="contain" treatment={styleTreatment(style)} />
         </div>
       )}
       <div
@@ -119,6 +124,7 @@ function KolaseDiagonalSlide({ slots, options }: SlideProps) {
           <Logo slot="logo" src={slot(slots, "logo", "logo").src} height={5} />
         </div>
       </div>
+      <StyleOverlay style={style} />
     </div>
   );
 }
@@ -187,6 +193,12 @@ export const kolaseDiagonal: Template = {
         values: ["no", "yes"],
         default: "no",
         description: "Bingkai di kanan, subjek di kiri, blok teks dan logo di kanan",
+      },
+      {
+        name: "tape",
+        values: ["yes", "no"],
+        default: "yes",
+        description: "Selotip di sudut bingkai; tidak dipakai gaya yang bukan keluarga kertas",
       },
     ],
   },

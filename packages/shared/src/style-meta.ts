@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { BrandKit } from "./brand-kit.ts";
 import { Slug } from "./common.ts";
+import { TemplateOption } from "./template-meta.ts";
 
 // Definisi mesin gaya desain (PRD F16, T-128). Panduan lengkapnya ada di
 // packages/templates/styles/<id>/PANDUAN.md; definisi ini dipakai pemilih gaya, renderer (T-132),
@@ -107,10 +108,17 @@ export const StyleMeta = z
       }),
     ),
     compatibility: z.array(z.strictObject({ check: BrandCheck, message: z.string().min(1) })),
+    // Opsi gaya yang dipilih per postingan (enum terkurasi, ADR-015), terutama penyesuaian
+    // terhadap aturan brand, mis. glow padat untuk brand tanpa gradient (T-132).
+    options: z.array(TemplateOption),
   })
   .superRefine((style, ctx) => {
     if (style.rules.some((r) => r.rule === "P7" && r.change === "relaxed")) {
       ctx.addIssue({ code: "custom", path: ["rules"], message: "P7 tidak boleh dilonggarkan" });
+    }
+    const names = style.options.map((o) => o.name);
+    if (new Set(names).size !== names.length) {
+      ctx.addIssue({ code: "custom", path: ["options"], message: "Nama opsi gaya harus unik" });
     }
   });
 export type StyleMeta = z.infer<typeof StyleMeta>;
@@ -171,4 +179,37 @@ function passes(check: BrandCheck, brand: BrandKit): boolean {
 export function styleFit(style: StyleMeta, brand: BrandKit) {
   const reasons = style.compatibility.filter((c) => !passes(c.check, brand)).map((c) => c.message);
   return { fit: reasons.length === 0 ? ("cocok" as const) : ("kurang-cocok" as const), reasons };
+}
+
+// Gaya yang dipakai satu postingan (PRD F16): gaya, varian, dan nilai opsinya.
+export const StyleChoice = z.strictObject({
+  id: Slug,
+  variant: Slug,
+  options: z.record(z.string(), Slug),
+});
+export type StyleChoice = z.infer<typeof StyleChoice>;
+
+// Pilihan gaya terhadap definisinya: varian dan opsi harus dikenal. Kosong bila sah.
+export function styleChoiceIssues(choice: StyleChoice, style: StyleMeta): string[] {
+  const issues: string[] = [];
+  if (choice.id !== style.id) issues.push(`Pilihan untuk gaya "${choice.id}", bukan "${style.id}"`);
+  if (!style.variants.some((v) => v.id === choice.variant)) {
+    issues.push(`Gaya "${style.id}" tidak punya varian "${choice.variant}"`);
+  }
+  for (const [name, value] of Object.entries(choice.options)) {
+    const option = style.options.find((o) => o.name === name);
+    if (!option) issues.push(`Gaya "${style.id}" tidak punya opsi "${name}"`);
+    else if (!option.values.includes(value)) {
+      issues.push(`Opsi "${name}" gaya "${style.id}" tidak menerima "${value}"`);
+    }
+  }
+  return issues;
+}
+
+// Pilihan sah dengan semua opsi terisi (default untuk yang tidak dipilih).
+export function resolveStyleChoice(choice: StyleChoice, style: StyleMeta): StyleChoice {
+  const issues = styleChoiceIssues(choice, style);
+  if (issues.length > 0) throw new Error(issues.join("; "));
+  const defaults = Object.fromEntries(style.options.map((o) => [o.name, o.default]));
+  return { ...choice, options: { ...defaults, ...choice.options } };
 }

@@ -103,4 +103,5 @@ export const minimalism: StyleMeta = {
       message: "Brand tidak punya warna terang yang tenang untuk bidang luas.",
     },
   ],
+  options: [],
 };

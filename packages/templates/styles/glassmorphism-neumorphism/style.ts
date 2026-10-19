@@ -107,4 +107,5 @@ export const glassmorphismNeumorphism: StyleMeta = {
       message: "Brand tanpa bayangan lembut; hanya varian Kaca yang dipakai.",
     },
   ],
+  options: [],
 };

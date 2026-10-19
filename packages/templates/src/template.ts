@@ -1,4 +1,4 @@
-import type { SubjectInfo, TemplateMeta } from "@laras/shared";
+import type { StyleChoice, SubjectInfo, TemplateMeta } from "@laras/shared";
 import type { ReactElement } from "react";
 
 // Kontrak antara renderer dan template (ARCH 6.2). Meta divalidasi skema TemplateMeta.
@@ -15,6 +15,8 @@ export type SlideProps = {
   options: Record<string, string>;
   index: number;
   total: number;
+  // Gaya desain dengan semua opsi terisi (PRD F16, T-132); tanpa gaya berarti tampilan bawaan.
+  style?: StyleChoice;
 };
 
 export type Template = {

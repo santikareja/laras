@@ -188,6 +188,19 @@ describe("evaluateQa", () => {
     ]);
   });
 
+  it("tint campuran dua token boleh untuk latar dan border, tidak untuk teks", () => {
+    // 30% primary #0F3D3E + 70% neutral #FAF7F0, seperti hasil color-mix di Chromium.
+    const tint = "color(srgb 0.703922 0.749804 0.731765)";
+    const colors = [
+      { kind: "background" as const, color: tint, target: "div.bidang" },
+      { kind: "border" as const, color: "rgb(180, 120, 60)", target: "div.lain" },
+    ];
+    const brandColor = failures(measure({ colors, texts: [text({ color: tint })] })).filter(
+      (check) => check.rule === "brand-color",
+    );
+    expect(brandColor.map((check) => check.target)).toEqual(["headline", "div.lain"]);
+  });
+
   it("copy: kata terlarang, hashtag di gambar, dan batas emoji", () => {
     const texts = [
       text({ text: "Kopi terenak #KopiLembayung" }),

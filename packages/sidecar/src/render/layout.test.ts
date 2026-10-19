@@ -57,6 +57,31 @@ describe("renderLayoutHtml", () => {
       "untuk format feed-4x5, bukan carousel-4x5",
     );
   });
+
+  it("gaya menambah variabel CSS gaya; pilihan gaya yang tidak sah ditolak (T-132)", () => {
+    const plain = renderLayoutHtml(layout(), context)[0] ?? "";
+    expect(plain).not.toContain("--style-heading-transform:");
+    const styled =
+      renderLayoutHtml(layout(), {
+        ...context,
+        style: { id: "brutalism", variant: "cetak", options: {} },
+      })[0] ?? "";
+    expect(styled).toContain("--style-heading-transform: uppercase;");
+    // Kopi bersudut 0 px: pil tidak dipakai, radius tetap dari brand.
+    expect(styled).toContain("--radius-pill: var(--shape-radius);");
+    expect(() =>
+      renderLayoutHtml(layout(), {
+        ...context,
+        style: { id: "brutalism", variant: "neon", options: {} },
+      }),
+    ).toThrow('Gaya "brutalism" tidak punya varian "neon"');
+    expect(() =>
+      renderLayoutHtml(layout(), {
+        ...context,
+        style: { id: "art-deco", variant: "a", options: {} },
+      }),
+    ).toThrow('Gaya "art-deco" tidak ditemukan');
+  });
 });
 
 describe("resolveSlot", () => {

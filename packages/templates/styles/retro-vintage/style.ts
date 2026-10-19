@@ -139,4 +139,18 @@ export const retroVintage: StyleMeta = {
         "Palet brand terlalu kalem untuk bidang warna retro; gaya tampil sebagai editorial bernuansa foto.",
     },
   ],
+  options: [
+    {
+      name: "foto",
+      values: ["hangat", "duotone", "mono", "natural"],
+      default: "hangat",
+      description: "Grading foto; natural untuk brand yang melarang filter berat",
+    },
+    {
+      name: "tekstur",
+      values: ["grain", "halftone", "none"],
+      default: "grain",
+      description: "Tekstur cetak di atas seluruh kanvas",
+    },
+  ],
 };

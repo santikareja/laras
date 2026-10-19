@@ -47,6 +47,8 @@ export function Display({
           lineHeight: 0.9,
           whiteSpace: "nowrap",
           textAlign: align,
+          textTransform: font === "heading" ? "var(--style-heading-transform, none)" : undefined,
+          letterSpacing: font === "heading" ? "var(--style-heading-tracking, normal)" : undefined,
           color: color(tone),
         }}
       >

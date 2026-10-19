@@ -1,7 +1,8 @@
-import { Display, Image, Logo, Sticker, Text } from "../primitives/index.ts";
+import { Display, Logo, Photo, Sticker, Text } from "../primitives/index.ts";
 import { color, space } from "../primitives/vars.ts";
 import { boxFromPercent, containedFocus, textBelowFocus } from "../src/geometry.ts";
 import { optionalSlot, type SlideProps, slot, type Template } from "../src/template.ts";
+import { StyleBackdrop, StyleOverlay, styleTreatment } from "../styles/layer.tsx";
 
 // Arketipe A1 Kata raksasa (T-122, ADR-015; PRD 4 K2, K3): kata kunci raksasa di belakang subjek
 // cut-out di atas bidang warna brand. Ukuran kata dipaskan renderer (fit-to-width); headline dan
@@ -13,7 +14,7 @@ const SHIFT: Record<string, number> = { left: -16, center: 0, right: 16 };
 const EDGE = `calc(var(--space-safe) + ${space(1)})`;
 const SUBJECT = { bottom: -5, width: 100, height: 84 };
 
-function KataRaksasaSlide({ slots, options }: SlideProps) {
+function KataRaksasaSlide({ slots, options, style }: SlideProps) {
   const dark = options.tone === "primary";
   const cta = optionalSlot(slots, "cta", "text");
   const image = slot(slots, "image", "image");
@@ -34,6 +35,7 @@ function KataRaksasaSlide({ slots, options }: SlideProps) {
         background: color(dark ? "primary" : "secondary"),
       }}
     >
+      <StyleBackdrop style={style} />
       <div style={{ position: "absolute", top: "17%", left: EDGE, right: EDGE }}>
         <Display slot="kata" font="heading" scale={2.6} color={dark ? "accent" : "primary"}>
           {slot(slots, "kata", "text").value}
@@ -49,7 +51,7 @@ function KataRaksasaSlide({ slots, options }: SlideProps) {
           transform: `translateX(${shift}%)`,
         }}
       >
-        <Image slot="image" src={image.src} fit="contain" />
+        <Photo slot="image" src={image.src} fit="contain" treatment={styleTreatment(style)} />
       </div>
       <div
         style={{
@@ -91,6 +93,7 @@ function KataRaksasaSlide({ slots, options }: SlideProps) {
           </Sticker>
         )}
       </div>
+      <StyleOverlay style={style} />
     </div>
   );
 }

@@ -231,25 +231,50 @@ function brandFontChecks(m: Measurements, brand: BrandKit): RenderCheck[] {
   });
 }
 
+// Tint turunan token (keputusan pemilik T-128): latar dan border boleh berupa campuran dua warna
+// palet (`color-mix`), yaitu titik pada garis RGB di antara keduanya dengan toleransi pembulatan.
+const MIX_TOLERANCE = 2.5;
+
+function isPaletteMix(c: Rgba, palette: Rgba[]): boolean {
+  return palette.some((a, i) =>
+    palette.slice(i + 1).some((b) => {
+      const d = [b.r - a.r, b.g - a.g, b.b - a.b];
+      const v = [c.r - a.r, c.g - a.g, c.b - a.b];
+      const length = d.reduce((sum, x) => sum + x * x, 0);
+      if (length === 0) return false;
+      const t = Math.min(
+        Math.max(v.reduce((sum, x, k) => sum + x * (d[k] ?? 0), 0) / length, 0),
+        1,
+      );
+      const distance = Math.hypot(...v.map((x, k) => x - t * (d[k] ?? 0)));
+      return distance <= MIX_TOLERANCE;
+    }),
+  );
+}
+
 function brandColorChecks(m: Measurements, brand: BrandKit): RenderCheck[] {
   const { primary, secondary, accent, neutral } = brand.colors;
   const key = ({ r, g, b }: Rgba) => `${r},${g},${b}`;
-  const palette = new Set(
-    [primary, secondary, accent, ...Object.values(neutral)].flatMap((hex) => {
-      const color = parseColor(hex);
-      return color ? [key(color)] : [];
-    }),
-  );
+  const colors = [primary, secondary, accent, ...Object.values(neutral)].flatMap((hex) => {
+    const color = parseColor(hex);
+    return color ? [color] : [];
+  });
+  const palette = new Set(colors.map(key));
   const used = [
-    ...m.texts.map((text) => ({ color: text.color, target: targetOf(text) })),
+    ...m.texts.map((text) => ({
+      kind: "text" as const,
+      color: text.color,
+      target: targetOf(text),
+    })),
     ...m.colors,
   ];
   const seen = new Set<string>();
-  return used.flatMap(({ color, target }) => {
+  return used.flatMap(({ kind, color, target }) => {
     const parsed = parseColor(color);
     if (parsed?.a === 0) return [];
     const id = `${target}|${color}`;
     if ((parsed && palette.has(key(parsed))) || seen.has(id)) return [];
+    if (parsed && kind !== "text" && isPaletteMix(parsed, colors)) return [];
     seen.add(id);
     return [fail("brand-color", target, `Warna ${color} tidak ada di palet Brand Kit`)];
   });

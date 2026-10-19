@@ -138,4 +138,24 @@ export const cyberpunk: StyleMeta = {
       message: "Brand tidak punya warna jenuh yang bisa menyala seperti neon.",
     },
   ],
+  options: [
+    {
+      name: "glow",
+      values: ["soft", "solid"],
+      default: "soft",
+      description: "Glow lunak (blur), atau padat tanpa blur untuk brand yang melarang gradient",
+    },
+    {
+      name: "foto",
+      values: ["mono", "natural"],
+      default: "mono",
+      description: "Foto monokrom; natural untuk brand yang mewajibkan warna asli",
+    },
+    {
+      name: "tekstur",
+      values: ["scanline", "grain", "none"],
+      default: "scanline",
+      description: "Tekstur layar di atas seluruh kanvas",
+    },
+  ],
 };

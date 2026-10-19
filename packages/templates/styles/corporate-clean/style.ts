@@ -115,4 +115,12 @@ export const corporateClean: StyleMeta = {
   compatibility: [
     { check: "light-color", message: "Brand tidak punya warna netral terang untuk mode terang." },
   ],
+  options: [
+    {
+      name: "dekor",
+      values: ["none", "swoosh"],
+      default: "none",
+      description: "Satu swoosh warna brand di tepi kanvas",
+    },
+  ],
 };

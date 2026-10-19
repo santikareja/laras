@@ -1,4 +1,4 @@
-import { Image, Logo, Text } from "../primitives/index.ts";
+import { Logo, Photo, Text } from "../primitives/index.ts";
 import { color, space } from "../primitives/vars.ts";
 import {
   optionalSlot,
@@ -7,6 +7,7 @@ import {
   slot,
   type Template,
 } from "../src/template.ts";
+import { StyleBackdrop, StyleOverlay, styleTreatment } from "../styles/layer.tsx";
 
 // Arketipe A3 Satu objek (T-122, ADR-015; PRD 4 K1, K7): satu subjek cut-out kecil di bidang
 // warna dengan bayangan lantai, ruang kosong luas, satu kalimat dan satu baris pendukung di atas.
@@ -85,7 +86,7 @@ export function PlacedLogo({ src, at }: { src: string; at: string }) {
   );
 }
 
-function SatuObjekSlide({ slots, options }: SlideProps) {
+function SatuObjekSlide({ slots, options, style }: SlideProps) {
   const dark = options.tone === "primary";
   const tone = BACKGROUND[(options.tone ?? "neutral") as keyof typeof BACKGROUND];
   return (
@@ -97,6 +98,7 @@ function SatuObjekSlide({ slots, options }: SlideProps) {
         background: color(tone ?? "neutral-light"),
       }}
     >
+      <StyleBackdrop style={style} />
       <div
         style={{
           position: "absolute",
@@ -113,10 +115,16 @@ function SatuObjekSlide({ slots, options }: SlideProps) {
       <div
         style={{ position: "absolute", left: "20%", right: "20%", bottom: "16%", height: "50%" }}
       >
-        <Image slot="image" src={slot(slots, "image", "image").src} fit="contain" />
+        <Photo
+          slot="image"
+          src={slot(slots, "image", "image").src}
+          fit="contain"
+          treatment={styleTreatment(style)}
+        />
       </div>
       <TopCaption slots={slots} dark={dark} />
       <PlacedLogo src={slot(slots, "logo", "logo").src} at={options.logo ?? "bottom-center"} />
+      <StyleOverlay style={style} />
     </div>
   );
 }

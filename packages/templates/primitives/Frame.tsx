@@ -1,4 +1,5 @@
 import { Image } from "./Image.tsx";
+import { type ImageTreatment, Photo } from "./Photo.tsx";
 import { type ColorToken, color, space } from "./vars.ts";
 
 type FrameProps = {
@@ -9,6 +10,8 @@ type FrameProps = {
   torn?: boolean;
   // Foto hitam-putih diwarnai satu warna brand (mix-blend "color"); tanpa nilai berarti asli.
   duotone?: ColorToken;
+  // Perlakuan foto dari lapisan gaya (T-132); diabaikan bila duotone diisi.
+  treatment?: ImageTreatment;
   slot?: string;
 };
 
@@ -43,7 +46,15 @@ const TORN = [
 ];
 
 // Foto berbingkai yang bisa dimiringkan, untuk kolase (PRD 4 K5, K6); mengisi kotak induknya.
-export function Frame({ src, edge, rotate = 0, torn = false, duotone, slot }: FrameProps) {
+export function Frame({
+  src,
+  edge,
+  rotate = 0,
+  torn = false,
+  duotone,
+  treatment,
+  slot,
+}: FrameProps) {
   return (
     <div
       style={{
@@ -59,7 +70,11 @@ export function Frame({ src, edge, rotate = 0, torn = false, duotone, slot }: Fr
         transform: `rotate(${rotate}deg)`,
       }}
     >
-      <Image src={src} mono={duotone !== undefined} {...(slot ? { slot } : {})} />
+      {treatment && !duotone ? (
+        <Photo src={src} treatment={treatment} {...(slot ? { slot } : {})} />
+      ) : (
+        <Image src={src} mono={duotone !== undefined} {...(slot ? { slot } : {})} />
+      )}
       {duotone && (
         <div
           style={{

@@ -1,19 +1,26 @@
-import { Image } from "../primitives/index.ts";
+import { Photo } from "../primitives/index.ts";
 import { type SlideProps, slot, type Template } from "../src/template.ts";
+import { StyleBackdrop, StyleOverlay, styleTreatment } from "../styles/layer.tsx";
 import { PlacedLogo, TopCaption } from "./SatuObjek.tsx";
 
 // Arketipe A3 Foto konsep (T-122, ADR-015; PRD 4 K1, K7): satu foto konsep penuh dengan bagian
 // atas kosong, headline dan satu baris pendukung di ruang kosong itu. Pasangan feed-satu-objek
 // untuk foto utuh (bukan cut-out).
 
-function FotoKonsepSlide({ slots, options }: SlideProps) {
+function FotoKonsepSlide({ slots, options, style }: SlideProps) {
   return (
     <div style={{ position: "relative", height: "100%", overflow: "hidden" }}>
+      <StyleBackdrop style={style} />
       <div style={{ position: "absolute", inset: 0 }}>
-        <Image slot="image" src={slot(slots, "image", "image").src} />
+        <Photo
+          slot="image"
+          src={slot(slots, "image", "image").src}
+          treatment={styleTreatment(style)}
+        />
       </div>
       <TopCaption slots={slots} dark={false} />
       <PlacedLogo src={slot(slots, "logo", "logo").src} at={options.logo ?? "top-left"} />
+      <StyleOverlay style={style} />
     </div>
   );
 }

@@ -1,5 +1,12 @@
-import type { AssetManifest, BrandKit, LayoutSpec, SlotValue } from "@laras/shared";
-import { brandCss, type ResolvedSlot, type Template } from "@laras/templates";
+import {
+  type AssetManifest,
+  type BrandKit,
+  type LayoutSpec,
+  resolveStyleChoice,
+  type SlotValue,
+  type StyleChoice,
+} from "@laras/shared";
+import { brandCss, type ResolvedSlot, styleCss, styles, type Template } from "@laras/templates";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { JOB_BASE_URL, PROJECT_BASE_URL, SLIDE_SIZE } from "./renderer.ts";
@@ -10,6 +17,8 @@ export type LayoutContext = {
   brand: BrandKit;
   assets: AssetManifest;
   templates: Template[];
+  // Gaya desain (PRD F16, T-132); tanpa gaya arketipe tampil bawaan.
+  style?: StyleChoice;
 };
 
 const BASE_CSS = `html, body { margin: 0; }
@@ -23,15 +32,31 @@ export function renderLayoutHtml(spec: LayoutSpec, context: LayoutContext): stri
       `Template "${spec.templateId}" untuk format ${template.meta.format}, bukan ${spec.format}`,
     );
   }
-  const css = brandCss(context.brand, { assetBaseUrl: PROJECT_BASE_URL });
+  const style = context.style && resolveStyle(context.style);
+  const css = [
+    brandCss(context.brand, { assetBaseUrl: PROJECT_BASE_URL }),
+    ...(style ? [styleCss(style.meta, style.choice, context.brand)] : []),
+  ].join("\n\n");
   return spec.slides.map((slide, index) => {
     const slots = Object.fromEntries(
       Object.entries(slide.slots).map(([name, value]) => [name, resolveSlot(value, context)]),
     );
-    const props = { slots, options: slide.options, index, total: spec.slides.length };
+    const props = {
+      slots,
+      options: slide.options,
+      index,
+      total: spec.slides.length,
+      ...(style ? { style: style.choice } : {}),
+    };
     const body = renderToStaticMarkup(createElement(template.Slide, props));
     return `<!doctype html><html><head><meta charset="utf-8"><style>\n${css}\n${BASE_CSS}\n</style></head><body>${body}</body></html>`;
   });
+}
+
+function resolveStyle(choice: StyleChoice) {
+  const meta = styles.find((s) => s.id === choice.id);
+  if (!meta) throw new Error(`Gaya "${choice.id}" tidak ditemukan`);
+  return { meta, choice: resolveStyleChoice(choice, meta) };
 }
 
 export function resolveSlot(value: SlotValue, { brand, assets }: LayoutContext): ResolvedSlot {

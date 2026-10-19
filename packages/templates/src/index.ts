@@ -5,4 +5,5 @@ export * from "../tokens/index.ts";
 export * from "./archetypes.ts";
 export * from "./catalog.ts";
 export * from "./geometry.ts";
+export * from "./style.ts";
 export * from "./template.ts";
