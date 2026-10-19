@@ -2,15 +2,30 @@ import { describe, expect, it } from "vitest";
 import { ContentPlan } from "./content-plan.ts";
 import { issuesOf } from "./test-utils.ts";
 
+const visual = () => ({
+  idea: "Cangkir kopi sebagai jam pagi",
+  image: "a coffee cup whose saucer is a clock face at 7 a.m.",
+  kind: "concept" as const,
+});
+
 const feedPlan = (): ContentPlan => ({
   format: "feed-4x5",
   keyMessage: "Promo kopi pagi diskon 20% sampai Minggu",
   audience: "Pekerja kantoran di sekitar toko",
+  setting: {
+    location: "a quiet alley in Bandung, Indonesia",
+    people: "Indonesian office workers in their twenties and thirties",
+  },
   slides: [{ role: "hook", intent: "Tarik perhatian dengan diskon" }],
   angles: [
-    { id: "a1", angle: "Hemat sebelum kerja", rationale: "Harga jadi alasan utama" },
-    { id: "a2", angle: "Ritual pagi yang tenang", rationale: "Menjual suasana" },
-    { id: "a3", angle: "Terbatas sampai Minggu", rationale: "Urgensi" },
+    {
+      id: "a1",
+      angle: "Hemat sebelum kerja",
+      rationale: "Harga jadi alasan utama",
+      visual: visual(),
+    },
+    { id: "a2", angle: "Ritual pagi yang tenang", rationale: "Menjual suasana", visual: visual() },
+    { id: "a3", angle: "Terbatas sampai Minggu", rationale: "Urgensi", visual: visual() },
   ],
 });
 
@@ -46,6 +61,7 @@ describe("ContentPlan", () => {
       id: `a${n}`,
       angle: `Angle ${n}`,
       rationale: "r",
+      visual: visual(),
     }));
     expect(ContentPlan.safeParse({ ...feedPlan(), angles }).success).toBe(false);
   });
@@ -68,5 +84,18 @@ describe("ContentPlan", () => {
       ContentPlan.safeParse({ ...feedPlan(), slides: [{ role: "intro", intent: "x" }] }).success,
     ).toBe(false);
     expect(ContentPlan.safeParse({ ...feedPlan(), tone: "santai" }).success).toBe(false);
+  });
+
+  it("konsep visual per angle dan setting wajib; jenis gambar dari enum (T-125)", () => {
+    const { setting: _, ...noSetting } = feedPlan();
+    expect(issuesOf(ContentPlan, noSetting)).not.toEqual([]);
+    const plan = feedPlan();
+    const noVisual = { ...plan, angles: plan.angles.map(({ visual: __, ...a }) => a) };
+    expect(issuesOf(ContentPlan, noVisual)).not.toEqual([]);
+    const badKind = {
+      ...plan,
+      angles: plan.angles.map((a) => ({ ...a, visual: { ...a.visual, kind: "video" } })),
+    };
+    expect(issuesOf(ContentPlan, badKind)).not.toEqual([]);
   });
 });

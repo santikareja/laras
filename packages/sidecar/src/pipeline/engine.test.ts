@@ -27,11 +27,20 @@ const plan = (variants: number) => ({
   format: "feed-4x5",
   keyMessage: "Kopi susu gula aren tersedia setiap pagi.",
   audience: "Pekerja di sekitar kedai.",
+  setting: {
+    location: "a quiet alley in Bandung, Indonesia",
+    people: "Indonesian office workers in their twenties",
+  },
   slides: [{ role: "hook", intent: "Mengajak mampir pagi ini." }],
   angles: Array.from({ length: variants }, (_, i) => ({
     id: `angle-${i + 1}`,
     angle: `Sudut pandang ${i + 1}`,
     rationale: "Alasan",
+    visual: {
+      idea: `Ide visual ${i + 1}`,
+      image: `a glass of iced palm sugar coffee ${i + 1}`,
+      kind: "photo",
+    },
   })),
 });
 const copy = {
@@ -93,6 +102,8 @@ type Fake = {
   deps: PipelineDeps;
   calls: { stage: Stage; prompt: string }[];
   assetCalls: string[];
+  // Setting yang diterima penyedia aset per panggilan (T-125).
+  settings: unknown[];
   renders: number;
   // Pilihan gaya yang diterima render per panggilan (T-133).
   styles: (StyleChoice | undefined)[];
@@ -134,6 +145,7 @@ function fake(options: {
   const provider: AssetProvider = {
     async generate(request, ctx) {
       assetCalls.push(request.id);
+      result.settings.push(ctx.setting);
       await mkdir(join(ctx.jobDir, "assets"), { recursive: true });
       await writeFile(join(ctx.jobDir, "assets", `${request.id}.jpg`), "jpg");
       return {
@@ -148,6 +160,7 @@ function fake(options: {
   const result: Fake = {
     calls,
     assetCalls,
+    settings: [],
     renders: 0,
     styles: [],
     deps: undefined as unknown as PipelineDeps,
@@ -378,6 +391,19 @@ describe("runJob", () => {
       signal: controller.signal,
     });
     expect((await runJob(spec(), f.deps)).status).toBe("cancelled");
+  });
+});
+
+describe("konsep visual dan setting dari plan (T-125)", () => {
+  it("angle berisi ide visual ke copy dan layout; setting ke layout dan setiap aset", async () => {
+    const f = fake({});
+    await runJob(spec(), f.deps);
+    const copyPrompt = f.calls.find((c) => c.stage === "copy")?.prompt ?? "";
+    expect(copyPrompt).toContain('"idea": "Ide visual 1"');
+    const layoutPrompt = f.calls.find((c) => c.stage === "layout")?.prompt ?? "";
+    expect(layoutPrompt).toContain("<setting>");
+    expect(layoutPrompt).toContain("a quiet alley in Bandung, Indonesia");
+    expect(f.settings).toEqual([plan(1).setting]);
   });
 });
 

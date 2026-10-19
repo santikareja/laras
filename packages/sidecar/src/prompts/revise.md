@@ -35,6 +35,7 @@ Aturan:
 - Satu informasi hanya tampil di satu slot: jangan sampai revisi membuat fakta atau frasa kunci muncul di dua slot (badge, headline, body, CTA).
 - Opsi arketipe tetap mematuhi aturan brand (posisi logo, latar, pasangan warna). Cut-out tetap `kind` `"cutout"` dengan `subject` yang sama.
 - Bila `<style>` memuat gaya, `styleOptions` disalin apa adanya kecuali perbaikan menyebutnya, dan tetap memakai nama dan nilai dari "Opsi gaya". Arketipe pengganti diutamakan dari daftar "Arketipe gaya ini".
+- Deskripsi aset yang diubah tetap mewujudkan ide visual yang sama dengan deskripsi lamanya; perbaiki eksekusinya (pose, cahaya, ruang kosong), jangan mengganti idenya.
 - `regenerateAssets` berisi id `assetRequests` yang fotonya harus dibuat ulang, hanya bila perbaikan memang menyangkut foto itu. Bila deskripsi aset berubah, id-nya wajib ada di sini. Bila tidak ada foto yang perlu diganti, isi dengan daftar kosong.
 - `summary` menjelaskan singkat apa saja yang berubah, dalam bahasa Indonesia.
 

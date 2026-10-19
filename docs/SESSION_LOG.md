@@ -1,7 +1,9 @@
 # SESSION LOG
 
 ## Sesi #8, 2026-10-18
-- Task: T-105, T-106, T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116, T-118, T-117, T-120, T-121, T-122, T-119, T-123, T-128, T-132, T-130, T-131, T-134, T-133, T-135, T-124
+- Task: T-105, T-106, T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116, T-118, T-117, T-120, T-121, T-122, T-119, T-123, T-128, T-132, T-130, T-131, T-134, T-133, T-135, T-124, T-125
+- Hasil T-125: konsep visual per angle dan setting di plan, layout mewujudkannya, setting ke prompt Codex, larangan klaim visual yang tidak bisa digambar. 667 test, tanpa kuota.
+- Masalah dan solusinya T-125: saat membaca rujukan ditemukan bahwa catatan temuan uji T-131 untuk T-125, T-126, dan T-133 tidak pernah tersimpan (agent menulis ulang TASKS dari salinan lama setelah beberapa penggantian); catatan dipulihkan dan catatan T-133 yang tersisa dipindah ke T-127.
 - Hasil T-124: aturan brand terstruktur dan perangkat grafis brand sesuai keputusan pemilik (empat aturan wajib, teks dipindah, perangkat sebagai token). Render yang sudah disetujui tidak melanggar aturan brand baru. 664 test, tanpa kuota.
 - Masalah dan solusinya T-124: rotasi stiker brand membuat 12 render gagal safe margin, diselesaikan dengan langkah geser di renderer; kolektor gradient awalnya akan menghitung pola halftone dan papan catur, diselesaikan dengan penanda pola dan aturan gradient berulang atau satu warna; lembar spesimen perangkat dikecualikan dari cek aturan brand.
 - Hasil T-135: kaki huruf judul `feed-sel-wajah` dipotong di garis gigitan sel (celah antarsel bersih), fokus foto lewat panduan Claude dengan default atas. 651 test, tanpa kuota.

@@ -278,6 +278,7 @@ async function runStep(
         templatePreference: spec.templatePreference ?? "Tidak ada preferensi",
         usedTemplates: await usedTemplates(spec, deps),
         userAssets: userAssets.length > 0 ? userAssets.join(", ") : "Tidak ada",
+        setting: json(need(work.plan, "plan").setting),
         style: style("layout"),
       });
       return ask("layout", prompt, layoutSchema(layoutContext(spec, deps, catalog)));
@@ -321,7 +322,13 @@ async function produceAssets(spec: JobSpec, deps: PipelineDeps, work: Working, d
       assets.push(previous);
       continue;
     }
-    const ctx = { projectDir: deps.projectDir, jobDir: dir, brand: deps.brand, style: spec.style };
+    const ctx = {
+      projectDir: deps.projectDir,
+      jobDir: dir,
+      brand: deps.brand,
+      style: spec.style,
+      ...(work.plan ? { setting: work.plan.setting } : {}),
+    };
     assets.push(
       await provider.generate(request, deps.signal ? { ...ctx, signal: deps.signal } : ctx),
     );

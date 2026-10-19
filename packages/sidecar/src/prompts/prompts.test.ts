@@ -42,6 +42,7 @@ const SAMPLE_INPUTS: PromptInputs = {
     templatePreference: "-",
     usedTemplates: "-",
     userAssets: "-",
+    setting: "-",
     style: "g",
   },
   "qa-visual": {

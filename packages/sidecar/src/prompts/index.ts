@@ -50,6 +50,7 @@ export type PromptInputs = {
     templatePreference: string;
     usedTemplates: string;
     userAssets: string;
+    setting: string;
     style: string;
   };
   "qa-visual": {

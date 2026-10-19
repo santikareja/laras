@@ -237,9 +237,9 @@ AC:
 
 Urutan tahap per varian:
 
-1. **Plan:** menafsirkan brief menjadi pesan utama, angle, dan struktur slide.
+1. **Plan:** menafsirkan brief menjadi pesan utama, angle, dan struktur slide; setiap angle membawa satu ide visual besar (metafora atau momen, jenis gambar cut-out, foto, atau konsep), dan lokasi serta orang untuk gambar diturunkan dari knowledge (T-125).
 2. **Copy:** menulis teks di gambar (headline, sub, body, CTA) dan caption.
-3. **Layout:** memilih template dan mengisi slot-nya menjadi Layout Spec (JSON).
+3. **Layout:** memilih template dan mengisi slot-nya menjadi Layout Spec (JSON), dengan mewujudkan ide visual angle; detail yang tidak bisa digambar (tulisan, tanggal, angka) tampil sebagai teks desain.
 4. **Assets:** membuat aset gambar via Codex bila dibutuhkan, atau memakai aset milik pengguna.
 5. **Render:** menghasilkan PNG lewat Playwright.
 6. **QA:** pemeriksaan deterministik dan visual.

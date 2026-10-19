@@ -248,14 +248,18 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Keputusan pemilik 2026-10-20 (rencana disetujui): aturan brand terstruktur `BrandKit.constraints` untuk posisi logo, larangan gradient, maksimal elemen visual utama, dan arahan foto (cahaya alami, tanpa latar putih polos, kulit asli, gerak), masing-masing ditegakkan kode dengan tingkat wajib; teks aturan yang sudah terstruktur dipindah dari `rules` dan ditulis otomatis ke prompt; perangkat grafis brand `BrandKit.devices` menjadi token `--device-*` yang dipakai primitives sebagai default (arketipe dan gaya boleh menimpa).
   - Hasil (2026-10-20): skema `BrandConstraints` dan `BrandDevices` di `shared` (`ColorToken` pindah ke `common.ts`); fixture: Kopi logo kanan bawah, tanpa gradient, foto cahaya alami tanpa latar putih polos, sorot aksen −2°, stiker −3°, coretan garis bawah/panah/lingkaran, selotip; Seruni maksimal 2 elemen visual, kulit asli, sorot tegak, tanpa coretan dan selotip; Ritme foto bergerak, sorot kuning −3°, stiker −4°, coretan panah/garis bawah. Teks aturan yang terstruktur dipindah dari `rules` dan ditulis otomatis ke `<brand>` prompt (`constraintRules`). Cek QA wajib `brand-logo-position`, `brand-gradient` (kolektor gradient; pola bertanda tidak dihitung), `brand-visuals`; `photoRules` di prompt Codex; `foto: natural` wajib untuk foto orang pada brand berkulit asli; `styleFit` menandai gaya bergradient lembut kurang cocok untuk brand tanpa gradient (Cyberpunk × Kopi). Rotasi stiker brand membuat 12 render melewati safe margin; renderer kini menggeser stiker miring ke dalam (`ROTATION_SCRIPT`). Render yang disetujui tidak melanggar aturan brand baru; 19 render berubah kecil karena perangkat (stiker miring, selotip Seruni hilang), lembar `out/t124-perangkat.png`. typecheck, lint, 664 test; tanpa kuota.
 
-- [ ] T-125 Ide besar di tahap plan dan art direction aset
+- [x] T-125 Ide besar di tahap plan dan art direction aset
   - Rujukan: PRD 4 (K1, K4, K7), temuan T-117 (lokasi brand)
   - AC: plan menghasilkan konsep visual per varian; prompt aset meminta foto konsep, subjek cut-out bila arketipe membutuhkannya, dan lokasi serta audiens dari knowledge.
+  - Tambahan dari uji T-131 (dipulihkan 2026-10-20; catatan asli tertimpa saat penulisan dokumen T-131): copy dan layout jangan menjanjikan detail visual yang tidak bisa digambar (gambar tanpa teks), mis. headline "Tanggal tertulis" dengan label kemasan kosong; tunjukkan detail itu lewat keterangan HTML di dekat produk (anotasi bergaris seperti `feed-poster-grid`) atau pilih pesan lain.
+  - Keputusan pemilik 2026-10-20 (rencana disetujui): plan menulis konsep visual per angle (`visual`: ide, gambar, jenis cutout/photo/concept) dan `setting` (lokasi, orang) yang diturunkan dari knowledge per brief; layout wajib mewujudkan konsep (arketipe sesuai jenis gambar, deskripsi aset dari konsep); field gambar dan setting berbahasa Inggris; setting dikirim kode ke setiap prompt Codex.
+  - Hasil (2026-10-20): `ContentPlan.setting` dan `Angle.visual` (`VisualConcept`) di `shared`; prompt plan menulis satu ide visual besar per angle dan setting dari knowledge (contoh diperbarui); copy dan layout melarang klaim yang bergantung pada tulisan di gambar; layout wajib mewujudkan konsep (arketipe sesuai `visual.kind`, deskripsi aset dari `visual.image`) dan menerima blok `<setting>`; revise mempertahankan ide visual; prompt Codex mendapat baris `Setting` dari kode (foto: lokasi dan orang; cut-out: orang). Dry-run tujuh gaya lolos dengan contoh plan baru. typecheck, lint, 667 test; tanpa kuota (efek pada Claude dan Codex sungguhan diuji di T-127).
 
 - [ ] T-126 Rubric QA visual K1–K8 dan perbaikan QA dari T-117
   - Rujukan: PRD 4, PRD F9, temuan T-117
   - AC: skor QA visual mengikuti K1–K8 dengan contoh referensi; QA membuka file logo brand; larangan menyarankan fakta di luar knowledge; kebijakan revisi bila skor rendah tanpa perbaikan wajib diputuskan pemilik.
   - Tambahan dari T-122: QA visual juga menilai kepatuhan aturan brand, P1–P7, dan kesesuaian dengan gaya desain yang dipilih (PRD F16).
+  - Tambahan dari uji T-131 (dipulihkan 2026-10-20): QA visual kembali melaporkan logo Ritme (chevron »»») sebagai tidak dirender dan menjadikannya perbaikan wajib; revisi meminta aset dibuat ulang untuk perbaikan yang hanya saran (memakai kuota Codex).
 
 - [x] T-128 Panduan gaya tahap 1 (tujuh gaya)
   - Rujukan: PRD F16, US-17, PRD 4, ADR-015; referensi pemilik di `~/Downloads/instagram reference design/<gaya>/` (tidak di-commit)
@@ -308,6 +312,7 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Rujukan: PRD 11 (Fase 1), KNOWLEDGE "Evaluasi spike T-117"
   - AC: brief yang sama dengan T-117 dijalankan ulang; pemilik menilai; keputusan go/no-go tertulis.
   - Catatan: MEMAKAI KUOTA BESAR. Jadwalkan bersama pemilik.
+  - Tambahan dari uji T-131 (dipulihkan 2026-10-20): katalog 22 arketipe membuat panggilan layout dan revise ±$0,35; batas panggilan spike 2 varian perlu ±16 Claude agar dua putaran revisi muat (Ritme v2 gagal di batas 14).
 
 ## Fase 2: Walking skeleton (epic)
 

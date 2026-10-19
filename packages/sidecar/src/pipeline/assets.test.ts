@@ -12,6 +12,7 @@ import {
   generatedImage,
   type JobContext,
   photoRules,
+  settingLine,
   storeAsset,
   UserUploadAssetProvider,
 } from "./assets.ts";
@@ -226,6 +227,21 @@ describe("assetPrompt", () => {
     );
     const { constraints: _, ...plain } = kopi;
     expect(photoRules(plain, request)).toBe("None beyond the palette above.");
+  });
+
+  it("setting dari plan: lokasi dan orang untuk foto, orang saja untuk cut-out (T-125)", async () => {
+    const setting = {
+      location: "a quiet alley in Bandung, Indonesia",
+      people: "Indonesian office workers in their twenties",
+    };
+    const photo = await assetPrompt(request, brand, null, setting);
+    expect(photo).toContain(
+      "- Setting: Location: a quiet alley in Bandung, Indonesia. People, if any appear: Indonesian office workers in their twenties.",
+    );
+    expect(settingLine(setting, { ...request, kind: "cutout", subject: "person" })).toBe(
+      "People, if any appear: Indonesian office workers in their twenties.",
+    );
+    expect(await assetPrompt(request, brand)).toContain("- Setting: As described.");
   });
 
   it("arahan gaya job di prompt gambar; tanpa gaya: natural (T-133)", async () => {

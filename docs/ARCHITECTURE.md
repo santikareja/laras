@@ -234,10 +234,10 @@ Status khusus: waiting_quota · interrupted · failed · cancelled
 
 | Tahap | Pelaksana | Input | Output (skema di `shared`) |
 |---|---|---|---|
-| plan | Claude | brief, knowledge, referensi, jumlah varian | `ContentPlan`: pesan utama, audiens, struktur slide, satu angle per varian |
+| plan | Claude | brief, knowledge, referensi, jumlah varian, konteks gaya | `ContentPlan`: pesan utama, audiens, `setting` (lokasi dan orang, bahasa Inggris), struktur slide, satu angle per varian dengan `visual` (ide, gambar, jenis `cutout`/`photo`/`concept`) |
 | copy | Claude | ContentPlan, copy guide | `CopyDraft`: teks per slot per slide, caption, hashtag |
 | layout | Claude | CopyDraft, katalog arketipe (arketipe gaya job lebih dulu), brand tokens, konteks gaya, arketipe varian lain dari brief yang sama | `LayoutSpec`: templateId, slot terisi, opsi template, `styleOptions` bila ada gaya, kebutuhan aset (foto atau cut-out) |
-| assets | Codex / pengguna | kebutuhan aset, brand, referensi | `AssetManifest`: path file, ukuran, sumber |
+| assets | Codex / pengguna | kebutuhan aset, brand, gaya, `setting` plan, aturan foto brand | `AssetManifest`: path file, ukuran, sumber |
 | render | Kode | LayoutSpec, AssetManifest, tokens | HTML per slide, PNG master, `RenderReport` |
 | qa | Kode + Claude | PNG, RenderReport, brand, copy guide | `QaReport`: hasil cek deterministik, skor visual, daftar perbaikan |
 | revise | Claude | QaReport, LayoutSpec, CopyDraft | `Revision`: `copy` dan `layout` utuh dengan hanya bagian yang diminta berubah, `regenerateAssets`, `summary` |

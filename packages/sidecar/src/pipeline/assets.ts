@@ -1,7 +1,13 @@
 import { copyFile, mkdir, readdir, readFile, realpath } from "node:fs/promises";
 import { homedir } from "node:os";
 import { dirname, extname, join, relative, sep } from "node:path";
-import type { AssetManifest, AssetRequest, BrandKit, StyleSelection } from "@laras/shared";
+import type {
+  AssetManifest,
+  AssetRequest,
+  BrandKit,
+  ContentPlan,
+  StyleSelection,
+} from "@laras/shared";
 import sharp from "sharp";
 import { runCodex } from "../cli/codex.ts";
 import type { SpawnLines } from "../cli/stream.ts";
@@ -19,6 +25,8 @@ export type JobContext = {
   brand: BrandKit;
   // Gaya job (T-133): arahan perlakuan gambar di prompt Codex.
   style?: StyleSelection | null;
+  // Lokasi dan orang dari plan (T-125), dikirim ke setiap prompt gambar.
+  setting?: ContentPlan["setting"];
   signal?: AbortSignal;
 };
 export type AssetProvider = {
@@ -143,10 +151,18 @@ export function photoRules(brand: BrandKit, request: AssetRequest): string {
   return lines.length > 0 ? lines.join(" ") : "None beyond the palette above.";
 }
 
+// Lokasi dan orang dari plan (T-125). Cut-out berlatar transparan, jadi hanya orangnya.
+export function settingLine(setting: ContentPlan["setting"] | undefined, request: AssetRequest) {
+  if (!setting) return "As described.";
+  const people = `People, if any appear: ${setting.people}.`;
+  return request.kind === "cutout" ? people : `Location: ${setting.location}. ${people}`;
+}
+
 export async function assetPrompt(
   request: AssetRequest,
   brand: BrandKit,
   style: StyleSelection | null = null,
+  setting?: ContentPlan["setting"],
 ): Promise<string> {
   const [w = 1, h = 1] = request.aspectRatio.split(":").map(Number);
   const { primary, secondary, accent } = brand.colors;
@@ -159,6 +175,7 @@ export async function assetPrompt(
     subject: SUBJECT_WORDS[request.subject ?? "object"],
     styleDirection: styleImageDirection(style),
     photoRules: photoRules(brand, request),
+    setting: settingLine(setting, request),
   };
   const kind = request.kind === "cutout" ? "cutout" : "photo";
   const template = await readFile(PROMPT_TEMPLATES[kind], "utf8");
@@ -200,7 +217,7 @@ export class CodexAssetProvider implements AssetProvider {
     const run = await runCodex({
       codexPath: this.#codexPath,
       cwd: ctx.projectDir,
-      prompt: await assetPrompt(request, ctx.brand, ctx.style ?? null),
+      prompt: await assetPrompt(request, ctx.brand, ctx.style ?? null, ctx.setting),
       ...(ctx.signal ? { signal: ctx.signal } : {}),
       ...(this.#spawn ? { spawn: this.#spawn } : {}),
     });

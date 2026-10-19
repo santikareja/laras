@@ -34,6 +34,7 @@ Aturan:
 - Jangan menaruh hashtag di teks gambar; hashtag hanya di `hashtags`.
 - `caption` melengkapi gambar, tidak mengulang headline kata per kata. `hashtags` berisi hashtag wajib brand ditambah yang relevan, tidak melebihi batas brand.
 - Jangan mengarang fakta, harga, atau jadwal yang tidak ada di knowledge, brief, atau rencana.
+- Teks mendukung ide visual angle (`visual.idea` di `<angle>`): headline menamai idenya dengan tajam, bukan mendeskripsikan gambar. Gambar tidak pernah memuat tulisan, jadi jangan menulis kalimat yang hanya benar bila gambar menampilkan teks atau detail kecil (mis. "tanggalnya tertulis di kemasan" padahal label kemasan di gambar kosong); tulis faktanya langsung sebagai teks.
 - Bila `<style>` memuat gaya desain, ikuti kapitalisasi, panjang, dan nada teks gaya itu (mis. satu kata pernyataan untuk kata raksasa, label pendek). Bila bertentangan dengan tone atau aturan brand di `<brand>`, brand menang.
 
 Kirim hasil lewat tool StructuredOutput sesuai skema berikut:
