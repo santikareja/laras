@@ -24,6 +24,7 @@ T-128 selesai: panduan tujuh gaya tahap 1 di `packages/templates/styles/<id>/PAN
 
 ## Catatan untuk sesi berikutnya
 - Baca docs/KNOWLEDGE.md sebelum task yang menyentuh CLI, build, atau lingkungan.
+- Repo GitHub: https://github.com/santikareja/laras (`origin`, push lewat alias SSH `github-santikarejuve`; lihat KNOWLEDGE bagian Lingkungan).
 - `cargo` dan `pnpm dev` dijalankan lewat login shell (`/bin/zsh -lic '...'`) dari proses agent.
 - Sesi agent tidak punya izin Screen Recording maupun Accessibility: cek HTML/CSS di browser bawaan (`http://localhost:1420`) atau dengan diagnostik WebView (cara di KNOWLEDGE); tampilan jendela native dilihat pemilik.
 - Jendela masih kosong sesuai target Fase 0; isi UI dimulai di E-201.
