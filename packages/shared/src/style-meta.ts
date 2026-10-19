@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { BrandKit } from "./brand-kit.ts";
-import { Slug } from "./common.ts";
+import { ColorToken, Slug } from "./common.ts";
 import { DEFAULT_DESIGN_LIMITS, type DesignLimits, DesignLimitsPatch } from "./design-limits.ts";
 import { TemplateOption } from "./template-meta.ts";
 
@@ -22,8 +22,6 @@ export const DesignRule = z.enum([
   "P11",
 ]);
 export type DesignRule = z.infer<typeof DesignRule>;
-
-const ColorToken = z.enum(["primary", "secondary", "accent", "neutral-light", "neutral-dark"]);
 
 const TypeCategory = z.enum([
   "grotesk-condensed",
@@ -191,6 +189,10 @@ function passes(check: BrandCheck, brand: BrandKit): boolean {
 // dipenuhi brand; gaya tetap bisa dipakai dalam versi adaptasi.
 export function styleFit(style: StyleMeta, brand: BrandKit) {
   const reasons = style.compatibility.filter((c) => !passes(c.check, brand)).map((c) => c.message);
+  // Aturan brand terstruktur yang bertentangan dengan inti gaya (T-124).
+  if (brand.constraints?.noGradient && style.color.gradient === "subtle") {
+    reasons.push("Gaya memakai gradient lembut, aturan brand melarang gradient.");
+  }
   return { fit: reasons.length === 0 ? ("cocok" as const) : ("kurang-cocok" as const), reasons };
 }
 

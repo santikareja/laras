@@ -3,7 +3,14 @@ import type { BrandKit, CopyGuide, DesignLimits, RenderCheck, RenderRule } from 
 // Aturan QA deterministik (PRD F9, ARCH 7.2) sebagai fungsi murni atas data ukur dari page.
 
 // `design`: ambang aturan desain (T-130); tanpa nilai memakai angka PRD 4.
-export type QaContext = { brand: BrandKit; copyGuide: CopyGuide; design?: DesignLimits };
+// `brandRules: false`: lembar spesimen perangkat (bukan postingan) tidak dicek aturan brand
+// terstruktur (T-124).
+export type QaContext = {
+  brand: BrandKit;
+  copyGuide: CopyGuide;
+  design?: DesignLimits;
+  brandRules?: boolean;
+};
 
 export type Rect = { left: number; top: number; right: number; bottom: number };
 
@@ -32,6 +39,8 @@ export type Measurements = {
   texts: TextMeasure[];
   slots: { slot: string; type: string | null; rect: Rect }[];
   colors: { kind: "background" | "border"; color: string; target: string }[];
+  // Elemen dengan gradient CSS yang tampak (T-124), selain pola.
+  gradients: string[];
   brokenImages: string[];
   fontFaces: { family: string; status: string }[];
 };

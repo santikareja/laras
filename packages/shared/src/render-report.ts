@@ -12,6 +12,10 @@ export const RenderRule = z.enum([
   "forbidden-word",
   "emoji-hashtag",
   "asset-load",
+  // Aturan brand terstruktur (BrandKit.constraints, T-124), bertingkat wajib.
+  "brand-logo-position",
+  "brand-gradient",
+  "brand-visuals",
   // Aturan desain terukur PRD 4 (T-130), awalnya bertingkat saran.
   "alignment",
   "hierarchy",

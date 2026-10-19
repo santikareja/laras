@@ -441,6 +441,7 @@ const layoutContext = (spec: JobSpec, deps: PipelineDeps, catalog: TemplateMeta[
   slideCount: spec.slideCount,
   logo: deps.brand.logo,
   style: spec.style ? { meta: findStyle(spec.style.id), variant: spec.style.variant } : null,
+  photo: deps.brand.constraints?.photo,
 });
 
 // Katalog format job, arketipe gaya job lebih dulu (T-133).

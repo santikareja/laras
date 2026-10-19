@@ -140,6 +140,32 @@ describe("QA deterministik di Chromium", { timeout: 30_000 }, () => {
     expect(edges.map((check) => check.message)).toEqual([]);
   });
 
+  it("gradient brand (T-124): gradient lembut tertangkap; pola dan bidang polos tidak", async () => {
+    const box = (style: string, attrs = "") =>
+      `<div ${attrs} style="position: absolute; width: 200px; height: 200px; ${style}"></div>`;
+    const gradientTargets = async (body: string) =>
+      (await renderer.render(slide(body), folders, qa)).checks
+        .filter((c) => c.rule === "brand-gradient" && !c.passed)
+        .map((c) => c.target);
+    const soft = box(
+      "left: 100px; top: 100px; background: linear-gradient(var(--color-primary), var(--color-accent))",
+    );
+    expect(await gradientTargets(soft)).toEqual(["div"]);
+    const patterns = [
+      box(
+        "left: 100px; top: 400px; background: repeating-linear-gradient(0deg, var(--color-primary) 0 2px, transparent 2px 6px)",
+      ),
+      box(
+        "left: 400px; top: 400px; background: linear-gradient(var(--color-primary), var(--color-primary))",
+      ),
+      box(
+        "left: 700px; top: 400px; background: radial-gradient(circle, var(--color-primary) 4px, transparent 5px); background-size: 16px 16px",
+        'data-qa-gradient="pattern"',
+      ),
+    ].join("");
+    expect(await gradientTargets(patterns)).toEqual([]);
+  });
+
   it("menyusun RenderReport yang lolos skema", async () => {
     const { checks } = await renderer.render(
       slide(text("left: 100px; top: 100px", "Kopi")),

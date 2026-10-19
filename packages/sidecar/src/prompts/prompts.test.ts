@@ -160,7 +160,10 @@ describe("brandContext", () => {
     expect(context).toContain("Kata terlarang: terenak, termurah, solusi, Anda");
     expect(context).toContain("Emoji: boleh, maksimal 2 per postingan");
     expect(context).toContain("Hashtag di caption: maksimal 5, wajib #KopiLembayung");
-    expect(context).toContain("- Tanpa gradient");
+    expect(context).toContain("- Tanpa gradient (dicek kode)");
+    // Aturan terstruktur (T-124) ditulis sebelum aturan teks bebas.
+    expect(context).toContain("- Logo selalu di kanan bawah (dicek kode)");
+    expect(context).toContain("- Foto tanpa latar putih polos");
     expect(context).toContain("Varian logo tersedia: primary, onDark");
     expect(context).toContain("Contoh copy yang buruk:");
   });

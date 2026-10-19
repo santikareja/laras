@@ -126,6 +126,23 @@ export async function storeAsset(
   return { ...entry(ctx, request.id, path, size, origin), subject };
 }
 
+// Arahan foto brand terstruktur (BrandKit.constraints.photo, T-124), selalu dikirim dan menang
+// atas arahan gaya. Latar putih polos tidak relevan untuk cut-out (latarnya transparan).
+export function photoRules(brand: BrandKit, request: AssetRequest): string {
+  const rules = brand.constraints?.photo ?? {};
+  const lines = [
+    rules.naturalLight &&
+      "Products and scenes are lit with natural daylight; no studio flash, colored gels, or neon light on the product.",
+    rules.noPlainBackdrop &&
+      request.kind !== "cutout" &&
+      "Never a plain white seamless backdrop; show a real surface or place.",
+    rules.realSkin &&
+      "Any person shows real, unretouched skin texture with natural pores; no beauty filter or airbrushing.",
+    rules.motion && "Any person is clearly in motion, never a static pose.",
+  ].filter((line): line is string => typeof line === "string");
+  return lines.length > 0 ? lines.join(" ") : "None beyond the palette above.";
+}
+
 export async function assetPrompt(
   request: AssetRequest,
   brand: BrandKit,
@@ -141,6 +158,7 @@ export async function assetPrompt(
     palette: `primary ${primary}, secondary ${secondary}, accent ${accent}`,
     subject: SUBJECT_WORDS[request.subject ?? "object"],
     styleDirection: styleImageDirection(style),
+    photoRules: photoRules(brand, request),
   };
   const kind = request.kind === "cutout" ? "cutout" : "photo";
   const template = await readFile(PROMPT_TEMPLATES[kind], "utf8");

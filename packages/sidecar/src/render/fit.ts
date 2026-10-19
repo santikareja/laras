@@ -33,3 +33,31 @@ export const FIT_SCRIPT = `(() => {
   }
   return sizes;
 })()`;
+
+// Elemen miring bertanda data-rotate-safe (stiker dengan rotasi brand, T-124): kotak miringnya
+// melebar w·sin θ di ujung-ujungnya. Bila kotak tegaknya di dalam safe margin tetapi kotak
+// miringnya melewati, elemen digeser ke dalam sejauh luapannya. Kotak tegak yang sudah melanggar
+// tidak disentuh agar QA tetap melaporkannya. Mengembalikan geseran [dx, dy] per elemen yang digeser.
+export const ROTATION_SCRIPT = `(() => {
+  const safe = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--space-safe")) || 0;
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  const moved = [];
+  for (const el of document.querySelectorAll("[data-rotate-safe]")) {
+    const tilted = el.getBoundingClientRect();
+    const transform = el.style.transform;
+    el.style.transform = "none";
+    const upright = el.getBoundingClientRect();
+    el.style.transform = transform;
+    const inside =
+      upright.left >= safe - 0.5 && upright.top >= safe - 0.5 &&
+      upright.right <= width - safe + 0.5 && upright.bottom <= height - safe + 0.5;
+    if (!inside) continue;
+    const dx = Math.max(0, safe - tilted.left) - Math.max(0, tilted.right - (width - safe));
+    const dy = Math.max(0, safe - tilted.top) - Math.max(0, tilted.bottom - (height - safe));
+    if (Math.abs(dx) < 0.01 && Math.abs(dy) < 0.01) continue;
+    el.style.translate = dx.toFixed(2) + "px " + dy.toFixed(2) + "px";
+    moved.push([Number(dx.toFixed(2)), Number(dy.toFixed(2))]);
+  }
+  return moved;
+})()`;

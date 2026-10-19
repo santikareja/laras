@@ -109,10 +109,37 @@ export function brandContext(brand: BrandKit, guide: CopyGuide): string {
     `Hashtag di caption: maksimal ${guide.hashtags.max}${always}`,
     `Varian logo tersedia: ${logoVariants(brand.logo).join(", ")}`,
     "Aturan desain dan foto brand:",
-    ...list(brand.rules),
+    ...list([...constraintRules(brand.constraints), ...brand.rules]),
     "Contoh copy yang baik:",
     ...list(guide.examples.good),
     "Contoh copy yang buruk:",
     ...list(guide.examples.bad),
   ].join("\n");
+}
+
+// Aturan brand terstruktur (T-124) sebagai teks untuk Claude; yang bertanda "dicek kode" juga
+// ditegakkan QA renderer, sehingga pelanggarannya menjadi perbaikan wajib.
+const CORNERS = {
+  "top-left": "kiri atas",
+  "top-right": "kanan atas",
+  "bottom-left": "kiri bawah",
+  "bottom-right": "kanan bawah",
+} as const;
+
+export function constraintRules(constraints: BrandKit["constraints"]): string[] {
+  if (!constraints) return [];
+  const photo = constraints.photo ?? {};
+  return [
+    constraints.logoPosition &&
+      `Logo selalu di ${CORNERS[constraints.logoPosition]} (dicek kode): pilih opsi logo atau sisi yang menghasilkannya`,
+    constraints.noGradient &&
+      "Tanpa gradient (dicek kode): latar, cahaya, dan isi huruf memakai warna padat",
+    constraints.maxMainVisuals !== undefined &&
+      `Maksimal ${constraints.maxMainVisuals} elemen visual utama per slide (dicek kode): gambar, foto latar, dan bentuk; dekor tipis tidak dihitung`,
+    photo.naturalLight && "Foto produk dan suasana selalu dengan cahaya alami",
+    photo.noPlainBackdrop && "Foto tanpa latar putih polos",
+    photo.realSkin &&
+      'Tekstur kulit asli tanpa filter berat: foto orang memakai perlakuan gaya "foto: natural" bila tersedia (dicek kode)',
+    photo.motion && "Orang di foto selalu bergerak, bukan pose diam",
+  ].filter((rule): rule is string => typeof rule === "string");
 }

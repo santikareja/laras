@@ -28,7 +28,16 @@
   "logo": { "primary": "logo/primary.svg", "onDark": "logo/on-dark.svg" },
   "rules": [
     "Tidak ada klaim medis berlebihan seperti menyembuhkan atau hasil permanen",
-    "Tampilkan tekstur kulit asli, tanpa filter berlebihan",
-    "Banyak ruang kosong; maksimal dua elemen visual utama per slide"
-  ]
+    "Banyak ruang kosong"
+  ],
+  "constraints": {
+    "maxMainVisuals": 2,
+    "photo": { "realSkin": true }
+  },
+  "devices": {
+    "highlight": { "background": "accent", "color": "neutral-dark", "tilt": 0 },
+    "sticker": { "rotate": 0 },
+    "scribbles": [],
+    "tape": false
+  }
 }

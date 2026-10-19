@@ -108,6 +108,7 @@ export function Photo({
           >
             {image("grayscale(1) brightness(0.42) blur(2px)")}
             <div
+              data-qa-gradient="pattern"
               style={{
                 position: "absolute",
                 inset: "-50%",

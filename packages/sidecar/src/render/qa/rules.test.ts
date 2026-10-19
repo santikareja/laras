@@ -44,6 +44,7 @@ const measure = (overrides: Partial<Measurements> = {}): Measurements => ({
   texts: [text()],
   slots: [{ slot: "headline", type: "text", rect: { left: 64, top: 64, right: 600, bottom: 130 } }],
   colors: [{ kind: "background", color: "rgb(250, 247, 240)", target: "div" }],
+  gradients: [],
   brokenImages: [],
   fontFaces: [{ family: "Inter", status: "loaded" }],
   ...overrides,

@@ -46,7 +46,8 @@ export function Scribble({
       aria-hidden="true"
       preserveAspectRatio={fill ? "none" : undefined}
       style={{
-        display: "block",
+        // Coretan yang tidak dipakai brand disembunyikan (token --device-scribble-*, T-124).
+        display: `var(--device-scribble-${shape}, block)`,
         width: "100%",
         height: fill ? "100%" : "auto",
         overflow: "visible",

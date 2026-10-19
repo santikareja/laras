@@ -40,9 +40,10 @@ async function main() {
   // `design`: ambang aturan desain gaya dan varian (T-130); spesimen tanpa saran desain.
   const report = async (name: string, html: string, slug: Brand, design?: DesignLimits) => {
     const { folders, qa } = demoBrand(slug);
+    // Spesimen (tanpa ambang desain) bukan postingan: tanpa cek aturan brand terstruktur (T-124).
     const { png, checks } = await renderer.render(html, folders, {
       ...qa,
-      ...(design ? { design } : {}),
+      ...(design ? { design } : { brandRules: false }),
     });
     const master = await toMaster(png);
     await writeFile(join(OUT_DIR, `${name}.png`), await toUpload(master, "png"));

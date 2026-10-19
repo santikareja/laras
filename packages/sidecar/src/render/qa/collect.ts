@@ -77,9 +77,32 @@ export const COLLECT_SCRIPT = String.raw`(() => {
     }
   }
 
+  // Gradient CSS yang tampak (aturan brand tanpa gradient, T-124). Bukan gradient: pola bertanda
+  // data-qa-gradient="pattern" (titik halftone, papan catur), gradient berulang (garis, sinar), dan
+  // gradient yang semua warnanya sama (bidang polos untuk mask).
+  const gradients = [];
+  for (const el of elements) {
+    if (el.closest('[data-qa-gradient="pattern"]')) continue;
+    const rect = el.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) continue;
+    const style = getComputedStyle(el);
+    for (const value of [style.backgroundImage, style.maskImage, style.webkitMaskImage, style.borderImageSource]) {
+      if (!value || !value.includes("gradient(")) continue;
+      const soft = value
+        .split(/,(?![^(]*\))(?=\s*(?:repeating-)?(?:linear|radial|conic)-gradient|\s*url)/)
+        .filter((layer) => /^\s*(linear|radial|conic)-gradient\(/.test(layer))
+        .some((layer) => new Set(layer.match(/rgba?\([^)]*\)|color\([^)]*\)|transparent/g) ?? []).size > 1);
+      if (soft) {
+        gradients.push(describe(el));
+        break;
+      }
+    }
+  }
+
   return {
     canvas: { width: window.innerWidth, height: window.innerHeight },
     texts,
+    gradients: [...new Set(gradients)],
     slots: [...document.querySelectorAll("[data-slot]")].map((el) => ({
       slot: el.getAttribute("data-slot"),
       type: el.getAttribute("data-slot-type"),

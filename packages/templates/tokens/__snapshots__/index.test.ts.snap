@@ -57,6 +57,16 @@ exports[`brandCss > CSS kopi-lembayung sesuai snapshot 1`] = `
   --shape-radius: 0px;
   --shape-stroke: 2px;
   --shape-shadow: none;
+  --device-highlight-bg: var(--color-accent);
+  --device-highlight-text: var(--color-neutral-dark);
+  --device-highlight-tilt: -2deg;
+  --device-sticker-rotate: -3deg;
+  --device-scribble-arrow: block;
+  --device-scribble-underline: block;
+  --device-scribble-circle: block;
+  --device-scribble-sparkle: none;
+  --device-scribble-cross: none;
+  --device-tape: block;
 }"
 `;
 
@@ -117,6 +127,16 @@ exports[`brandCss > CSS ritme-run-club sesuai snapshot 1`] = `
   --shape-radius: 0px;
   --shape-stroke: 4px;
   --shape-shadow: none;
+  --device-highlight-bg: var(--color-secondary);
+  --device-highlight-text: var(--color-neutral-dark);
+  --device-highlight-tilt: -3deg;
+  --device-sticker-rotate: -4deg;
+  --device-scribble-arrow: block;
+  --device-scribble-underline: block;
+  --device-scribble-circle: none;
+  --device-scribble-sparkle: none;
+  --device-scribble-cross: none;
+  --device-tape: none;
 }"
 `;
 
@@ -177,5 +197,15 @@ exports[`brandCss > CSS seruni-skin sesuai snapshot 1`] = `
   --shape-radius: 24px;
   --shape-stroke: 1px;
   --shape-shadow: 0 8px 24px color-mix(in srgb, var(--color-neutral-dark) 16%, transparent);
+  --device-highlight-bg: var(--color-accent);
+  --device-highlight-text: var(--color-neutral-dark);
+  --device-highlight-tilt: 0deg;
+  --device-sticker-rotate: 0deg;
+  --device-scribble-arrow: none;
+  --device-scribble-underline: none;
+  --device-scribble-circle: none;
+  --device-scribble-sparkle: none;
+  --device-scribble-cross: none;
+  --device-tape: none;
 }"
 `;

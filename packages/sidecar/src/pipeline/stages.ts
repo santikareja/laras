@@ -57,6 +57,8 @@ type LayoutContext = {
   logo: BrandKit["logo"];
   // Gaya job dan variannya (T-133); null tanpa gaya.
   style: { meta: StyleMeta; variant: string } | null;
+  // Arahan foto brand terstruktur (T-124), untuk perlakuan foto gaya.
+  photo?: NonNullable<BrandKit["constraints"]>["photo"];
 };
 
 // Katalog untuk prompt: arketipe gaya job lebih dulu (T-133), sisanya tetap boleh dipilih.
@@ -66,20 +68,37 @@ export function catalogForStyle(catalog: TemplateMeta[], style: StyleMeta | null
   return [...own, ...catalog.filter((meta) => !style.archetypes.includes(meta.id))];
 }
 
-// styleOptions hanya sah untuk job bergaya dan hanya memakai opsi gaya itu (T-133).
-function styleOptionIssues(layout: LayoutSpec, style: LayoutContext["style"]): string[] {
+// styleOptions hanya sah untuk job bergaya dan hanya memakai opsi gaya itu (T-133). Brand yang
+// mewajibkan kulit asli (T-124): foto dan cut-out orang memakai perlakuan `foto: natural` bila gaya
+// menawarkannya, karena bawaan gaya (mono, hangat) adalah filter berat.
+function styleOptionIssues(
+  layout: LayoutSpec,
+  style: LayoutContext["style"],
+  photo: LayoutContext["photo"],
+): string[] {
   const options = layout.styleOptions ?? {};
   if (!style) {
     return Object.keys(options).length > 0 ? ["Tanpa gaya desain, styleOptions harus kosong"] : [];
   }
-  return styleChoiceIssues({ id: style.meta.id, variant: style.variant, options }, style.meta);
+  const issues = styleChoiceIssues(
+    { id: style.meta.id, variant: style.variant, options },
+    style.meta,
+  );
+  const naturalOffered = style.meta.options.some(
+    (o) => o.name === "foto" && o.values.includes("natural"),
+  );
+  const people = layout.assetRequests.some((r) => r.kind !== "cutout" || r.subject === "person");
+  if (photo?.realSkin && naturalOffered && people && options.foto !== "natural") {
+    issues.push('Brand mewajibkan tekstur kulit asli: isi styleOptions "foto" dengan "natural"');
+  }
+  return issues;
 }
 
 // Layout harus cocok dengan katalog dan Brand Kit: template, slot, opsi, jumlah slide, dan varian
 // logo yang benar-benar ada (T-119), agar kesalahan masuk retry validasi, bukan gagal di render.
 function layoutContextIssues(
   layout: LayoutSpec,
-  { catalog, slideCount, logo, style }: LayoutContext,
+  { catalog, slideCount, logo, style, photo }: LayoutContext,
 ) {
   const meta = catalog.find((t) => t.id === layout.templateId && t.format === layout.format);
   if (!meta)
@@ -90,7 +109,7 @@ function layoutContextIssues(
     ...layoutIssues(layout, meta),
     ...count,
     ...logoIssues(layout, logo),
-    ...styleOptionIssues(layout, style),
+    ...styleOptionIssues(layout, style, photo),
   ];
 }
 
@@ -132,6 +151,10 @@ const RULE_TARGET: Record<RenderRule, QaFix["target"]> = {
   "forbidden-word": "copy",
   "emoji-hashtag": "copy",
   "asset-load": "assets",
+  // Aturan brand terstruktur (T-124): posisi logo, gradient, dan jumlah visual diatur layout.
+  "brand-logo-position": "layout",
+  "brand-gradient": "layout",
+  "brand-visuals": "layout",
   // Aturan desain (T-130) diperbaiki di tahap layout.
   alignment: "layout",
   hierarchy: "layout",

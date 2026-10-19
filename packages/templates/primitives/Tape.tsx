@@ -12,7 +12,8 @@ export function Tape({ color: tone, rotate = 0 }: TapeProps) {
       data-qa-element="decor"
       aria-hidden="true"
       style={{
-        display: "block",
+        // Brand tanpa selotip menyembunyikannya (token --device-tape, T-124).
+        display: "var(--device-tape, block)",
         width: "100%",
         height: space(5),
         background: color(tone),

@@ -19,6 +19,38 @@ describe("BrandKit", () => {
     expect(issuesOf(BrandKit, architectureExample())).toEqual([]);
   });
 
+  it("aturan terstruktur dan perangkat grafis opsional (T-124)", () => {
+    const brand = {
+      ...valid(),
+      constraints: {
+        logoPosition: "bottom-right",
+        noGradient: true,
+        maxMainVisuals: 2,
+        photo: { naturalLight: true, noPlainBackdrop: true, realSkin: true, motion: true },
+      },
+      devices: {
+        highlight: { background: "accent", color: "neutral-dark", tilt: -2 },
+        sticker: { rotate: -3 },
+        scribbles: ["underline", "arrow"],
+        tape: true,
+      },
+    };
+    expect(issuesOf(BrandKit, brand)).toEqual([]);
+    expect(issuesOf(BrandKit, valid())).toEqual([]);
+  });
+
+  it("menolak aturan dan perangkat di luar enum atau batas (T-124)", () => {
+    const bad = (extra: object) => issuesOf(BrandKit, { ...valid(), ...extra });
+    expect(bad({ constraints: { logoPosition: "center" } })).not.toEqual([]);
+    expect(bad({ constraints: { maxMainVisuals: 0 } })).not.toEqual([]);
+    expect(bad({ constraints: { photo: { flash: true } } })).not.toEqual([]);
+    expect(
+      bad({ devices: { highlight: { background: "gold", color: "neutral-dark", tilt: 0 } } }),
+    ).not.toEqual([]);
+    expect(bad({ devices: { sticker: { rotate: 25 } } })).not.toEqual([]);
+    expect(bad({ devices: { scribbles: ["zigzag"] } })).not.toEqual([]);
+  });
+
   it("menerima varian logo opsional", () => {
     const brand = valid();
     brand.logo.onLight = "logo/on-light.png";

@@ -26,9 +26,16 @@
   "shape": { "radius": 0, "stroke": 2, "shadow": "none" },
   "spacing": { "unit": 8, "safeMargin": 64 },
   "logo": { "primary": "logo/primary.svg", "onDark": "logo/on-dark.svg" },
-  "rules": [
-    "Tanpa gradient",
-    "Logo selalu kanan bawah",
-    "Foto produk selalu dengan cahaya alami, tanpa latar putih polos"
-  ]
+  "rules": [],
+  "constraints": {
+    "logoPosition": "bottom-right",
+    "noGradient": true,
+    "photo": { "naturalLight": true, "noPlainBackdrop": true }
+  },
+  "devices": {
+    "highlight": { "background": "accent", "color": "neutral-dark", "tilt": -2 },
+    "sticker": { "rotate": -3 },
+    "scribbles": ["underline", "arrow", "circle"],
+    "tape": true
+  }
 }

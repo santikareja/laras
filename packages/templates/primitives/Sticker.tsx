@@ -26,7 +26,7 @@ export function Sticker({
   background,
   color: tone,
   edge,
-  rotate = 0,
+  rotate,
   size = 2,
   wrap = false,
   slot,
@@ -36,6 +36,7 @@ export function Sticker({
     <span
       data-slot={slot}
       data-slot-type={slot ? "badge" : undefined}
+      data-rotate-safe
       style={{
         display: "block",
         width: "fit-content",
@@ -53,7 +54,9 @@ export function Sticker({
         maxWidth: wrap ? "100%" : undefined,
         boxSizing: wrap ? "border-box" : undefined,
         color: color(tone),
-        transform: `rotate(${rotate}deg)`,
+        // Tanpa nilai: rotasi stiker brand (token --device-sticker-rotate, T-124).
+        transform:
+          rotate === undefined ? "rotate(var(--device-sticker-rotate))" : `rotate(${rotate}deg)`,
       }}
     >
       {children}

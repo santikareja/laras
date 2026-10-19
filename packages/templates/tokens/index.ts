@@ -55,6 +55,29 @@ function brandVariables(brand: BrandKit): Variable[] {
         ? "0 8px 24px color-mix(in srgb, var(--color-neutral-dark) 16%, transparent)"
         : "none",
     ],
+    ...deviceVariables(brand.devices),
+  ];
+}
+
+const SCRIBBLES = ["arrow", "underline", "circle", "sparkle", "cross"] as const;
+
+// Perangkat grafis brand (T-124) sebagai default primitives. Tanpa `devices` nilainya sama dengan
+// bawaan primitives sebelumnya: sorot aksen miring -2°, stiker tegak, semua coretan dan selotip.
+function deviceVariables(devices: BrandKit["devices"]): Variable[] {
+  const highlight = devices?.highlight ?? { background: "accent", color: "neutral-dark", tilt: -2 };
+  const scribbles = devices?.scribbles ?? SCRIBBLES;
+  return [
+    ["--device-highlight-bg", `var(--color-${highlight.background})`],
+    ["--device-highlight-text", `var(--color-${highlight.color})`],
+    ["--device-highlight-tilt", `${highlight.tilt}deg`],
+    ["--device-sticker-rotate", `${devices?.sticker?.rotate ?? 0}deg`],
+    ...SCRIBBLES.map(
+      (shape): Variable => [
+        `--device-scribble-${shape}`,
+        scribbles.includes(shape) ? "block" : "none",
+      ],
+    ),
+    ["--device-tape", devices?.tape === false ? "none" : "block"],
   ];
 }
 

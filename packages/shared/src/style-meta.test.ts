@@ -88,6 +88,12 @@ describe("StyleMeta (T-128)", () => {
     });
     expect(styleFit(style(), brand("ritme-run-club"))).toEqual({ fit: "cocok", reasons: [] });
     expect(styleFit(style(), brand("kopi-lembayung")).fit).toBe("cocok");
+    // Brand yang melarang gradient (T-124): gaya bergradient lembut kurang cocok.
+    const glowing = { ...style(), color: { ...style().color, gradient: "subtle" as const } };
+    expect(styleFit(glowing, brand("kopi-lembayung")).reasons).toContain(
+      "Gaya memakai gradient lembut, aturan brand melarang gradient.",
+    );
+    expect(styleFit(glowing, brand("ritme-run-club")).fit).toBe("cocok");
   });
 
   it("syarat bentuk membaca radius dan bayangan Brand Kit", () => {

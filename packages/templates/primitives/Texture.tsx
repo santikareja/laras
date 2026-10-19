@@ -150,6 +150,7 @@ export function HalftonePattern({ tone, cell = 16, dot = 0.5, fade }: HalftonePa
     const disc = `radial-gradient(circle, ${color(tone)} ${r - 0.5}px, transparent ${r + 0.5}px)`;
     return (
       <div
+        data-qa-gradient="pattern"
         data-qa-element="decor"
         aria-hidden="true"
         style={{
@@ -175,7 +176,7 @@ export function HalftonePattern({ tone, cell = 16, dot = 0.5, fade }: HalftonePa
   });
   const id = `laras-halftone-${Math.round(threshold * 1000)}`;
   return (
-    <div aria-hidden="true" style={{ ...FILL, filter: `url(#${id})` }}>
+    <div data-qa-gradient="pattern" aria-hidden="true" style={{ ...FILL, filter: `url(#${id})` }}>
       <svg aria-hidden="true" width="0" height="0" style={{ position: "absolute" }}>
         <filter id={id} colorInterpolationFilters="sRGB">
           <feComponentTransfer>
@@ -440,9 +441,11 @@ export function Checker({ tone, alt, cell = 60, rows }: CheckerProps) {
     backgroundSize: `${cell * 2}px ${cell * 2}px`,
     backgroundPosition: "center top",
   };
-  if (!rows) return <div aria-hidden="true" style={{ ...FILL, ...pattern }} />;
+  if (!rows)
+    return <div data-qa-gradient="pattern" aria-hidden="true" style={{ ...FILL, ...pattern }} />;
   return (
     <div
+      data-qa-gradient="pattern"
       data-qa-element="decor"
       aria-hidden="true"
       style={{ display: "block", width: "100%", height: rows * cell, ...pattern }}

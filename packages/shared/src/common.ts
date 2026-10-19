@@ -25,6 +25,16 @@ export const Slug = z.string().regex(/^[a-z0-9][a-z0-9-]*$/, "Id hanya huruf kec
 export const AspectRatio = z.string().regex(/^\d+:\d+$/, "Rasio berformat lebar:tinggi, mis. 4:5");
 
 export const ContentFormat = z.enum(["feed-4x5", "carousel-4x5"]);
+
+// Nama token warna yang dipakai template (ARCH 6.1); netral lewat alias terang dan gelap.
+export const ColorToken = z.enum([
+  "primary",
+  "secondary",
+  "accent",
+  "neutral-light",
+  "neutral-dark",
+]);
+export type ColorToken = z.infer<typeof ColorToken>;
 export type ContentFormat = z.infer<typeof ContentFormat>;
 
 const SLIDE_LIMITS: Record<ContentFormat, { min: number; max: number }> = {

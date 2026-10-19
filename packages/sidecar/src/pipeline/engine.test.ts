@@ -408,6 +408,30 @@ describe("gaya desain di pipeline (T-133)", () => {
     expect(f.styles).toEqual([undefined]);
   });
 
+  it("brand berkulit asli: foto orang wajib foto natural bila gaya menawarkannya (T-124)", () => {
+    const context = {
+      ...layoutContext({ meta: findStyle("brutalism"), variant: "cetak" }),
+      photo: { realSkin: true },
+    };
+    const withFoto = (foto?: string) => ({
+      ...structuredClone(layout),
+      ...(foto ? { styleOptions: { foto } } : {}),
+    });
+    const expected =
+      'Brand mewajibkan tekstur kulit asli: isi styleOptions "foto" dengan "natural"';
+    expect(
+      layoutSchema(context)
+        .safeParse(withFoto())
+        .error?.issues.map((i) => i.message),
+    ).toEqual([expected]);
+    expect(
+      layoutSchema(context)
+        .safeParse(withFoto("mono"))
+        .error?.issues.map((i) => i.message),
+    ).toEqual([expected]);
+    expect(layoutSchema(context).safeParse(withFoto("natural")).success).toBe(true);
+  });
+
   it("styleOptions divalidasi terhadap gaya job; tanpa gaya harus kosong", () => {
     const withOptions = (styleOptions: Record<string, string>) => ({
       ...structuredClone(layout),

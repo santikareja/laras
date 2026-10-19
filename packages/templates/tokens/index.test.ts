@@ -37,6 +37,21 @@ describe("brandCss", () => {
     expect(css).toContain("--font-accent-weight-strong: 600;");
   });
 
+  it("perangkat grafis brand: token --device-*, tanpa devices sama dengan bawaan lama (T-124)", () => {
+    const brand = loadBrand("seruni-skin");
+    const css = brandCss(brand, { assetBaseUrl: "file:///p/" });
+    expect(css).toContain("--device-highlight-tilt: 0deg;");
+    expect(css).toContain("--device-scribble-arrow: none;");
+    expect(css).toContain("--device-tape: none;");
+    delete brand.devices;
+    const plain = brandCss(brand, { assetBaseUrl: "file:///p/" });
+    expect(plain).toContain("--device-highlight-bg: var(--color-accent);");
+    expect(plain).toContain("--device-highlight-tilt: -2deg;");
+    expect(plain).toContain("--device-sticker-rotate: 0deg;");
+    expect(plain).toContain("--device-scribble-cross: block;");
+    expect(plain).toContain("--device-tape: block;");
+  });
+
   it("meng-encode spasi di folder project", () => {
     const css = brandCss(loadBrand("kopi-lembayung"), {
       assetBaseUrl: "file:///Users/a/Library/Application Support/Laras/p/",

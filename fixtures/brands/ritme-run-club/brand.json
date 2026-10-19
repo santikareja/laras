@@ -28,7 +28,15 @@
   "logo": { "primary": "logo/primary.svg", "onDark": "logo/on-dark.svg" },
   "rules": [
     "Angka, jarak, dan waktu selalu ditulis besar",
-    "Foto selalu menampilkan gerak, bukan pose diam",
     "Warna aksen tidak dipakai sebagai teks di atas warna primer (kontras 1.8:1)"
-  ]
+  ],
+  "constraints": {
+    "photo": { "motion": true }
+  },
+  "devices": {
+    "highlight": { "background": "secondary", "color": "neutral-dark", "tilt": -3 },
+    "sticker": { "rotate": -4 },
+    "scribbles": ["arrow", "underline"],
+    "tape": false
+  }
 }

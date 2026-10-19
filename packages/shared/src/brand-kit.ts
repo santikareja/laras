@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { HexColor, RelativePath } from "./common.ts";
+import { ColorToken, HexColor, RelativePath } from "./common.ts";
 
 const MIN_FONT_SIZE = 24; // PRD F9: ukuran font minimum pada ukuran dasar 1080 px
 
@@ -27,6 +27,46 @@ const TypeScale = z
   .refine((scale) => Math.min(...scale) >= MIN_FONT_SIZE, {
     message: `Ukuran terkecil skala tipografi minimal ${MIN_FONT_SIZE} px`,
   });
+
+// Aturan brand terstruktur (PRD 4 prinsip 8, F2, T-124): setiap aturan ditegakkan kode, bukan
+// hanya ditulis untuk Claude. Aturan yang tidak terukur tetap di `rules` sebagai teks bebas.
+export const BrandConstraints = z.strictObject({
+  // Kuadran pusat logo di setiap slide.
+  logoPosition: z.enum(["top-left", "top-right", "bottom-left", "bottom-right"]).optional(),
+  // Tanpa gradient CSS (latar, mask, isi huruf); gaya yang butuh gradient kurang cocok.
+  noGradient: z.boolean().optional(),
+  // Maksimal elemen visual utama per slide: gambar, foto latar, dan bentuk (dekor tidak dihitung).
+  maxMainVisuals: z.int().min(1).max(10).optional(),
+  // Arahan foto yang selalu dikirim ke pembuat gambar.
+  photo: z
+    .strictObject({
+      naturalLight: z.boolean().optional(), // produk dan suasana dengan cahaya alami
+      noPlainBackdrop: z.boolean().optional(), // tanpa latar putih polos di foto
+      realSkin: z.boolean().optional(), // tekstur kulit asli; tanpa perlakuan berat pada foto orang
+      motion: z.boolean().optional(), // orang selalu bergerak, bukan pose diam
+    })
+    .optional(),
+});
+export type BrandConstraints = z.infer<typeof BrandConstraints>;
+
+const ScribbleShape = z.enum(["arrow", "underline", "circle", "sparkle", "cross"]);
+
+// Perangkat grafis khas brand (PRD 4 K5, T-124): menjadi token --device-* yang dipakai primitives
+// sebagai default; arketipe dan gaya boleh menimpa bila kontras atau komposisi menuntut.
+export const BrandDevices = z.strictObject({
+  highlight: z
+    .strictObject({
+      background: ColorToken,
+      color: ColorToken,
+      tilt: z.number().min(-6).max(6),
+    })
+    .optional(),
+  sticker: z.strictObject({ rotate: z.number().min(-10).max(10) }).optional(),
+  // Coretan yang boleh dipakai; daftar kosong berarti tanpa coretan.
+  scribbles: z.array(ScribbleShape).optional(),
+  tape: z.boolean().optional(),
+});
+export type BrandDevices = z.infer<typeof BrandDevices>;
 
 // brand.json per project (ARCH 6.1, PRD F2).
 export const BrandKit = z.strictObject({
@@ -67,5 +107,7 @@ export const BrandKit = z.strictObject({
     icon: LogoFile.optional(),
   }),
   rules: z.array(z.string().min(1)),
+  constraints: BrandConstraints.optional(),
+  devices: BrandDevices.optional(),
 });
 export type BrandKit = z.infer<typeof BrandKit>;

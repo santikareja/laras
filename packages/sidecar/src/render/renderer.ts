@@ -2,7 +2,8 @@ import { readFile } from "node:fs/promises";
 import { extname, resolve, sep } from "node:path";
 import { DEFAULT_DESIGN_LIMITS, type RenderCheck } from "@laras/shared";
 import { type Browser, chromium, type Page, type Route } from "playwright-core";
-import { FIT_SCRIPT } from "./fit.ts";
+import { FIT_SCRIPT, ROTATION_SCRIPT } from "./fit.ts";
+import { brandRuleChecks } from "./qa/brand.ts";
 import { COLLECT_SCRIPT, HIDE_TEXT_CSS } from "./qa/collect.ts";
 import { type DesignMeasurements, designChecks } from "./qa/design.ts";
 import { DESIGN_SCRIPT } from "./qa/design-collect.ts";
@@ -70,6 +71,7 @@ export function createRenderer(): Renderer {
         await page.goto(`${RENDER_ORIGIN}${SLIDE_PATH}`, { waitUntil: "load" });
         await page.evaluate(READY_SCRIPT);
         await page.evaluate(FIT_SCRIPT);
+        await page.evaluate(ROTATION_SCRIPT);
         const measurements = await page.evaluate<Measurements>(COLLECT_SCRIPT);
         const design = await page.evaluate<DesignMeasurements>(DESIGN_SCRIPT);
         const fonts = await platformFonts(page);
@@ -96,6 +98,7 @@ export function createRenderer(): Renderer {
         );
         const checks = [
           ...evaluateQa(measurements, qa, sampled),
+          ...(qa.brandRules === false ? [] : brandRuleChecks(measurements, design, qa.brand)),
           ...designChecks(design, pixels, qa.design ?? DEFAULT_DESIGN_LIMITS, qa.brand),
         ];
         return { png, checks };

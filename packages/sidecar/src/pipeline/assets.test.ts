@@ -11,6 +11,7 @@ import {
   cropToRatio,
   generatedImage,
   type JobContext,
+  photoRules,
   storeAsset,
   UserUploadAssetProvider,
 } from "./assets.ts";
@@ -199,6 +200,32 @@ describe("assetPrompt", () => {
     expect(prompt).toContain("primary #0F3D3E, secondary #E2DCC8, accent #F2A541");
     expect(prompt).toContain("no text, letters, numbers, logos");
     expect(prompt).not.toMatch(/\{\{\w+\}\}/);
+  });
+
+  it("arahan foto brand terstruktur di prompt gambar, menang atas gaya (T-124)", async () => {
+    const fixture = (slug: string) =>
+      BrandKit.parse(
+        JSON.parse(
+          readFileSync(
+            new URL(`../../../../fixtures/brands/${slug}/brand.json`, import.meta.url),
+            "utf8",
+          ),
+        ),
+      );
+    const kopi = fixture("kopi-lembayung");
+    const photo = await assetPrompt({ ...request, aspectRatio: "4:5" }, kopi);
+    expect(photo).toContain(
+      "- Brand photo rules (they override the visual style): Products and scenes are lit with natural daylight",
+    );
+    expect(photo).toContain("Never a plain white seamless backdrop");
+    const cut = photoRules(kopi, { ...request, kind: "cutout", subject: "object" });
+    expect(cut).not.toContain("backdrop");
+    expect(photoRules(fixture("seruni-skin"), request)).toContain("real, unretouched skin texture");
+    expect(photoRules(fixture("ritme-run-club"), request)).toBe(
+      "Any person is clearly in motion, never a static pose.",
+    );
+    const { constraints: _, ...plain } = kopi;
+    expect(photoRules(plain, request)).toBe("None beyond the palette above.");
   });
 
   it("arahan gaya job di prompt gambar; tanpa gaya: natural (T-133)", async () => {
