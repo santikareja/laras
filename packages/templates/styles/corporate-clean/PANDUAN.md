@@ -14,6 +14,12 @@
 - **Efisien tanpa sesak.** Informasi lebih banyak daripada gaya lain boleh, asal dikelompokkan dan dibatasi angka.
 - **Sistem, bukan dekorasi.** Ciri khas datang dari konsistensi panel, ikon, tombol, dan bingkai, bukan dari efek.
 
+**Konsep gaya: "solusi tepercaya" (T-134).** Setiap postingan Corporate Clean menceritakan satu hal: ada orang nyata yang menjalankan layanan ini, dan ada bukti bahwa ia bekerja. Penilaian pemilik atas render T-131 ("terlalu datar, tanpa konsep") menunjukkan bahwa panel rapi dan ikon saja tidak cukup; empat hal ini wajib ada di setiap pola:
+1. **Metafora atau ide besar.** Satu ide visual yang menerjemahkan pesan: *orang di balik layanan* (subjek keluar dari tumpukan kartu brand), *dari A ke B* (lintasan berlabel dari asal ke tujuan, dari langkah pertama ke hasil, dari jalan ke lari), atau *kata yang menjadi keahlian* (orang berdiri di depan kata kunci layanannya). Panah naik atau grafik generik bukan ide; lintasan baru sah bila kedua titiknya fakta nyata dari knowledge.
+2. **Gambar bergaya.** Orang nyata seluruh badan dalam konteks kerja, memegang alat kerja atau produk, berlatar transparan dengan cahaya studio terang (aset `gaya-corporate`). Perlakuan alami, tanpa filter; kedalaman datang dari tumpang tindih lapisan, bukan dari efek.
+3. **Interaksi huruf dan subjek.** Subjek selalu mengunci teks dan bidang: tepi dalam subjek menembus panel, kepala menembus tepi atas jendela panggung, atau kepala dan bahu menutup bagian bawah kata kunci raksasa. Pil kecil menjepit subjek dan panel sekaligus. Subjek tidak pernah menutup headline, label, atau angka.
+4. **Susunan lapisan dengan hierarki jelas.** Bidang tenang (+ titik halus) → bentuk besar (panel, kartu kop, jendela panggung) → subjek → kata utama → info pendukung (subjudul, deret fitur, daftar) → detail kecil (pil, label vertikal font aksen, label lintasan, kontak). Padat boleh, kacau tidak: 7–8 elemen dengan satu elemen dominan.
+
 Tentang warna biru: studi percontohan Sasidharan dan Dhanesh (2007) menemukan situs e-commerce dengan warna dominan biru memicu kepercayaan tertinggi, hitam terendah. Karena hanya studi percontohan, perlakukan sebagai indikasi, bukan hukum. Biru juga sangat umum di logo korporat sehingga sulit dibedakan; maka gaya ini tidak mewajibkan biru. Yang diwajibkan adalah warna brand yang tenang sebagai bidang dominan, plus perangkat khas brand agar tidak tertukar dengan pesaing.
 
 ## 2. Kapan dipakai dan kapan dihindari
@@ -39,7 +45,7 @@ Tentang warna biru: studi percontohan Sasidharan dan Dhanesh (2007) menemukan si
 
 ## 3. Ciri visual kunci
 
-1. **Satu warna brand mendominasi** (≥ 55% piksel): warna netral terang atau warna primary yang tenang. Aksen kontras hanya muncul di tombol CTA dan satu sorotan.
+1. **Satu warna brand mendominasi** (≥ 30% piksel, umumnya 40–55% seperti referensi): warna netral terang atau warna primary yang tenang. Aksen kontras hanya muncul di tombol CTA dan satu sorotan.
 2. **Panel atau kartu bersudut membulat** (radius brand) menampung teks; panel boleh terpotong tepi kanvas.
 3. **Subjek nyata**: orang profesional atau pekerja yang sedang memegang alat kerjanya (laptop, tablet, alat servis, produk), sebagai cut-out atau foto; subjek menembus batas panel.
 4. **Headline sans tebal**, sentence case atau Title Case, 2–4 baris, rata kiri atau tengah, dengan satu frasa berwarna beda.
@@ -47,7 +53,7 @@ Tentang warna biru: studi percontohan Sasidharan dan Dhanesh (2007) menemukan si
 6. **CTA berbentuk tombol** (kapsul atau persegi) dengan ikon panah di dalam lingkaran.
 7. **Bingkai tetap**: logo di kepala dan bar kontak atau situs di kaki, posisinya sama di setiap postingan.
 8. **Perataan tegas**: semua tepi jatuh di garis kolom, jarak antarelemen seragam kelipatan 8 px.
-9. **Dekorasi minim dan geometris**: paling banyak satu lengkung (swoosh) atau satu pola titik; tanpa tekstur kasar, grain, atau coretan tangan.
+9. **Dekorasi minim dan geometris**: paling banyak satu lengkung (swoosh) atau satu pola titik, ditambah lintasan berlabel bila pola memakainya; tanpa tekstur kasar, grain, atau coretan tangan.
 10. **Cahaya terang dan bersih** pada foto; latar kantor terang yang dikaburkan bila ada.
 
 ## 4. Komposisi, grid, dan hierarki
@@ -88,18 +94,18 @@ Uji kabur (squint test): bila gambar dikaburkan, urutan yang terlihat harus head
 | P1 grid 12 kolom, maks 2 sumbu perataan | Tetap wajib | Sumbu 1: tepi kiri konten (atau tepi dalam panel). Sumbu 2: tepi kanan konten. Pola terpusat hanya memakai sumbu tengah. |
 | P2 satu elemen dominan, maks 3 ukuran huruf, headline ≥ 2× body | Tetap wajib | Tiga ukuran saja: H (headline atau angka utama), B (subjudul, label ikon, tombol), L (label kecil, kontak; = ukuran terkecil brand, min 24 px). Angka utama memakai H; angka di kartu pendukung memakai B tebal. |
 | P3 kedekatan dan ritme spasi, tanpa celah mati | Tetap wajib | Kelipatan 8 px; dalam grup 16–24, antargrup 48–64. Jarak antara dua grup yang berurutan dalam alur baca ≤ 160 px; ruang kosong besar diletakkan di tepi atau di sekitar elemen dominan, bukan memutus alur baca. |
-| P4 maks 2 keluarga huruf, tanpa yatim, body 30–45 karakter | Tetap wajib | Hanya font heading dan body brand; gaya ini tidak memakai font aksen. |
+| P4 maks 2 keluarga huruf, tanpa yatim, body 30–45 karakter | Dilonggarkan terbatas | Font heading dan body brand untuk semua teks baca; font aksen brand (`--font-accent`, T-134) hanya untuk label pendek: eyebrow di kartu kop, label vertikal, label lintasan, keterangan kartu angka. Angka tidak dipisah baris dari satuannya ("5:45 AM", "200 g"). |
 | P5 maks 3 elemen visual utama | Tetap wajib | Biasanya subjek + panel (+ mockup atau kartu besar). Ikon kecil bukan elemen visual utama. |
 | P6 keseimbangan, tidak saling menutup bagian penting | Tetap wajib | Subjek boleh menutup tepi panel, tidak boleh menutup huruf headline atau ikon. |
 | P7 kontras, font min 24 px, safe margin | **Tidak pernah dilonggarkan** | Berlaku juga untuk label ikon, chip, nomor telepon, dan teks bar kontak (referensi sering memakai teks kontak terlalu kecil; jangan ditiru). |
 | P8 fokus di titik potong grid 3×3 (±8%) | Dilonggarkan terbatas | Hanya pola terpusat (pola B): fokus boleh di sumbu tengah pada garis sepertiga atas (x 540, y 450 ± 108). Maks 1 dari setiap 3 postingan berurutan. Pola lain tetap di titik potong (360/720, 450/900). |
-| P9 60-30-10 dari piksel | Tetap wajib | Lihat bagian 6. Aksen ≤ 12%, hanya tombol CTA dan satu sorotan. |
-| P10 ruang kosong ≥ 35%, maks 5 elemen | Dilonggarkan terbatas | Ruang kosong tetap ≥ 35% sesuai definisi PRD (warna dominan tanpa elemen; panel berwarna kedua tidak dihitung kosong). Jumlah tetap ≤ 5, dengan cara hitung grup di atas: maks 1 grup informasi + 1 blok aksi per slide, grup ≤ 4 item, total item kecil ≤ 8. |
+| P9 60-30-10 dari piksel | Dilonggarkan (dikalibrasi dari referensi, T-134) | Dominan ≥ 30% (kuartil bawah referensi corporate), warna kedua + gambar ≤ 55%, aksen ≤ 12% hanya untuk tombol CTA dan satu sorotan. Lihat bagian 6. |
+| P10 ruang kosong ≥ 35%, maks 5 elemen | Dilonggarkan (dikalibrasi dari referensi, T-134) | Ruang kosong ≥ 25% (warna dominan di luar teks), elemen ≤ 8 (referensi corporate 7–9), dengan cara hitung grup di atas: maks 1 grup informasi + 1 blok aksi per slide, grup ≤ 4 item, total item kecil ≤ 8. Ambang ini ada di `limits` `style.ts`. |
 | P11 konsistensi | Dilonggarkan terbatas | Satu radius untuk bidang (panel, kartu, bingkai foto). Elemen kapsul (tombol, chip) boleh radius penuh hanya bila radius brand ≥ 16 px; maks 2 nilai radius per slide. Sudut kemiringan selalu 0°. Satu gaya ikon, satu gaya tombol, satu keluarga dekorasi. |
 
 ## 5. Tipografi
 
-**Kategori huruf.** Paling cocok: geometric sans (bentuk lingkaran jelas, terasa modern dan ramah), neo-grotesk, atau humanist sans untuk headline; humanist atau neo-grotesk untuk body. Serif tegas dengan kontras sedang dapat dipakai sebagai varian "korporat klasik" (keuangan, hukum, properti premium). Monospace dan script tidak dipakai.
+**Kategori huruf.** Paling cocok: geometric sans (bentuk lingkaran jelas, terasa modern dan ramah), neo-grotesk, atau humanist sans untuk headline; humanist atau neo-grotesk untuk body. Serif tegas dengan kontras sedang dapat dipakai sebagai varian "korporat klasik" (keuangan, hukum, properti premium). Script tidak dipakai. Monospace hanya lewat font aksen brand untuk label pendek (bagian 4, P4), tidak untuk headline atau body.
 
 **Skala dan proporsi.**
 - Headline (H): dua langkah teratas skala brand, biasanya 76–112 px; angka statistik boleh langkah teratas (104–160 px).
@@ -115,8 +121,10 @@ Uji kabur (squint test): bila gambar dikaburkan, urutan yang terlihat harus head
 
 **Leading.** Headline 1,0–1,1; body 1,35–1,45; label satu baris.
 
+**Font aksen (T-134).** Label kapital tracking +12%, langkah 1 (min 24 px), satu baris: eyebrow di kartu kop, label vertikal (nama brand dan kota), label titik lintasan, keterangan kartu angka. Bila brand tidak punya font aksen, peran ini jatuh ke font body.
+
 **Perlakuan khusus yang diizinkan.**
-- **Headline dua warna**: satu frasa ≤ 3 kata diberi warna primary (latar terang) atau aksen (latar gelap, cek kontras), maks satu frasa per slide.
+- **Headline dua warna**: satu frasa ≤ 3 kata diberi warna primary (latar terang) atau aksen (latar gelap, cek kontras), maks satu frasa per slide. Di `feed-panel-berlapis` frasa ini otomatis klausa sesudah koma atau titik terakhir; di `feed-deret-fitur` baris kedua headline.
 - **Sorot di balik kata** (`Highlight`, sudah ada) dengan `tilt` 0, maks satu per slide, sebagai pengganti headline dua warna, bukan tambahan.
 - **Kata raksasa di belakang subjek** (`Display`, sudah ada) untuk satu kata kunci layanan (mis. "SEO", "PAJAK"), hanya di pola tertentu.
 - Tidak ada outline, rotasi, distorsi, glow, atau teks melengkung.
@@ -131,16 +139,17 @@ Uji kabur (squint test): bila gambar dikaburkan, urutan yang terlihat harus head
 
 | Peran | Mode Terang (default) | Mode Primary |
 |---|---|---|
-| Dominan ≥ 55% | `--color-neutral-light` (atau foto kantor terang yang dikaburkan) | `--color-primary` |
+| Dominan ≥ 30% (umumnya 40–55%) | `--color-neutral-light` (atau foto kantor terang yang dikaburkan) | `--color-primary` |
 | Kedua + gambar 20–35% | Panel `--color-primary`, foto atau subjek | Kartu `--color-neutral-light`, foto atau subjek |
 | Aksen ≤ 12% | `--color-accent` untuk tombol CTA dan satu sorotan | `--color-accent` untuk tombol CTA dan satu sorotan |
 | Teks | `--color-neutral-dark`, frasa sorot `--color-primary`; di atas panel primary: `--color-neutral-light` | `--color-neutral-light`; di atas kartu: `--color-neutral-dark` |
 | Wadah ikon, chip | `--color-secondary` bila terang, atau neutral-light di atas panel | `--color-neutral-light` dengan ikon primary |
 
-**Anggaran luas per slide (P9).** Semua yang bukan warna dominan masuk anggaran 20–35%: panel, kartu, foto, subjek, bar kontak terisi, wadah ikon. Karena itu:
-- Panel 12–25% kanvas; subjek cut-out 10–18%; foto berbingkai ≤ 35% bila tanpa panel.
+**Anggaran luas per slide (P9, dikalibrasi T-134).** Semua yang bukan warna dominan masuk anggaran ≤ 55% (referensi corporate: median dominan 45%, area tenang 54%): panel, kartu, foto, subjek, bar kontak terisi, wadah ikon. Karena itu:
+- Panel 25–32% kanvas; subjek cut-out 10–16%; kartu kop ≤ 6%; bar kaki ≤ 9%; foto berbingkai ≤ 35% bila tanpa panel.
+- Ukuran terukur pola T-134 (render demo): `feed-panel-berlapis` dominan 42–49% / warna kedua + gambar 51–55%; `feed-deret-fitur` dominan ±60%; `feed-kata-kunci` panel brand ±35% dengan bidang tetap dominan.
 - Bar kontak default berupa baris tanpa bidang (ikon + teks di atas warna dominan); bar terisi hanya bila anggaran masih cukup.
-- Contoh pola A mode terang: panel 22% + subjek 12% (bagian yang tumpang tindih dihitung sekali) ≈ 32%; tombol aksen ±3%; sisanya warna dominan ±62%, dikurangi teks.
+- Contoh pola A mode terang: panel 29% + bar kaki 8% + kartu kop 5% + subjek 13% (bagian yang tumpang tindih dihitung sekali) ≈ 53%; aksen ±1%; sisanya warna dominan ±46%.
 - Pada mode primary, kartu dan chip neutral-light ikut anggaran 20–35%, jadi jumlahnya harus hemat.
 
 **Peran `--color-secondary`.** Bila secondary berupa warna muda (tint), pakai sebagai latar wadah ikon, kartu, dan chip. Bila secondary jenuh (kuning, oranye), perlakukan sebagai aksen kedua: hanya untuk lengkung dekoratif atau garis pendek, dan totalnya ikut dalam batas aksen 12%.
@@ -171,18 +180,25 @@ Uji kabur (squint test): bila gambar dikaburkan, urutan yang terlihat harus head
 - `Logo`, `Grid`, `Text`.
 - Tidak dipakai di gaya ini: `Scribble`, `Tape`, `Frame` bertepi sobek.
 
-**Perangkat yang perlu dibuat:**
-- **`Panel`** (perlu dibuat): bidang warna bersudut membulat, bisa bleed di satu sisi (sudut di sisi itu tidak terlihat), luas 12–25% kanvas sesuai anggaran P9, menampung blok teks dengan padding 48–64 px.
-- **`Icon`** (perlu dibuat): set ikon garis terkurasi (±40–60 ikon umum: telepon, chat, email, situs, pin lokasi, kalender, jam, centang, perisai, truk, kartu, grafik, pengguna, bintang, panah). Satu gaya per postingan: outline, stroke seragam ±1/16 ukuran ikon (4 px pada ikon 64 px), ujung membulat. Ukuran 40–64 px; dalam wadah lingkaran 1,5× ukuran ikon. Ikon diambil dari set ikon garis milik Laras (`primitives/Icons.tsx`, digambar sendiri tanpa dependency, keputusan T-132), bukan digambar model gambar.
-- **`IconRow`** (perlu dibuat): deret 3–4 item ikon + label, horizontal dengan pemisah garis, atau vertikal sebagai checklist; semua item sama struktur dan lebar.
-- **`ContactBar`** (perlu dibuat): baris kaki tinggi 104–128 px selebar area aman, 2–3 item ikon dalam lingkaran + teks L (≥ 24 px, ≤ 24 karakter per item), pemisah garis tipis. Dua varian: baris tanpa bidang (default) dan bar terisi warna primary atau neutral-dark dengan radius brand (hanya bila anggaran P9 cukup). Boleh memuat logo di ujung bila aturan brand meminta logo di bawah.
-- **`Button`** (perlu dibuat): tombol CTA tinggi 88–104 px, padding horizontal 40 px, label B bobot kuat 2–3 kata, ikon panah dalam lingkaran 56–64 px di sisi kanan. Satu tombol per slide.
-- **`StatCard`** (perlu dibuat): kartu angka besar (H) + label (L), padding 32–40 px; angka wajib berasal dari knowledge brand.
-- **`RatingCard`** (perlu dibuat): ikon bintang + skor + sumber ulasan (mis. "4,8 dari 312 ulasan Google"), hanya dengan data nyata dari knowledge.
-- **`ProfileTag`** (perlu dibuat): avatar lingkaran 112–144 px dengan cincin 6–8 px warna aksen atau secondary, nama (B tebal) dan peran (L).
-- **`DeviceMockup`** (perlu dibuat): bingkai laptop atau ponsel tampak depan; isi layar dirender HTML (grafik sederhana, angka, antarmuka brand), bukan oleh model gambar.
-- **`Swoosh`** (perlu dibuat sebagai perangkat mandiri; lengkung di `feed-bidang-warna` sudah ada): satu kurva tebal 24–56 px atau bidang lengkung besar di 15% bawah atau satu sudut, warna secondary atau aksen.
-- **`DotGrid`** (perlu dibuat): pola titik 4 × 6, titik 6 px, jarak 24 px, warna tint primary, di satu sudut yang kosong.
+**Perangkat gaya (semua sudah ada: T-132 di `primitives/`, T-134 di `styles/corporate-clean/parts.tsx`):**
+- **`Panel`**: bidang warna bersudut membulat, bisa bleed di satu sisi (sudut di sisi itu tidak terlihat), luas 25–32% kanvas sesuai anggaran P9, menampung blok teks dengan padding 48–64 px.
+- **`Icon`**: set ikon garis terkurasi (±40–60 ikon umum: telepon, chat, email, situs, pin lokasi, kalender, jam, centang, perisai, truk, kartu, grafik, pengguna, bintang, panah). Satu gaya per postingan: outline, stroke seragam ±1/16 ukuran ikon (4 px pada ikon 64 px), ujung membulat. Ukuran 40–64 px; dalam wadah lingkaran 1,5× ukuran ikon. Ikon diambil dari set ikon garis milik Laras (`primitives/Icons.tsx`, digambar sendiri tanpa dependency, keputusan T-132), bukan digambar model gambar.
+- **`IconRow`**: deret 3–4 item ikon + label, horizontal dengan pemisah garis, atau vertikal sebagai checklist; semua item sama struktur dan lebar.
+- **`ContactBar`**: baris kaki tinggi 104–128 px selebar area aman, 2–3 item ikon dalam lingkaran + teks L (≥ 24 px, ≤ 24 karakter per item), pemisah garis tipis. Dua varian: baris tanpa bidang (default) dan bar terisi warna primary atau neutral-dark dengan radius brand (hanya bila anggaran P9 cukup). Boleh memuat logo di ujung bila aturan brand meminta logo di bawah.
+- **`Button`**: tombol CTA tinggi 88–104 px, padding horizontal 40 px, label B bobot kuat 2–3 kata, ikon panah dalam lingkaran 56–64 px di sisi kanan. Satu tombol per slide.
+- **`StatCard`**: kartu angka besar (H) + label (L), padding 32–40 px; angka wajib berasal dari knowledge brand.
+- **`RatingCard`**: ikon bintang + skor + sumber ulasan (mis. "4,8 dari 312 ulasan Google"), hanya dengan data nyata dari knowledge.
+- **`ProfileTag`**: avatar lingkaran 112–144 px dengan cincin 6–8 px warna aksen atau secondary, nama (B tebal) dan peran (L).
+- **`DeviceMockup`**: bingkai laptop atau ponsel tampak depan; isi layar dirender HTML (grafik sederhana, angka, antarmuka brand), bukan oleh model gambar.
+- **`Swoosh`**: satu kurva tebal 24–56 px atau bidang lengkung besar di 15% bawah atau satu sudut, warna secondary atau aksen.
+- **`DotGrid`**: pola titik 4 × 6, titik 6 px, jarak 24 px, warna tint primary, di satu sudut yang kosong.
+- **Kartu kop bertumpuk** (`feed-panel-berlapis`): kartu terang selebar isinya (min 360 px) yang mengintip 152 px di atas panel, berisi logo dan eyebrow font aksen; tepi isinya segaris dengan kolom teks panel.
+- **`Chip` pil subjek**: pil warna kartu kop dengan batang aksen 6 px di ujung (seperti kursor antarmuka), menempel di tepi bawah panel dan di atas tubuh subjek; ujung dalamnya segaris dengan kolom teks.
+- **Label vertikal** (`AccentText vertical`): font aksen kapital, dibaca dari bawah ke atas, di sudut atas sisi subjek; satu per slide, isinya nama brand dan kota.
+- **`PathLine` lintasan berlabel**: garis 14 px warna primary lewat 4 titik (Catmull-Rom) dari kiri bawah jendela panggung ke kanan atas, keluar dari tepi atas jendela; tiga bentuk: `arrow` (maju), `route` (putus-putus, rute asal ke tujuan), `steps` (titik antara untuk langkah). Label awal dan akhir font aksen.
+- **`FooterBar` bar kaki bleed**: bar primary selebar area aman yang menempel ke tepi bawah kanvas (radius brand hanya di atas), isinya di atas safe margin; menjadi lantai subjek.
+- **`FeatureRow`**: deret 3 manfaat, ikon 32 px dalam wadah 64 px + label tebal di sampingnya, kolom sama lebar dengan pemisah.
+- **`frameSubject`**: menempatkan cut-out lewat kotak alpha-nya (kepala sampai lantai, tepi dalam menembus panel), bukan lewat kotak gambar, agar aset berbeda tetap terkunci ke panel.
 
 **Konsistensi (P11).** Dalam satu postingan dan satu seri: satu radius bidang, satu gaya tombol, satu set ikon dengan stroke sama, satu keluarga dekorasi (pilih `Swoosh` ATAU `DotGrid`, tidak keduanya), kemiringan 0°, posisi logo dan bar kontak tetap.
 
@@ -195,6 +211,8 @@ Uji kabur (squint test): bila gambar dikaburkan, urutan yang terlihat harus head
 - **Sudut kamera:** setinggi mata atau sedikit dari bawah (memberi kesan yakin); setengah badan sampai tiga perempat badan untuk cut-out; medium shot untuk foto kerja.
 - **Warna:** netral sejuk; pakaian netral (putih, abu, navy) atau satu warna yang selaras dengan brand; hindari pakaian berwarna aksen brand agar aksen tetap milik CTA.
 - **Tekstur dan realisme:** fotorealistis, tekstur kulit alami, latar nyata yang rapi; tanpa kulit plastik, HDR berlebihan, atau render 3D.
+
+**Aset khas gaya (T-134).** `gaya-corporate`: orang nyata seluruh badan berlatar transparan, duduk di bangku atau kubus polos atau sedang melangkah, memegang alat kerja atau produk, menatap sedikit ke samping. Pilih sisi subjek di layout agar tatapan atau gerak tangannya mengarah ke teks (di render demo: roaster dan dermatolog menatap kanan atas, pelatih lari menunjuk ke headline). Pakaian boleh warna brand, jadi letakkan subjek di atas bidang terang, bukan di atas panel primary.
 
 **Jenis aset.**
 - **Cut-out berlatar transparan** (utama): untuk pola panel, kata raksasa, acara, dan statistik. Tepi bersih, tangan dan alat utuh.
@@ -225,13 +243,14 @@ Koordinat untuk kanvas 1080 × 1350, safe margin 64 px. Titik potong grid 3×3: 
 - Atas ke bawah: logo kiri atas (kepala); panel primary kolom 1–7 (boleh bleed ke kiri), y ±220–760 (±22% kanvas), berisi eyebrow kecil, headline 3–4 baris, subjudul 1–2 baris; subjek cut-out kolom 6–12, y ±260–1100, menembus tepi kanan panel 1–2 kolom (K3, K4); di bawah panel, di atas warna dominan: checklist 3 item atau harga sebagai chip; blok aksi di kaki (tombol + 1–2 kontak, atau `ContactBar` tanpa bidang).
 - Fokus: headline di kiri-atas (360, 450); tangan, alat, atau produk subjek di kanan-bawah (720, 900).
 - Elemen: 5 (logo, blok teks, subjek, checklist, blok aksi). Elemen visual utama: subjek + panel.
-- Arketipe: terdekat `feed-bidang-warna`; usulan arketipe baru `feed-panel-info` (perlu dibuat).
+- Arketipe: `feed-panel-info` (T-132), dan arketipe khas T-134 `feed-panel-berlapis` (lihat di bawah).
+- **Arketipe khas `feed-panel-berlapis` (pola demo pertama, thumbnail gaya; referensi 528a).** Metafora: *orang di balik layanan*, subjek keluar dari tumpukan kartu brand. Lapisan: bidang tenang → kartu kop terang (logo + eyebrow font aksen) yang mengintip di atas panel → panel primary bleed ke sisi jauh (headline langkah 5 dengan klausa terakhir berwarna sorot, garis aksen 88 × 6, subjudul) → subjek cut-out di sisi dekat, tepi dalam kotak alpha-nya 104 px di dalam panel dan berdiri di atas bar kaki → pil yang menjepit subjek dan tepi bawah panel → label vertikal font aksen di sudut atas sisi subjek → baris jaminan berikon centang di tengah ruang antara panel dan bar kaki → titik halus di sudut kosong → bar kaki dengan 2 kontak (+ logo bila brand meminta logo di bawah). Tujuh elemen. Opsi `subjek` (sisi), `logo` (kartu atau bar kaki), `judul` (langkah 5 atau 4 untuk skala besar seperti Anton 112 px), `sorot` (accent, secondary bila aksen dilarang di atas primary, none).
 
 ### Pola B. Deret fitur terpusat (ajakan, brand awareness, pengenalan layanan)
 - Atas ke bawah: logo tengah (kepala, y 64–136); headline 2 baris rata tengah, satu baris primary dan satu baris neutral-dark (y ±240–470); subjudul 1 baris (y ±490–540); foto atau subjek dalam bingkai membulat selebar kolom 2–11 (y ±580–900, ±17% kanvas); deret 3 ikon berlabel dengan pemisah (y ±930–1060); tombol CTA di tengah, kontak 1 baris (≤ 2 item) di bawahnya.
 - Fokus: headline di sumbu tengah pada garis sepertiga atas (540, 450 ± 108), memakai pelonggaran P8.
 - Elemen: 5 (logo, blok teks, foto, deret ikon, blok aksi).
-- Arketipe: usulan baru `feed-deret-fitur` (perlu dibuat).
+- **Arketipe khas `feed-deret-fitur` (T-134, referensi 7626).** Metafora: *dari A ke B*. Jendela panggung (kartu warna terang lain, radius brand) di tengah; subjek cut-out muncul dari bawah jendela (terpotong tepi bawahnya, ±64% tubuh terlihat) dan kepala serta bahunya menembus tepi atas; lintasan berlabel melintas di belakang subjek dari kiri bawah dan keluar dari tepi atas jendela di kanan. Contoh: Kopi rute putus-putus "Jawa Barat → Bandung", Seruni langkah "Konsultasi → Perawatan", Ritme panah "Walk → Run" searah tangan pelatih yang menunjuk. Baris kedua headline berwarna primary atau blok sorot aksen (`judul2: sorot`) bila primary terlalu dekat dengan warna teks. Enam elemen, komposisi terpusat (`data-qa-composition="center"`).
 
 ### Pola C. Daftar ikon (edukasi, tips, langkah, daftar layanan)
 - Atas ke bawah: logo kiri atas; headline kolom 1–8 (y ±180–440), bisa berupa pertanyaan atau "4 langkah ..."; daftar vertikal 3–4 item di kolom 1–7, tiap item: ikon dalam lingkaran 88–96 px + judul B tebal + satu baris keterangan L; subjek cut-out kolom 8–12, bagian bawah terpotong kanvas atau berdiri di atas `Swoosh`; ajakan kecil di kaki ("Simpan untuk nanti" atau tombol).
@@ -259,6 +278,7 @@ Koordinat untuk kanvas 1080 × 1350, safe margin 64 px. Titik potong grid 3×3: 
 - Fokus: angka utama di kiri-atas (360, 450); subjek dan perangkat di kanan-bawah (720, 900).
 - Elemen: 5 (logo, angka + pengantar, kartu statistik, subjek, blok aksi). Angka hanya dari knowledge.
 - Arketipe: terdekat `feed-kata-raksasa`; usulan baru `feed-kartu-statistik` (perlu dibuat).
+- **Arketipe khas varian kata raksasa `feed-kata-kunci` (T-134, referensi e8d6).** Metafora: *kata yang menjadi keahlian*. Kata kunci layanan (≤ 9 karakter, fit-to-width, maks 1,8× langkah terbesar) rata kiri di bawah baris logo; subjek cut-out di kanan berdiri di depannya dengan kepala mulai di 50% tinggi huruf, jadi kepala dan bahu menutup bagian bawah huruf tanpa menghapus kata. Headline langkah 4 dan subjudul di kolom kiri tepat di atas panel bukti; panel primary 500 px di kaki kanvas berisi daftar 3 layanan berikon dan ditembus tubuh subjek; kartu angka (angka langkah 4 + keterangan font aksen) melayang di depan subjek; lis kontak di depan kaki subjek. Untuk brand yang membatasi elemen visual utama (Seruni), `panel: none`: daftar di atas bidang dan lis kontak berwarna terang lain menjadi lantai. Tujuh elemen.
 
 ### Pola G. Foto kerja berbingkai (jasa lapangan: servis, kebersihan, renovasi)
 - Atas ke bawah: logo kiri atas; foto utuh pekerja sedang bekerja dalam bingkai membulat selebar kolom 1–12, y ±170–640 (±31% kanvas, batas anggaran P9); di bawahnya, langsung di atas warna dominan: headline 2 baris, subjudul 1 baris, tombol "Hubungi hari ini" + nomor telepon.
@@ -299,12 +319,13 @@ Koordinat untuk kanvas 1080 × 1350, safe margin 64 px. Titik potong grid 3×3: 
 - Jangan menulis kontak, label, atau catatan kaki di bawah 24 px.
 - Jangan memakai lebih dari satu frasa sorotan, lebih dari satu tombol, atau lebih dari satu keluarga dekorasi.
 - Jangan memiringkan elemen, menambah coretan tangan, selotip, atau tekstur.
-- Jangan memakai label vertikal dekoratif, teks berjalan, atau watermark nama brand berulang.
+- Jangan memakai lebih dari satu label vertikal (isinya nama brand dan kota dari knowledge, font aksen), teks berjalan, atau watermark nama brand berulang.
 - Jangan menggambar logo pihak ketiga (WhatsApp, Google, Instagram) atau kode QR dengan model gambar; pakai ikon generik dan teks. Kode QR hanya bila file aslinya disediakan pengguna.
 
 **Risiko AI-slop khas gaya ini (hindari):**
 - **Foto stok klise:** jabat tangan, menunjuk grafik, tim melompat, tangan bersedekap, cek raksasa. Klise ini tidak mengatakan apa pun tentang bisnis dan membuat pembaca curiga.
-- **Simbol bisnis generik:** panah naik, gedung pencakar langit, globe jaringan bercahaya, bola lampu, roket, puzzle, bidak catur.
+- **Simbol bisnis generik:** panah naik tanpa makna, gedung pencakar langit, globe jaringan bercahaya, bola lampu, roket, puzzle, bidak catur. Lintasan `feed-deret-fitur` hanya sah bila kedua titiknya fakta dari knowledge (asal dan tujuan, langkah pertama dan berikutnya), bukan "pertumbuhan" generik.
+- **Panel tanpa orang:** panel rapi + ikon tanpa subjek yang mengunci teks adalah penyebab "datar" di T-131; setiap pola menaruh orang nyata yang menembus atau menutup sesuatu.
 - **Gradient biru berlebihan:** gradient multi-warna, glow, lens flare, gumpalan 3D melayang, dan efek kaca di semua tempat.
 - **Ilustrasi "Corporate Memphis":** orang datar berlengan panjang dan berkepala kecil; terlalu umum dan sudah identik dengan template.
 - **Sup kartu:** headline di kartu, subjudul di kartu, setiap ikon di kartu; hierarki hilang.
@@ -344,9 +365,10 @@ Koordinat untuk kanvas 1080 × 1350, safe margin 64 px. Titik potong grid 3×3: 
 
 ## 13. Checklist QA gaya
 
-1. Satu warna (neutral-light atau primary) menutupi ≥ 55% piksel, dan aksen ≤ 12% hanya pada tombol CTA dan satu sorotan?
-2. Elemen ≤ 5 menurut cara hitung bagian 4, dengan maks 1 grup informasi (≤ 4 item) dan 1 blok aksi, total item kecil ≤ 8?
-3. Ruang kosong (warna dominan tanpa elemen) ≥ 35%, dan jarak antara dua grup berurutan dalam alur baca ≤ 160 px?
+1. Satu warna (neutral-light, secondary, atau primary) menutupi ≥ 30% piksel, warna kedua + gambar ≤ 55%, dan aksen ≤ 12% hanya pada tombol CTA dan satu sorotan?
+2. Elemen ≤ 8 menurut cara hitung bagian 4, dengan maks 1 grup informasi (≤ 4 item) dan 1 blok aksi, total item kecil ≤ 8?
+3. Ruang kosong (warna dominan tanpa elemen) ≥ 25%, dan jarak antara dua grup berurutan dalam alur baca ≤ 160 px?
+3a. Ada satu ide besar (orang di balik layanan, dari A ke B, kata keahlian) dan subjek mengunci teks atau bidang tanpa menutup huruf yang harus terbaca?
 4. Hanya 3 ukuran huruf, headline ≥ 2× body, dan semua teks (termasuk kontak dan label ikon) ≥ 24 px dengan kontras lolos P7?
 5. Semua tepi teks dan kartu jatuh di kolom grid dengan ≤ 2 sumbu perataan, dan semua elemen tegak (0°)?
 6. Satu radius bidang (plus radius penuh untuk kapsul bila radius brand ≥ 16), satu gaya tombol, satu set ikon dengan stroke sama, satu keluarga dekorasi?
@@ -362,15 +384,15 @@ Koordinat untuk kanvas 1080 × 1350, safe margin 64 px. Titik potong grid 3×3: 
 **Referensi pemilik, folder `corporate/`:**
 - `06c048adf5994c7cde6c717a0da295d1.jpg`: bingkai tetap (logo dan tombol pesan di kepala, bar kontak di kaki) yang sama di sembilan postingan, kartu checklist berlabel, headline dua warna; dicatat juga kepadatan dan teks kontak yang terlalu kecil sebagai hal yang tidak ditiru.
 - `4c60f7811ac6ec995392dfc05d680518.jpg` (juga referensi akar nomor 21): biru royal dengan aksen oranye, sorot di balik kata, chip bertitik, kartu profil pakar dengan avatar bercincin, lengkung oranye, dan selang-seling mode terang dan biru.
-- `528a86bbbcf025d6f8f478fa794ac141.jpg`: panel biru membulat berisi headline, subjek menembus tepi panel, chip ikon garis, garis aksen pendek, dan bar kontak dua item dengan ikon dalam lingkaran.
+- `528a86bbbcf025d6f8f478fa794ac141.jpg`: panel biru membulat berisi headline, subjek menembus tepi panel, chip ikon garis, garis aksen pendek, dan bar kontak dua item dengan ikon dalam lingkaran. Acuan `feed-panel-berlapis` (T-134): kartu logo yang bertumpuk di atas panel, label vertikal tipis, pil yang menempel di tubuh subjek, dan bar kaki.
 - `72c2cf4681a36284d4c2cb50938a37a3.jpg`: konteks Indonesia (pelatihan dan sertifikasi laboratorium), analis berhijab sebagai subjek, daftar bernomor dan tombol daftar; juga contoh kepadatan yang perlu dibatasi.
-- `76263dd96fe10160480cccc92da62d56.jpg`: pola terpusat dengan deret tiga ikon berlabel, tombol dengan ikon panah, dan baris kontak; panah naik dan skyline dicatat sebagai klise.
+- `76263dd96fe10160480cccc92da62d56.jpg`: pola terpusat dengan deret tiga ikon berlabel, tombol dengan ikon panah, dan baris kontak; panah naik dan skyline dicatat sebagai klise. Acuan `feed-deret-fitur` (T-134): panah pertumbuhan generik diganti lintasan berlabel dua titik nyata.
 - `8b569ae0394813e8a8dd0cdaa35e1c30.jpg`: promo jasa lapangan dengan pekerja sedang bekerja, tombol "hubungi hari ini" + nomor telepon, dan footer situs yang konsisten.
 - `a66820149ab49bfea11ba333024beea7.jpg`: bukti bahwa sistem ini bekerja dengan primary kuning, chip fitur berikon, orang yang memegang produk atau ponsel.
 - `ba03c60676ad721dd8a33a7019f3b63f.jpg`: panel kuning membulat di atas foto, lengan subjek keluar dari panel, CTA kapsul putih di kaki.
 - `c156e05ab1785f94d606621754d5feb6.jpg` (juga referensi akar nomor 46): kartu profil penulis di kaki, chip kata kunci, panel bergelombang; dipakai untuk pola testimoni dan profil.
 - `c35a5a7f3b38b70dfdfad748b8d272a9.jpg`: contoh versi berlebihan (font script, banyak ukuran, warna listrik) yang dijadikan batas atas kepadatan dan alasan larangan font script.
-- `e8d6962a9ed5542ac90692f37aec4857.jpg`: kata raksasa di belakang subjek, subjek memegang laptop berisi statistik (mockup K8), daftar layanan berikon dan bar manfaat; dipakai untuk pola angka bukti dengan jumlah item yang dipangkas.
+- `e8d6962a9ed5542ac90692f37aec4857.jpg`: kata raksasa di belakang subjek, subjek memegang laptop berisi statistik (mockup K8), daftar layanan berikon dan bar manfaat; dipakai untuk pola angka bukti dengan jumlah item yang dipangkas. Acuan `feed-kata-kunci` (T-134): daftar 3 layanan dan satu kartu angka menggantikan dashboard laptop.
 
 **Referensi akar (`instagram reference design/`):**
 - Nomor 48 (`cbb4d0b818b7f2370b7eb1d3ffa96142.jpg`): kartu rating dan mockup ponsel sebagai bukti sosial, bar kontak dengan ikon pin dan telepon.

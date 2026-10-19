@@ -18,13 +18,17 @@ export const corporateClean: StyleMeta = {
       description: "Bidang primary bernada tenang dengan teks terang dan panel netral.",
     },
   ],
-  archetypes: ["feed-panel-info", "feed-bidang-warna", "feed-satu-objek", "feed-foto-konsep"],
+  // Arketipe khas T-134 lebih dulu (PANDUAN bagian 9 pola A, B, F).
+  archetypes: [
+    "feed-panel-berlapis",
+    "feed-deret-fitur",
+    "feed-kata-kunci",
+    "feed-panel-info",
+    "feed-bidang-warna",
+    "feed-satu-objek",
+    "feed-foto-konsep",
+  ],
   plannedArchetypes: [
-    {
-      id: "feed-deret-fitur",
-      name: "Deret fitur",
-      description: "Subjek di tengah dengan deret ikon fitur.",
-    },
     {
       id: "feed-daftar-ikon",
       name: "Daftar ikon",
@@ -69,11 +73,17 @@ export const corporateClean: StyleMeta = {
     { id: "tag-profil", name: "Tag profil", status: "ada" },
     { id: "mockup-perangkat", name: "Mockup perangkat", status: "ada" },
     { id: "swoosh", name: "Swoosh", status: "ada" },
+    { id: "kartu-kop", name: "Kartu kop bertumpuk", status: "ada" },
+    { id: "pil-subjek", name: "Pil yang menjepit subjek dan panel", status: "ada" },
+    { id: "label-vertikal", name: "Label vertikal font aksen", status: "ada" },
+    { id: "lintasan", name: "Lintasan berlabel", status: "ada" },
+    { id: "bar-kaki", name: "Bar kaki bleed", status: "ada" },
   ],
   imagery: {
     kinds: ["cutout", "photo"],
     treatment: ["natural"],
     promptHints: [
+      "real professional of the business, full body, seated on a plain stool or cube or walking mid-stride, holding their work tool or the product, looking slightly off-camera toward the side where the text will be, bright soft daylight, isolated on a transparent background",
       "confident professional in a natural pose using a laptop or holding the product, bright soft daylight, isolated on a transparent background",
       "real worker on the job site, candid moment, natural light, clean uncluttered background",
     ],
@@ -118,7 +128,16 @@ export const corporateClean: StyleMeta = {
       description: "Satu swoosh warna brand di tepi kanvas",
     },
   ],
-  // Ambang QA desain dari bagian aturan PANDUAN.md (pola terpusat boleh, dua radius).
-  limits: { centerAxis: true, radii: 2 },
+  // Ambang QA desain (T-134): P9/P10 dikalibrasi dari referensi corporate (kuartil bawah warna
+  // dominan, kuartil atas porsi selain dominan dikurangi aksen 12%, ruang kosong = dominan − 5%,
+  // jumlah elemen referensi); pola terpusat boleh dan dua radius (PANDUAN bagian 4).
+  limits: {
+    centerAxis: true,
+    radii: 2,
+    dominantMin: 0.3,
+    secondMax: 0.55,
+    emptyMin: 0.25,
+    elementsMax: 8,
+  },
   variantLimits: {},
 };

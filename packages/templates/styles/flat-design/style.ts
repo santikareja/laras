@@ -5,7 +5,7 @@ export const flatDesign: StyleMeta = {
   id: "flat-design",
   name: "Flat Design",
   summary:
-    "Cerah dan ramah: bidang warna jenuh tanpa bayangan, bentuk lengkung dan swoosh, subjek cut-out yang menembus bentuk.",
+    "Cerah dan ramah: bidang warna jenuh tanpa bayangan, satu bentuk besar pembawa metafora (cakram, lensa, biji, tiket), subjek cut-out yang menembus bentuk, swirl tebal.",
   variants: [
     {
       id: "pita",
@@ -19,7 +19,14 @@ export const flatDesign: StyleMeta = {
       description: "Busur, cakram, ubin persegi; cocok untuk brand bersudut siku.",
     },
   ],
-  archetypes: ["feed-bidang-warna", "feed-kata-raksasa", "feed-satu-objek"],
+  archetypes: [
+    "feed-subjek-lingkar",
+    "feed-mitos-fakta",
+    "feed-tiket",
+    "feed-bidang-warna",
+    "feed-kata-raksasa",
+    "feed-satu-objek",
+  ],
   plannedArchetypes: [
     {
       id: "feed-panel-lengkung",
@@ -29,7 +36,7 @@ export const flatDesign: StyleMeta = {
     {
       id: "feed-kartu-organik",
       name: "Kartu organik",
-      description: "Kartu bentuk organik untuk tips atau mitos.",
+      description: "Kartu scallop berisi kutipan testimoni dan kartu rating.",
     },
   ],
   typography: {
@@ -56,12 +63,20 @@ export const flatDesign: StyleMeta = {
     { id: "cakram", name: "Cakram dan cincin", status: "ada" },
     { id: "ikon-datar", name: "Ikon datar", status: "ada" },
     { id: "headline-dua-nada", name: "Headline dua nada", status: "ada" },
+    { id: "panggung", name: "Panggung bentuk (cakram, cincin, lensa, biji)", status: "ada" },
+    { id: "swirl", name: "Swirl orbit", status: "ada" },
+    { id: "riak", name: "Riak tone-on-tone", status: "ada" },
+    { id: "tag-gantung", name: "Tag gantung miring", status: "ada" },
+    { id: "vonis", name: "Vonis mitos dan fakta", status: "ada" },
+    { id: "tiket", name: "Tiket bertakik", status: "ada" },
   ],
   imagery: {
     kinds: ["cutout", "illustration"],
     treatment: ["natural"],
     promptHints: [
-      "cheerful person in a dynamic natural pose, clothing in solid colors, even soft light, isolated on a transparent background",
+      "cheerful person in a dynamic natural pose, clothing in solid brand colors, even soft light, isolated on a transparent background",
+      "skeptical or thinking person, arms crossed or hand on cheek, waist-up, plain solid-color top, isolated on a transparent background",
+      "person pointing toward the side of the frame or holding a product up, full body, even soft light, isolated on a transparent background",
       "single product in a clean three-quarter view, even soft light, isolated on a transparent background",
     ],
     avoid: [
@@ -82,7 +97,8 @@ export const flatDesign: StyleMeta = {
     {
       rule: "P5",
       change: "relaxed",
-      limit: "Bentuk dekoratif tidak dihitung bila ≤ 3 potong satu keluarga",
+      limit:
+        "Bentuk berlapis satu keluarga dihitung satu bentuk; riak dan bingkai garis tidak dihitung",
     },
     {
       rule: "P8",
@@ -92,18 +108,18 @@ export const flatDesign: StyleMeta = {
     {
       rule: "P9",
       change: "relaxed",
-      limit: "Dominan ≥ 50%, warna kedua dan gambar 20–40%, aksen ≤ 12%",
+      limit: "Dominan ≥ 33%, warna kedua dan gambar ≤ 55%, aksen ≤ 12% (kalibrasi referensi)",
     },
     {
       rule: "P10",
       change: "relaxed",
-      limit: "Bidang polos di dalam bentuk dihitung kosong; area tanpa bentuk ≥ 25%",
+      limit: "Ruang kosong ≥ 28%, maksimal 7 elemen (grup dihitung satu)",
     },
     {
       rule: "P11",
       change: "relaxed",
       limit:
-        "Dua radius: token untuk kartu, bulat penuh untuk chip dan CTA bila radius brand ≥ 16 px",
+        "Dua radius: token untuk kartu, bulat penuh untuk chip dan CTA bila radius brand ≥ 16 px; satu tag gantung boleh miring 6–10°",
     },
   ],
   compatibility: [
@@ -114,7 +130,16 @@ export const flatDesign: StyleMeta = {
     },
   ],
   options: [],
-  // Ambang QA desain dari bagian aturan PANDUAN.md (P8, P9, P10, P11 dilonggarkan).
-  limits: { centerAxis: true, dominantMin: 0.5, secondMax: 0.4, emptyMin: 0.25, radii: 2 },
+  // Ambang QA desain dari bagian aturan PANDUAN.md (P8, P9, P10, P11 dilonggarkan), dikalibrasi
+  // dari referensi pemilik (T-134): dominan ≥ kuartil bawah referensi, warna kedua dan gambar ≤
+  // kuartil atas − aksen, ruang kosong ≥ dominan − 5%, elemen ≤ hitungan referensi.
+  limits: {
+    centerAxis: true,
+    dominantMin: 0.33,
+    secondMax: 0.55,
+    emptyMin: 0.28,
+    elementsMax: 7,
+    radii: 2,
+  },
   variantLimits: {},
 };

@@ -1,4 +1,4 @@
-import type { GlowMode } from "../../primitives/index.ts";
+import type { ColorToken, GlowMode, TextEffect } from "../../primitives/index.ts";
 import {
   Display,
   Grain,
@@ -10,7 +10,7 @@ import {
   Ticker,
 } from "../../primitives/index.ts";
 import { space } from "../../primitives/vars.ts";
-import type { SpecimenProps, StyleLayerProps, StyleRender } from "../../src/style.ts";
+import type { EffectRole, SpecimenProps, StyleLayerProps, StyleRender } from "../../src/style.ts";
 import { AtCorner } from "../corner.tsx";
 import { SpecimenCell, SpecimenGrid } from "../specimen-grid.tsx";
 
@@ -21,17 +21,43 @@ import { SpecimenCell, SpecimenGrid } from "../specimen-grid.tsx";
 const GLOW = "accent" as const;
 const mode = (options: Record<string, string>): GlowMode =>
   options.glow === "solid" ? "solid" : "soft";
+// Token cahaya dari opsi gaya (default accent).
+const light = (options: Record<string, string>): ColorToken =>
+  options.cahaya === "primary" || options.cahaya === "secondary" ? options.cahaya : GLOW;
+
+// Kata raksasa: satu jenis glitch (iris geser, pemisahan kanal cahaya + accent, atau gema warna
+// cahaya), atau tanpa glitch untuk heading serif (bagian 5). Headline besar: glow.
+function textEffect(options: Record<string, string>, role: EffectRole): TextEffect | undefined {
+  if (role === "headline")
+    return options.glow === "tidak"
+      ? undefined
+      : { kind: "glow", color: light(options), mode: mode(options) };
+  if (options.glitch === "kanal") {
+    const other: ColorToken = light(options) === "accent" ? "primary" : "accent";
+    return { kind: "glitch", mode: "split", colors: [light(options), other] };
+  }
+  if (options.glitch === "gema") return { kind: "glitch", mode: "echo", color: light(options) };
+  if (options.glitch === "tidak") return undefined;
+  return { kind: "glitch", mode: "slice", bands: 1 };
+}
 
 function Backdrop({ style, floor }: StyleLayerProps) {
   return (
     <>
       {style.options.tekstur === "grain" && <Grain tone="neutral-light" opacity={0.06} />}
       <div style={{ position: "absolute", top: "36%", right: 0, width: "18%", height: "34%" }}>
-        <PixelScatter mode="grid" tone={GLOW} side="left" cols={4} rows={8} cell={40} />
+        <PixelScatter
+          mode="grid"
+          tone={light(style.options)}
+          side="left"
+          cols={4}
+          rows={8}
+          cell={40}
+        />
       </div>
       {floor && (
         <div style={{ position: "absolute", left: "12%", right: "12%", bottom: floor }}>
-          <NeonRail color={GLOW} mode={mode(style.options)} thickness={4} />
+          <NeonRail color={light(style.options)} mode={mode(style.options)} thickness={4} />
         </div>
       )}
     </>
@@ -138,14 +164,18 @@ function Specimen({ subject, photo, style }: SpecimenProps) {
 
 export const cyberpunkRender: StyleRender = {
   variables: () => [],
-  treatment: ({ options }) => ({
-    kind: "neon",
-    mono: options.foto !== "natural",
-    scanline: options.tekstur === "scanline",
-    glow: GLOW,
-    mode: mode(options),
-  }),
-  effect: ({ options }) => ({ kind: "glow", color: GLOW, mode: mode(options) }),
+  // Tanpa halo: foto apa adanya atau mono, tanpa scanline (subjek sudah bercahaya tepi).
+  treatment: ({ options }) =>
+    options.glow === "tidak"
+      ? { kind: options.foto === "natural" ? "natural" : "mono" }
+      : {
+          kind: "neon",
+          mono: options.foto !== "natural",
+          scanline: options.tekstur === "scanline",
+          glow: light(options),
+          mode: mode(options),
+        },
+  effect: ({ options }, role) => textEffect(options, role),
   Backdrop,
   Overlay,
   Specimen,

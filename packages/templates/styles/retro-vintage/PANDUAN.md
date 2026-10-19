@@ -15,6 +15,17 @@
 
 **Esensi untuk Laras.** Retro yang baik terasa seperti cetakan bagus yang dibuat hari ini: satu era yang jelas, satu ide besar, huruf berkarakter, warna hangat dari token brand, dan tekstur yang baru terasa saat dilihat dekat. Nasihat yang konsisten dari sumber riset: pilih satu era dan ikuti aturannya, jangan berlebihan, dan tetap tujukan desain ke penonton masa kini.
 
+### Konsep gaya: nostalgia yang bertenaga (T-134)
+
+Penilaian pemilik atas render T-131: gaya ini "terlalu datar dan tidak punya konsep". Penyebabnya, gaya hanya menjadi hiasan (bingkai, grain) di atas arketipe kata raksasa yang sama, dengan foto studio yang sama untuk semua gaya, tanpa metafora, dan terlalu kosong (warna dominan 61–72% dan area tenang 61–65%, padahal referensi pemilik bermedian 43% dan 66%, dengan 4–6 elemen). Di referensi, gaya mengubah komposisinya: tubuh yang melompat menembus huruf, foto arsip yang menimpa kaki huruf poster, kata sampul yang duduk di langit atau dinding foto film. Empat hal berikut wajib ada di setiap pola Vintage/Retro:
+
+1. **Metafora atau ide besar.** Satu ide visual yang langsung membawa pesan, dan kata raksasa adalah kata kunci pesan itu. Contoh di render demo: pria 70-an melompat sambil mengangkat kantong kopi menembus kata HORE ("sangrai minggu ini sudah datang"); pelari yang melompati kata FREE (lari bersama yang gratis, sekaligus rasa bebas); peracik kopi yang duduk di depan SANGRAI SENDIRI; wanita yang menunggu di jendela di bawah kata WAKTU (hasil perawatan butuh beberapa minggu); buah persik di bawah kaca pembesar dengan kata KENALI.
+2. **Gambar bergaya.** Aset khusus gaya: cut-out orang 70-an yang melompat (`gaya-retro.webp`), potret editorial berbutir (`gaya-retro.jpg`), atau cut-out lain yang diberi perlakuan gaya: `mono` untuk rasa foto arsip di atas dinding warna, `hangat` untuk foto film, grain global, dan **bayangan keras subjek di dinding** (bayangan lembut untuk brand berbayangan lembut). Foto studio polos tanpa perlakuan tidak dipakai.
+3. **Interaksi huruf dan subjek.** Huruf berselang depan-belakang tubuh (baris atas di belakang badan, baris bawah di depan kaki), subjek duduk atau berdiri di depan kaki huruf poster (maks ±35% tinggi baris terakhir tertutup), bayangan subjek jatuh di atas huruf di belakangnya, dan penutup kalimat yang disorot warna aksen. Huruf yang tertutup tidak boleh mengubah arti kata (FREE yang huruf R-nya tertutup terbaca FEE).
+4. **Susunan lapisan dengan hierarki jelas.** Bidang warna jenuh atau foto film → grain → baris kata di belakang subjek → subjek dengan bayangan keras → baris kata di depan subjek → info pendukung (angka kunci, kolom fakta) → detail cetak kecil (baris kredit berhuruf aksen, garis 2 px, logo). Padat boleh, kacau tidak: setiap lapisan punya satu tugas.
+
+Tiga pola khas (arketipe T-134) menerjemahkan konsep ini; urutannya di render demo: Kata dilompati (thumbnail gaya), Poster huruf, Sampul editorial (bagian 9 pola 6, 3, dan 2).
+
 **Batas dengan gaya lain (Tahap 2).** Bila desain condong penuh ke salah satu ciri berikut, desain itu sudah pindah gaya: titik halftone raksasa ala komik dan balon kata (Pop Art), huruf meleleh memenuhi kanvas (Psychedelic), krom, biru perak, dan antarmuka digital (Y2K Nostalgia), neon dan grid perspektif (Retro-Futurisme), geometri emas simetris (Art Deco), atau kolase sobek berlapis-lapis (Scrapbook). Vintage/Retro hanya mengambil versi lembut dari ciri-ciri itu.
 
 ### Sub-varian yang bisa dipilih
@@ -66,7 +77,7 @@ Ciri berikut bisa dicek dari gambar hasil render:
 
 **Hierarki dan kepadatan per sub-varian:**
 - `iklan-cetak`: tiga tingkat jelas, yaitu headline (atau subjek dengan produk) sebagai dominan, starburst atau harga sebagai tingkat kedua, lalu body dan CTA. Lebih padat dari standar Laras, seperti iklan majalah: 5–7 elemen, ruang kosong ≥ 25%. Komposisi simetris (sumbu tengah) atau asimetris kiri-kanan sama-sama sah.
-- `editorial-hangat`: satu dominan yang sangat besar (kata raksasa atau foto), sisanya kecil dan rapi. Kontras skala ekstrem adalah intinya: kata raksasa 5–10× tinggi body. Ruang kosong ≥ 35%, maksimal 5 elemen. Teks kredit kecil disusun dalam satu baris atau satu kolom sempit, rata pada garis grid.
+- `editorial-hangat`: satu dominan yang sangat besar (kata raksasa atau foto), sisanya kecil dan rapi. Kontras skala ekstrem adalah intinya: kata raksasa 5–10× tinggi body. Ruang kosong ≥ 25%, maksimal 6 elemen (dikalibrasi dari referensi pemilik, T-134). Teks kredit kecil disusun dalam satu baris atau satu kolom sempit, rata pada garis grid.
 - `groovy`: headline gemuk sebagai dominan, satu perangkat besar (pelangi atau kotak-kotak) sebagai tingkat kedua, stiker kecil sebagai aksen. Ruang kosong ≥ 25%, maksimal 7 elemen. Headline biasanya rata tengah atau rata kiri di sepertiga atas.
 
 Kelompok headline bertingkat (pembuka kecil, frasa utama, penutup) dihitung **satu elemen**. Lapisan tekstur global (grain atau halftone latar) tidak dihitung elemen dan tidak mengurangi ruang kosong.
@@ -80,11 +91,11 @@ Kelompok headline bertingkat (pembuka kecil, frasa utama, penutup) dihitung **sa
 | P3 kedekatan dan ritme | Tetap wajib | Jarak antar blok memakai `--space-*`; tanpa celah mati di antara headline dan subjek. |
 | P4 keluarga huruf | Dilonggarkan bersyarat | Keluarga ketiga hanya lewat peran font aksen opsional (T-124) untuk maks 4 kata. Tanpa font aksen tetap 2 keluarga. Tanpa baris yatim; body 30–45 karakter per baris. |
 | P5 elemen visual utama | Dilonggarkan untuk `iklan-cetak` dan `groovy` | Maks 4 elemen visual utama (mis. subjek, starburst, pelangi, bingkai). `editorial-hangat` tetap maks 3. |
-| P6 keseimbangan, tidak saling menutup | Tetap wajib | Subjek boleh menimpa bagian bawah kata raksasa, tetapi maks 35% tinggi huruf tertutup dan kata tetap terbaca. Starburst tidak menutup wajah atau produk. |
+| P6 keseimbangan, tidak saling menutup | Tetap wajib | Subjek boleh menimpa bagian bawah kata raksasa, tetapi maks 35% tinggi huruf tertutup dan kata tetap terbaca. Pada kata yang dilompati, baris atas boleh tertutup badan selama arti kata tidak berubah. Starburst tidak menutup wajah atau produk. |
 | P7 keterbacaan, kontras, ukuran minimum, safe margin | **Tidak pernah dilonggarkan** | Kontras ≥ 4,5:1 (≥ 3:1 untuk teks ≥ 32 px) diukur pada hasil akhir setelah warna dipudarkan dan tekstur dipasang; font ≥ 24 px; teks di dalam safe margin. |
 | P8 titik fokus di titik potong | Dilonggarkan untuk komposisi simetris | `iklan-cetak` dan `groovy` boleh berporos tengah: fokus di x = 540 (±8%) pada garis y = 450 atau y = 900. `editorial-hangat` tetap di titik potong. |
-| P9 60-30-10 | Disesuaikan per sub-varian | Lihat bagian 6. Diukur dari piksel sebelum lapisan tekstur, atau dengan toleransi warna yang cukup agar grain tidak memecah kelas warna. |
-| P10 ruang kosong dan jumlah elemen | Dilonggarkan untuk `iklan-cetak` dan `groovy` | Ruang kosong ≥ 25%, maks 7 elemen termasuk logo dan CTA. `editorial-hangat` tetap ≥ 35% dan maks 5. |
+| P9 60-30-10 | Dilonggarkan (T-134) | Ambang QA dari pengukuran referensi pemilik: warna dominan ≥ 30%, warna kedua beserta gambar ≤ 55%, aksen ≤ 12%. Arah desain per sub-varian di bagian 6. Diukur dari piksel dengan toleransi warna agar grain tidak memecah kelas warna. |
+| P10 ruang kosong dan jumlah elemen | Dilonggarkan (T-134) | Ruang kosong ≥ 25% (median area tenang referensi 66% dikurangi aturan dominan − 5%), maks 6 elemen termasuk logo dan CTA (referensi 4–6); `iklan-cetak` dan `groovy` maks 7. Kelompok (baris kredit, blok detail) dihitung satu. |
 | P11 konsistensi | **Diperketat** | Satu tekstur global per postingan, satu sudut miring (pilih satu dari ±4°, ±6°, ±8°), satu gaya bayangan (keras, tanpa blur), satu keluarga dekorasi (satu era), radius dari `--shape-radius`. |
 
 ## 5. Tipografi
@@ -100,7 +111,7 @@ Kelompok headline bertingkat (pembuka kecil, frasa utama, penutup) dihitung **sa
 Untuk `StyleMeta`: heading `serif-display`, `grotesk-condensed`, `slab`, `geometric-sans`; body `grotesk`, `humanist-sans`, `serif-text`; headingCase `mixed`; scaleRatio sekitar 4; tracking `tight`.
 
 **Perlakuan khusus (semua dibuat CSS, tidak pernah oleh model gambar):**
-- **Kata raksasa** (`editorial-hangat`): 1 kata, 3–8 huruf, dipaskan lebar safe area dengan `Display`, tinggi 18–40% kanvas. Tumpuk vertikal maks 3 baris untuk kata yang dipecah (mis. MO / OO / VE ala kampanye "MOVE"). Warna `neutral-light` di atas bidang `primary`, atau `primary` di atas kertas.
+- **Kata raksasa** (`editorial-hangat`): 1 kata, 3–8 huruf, dipaskan lebar safe area dengan `Display` atau `BigWord`, tinggi 18–60% kanvas. Tumpuk vertikal maks 3 baris untuk kata yang dipecah (mis. HO / RE), semua baris sama besar bila subjek melompatinya. Warna `neutral-light` di atas bidang `primary`, atau `primary` di atas kertas.
 - **Pembuka italic** (`editorial-hangat`): 1–2 kata huruf kecil serif italic, 44–84 px, menempel di atas atau di kiri kata raksasa, boleh menimpa tepi huruf pertama sedikit (≤ 15% tingginya).
 - **Outline dan bayangan offset** (`groovy`): isi huruf `neutral-light` atau `secondary`, outline `neutral-dark` setebal 4–6% ukuran huruf, bayangan offset keras ke kanan bawah 6–8% ukuran huruf tanpa blur, warna `primary` atau `accent`. Hanya untuk headline ≥ 84 px.
 - **Registrasi meleset pada huruf** (opsional, semua sub-varian): salinan headline dengan warna token kedua digeser 3–6 px (pada basis 1080), mode campur `multiply`. Maks satu elemen teks per postingan, hanya headline ≥ 84 px. Kontras dihitung pada lapisan utama.
@@ -111,8 +122,10 @@ Untuk `StyleMeta`: heading `serif-display`, `grotesk-condensed`, `slab`, `geomet
 
 **Pemetaan ke font brand.**
 - Font `heading` brand menjadi headline atau kata raksasa. Pilih sub-varian yang sesuai karakter heading: serif tebal ke `iklan-cetak` atau `groovy`; grotesk condensed atau geometric tebal ke `editorial-hangat`; serif bulat gemuk ke `groovy`.
-- Font `body` brand untuk body, CTA, dan teks kredit.
-- Font aksen opsional (T-124) yang diusulkan: `serif-display` italic kontras tinggi (untuk `editorial-hangat`) atau `script` iklan berbobot sedang (untuk `iklan-cetak`), hanya untuk frasa ≤ 4 kata.
+- Font `body` brand untuk body, CTA, dan headline kecil.
+- **Font aksen Brand Kit** (`--font-accent`, T-134; fixture: Courier Prime 700, IBM Plex Mono 500, Space Mono 700) untuk teks cetak kecil: kalimat ketik di atas kata raksasa, pembuka sampul, baris kredit huruf besar ber-tracking lebar, kolom fakta, dan keterangan angka. Font aksen ketik ini menggantikan italic yang tidak dimiliki fixture: pasangan "huruf ketik kecil + heading raksasa" adalah versi Laras dari pasangan italic + grotesk di referensi. Bila brand tidak punya font aksen, perannya jatuh ke font body.
+- Kata raksasa selalu font heading brand. Angka raksasa memakai angka sejajar (`font-variant-numeric: lining-nums`) bila font punya fiturnya, karena angka bergaya lama (Cormorant) turun di bawah garis dasar dan menabrak teks di bawahnya.
+- Kata raksasa display punya area konten font yang lebih tinggi dari kotak barisnya (Fraunces ±0,21 em, Anton ±0,35 em di atas kotak baris pada line-height 0,82–0,86). QA kontras mengukur seluruh area itu, jadi baris yang berada di depan subjek hanya boleh menutup kaki, bukan baju, dan kata di tepi atas kanvas perlu jarak tambahan.
 
 **Kapan font brand membuat gaya "kurang cocok".**
 - Heading hanya tersedia dalam bobot ≤ 400: `groovy` dan `iklan-cetak` kurang cocok; pakai `editorial-hangat` dengan kata raksasa yang dipaskan lebar agar tetap berbobot visual.
@@ -131,12 +144,12 @@ Untuk `StyleMeta`: heading `serif-display`, `grotesk-condensed`, `slab`, `geomet
 - Bila aturan brand menuntut warna persis (mis. "Warna tidak boleh diubah"), pemudaran dimatikan dan rasa retro dibawa oleh huruf dan tekstur saja.
 - Pemudaran butuh helper token (`fade`) di primitives: **perlu dibuat**.
 
-**Proporsi P9 per sub-varian** (diukur sebelum lapisan tekstur):
+**Proporsi P9 per sub-varian** (arah desain; ambang QA yang dipakai mesin ada di bagian 4: dominan ≥ 30%, kedua + gambar ≤ 55%, aksen ≤ 12%):
 
 | Sub-varian | Dominan | Kedua + gambar | Aksen | Catatan |
 |---|---|---|---|---|
 | `iklan-cetak` | ≥ 50% (kertas `neutral-light` atau bidang `primary`) | 25–40% (`primary`/`secondary` untuk pita dan bidang, foto) | ≤ 12% (`accent` untuk starburst atau CTA) | aksen boleh di starburst dan CTA sekaligus |
-| `editorial-hangat` | ≥ 55% (bidang `primary` atau foto bergrading hangat) | 20–35% (kata raksasa `neutral-light`, subjek) | ≤ 8% (`accent` untuk satu kata, garis bawah, atau CTA) | paling dekat dengan P9 standar |
+| `editorial-hangat` | ≥ 40% (bidang `primary` atau foto bergrading hangat) | 30–55% (kata raksasa, subjek dengan bayangannya) | ≤ 12% (`accent` untuk penutup yang disorot, CTA, atau kata raksasa di bidang `primary` gelap) | referensi: dominan median 43% |
 | `groovy` | ≥ 45% (`neutral-light` krem atau `secondary`) | 30–40% (`primary` untuk pelangi atau kotak-kotak, subjek) | ≤ 15% (`accent` di satu perangkat dekoratif, mis. satu pita pelangi, dan CTA) | aksen boleh di satu perangkat dekoratif selain CTA |
 
 **Pemetaan token default:**
@@ -164,6 +177,9 @@ Untuk `StyleMeta`: heading `serif-display`, `grotesk-condensed`, `slab`, `geomet
 | `Tape` | jarang; hanya `groovy` untuk satu foto kecil |
 | `Image` (`mono`) | foto arsip hitam-putih di atas bidang warna (rasa poster "ACE") |
 | `Logo` | logo brand, tidak pernah diberi tekstur atau dipudarkan |
+| `BigWord` (`styles/retro-vintage/parts.tsx`, T-134) | kata raksasa satu slot dalam 1–3 baris: `equal` (semua baris sama besar, baris terlebar mengisi lebar, untuk kata yang dilompati) atau `justify` (setiap baris dipaskan sendiri, untuk poster). Pada `equal` setiap baris bisa di depan atau di belakang subjek (z-index tanpa stacking context), baris depan diberi bayangan keras searah bayangan subjek |
+| `AccentText` (T-134) | teks font aksen: kalimat ketik, pembuka, kredit huruf besar, kolom fakta |
+| `castShadow` / `shadowTone` (T-134) | bayangan subjek di dinding: token bidang dicampur 34% `neutral-dark`, jatuh ke kanan bawah; keras (tanpa blur) atau lembut sesuai Brand Kit |
 
 **Perangkat yang perlu dibuat:**
 
@@ -197,7 +213,9 @@ Untuk `StyleMeta`: heading `serif-display`, `grotesk-condensed`, `slab`, `geomet
 | `editorial-hangat` | pose dinamis (melompat, menari, duduk di atas mobil atau kursi, bersandar ke dinding); objek tunggal di lanskap luas | matahari sore yang keras dengan bayangan tegas di dinding warna, atau mendung lembut untuk lanskap | rendah atau setinggi mata, seluruh badan | cut-out seluruh badan (untuk kata raksasa); foto konsep dengan 40–50% ruang kosong; foto arsip hitam-putih |
 | `groovy` | benda nostalgia (kaset, kamera instan, TV tabung, piringan hitam, sepatu kanvas) atau orang muda bergaya santai | siang lembut, bayangan pendek | lurus dari depan atau sedikit dari atas | cut-out objek dengan tepi stiker; foto kecil dalam bingkai |
 
-**Perlakuan CSS yang dipakai:** `grain` (lapisan global), `duotone` warna brand (`Frame`, sudah ada) untuk foto arsip atau seragam, `mono` di atas bidang warna (rasa poster "ACE"), dan `halftone` lokal pada bayangan. Grading hangat diminta lewat prompt. CSS hanya menurunkan saturasi (0,85–0,95) dan kontras (0,92–0,96) bila perlu. Filter sepia tidak dipakai karena menggeser warna produk.
+**Aset demo khusus gaya (T-134, Codex):** Kopi `gaya-retro.webp` (pria 70-an melompat memegang kantong kopi, cut-out), Ritme `gaya-retro.webp` (pelari melompat kaki terbuka, gaya foto 70-an, cut-out), Seruni `gaya-retro.jpg` (potret editorial 70-an berbutir dengan dinding kosong di atas). Pola poster memakai cut-out duduk atau berlari dari gaya lain (`gaya-corporate.webp`, `gaya-cyberpunk.webp`) dengan perlakuan `mono`, sehingga foto berwarna studio berubah menjadi foto arsip di atas dinding warna; pola sampul memakai foto penuh brand (`foto.jpg`, `konsep.jpg`) dengan grading `hangat`.
+
+**Perlakuan CSS yang dipakai:** `grain` (lapisan global), `duotone` warna brand (`Frame`, sudah ada) untuk foto arsip atau seragam, `mono` di atas bidang warna (rasa poster "ACE"), bayangan keras subjek di dinding (`castShadow`), dan `halftone` lokal pada bayangan. Grading hangat diminta lewat prompt. CSS hanya menurunkan saturasi (0,85–0,95) dan kontras (0,92–0,96) bila perlu. Filter sepia tidak dipakai karena menggeser warna produk.
 
 **Contoh frasa prompt (bahasa Inggris):**
 - "1970s editorial photograph, warm late-afternoon sunlight, crisp hard shadow cast on a plain wall"
@@ -229,26 +247,27 @@ Susunan dari atas ke bawah:
 
 Fokus utama: wajah atau produk di (720, 900). Elemen kedua: headline di (360, 450). Jumlah elemen: 6. Opsi: `Sunburst` pudar di belakang subjek, menggantikan pita bila pita tidak dipakai. Arketipe terdekat: `feed-bidang-warna`. Usulan arketipe: `feed-iklan-cetak` (**perlu dibuat**) dengan slot starburst dan pita bawah.
 
-### Pola 2: Sampul majalah (edukasi atau tips), sub-varian `editorial-hangat`
+### Pola 2: Sampul majalah (edukasi, cerita brand, sampul carousel), sub-varian `editorial-hangat`
+Ide besar: kata sampul yang raksasa duduk di area tenang foto film (langit, dinding, kain), foto membuktikan suasananya. Contoh: "pagi yang PELAN" di atas kain linen dengan secangkir kopi (Kopi), "kulit butuh WAKTU" di dinding di atas wanita yang menunggu di jendela (Seruni), "sebelum merawat, KENALI" di atas buah persik di bawah kaca pembesar (Seruni).
 Susunan dari atas ke bawah:
-1. Baris kredit 24 px (mis. "Edisi 04", topik, handle) selebar safe area dengan garis tipis 2 px di bawahnya.
-2. Pembuka serif italic 60–84 px, 1–2 kata ("Lima").
-3. Kata raksasa grotesk condensed dipaskan lebar, tinggi 18–28% kanvas ("KEBIASAAN").
-4. Subjudul satu baris 32–44 px.
-5. Foto konsep full-bleed di 45–50% bawah: objek tunggal kecil di lanskap luas.
-6. Logo kecil di kanan bawah; panah geser bila menjadi sampul carousel.
+1. Baris kepala: kredit 24 px font aksen huruf besar (produk, harga, lokasi) dengan garis 2 px di bawahnya.
+2. Pembuka font aksen 44–60 px, 1–3 kata huruf kecil, dibaca sebelum kata kunci.
+3. Kata raksasa satu baris dipaskan lebar: `besar` (batas 320 px) atau `sedang` (74% lebar, batas 230 px) bila area tenangnya sempit atau ada jendela terang di sisinya.
+4. Headline body satu kalimat pendek, lalu penutup 2–4 kata di baris sendiri dengan blok sorot `accent` (interaksi huruf: potongan kalimat disorot).
+5. Foto penuh bergrading hangat dengan grain; logo di sudut seberang judul (kanan bawah untuk Kopi).
+6. Varian `alas: bidang` untuk foto tanpa area tenang (lari subuh Ritme): pita `primary` di atas berisi baris kepala dengan logo, judul berwarna `secondary`, dan foto di sisa kanvas tanpa tertimpa teks, seperti kepala majalah lari 70-an.
 
-Fokus utama: kata raksasa pada garis y = 450 dengan pusat di (360, 450). Elemen kedua: objek foto di (720, 900). Jumlah elemen: 5 (kelompok headline dihitung satu). Arketipe terdekat: `feed-foto-konsep`. Usulan arketipe: `feed-sampul-editorial` (**perlu dibuat**) dengan baris kredit dan kata raksasa di atas foto.
+Fokus utama: kata raksasa di sepertiga atas. Elemen kedua: subjek foto di sepertiga bawah. Jumlah elemen: 3 (foto latar, kelompok judul, logo). Arketipe: `feed-sampul-editorial` (T-134). Opsi: `zona` atas/bawah, `tinta` gelap/terang, `skala`, `alas`, `logo` kanan/kiri, `rata`.
 
-### Pola 3: Poster huruf raksasa (pengumuman atau acara), sub-varian `editorial-hangat`
+### Pola 3: Poster huruf raksasa (acara, profil orang, satu angka kunci), sub-varian `editorial-hangat`
+Ide besar: poster acara 70-an, kata atau angka kunci memenuhi lebar dinding warna dan orang di baliknya berdiri atau duduk di depan kaki hurufnya seperti di depan dinding bersinar matahari sore. Contoh: peracik kopi (foto arsip `mono`) duduk di depan SANGRAI SENDIRI berwarna `accent` di dinding `primary` (Kopi); terapis duduk di depan angka 30 ("menit untuk mengenal kulitmu dulu", Seruni); sprinter `mono` melesat di depan 10K kuning di dinding biru (Ritme).
 Susunan dari atas ke bawah:
-1. Logo kiri atas, tanggal singkat 24 px kanan atas.
-2. Kata raksasa (nama acara atau kata kunci 3–7 huruf) `neutral-light` di atas bidang `primary`, dipaskan lebar, y 120–520.
-3. Subjek cut-out di sisi kanan, kepala dan bahu menimpa bagian bawah kata raksasa (subjek di depan, kata di belakang, K3), bayangan keras jatuh ke kiri pada bidang.
-4. Blok detail rata kiri di kiri bawah: tanggal 44–60 px dan tempat 24–32 px, maks 3 baris.
-5. CTA kecil (`Sticker`) di bawah blok detail.
+1. Baris kredit: kredit kiri dan info kanan (font aksen huruf besar 24 px), garis 2 px di bawahnya.
+2. Kata atau angka raksasa 1–2 baris mulai y ±19%, setiap baris dipaskan lebar, tumpukan maks 620 px; angka memakai angka sejajar.
+3. Subjek cut-out di sepertiga kiri atau kanan, puncak tubuhnya di 1 − 0,32/jumlah baris tinggi kotak kata (kepala menutup ±30% baris terakhir), tubuh memanjang sampai dasar kanvas, bayangan di dinding (keras, atau lembut untuk Seruni).
+4. Blok detail di sisi seberang subjek: headline heading 40–52 px, 1–3 kolom fakta (garis 2 px + font aksen 24 px), lalu CTA dan logo satu baris di dasar.
 
-Fokus utama: kepala subjek di (720, 450). Elemen kedua: blok detail di (360, 900). Jumlah elemen: 5. Arketipe: `feed-kata-raksasa` (sudah ada, `side: right`, `tone: primary`).
+Fokus utama: kepala subjek di sekitar (360, 700) atau (720, 700). Elemen kedua: blok detail di (720, 1000). Jumlah elemen: 5 (kelompok kredit, kata, subjek, kelompok detail; logo di dalam blok detail). Arketipe: `feed-poster-huruf` (T-134). Opsi: `tone` dinding, `huruf` kontras/accent (accent hanya di dinding `primary` gelap), `side`, `bayangan`. Pola satu kata di belakang subjek yang lebih tenang tetap memakai `feed-kata-raksasa`.
 
 ### Pola 4: Potret oval (testimoni atau kutipan), sub-varian `iklan-cetak`
 Susunan dari atas ke bawah:
@@ -271,14 +290,15 @@ Susunan dari atas ke bawah:
 
 Fokus utama: headline di (360, 450). Elemen kedua: pelangi dan stiker di (720, 900). Jumlah elemen: 6. Variasi: ganti pelangi dengan pita `Checker` di tepi bawah. Arketipe terdekat: `feed-bidang-warna` (lengkung warna kedua) tanpa subjek. Usulan arketipe: `feed-groovy` (**perlu dibuat**).
 
-### Pola 6: Kata yang dilompati (peluncuran produk atau kampanye energi), sub-varian `editorial-hangat`
+### Pola 6: Kata yang dilompati (peluncuran, kampanye energi, ajakan bergerak), sub-varian `editorial-hangat`
+Ide besar: tubuh yang melompat menembus kata kunci, sehingga kata itu "dihidupkan" oleh gerak (rujukan kampanye MOVE, prinsipnya saja). Contoh: pria 70-an melompat sambil mengangkat kantong kopi keluar dari HO / RE ("sangrai minggu ini sudah datang", Kopi); pelari melompati FREE dengan kaki di belakang hurufnya ("Sunday group run. Every pace.", Ritme).
 Susunan dari atas ke bawah:
-1. Logo kiri atas, tagline 1 frasa serif italic atau script 32–44 px di kanan atas.
-2. Kata kunci 3–6 huruf dipecah menjadi 2–3 baris bertumpuk (mis. MO / OO / VE), rata tengah, menempati 50–65% tinggi kanvas.
-3. Subjek cut-out melompat atau menari menembus tumpukan: sebagian huruf di depan subjek, sebagian di belakang.
-4. Baris bawah: 3 chip fitur bulat kecil (K8) di kiri dan produk cut-out kecil di kanan.
+1. Baris atas: kalimat ketik font aksen 32–36 px di sisi yang bebas dari tangan dan kepala subjek; logo kiri atas bila brand mengizinkan.
+2. Kata kunci 1–3 baris yang sama besar (baris terlebar mengisi lebar, tumpukan maks 60% tinggi kanvas), rata tengah, di bidang jenuh; kata tunggal dipecah dua (`baris: pecah`) atau utuh satu baris (`baris: utuh`, subjek melompat di atasnya).
+3. Subjek cut-out melompat, ditempatkan relatif terhadap kotak kata hasil fit: pinggang (55% tinggi tubuh) 0,38 em di atas baris depan. Baris atas di belakang badan, baris terakhir di depan kaki (z-index tanpa mask, satu slot teks). Bayangan keras subjek jatuh di dinding dan di huruf belakang; baris depan mendapat bayangan keras searah, jadi huruf itu tampak melayang di depan kaki.
+4. Baris bawah: angka kunci (heading langkah 4, mis. harga atau jam), keterangan font aksen, CTA kecil; logo di sudut sesuai brand (Kopi kanan bawah).
 
-Fokus utama: badan subjek di (540, 450) sampai (720, 450). Elemen kedua: produk di (720, 900). Jumlah elemen: 5. Arketipe terdekat: `feed-kata-raksasa` dengan `Display` bertumpuk. Huruf berselang depan-belakang subjek butuh dua lapis kata dengan mask: **perlu dibuat**.
+Fokus utama: badan subjek di tengah tumpukan (komposisi terpusat yang disengaja). Elemen kedua: angka kunci di kiri bawah. Jumlah elemen: 5 (kalimat, kata, subjek, kelompok info, logo). Arketipe: `feed-kata-dilompati` (T-134). Syarat aset: orang seluruh badan sedang melompat atau menari dengan kaki di separuh bawah; brand tanpa aset seperti itu (Seruni) memakai pola 2. Huruf yang tertutup badan tidak boleh mengubah arti kata: pilih `baris: utuh` atau kata lain bila perlu.
 
 ### Pola 7: Kisi nostalgia (menu atau katalog singkat), sub-varian `groovy` atau `iklan-cetak`
 Susunan dari atas ke bawah:
@@ -292,7 +312,7 @@ Fokus utama: panel teks atau produk unggulan di (720, 450). Elemen kedua: CTA di
 
 - **Satu sub-varian dan satu sistem untuk semua slide.** Seed grain sama, sudut miring sama, warna latar bergantian maks dua token (mis. `primary` dan `neutral-light`).
 - **Elemen berulang:** baris kredit atau nomor halaman "02/07" 24 px di posisi tetap (kanan atas), logo kecil di posisi tetap, satu perangkat penanda di posisi tetap (pita `Checker` bawah, garis bingkai, atau pita pelangi). Gaya judul slide isi sama: angka besar (serif atau condensed) di kiri atas dan headline 2 baris di bawahnya.
-- **Slide pembuka:** pola 2 (sampul majalah) untuk edukasi, pola 1 (iklan starburst) untuk promo, pola 5 untuk ajakan. Selalu ada isyarat geser (`Scribble` `arrow` atau teks kredit "Geser").
+- **Slide pembuka:** pola 2 (sampul majalah, `feed-sampul-editorial`) untuk edukasi, pola 1 (iklan starburst) untuk promo, pola 6 (`feed-kata-dilompati`) atau pola 5 untuk ajakan. Selalu ada isyarat geser (`Scribble` `arrow` atau teks kredit "Geser").
 - **Slide isi:** satu poin per slide, headline ≤ 8 kata, body ≤ 3 baris (30–45 karakter), satu gambar atau satu perangkat. Posisi gambar boleh bergantian kiri-kanan, posisi teks tetap.
 - **Slide penutup:** CTA besar di `Starburst` atau `Sticker`, logo, dan satu ajakan simpan atau kunjungi. Boleh memakai `Sunburst` pudar di belakang logo.
 - **Kesinambungan:** pelangi atau pita yang terpotong di tepi kanan slide n dan berlanjut di tepi kiri slide n+1 (koordinat lintas slide: **perlu dibuat**). Maks 10 slide. Kata raksasa hanya di slide pembuka dan penutup agar tidak melelahkan.
@@ -307,8 +327,12 @@ Fokus utama: panel teks atau produk unggulan di (720, 450). Elemen kedua: CTA di
 - Gabungkan rasa lama dengan disiplin modern: ruang kosong, grid rapi, teks pendek, kontras terukur.
 - Minta foto berkualitas modern dengan grading hangat dan grain halus, lalu biarkan CSS menambah material cetak.
 - Gunakan bayangan keras, outline tebal, dan registrasi meleset sebagai "tanda tangan" yang dipakai secukupnya.
+- Biarkan gambar bergaya membawa konsep (T-134): tubuh yang melompat menembus huruf, foto arsip `mono` di depan kaki huruf poster, bayangan subjek di dinding warna. Gaya mengubah komposisi, bukan hanya menambah tekstur.
+- Pilih kata raksasa yang bermakna dan bentuknya cocok dengan subjek: huruf yang tertutup badan tidak boleh mengubah arti (FREE tanpa R terbaca FEE).
 
 **Don't:**
+- Meletakkan baris kata di depan baju atau badan subjek yang warnanya dekat dengan warna huruf: huruf kehilangan tepinya. Baris depan hanya menutup kaki.
+- Memotong produk (kantong kopi, botol) di tepi kanvas atau menaruh logo dan teks di atas tangan subjek.
 - Mencampur era: starburst 50-an, kotak-kotak 90-an, dan neon 80-an dalam satu postingan.
 - Menumpuk ikon nostalgia sekaligus (smiley, mata kartun, hati, ceri, bunga, bintang, kaset, TV). Maks dua jenis dekorasi, maks tiga buah stiker.
 - Mengarang sejarah brand: "Sejak 1975", "Est. 1980", atau "Resep asli nenek" hanya boleh bila faktanya ada di knowledge brand.
@@ -348,7 +372,12 @@ Fokus utama: panel teks atau produk unggulan di (720, 450). Elemen kedua: CTA di
 4. Bila warna tidak boleh diubah: matikan helper `fade` dan pakai token apa adanya. Gunakan `neutral-light` sebagai kertas.
 5. Bila `shape.radius` brand besar: bingkai dan panel ikut membulat. Bila 0: bingkai garis ganda bersudut tajam, cocok untuk `iklan-cetak`.
 6. Aturan teks bebas brand (mis. "Logo selalu kanan bawah") menang atas posisi logo di pola bagian 9.
-7. Bayangan kartu dan stiker mengikuti `--shape-shadow`. Bayangan offset keras hanya untuk headline `groovy` dan dianggap bagian dari huruf (ekstrusi).
+7. Bayangan kartu dan stiker mengikuti `--shape-shadow`. Bayangan offset keras hanya untuk headline `groovy` dan dianggap bagian dari huruf (ekstrusi). Bayangan subjek di dinding adalah perlakuan foto: keras untuk brand tanpa bayangan lembut (aman untuk "tanpa gradient"), lembut (blur) untuk brand berbayangan lembut.
+
+**Penyesuaian fixture di render demo (T-134):**
+- Kopi Lembayung: dinding `primary`, kata `neutral-light` (dilompati) atau `accent` (poster) karena kontrasnya tinggi di bidang gelap; logo selalu kanan bawah; bayangan keras.
+- Seruni Skin: tidak punya aset subjek melompat, jadi pola pertamanya sampul editorial; palet kalem (dinding `secondary`, kata `primary`), `foto: natural` (kulit tanpa filter berlebihan), bayangan lembut, dan setiap slide hanya dua elemen visual utama (kata dan satu subjek atau foto).
+- Ritme Run Club: angka, jarak, dan waktu ditulis besar (5:45 AM sebagai angka kunci heading, 10K sebagai kata poster, 5:45 AM sebagai kata sampul); aksen hanya sebagai blok sorot berteks gelap, tidak pernah teks di atas `primary`; subjek selalu bergerak.
 
 ## 13. Checklist QA gaya
 
@@ -361,10 +390,12 @@ Setiap butir dijawab ya atau tidak:
 6. Tidak ada hitam murni atau putih murni pada bidang besar (kecuali token brand mewajibkan), dan tidak ada hue di luar token brand.
 7. Tidak ada gradient visual, vignette, glow, atau bayangan berblur.
 8. Proporsi warna sesuai tabel P9 sub-varian (dominan, kedua + gambar, aksen).
-9. Jumlah elemen dan ruang kosong sesuai batas sub-varian (`editorial-hangat` ≤ 5 elemen dan ≥ 35% kosong; lainnya ≤ 7 elemen dan ≥ 25% kosong).
+9. Jumlah elemen dan ruang kosong sesuai batas sub-varian (`editorial-hangat` ≤ 6 elemen; `iklan-cetak` dan `groovy` ≤ 7 elemen; semua ≥ 25% kosong; kalibrasi T-134).
 10. Semua elemen miring memakai satu sudut yang sama, dan semua bayangan keras searah.
 11. Gambar dari model tidak mengandung teks, huruf, angka, logo, label, atau bingkai film.
 12. Desain terasa spesifik untuk brand ini, bukan template retro generik (headline, foto, dan perangkat terhubung ke pesan).
+13. Ada satu ide besar yang terbaca tanpa membaca teks kecil, dan gambarnya bergaya (subjek bergerak, foto arsip, atau foto film), bukan foto studio polos.
+14. Huruf dan subjek saling mengunci (berselang, kaki huruf tertutup ≤ ±35%, atau penutup disorot), kata tetap terbaca dengan arti yang sama, dan produk serta wajah tidak terpotong tepi atau tertutup huruf.
 
 ## 14. Referensi
 
@@ -375,6 +406,8 @@ Setiap butir dijawab ya atau tidak:
 - `307e79c7352670a8ab657355fc1b2693.jpg`: feed agensi bernuansa oranye-krem; diambil foto editorial hangat, headline grotesk tebal pendek, kertas tertempel, dan cara menjaga satu palet di seluruh feed.
 - `9f3c079cfcaf00af047a1674e944e030.jpg`: feed edukasi kreator; diambil pasangan serif italic dan grotesk tebal ("The STORY", "Five HOOKS"), foto konsep objek tunggal di padang rumput, grain film, dan baris kredit bawah dengan panah geser (pola 2 dan carousel).
 - `afd7788684db76ecce6962e9a45d6f9e.jpg`: kumpulan template poster retro; diambil huruf serif bulat gemuk dengan outline dan bayangan offset, pelangi lengkung, kotak-kotak, stiker bulat, dan kisi panel untuk sub-varian `groovy`, sekaligus contoh risiko template generik yang harus dihindari.
+
+**Pengukuran dan pemakaian di T-134.** Median keenam referensi di atas: warna dominan 43%, area tenang 66%, porsi selain dua warna utama 33%, 4–6 elemen; dari sinilah ambang QA bagian 4. Prinsip yang diambil, bukan desainnya: `1758…` menjadi pola 6 (`feed-kata-dilompati`), `1a36…` menjadi pola 3 (`feed-poster-huruf`), `9f3c…` menjadi pola 2 (`feed-sampul-editorial`). Tidak ada tata letak, teks, logo, atau gambar referensi yang disalin.
 
 **Referensi akar, folder `instagram reference design/` (nomor urut nama file):**
 - No. 13 (`1ff4090b559ec180864490e90463626d.jpg`): latar kuning mustard dominan dengan pasangan sans tebal dan script; diambil keberanian satu warna hangat sebagai dominan dan ruang kosong yang lapang.

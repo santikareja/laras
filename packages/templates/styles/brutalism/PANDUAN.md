@@ -90,6 +90,8 @@ Pergeseran wajib ≥ 32 px atau sampai tepi kanvas. Pergeseran 1–31 px dilaran
 
 **Ruang kosong.** Dihitung sebagai latar polos (latar bertekstur tetap dihitung kosong) tanpa teks, foto, blok, atau garis tebal. Label boleh berkumpul di sudut (cluster) asal tiap cluster ≤ 4 baris dan pusat komposisi tetap satu elemen dominan.
 
+**Kepadatan dari referensi (T-134).** Referensi pemilik jauh lebih padat daripada render awal Laras: median warna dominan 42%, area tenang 44%, porsi selain dua warna utama 33%, dan 8–12 elemen (grup dihitung satu). Ambang QA gaya ini dikalibrasi dari angka itu (keputusan pemilik): dominan ≥ 38% (kuartil bawah referensi), warna kedua + gambar ≤ 50% (kuartil atas porsi selain dominan − aksen 12%), ruang kosong ≥ 30% (dominan − 5%), maks 10 elemen. Padat boleh, kacau tidak: kepadatan datang dari struktur (grid, penggaris, label, baris info), bukan dari taburan ikon.
+
 **Aturan Laras: tetap wajib / dilonggarkan**
 
 | Aturan | Cetak | Neo-brutalism |
@@ -98,12 +100,12 @@ Pergeseran wajib ≥ 32 px atau sampai tepi kanvas. Pergeseran 1–31 px dilaran
 | P2 satu dominan, elemen kedua ≤ ½, maks 3 ukuran huruf, headline ≥ 2× body | **Dilonggarkan**: maks 4 ukuran huruf (Display, pernyataan, body, label). Satu tumpukan Display dihitung satu ukuran walau tiap barisnya dipaskan lebar. Satu dominan, elemen kedua ≤ ½, dan Display ≥ 2× body tetap wajib (praktiknya ≥ 6×) | Tetap wajib: 3 ukuran |
 | P3 kedekatan dan ritme, tanpa celah mati | Tetap wajib: celah antarsel seragam (satu nilai 8–16 px); jarak label ke garis atau batangnya 1 langkah spasi | Tetap wajib: padding kartu seragam |
 | P4 maks 2 keluarga, tanpa yatim, body 30–45 karakter, tanda baca menempel | **Dilonggarkan sebagian**: keluarga ketiga hanya font aksen mono dari Brand Kit (T-124), khusus label ≤ 6 kata per baris. Display boleh dipenggal di batas suku kata: 1 kata ≥ 8 huruf, maks 3 potong, ≥ 3 huruf per potong, tanpa tanda hubung. Body tetap 30–45 karakter, tanpa yatim | Tetap wajib: 2 keluarga (mono boleh menggantikan body bila Brand Kit menyediakannya) |
-| P5 maks 3 elemen visual utama | Tetap 3 utama (mis. Display, foto, blok aksen). Elemen mikro tidak dihitung, maks 8: label ≤ 4 blok, tanda register ≤ 4, ikon teknis ≤ 2, overlay garis grid 1 | Tetap 3 utama, elemen mikro ≤ 3 |
+| P5 maks 3 elemen visual utama | Tetap 3 utama (mis. Display, foto, blok aksen); cakram dan blok dasar di belakang subjek dihitung satu kelompok bentuk. Elemen mikro tidak dihitung, maks 8: label ≤ 4 blok, tanda register ≤ 4, ikon teknis ≤ 2, overlay garis grid 1 | Tetap 3 utama, elemen mikro ≤ 3 |
 | P6 keseimbangan, tidak saling menutup bagian penting | Tetap wajib. Keseimbangan asimetris boleh. Huruf boleh di depan/belakang subjek hanya pada rambut, bahu, pakaian, atau latar; mata, mulut, dan bagian inti produk tidak tertutup | Tetap wajib |
 | P7 kontras ≥ 4,5:1 (≥ 3:1 untuk teks ≥ 32 px), font ≥ 24 px, safe margin | **Tidak pernah dilonggarkan.** Kontras diukur setelah tekstur, halftone, dan tinta aus diterapkan, di 10% piksel terburuk di bawah teks. Label teknis minimal 24 px | **Tidak pernah dilonggarkan** |
 | P8 fokus di titik potong 3×3 (±8%), elemen kedua di seberang diagonal | **Dilonggarkan**: toleransi ±10%. Bila Display memenuhi lebar, titik fokus diukur dari subjek, mata, angka, atau baris aksen, bukan dari seluruh tumpukan | Tetap wajib (±8%) |
-| P9 60-30-10 dari piksel | **Dilonggarkan**: dominan ≥ 50%, kedua + gambar 20–40%, aksen ≤ 18% dan boleh dipakai sebagai blok struktural (baris Display, blok teks, bentuk), maks 3 kemunculan | Dominan ≥ 50%, kedua (termasuk border dan bayangan) 20–35%, aksen ≤ 15% |
-| P10 ruang kosong ≥ 35%, maks 5 elemen | **Dilonggarkan**: ruang kosong ≥ 20%; maks 7 elemen terhitung termasuk logo dan CTA, ditambah elemen mikro sesuai P5 | **Dilonggarkan sedikit**: ruang kosong ≥ 30%, maks 6 elemen |
+| P9 60-30-10 dari piksel | **Dilonggarkan** (kalibrasi referensi, T-134): dominan ≥ 38%, kedua + gambar 20–50%, aksen ≤ 18% dan boleh dipakai sebagai blok struktural (baris Display, blok teks, bentuk), maks 3 kemunculan | Dominan ≥ 38%, kedua (termasuk border dan bayangan) 20–50%, aksen ≤ 15% |
+| P10 ruang kosong ≥ 35%, maks 5 elemen | **Dilonggarkan** (kalibrasi referensi, T-134): ruang kosong ≥ 30%; maks 10 elemen terhitung termasuk logo, CTA, label, dan bentuk, ditambah elemen mikro sesuai P5 | **Dilonggarkan sedikit**: ruang kosong ≥ 30%, maks 6 elemen (Neo lebih tertata: kartu, tombol, satu bidang warna; satu-satunya ambang varian yang lebih ketat dari gaya) |
 | P11 konsistensi | Satu jarak tepi, satu radius, satu gaya tombol, dan satu keluarga dekorasi (teknis-cetak) tetap wajib. **Kemiringan dilonggarkan**: 0° dan 90° (label/tanggal tegak) ditambah maks satu sudut miring ≤ 8°, sama untuk semua elemen miring, maks 2 elemen miring. Paragraf tidak pernah dimiringkan | Satu arah dan jarak bayangan, satu tebal border; kemiringan hanya untuk chip, satu sudut ≤ 6° |
 
 Aturan Brand Kit (warna, font, radius, logo, aturan teks bebas) tidak pernah dilonggarkan di kedua varian.
@@ -199,6 +201,20 @@ Aturan Brand Kit (warna, font, radius, logo, aturan teks bebas) tidak pernah dil
 | `Scribble` bentuk `cross` (perlu ditambahkan) | Silang kasar untuk mencoret pernyataan mitos (pola 6) |
 | `Struk` (perlu dibuat, opsional) | Kartu nota dengan baris mono "ITEM …… HARGA" dari data copy, garis putus-putus, maks 5 baris 24 px; untuk promo F&B (K8) |
 
+**Perangkat arketipe khas (T-134, `styles/brutalism/parts.tsx`)**
+
+| Perangkat | Spesifikasi |
+|---|---|
+| `Stack` (tumpukan) | Satu kata per baris, setiap baris dipaskan ke lebar area aman; kata ≤ 2 karakter (AM, 5K) ikut baris sebelumnya. Kotak baris dipangkas ke tinggi huruf kapital (`text-box: trim-both cap alphabetic`), jadi jarak antarbaris (0,1 em) dan titik gigit subjek sama untuk Anton, Fraunces, dan Cormorant. Baris terakhir boleh disorot: warna aksen, warna primer, blok aksen bertinta, atau blok tinta knock-out. Batas `scale` 2,6 (≤ 2 baris) dan 1,6–1,8 (3 baris) agar tumpukan tidak menelan kanvas |
+| `Rangka` + `Ruler` | Garis 12 kolom dari tepi atas sampai bawah kanvas di dalam area aman (35%), penggaris 01–12 berfont aksen di atas garis horizontal penuh, tanda register (+) di kedua ujung garis itu. Di atas blok gelap garis berlanjut dengan warna netral terang (grid tidak terputus oleh bidang) |
+| `Mono` | Label teknis berfont aksen Brand Kit (Courier Prime, IBM Plex Mono, Space Mono), kapital, tracking +8%, 24 px, batang aksen opsional |
+| `Leader` | Garis penunjuk anotasi: garis mendatar setebal garis grid dengan titik 16 px di ujungnya. Ujungnya menempel ke titik pada subjek lewat CSS anchor, jadi selalu menunjuk benda yang sebenarnya (label kemasan, pipi, dada pelari) |
+| `Cells` | Satu foto dipotong ke 4 × 3 sel berjeda 12 px; bingkai foto diatur `zoom` dan titik fokus; sel boleh diganti panel kertas (teks), blok aksen, atau foto yang dicetak warna aksen (multiply) |
+| `Credits` / `InfoRow` | Kredit bergaya poster film dan baris info tiga kolom bergaya arsip; isi dari copy berformat "Judul: isi" dipisah " / ", judul berwarna primer, isi tinta |
+| `tornClip` | Tepi sobek deterministik (gerigi 3–10 px setiap ±3% lebar) untuk pita kolase |
+
+Perlakuan foto di arketipe khas: halftone dicetak di atas kertas (`paper: neutral-light`, titik 9 px) agar siluet subjek tetap utuh di atas cakram, seperti potongan cetakan yang ditempel; tanpa kertas, titik halftone larut ke warna di belakangnya dan subjek hilang. Subjek tidak pernah memakai `transform` untuk posisi: transform membuat stacking context yang memutus multiply.
+
 **Konsistensi (P11).** Satu keluarga dekorasi per postingan: teknis-cetak (garis, register, label, ikon garis, blok). Jangan dicampur dengan coretan imut, stiker emoji, atau selotip. Satu tebal per peran garis, satu radius brand, satu sudut miring.
 
 ## 8. Foto dan ilustrasi
@@ -226,21 +242,37 @@ Aturan Brand Kit (warna, font, radius, logo, aturan teks bebas) tidak pernah dil
 - Produk Neo: `bright colorful product photo of a reusable water bottle with blank unbranded surface, isolated on plain white background, even studio light, crisp edges`
 - Selalu tambahkan: `no text, no letters, no numbers, no logos, no signage, no watermark`
 
+**Perlakuan per jenis gambar (dinilai dari render T-134)**
+- **Produk berwarna terang (kemasan kraft, label kosong)**: `mono`, bukan halftone. Halftone menghapus nada terang sehingga kemasan dan labelnya hilang menjadi titik jarang; padahal label itulah yang ditunjuk anotasi.
+- **Orang atau objek gelap di atas cakram**: halftone di atas kertas, titik 9 px. Siluet terbaca sebagai potongan cetakan yang ditempel (rujukan 365b…).
+- **Foto kelompok atau benda dari atas (cangkir, jalan)**: `fotokopi`. Kontras tinggi membuat bentuk besar (lingkaran cangkir, siluet pelari) tetap terbaca setelah dipotong per sel; halftone pada foto penuh yang terang menjadi bidang abu-abu tanpa bentuk.
+- **Kulit (brand yang melarang filter berlebihan)**: `natural`; sel aksen memakai blok polos, bukan foto yang dicetak warna.
+
+**Aset demo yang dipakai pola khas (fixtures/demo-assets)**: Kopi `subjek.webp` (kemasan, poster grid), `interaksi.webp` (tangan dan kemasan, kolase sobek), `foto.jpg` (cangkir dari atas, sel wajah); Seruni `subjek.webp`, `interaksi.webp` (kaca pembesar), `foto-4x5.jpg` (close-up kulit); Ritme `subjek.webp` (pelari), `gaya-cyberpunk.webp` (sprinter sudut rendah, kolase sobek), `foto.jpg` (tiga pelari, sel wajah).
+
 **Frasa yang dilarang**: `poster`, `typography`, `graphic design`, `magazine cover`, `flyer`, `collage`, `halftone`, `grunge texture`, `glitch`, `vaporwave`, `newspaper`, `sign`, `barcode`, `label`, `caption`, `with text`, nama merek atau tokoh terkenal. Frasa ini memancing model menggambar huruf, tata letak, atau efek yang seharusnya dibuat Laras dengan CSS.
 
 ## 9. Pola layout feed 4:5
 
 Koordinat untuk kanvas 1080 × 1350 dan safe margin 64 px. Titik potong grid 3 × 3: (360, 450), (720, 450), (360, 900), (720, 900).
 
-### Pola 1. Promo produk/harga: "Poster harga"
-- Atas (y 64–110): baris label kiri (nama seri/edisi dan tanggal dari copy); kanan dibiarkan kosong bila logo di kanan bawah.
-- y 130–560: Display 2 baris rata dua sisi; baris 1 nama produk/kata kunci (`neutral-dark`), baris 2 angka harga atau diskon (aksen).
-- y 580–1180, kolom 6–12: produk cut-out mono + `Halftone` dalam sel, menembus garis horizontal di atasnya (pelanggaran 1).
-- Kiri bawah, kolom 1–5: body ≤ 20 kata, lalu CTA `BlokTeks` aksen "PESAN SEKARANG →".
-- Kanan bawah: logo. Overlay `GarisGrid` 12 kolom.
-- Fokus: produk di (720, 900); angka harga di dekat (360, 450).
-- Elemen: Display, produk, body, CTA, logo = 5; mikro: label, garis grid = 2.
-- Arketipe: usulan baru `feed-poster-grid` (perlu dibuat); terdekat `feed-kata-raksasa`.
+**Konsep: empat hal di setiap pola (T-134).** Gaya ini bukan hiasan di atas arketipe dasar; gaya mengubah komposisinya. Setiap pola khas wajib punya:
+1. **Metafora atau ide besar** yang menerjemahkan pesan: lembar spesifikasi, potongan sel, sobekan.
+2. **Gambar bergaya**: mono, halftone di atas kertas, atau fotokopi sesuai jenis gambar (bagian 8), bukan foto studio apa adanya.
+3. **Interaksi huruf dan subjek**: subjek menggigit kaki huruf baris terakhir, sel foto memotong kaki judul, pita sobek bergeser di depan cakram.
+4. **Susunan lapisan berhierarki**: kertas dan grid → bentuk besar (cakram, blok dasar) → gambar → kata raksasa → info pendukung → detail kecil (label, anotasi, kredit).
+
+Pola 1, 3, dan 4 sudah menjadi arketipe khas (`feed-poster-grid`, `feed-kolase-sobek`, `feed-sel-wajah`, urutan render dan thumbnail: poster grid, kolase sobek, sel wajah), dirender untuk tiga brand fixture lewat `pnpm render:styles -- brutalism`. Pola 2, 6, dan 7 masih usulan (`plannedArchetypes`).
+
+### Pola 1. Promo produk dan pengumuman: "Poster grid" (lembar spesifikasi)
+- **Metafora**: produk atau orang diperlakukan sebagai spesimen di lembar teknis. Grid 12 kolom bernomor dipamerkan, dan anotasi bergaris menunjuk satu fakta yang terlihat di gambar. Kopi: anotasi "Tanggal sangrai di sini" menunjuk label kosong kemasan, jadi pesan "tanggal sangrai tertulis di kemasan" dibuktikan gambar. Ritme: cakram merah setengah tertutup blok dasar adalah matahari terbit pukul 5:45, pelari berlari di garis cakrawala, anotasi "You, at any pace" menunjuk pelari. Seruni: anotasi "Tekstur kulit asli" menunjuk pipi.
+- **Gambar**: cut-out; produk terang `mono`, orang halftone di atas kertas (Seruni `natural`).
+- **Huruf × subjek**: puncak subjek menembus kaki huruf baris terakhir (titik gigit 74% tinggi huruf kapital, CSS anchor ke baris itu).
+- **Lapisan**: kertas + garis kolom → cakram aksen → blok dasar (bleed ke tepi bawah dan sisi subjek, garis grid berlanjut terang di atasnya) → kata raksasa → subjek → anotasi, pernyataan, body, CTA pita tinta, logo.
+- Susunan: label teknis dan logo di kepala, penggaris 01–12, tumpukan 1–3 kata selebar area aman (baris terakhir disorot), lalu kolom subjek (54%) dan kolom teks (46%) di sisi seberang.
+- Elemen: kata, subjek, cakram, blok dasar, label, anotasi, pernyataan, body, CTA, logo = 10; mikro: garis grid, penggaris, tanda register.
+- Brand: Kopi `side: left` + `logo: bottom` (kanan bawah); Seruni tanpa cakram dan blok dasar (`bentuk: none`, `dasar: none`, dua elemen visual utama); Ritme waktu di kata raksasa saja.
+- Arketipe: `feed-poster-grid`.
 
 ### Pola 2. Edukasi/tips: "Indeks bernomor"
 - Atas: batang label + "TIPS / 03" (kategori dan nomor seri).
@@ -252,21 +284,23 @@ Koordinat untuk kanvas 1080 × 1350 dan safe margin 64 px. Titik potong grid 3 �
 - Elemen: angka, judul, daftar (satu blok), logo = 4 (+ foto sel kecil opsional = 5); mikro: batang label, garis pemisah.
 - Arketipe: usulan baru `feed-indeks` (perlu dibuat).
 
-### Pola 3. Pengumuman/acara: "Poster acara"
-- y 64–520: Display nama acara 2–3 baris rata dua sisi; baris terakhir aksen.
-- y 540–1080, kolom 1–9: foto halftone (penampil, venue, atau peserta) dalam `SelFoto` 3 × 2; wajah di sekitar (360, 900).
-- Kolom 10–12, sejajar foto: tanggal tegak bertumpuk "25 / 10 / 26", langkah 5, aksen.
-- y 1110–1286: `LabelTeknis` baris info 3 kolom (TEMPAT / WAKTU / TIKET) + logo kanan bawah. CTA boleh mengisi kolom ketiga ("DAFTAR → LINK DI BIO").
-- Elemen: Display, foto, tanggal, baris info, logo = 5 (+ CTA = 6); mikro: tanda register, garis grid.
-- Arketipe: varian dari usulan `feed-poster-grid`.
+### Pola 3. Peluncuran dan acara: "Kolase sobek"
+- **Metafora**: sobekan. Satu gambar disobek menjadi tiga pita yang bergeser mendatar: kemasan yang baru dibuka (Kopi "BARU SANGRAI"), pelari yang terbelah kecepatan (Ritme "FIRST 5K"), atau pesan yang dibongkar. Sobekan pertama selalu di bawah wajah (leher atau dada), tidak pernah melintasi mata atau mulut.
+- **Gambar**: cut-out halftone di atas kertas atau mono, di atas cakram aksen besar; pita tanpa latar, jadi sobekan hanya memotong subjek (rujukan 365b…).
+- **Huruf × subjek**: tumpukan dua nada 1–2 baris di atas (baris terakhir disorot), pita sobek bergeser ke arah kolom teks dan pernyataan besar.
+- **Lapisan**: kertas → cakram → pita sobek → kata raksasa → pernyataan → CTA pita tinta → baris info tiga kolom bergaya arsip (garis penuh di atasnya) dan logo.
+- Susunan: kolase 56% lebar di satu sisi, kolom teks 38% di sisi seberang; baris info "Judul: isi" (berat, sangrai, harga; pace, sign-up, after) di kaki.
+- Elemen: kata, kolase, cakram, label, pernyataan, CTA, baris info, logo = 8. Tanpa anotasi: dengan kata raksasa Anton selebar area aman, kolom teks tidak muat untuk pernyataan, anotasi, dan CTA sekaligus.
+- Brand: Kopi sorot `balik` (blok tinta) agar aksen ≤ 18% bersama cakram; Seruni tanpa cakram; Ritme sorot aksen tanpa angka kecil di baris info.
+- Arketipe: `feed-kolase-sobek`. Varian "Poster acara" lama (foto per sel dan tanggal tegak) tetap bisa disusun dari `feed-sel-wajah`.
 
-### Pola 4. Testimoni/kutipan: "Wajah per sel"
-- Atas (y 64–110): label kecil "KATA MEREKA" atau nama program.
-- y 120–880: close-up wajah hitam-putih dalam `SelFoto` 3 × 3, celah 12 px; mata di garis y ≈ 450, mendekati (360, 450) dan (720, 450). Satu sel pinggir bergeser setengah modul atau diganti blok aksen (pelanggaran 1).
-- y 920–1180: kutipan ≤ 12 kata, langkah 4–5, kapital, satu kata kunci aksen.
-- Bawah: nama dan peran sebagai label, logo kanan bawah.
-- Elemen: foto sel, kutipan, nama, logo = 4; mikro: tanda kutip besar opsional atau tanda register.
-- Arketipe: usulan baru `feed-sel-wajah` (perlu dibuat); terdekat `feed-kutipan`.
+### Pola 4. Testimoni, perkenalan, komunitas: "Sel wajah"
+- **Metafora**: satu orang atau satu momen dibaca sepotong demi sepotong. Seruni: kulit diperiksa per bagian, sejalan dengan konsultasi dan foto kondisi kulit. Ritme "RUN TOGETHER": tiga pelari dalam satu foto yang dipotong sel, terpisah tetapi tetap satu gambar (nobody runs alone). Kopi "PAGI PELAN": lingkaran cangkir dari atas yang dipecah grid.
+- **Gambar**: foto penuh atau cut-out dipotong 4 × 3 sel berjeda 12 px, `fotokopi` untuk foto kelompok dan benda, `natural` untuk kulit; satu sel sudut dicetak warna aksen (multiply) atau diganti blok aksen.
+- **Huruf × subjek**: judul satu baris selebar area aman, kata pertamanya knock-out di blok tinta (rujukan c9ca… "UN|SAVED"), dan baris sel teratas menggigit 16% kaki hurufnya: huruf terpotong grid, kaki huruf terlihat lagi di celah sel.
+- **Lapisan**: kertas → judul → sel foto → panel kertas (body + CTA pita tinta) dan sel aksen → kredit mono bergaya poster film berisi fakta dari copy → logo.
+- Elemen: label, judul, sel foto, body, CTA, kredit, logo = 7; sel aksen termasuk sel foto.
+- Arketipe: `feed-sel-wajah`.
 
 ### Pola 5. Ajakan/brand awareness: "Manifesto di belakang subjek"
 - Atas: label seri atau tagline singkat dari copy.
@@ -284,7 +318,7 @@ Koordinat untuk kanvas 1080 × 1350 dan safe margin 64 px. Titik potong grid 3 �
 - y 640–1180: `BlokTeks` aksen berisi fakta dalam Display knock-out 2–3 baris, pusatnya di sekitar (720, 900).
 - Bawah: body ≤ 15 kata dan logo.
 - Elemen: mitos, coretan, blok fakta, body, logo = 5.
-- Arketipe: usulan baru `feed-mitos-fakta` (perlu dibuat).
+- Arketipe: usulan baru `feed-coret-ganti` (perlu dibuat; `feed-mitos-fakta` sudah dipakai gaya Flat Design).
 
 ### Pola 7. Promo fitur (Neo-brutalism): "Kartu keras"
 - Latar `secondary` atau `primary` cerah, datar.
@@ -382,18 +416,18 @@ Koordinat untuk kanvas 1080 × 1350 dan safe margin 64 px. Titik potong grid 3 �
 5. Semua teks ≥ 24 px, di dalam safe margin, dan kontrasnya ≥ 4,5:1 (≥ 3:1 untuk teks ≥ 32 px) diukur setelah tekstur di 10% piksel terburuk?
 6. Tidak ada body atau label di atas foto halftone, dan body tidak condensed atau kapital semua?
 7. Label teknis berisi data nyata dari copy, maks 4 blok, tanpa barcode atau kode karangan?
-8. Maks 7 elemen terhitung termasuk logo dan CTA (Neo maks 6), elemen mikro ≤ 8, ruang kosong ≥ 20% (Neo ≥ 30%)?
+8. Maks 10 elemen terhitung termasuk logo, CTA, label, dan bentuk (Neo maks 6), elemen mikro ≤ 8, ruang kosong ≥ 30%, warna dominan ≥ 38%?
 9. Maks 4 ukuran huruf (Neo 3) dan maks 2 keluarga huruf, kecuali font aksen mono dari Brand Kit untuk label?
 10. Kemiringan hanya 0°/90° ditambah maks satu sudut ≤ 8° yang sama untuk ≤ 2 elemen (Neo: satu sudut ≤ 6° untuk chip), dengan satu radius, satu tebal per peran garis, dan satu arah bayangan?
 11. Logo utuh tanpa tekstur, halftone, aus, atau rotasi; posisinya sesuai aturan brand dan varian logonya sesuai latar?
-12. Hasil terasa seperti poster cetak berstruktur dengan satu ide, bukan tumpukan klise starter pack (ikon teknis ≤ 2, tanpa slogan pengisi)?
+12. Hasil terasa seperti poster cetak berstruktur dengan satu ide (metafora, gambar bergaya, interaksi huruf dan subjek, lapisan berhierarki; bagian 9), bukan tumpukan klise starter pack (ikon teknis ≤ 2, tanpa slogan pengisi)?
 
 ## 14. Referensi
 
 **Referensi pemilik, folder `brutalism/`**
-- `365b80a73b397b07225e4a02e5fbec1a.jpg` (FALSE MEMORY): tumpukan Display dua warna, kolase patung sobek, lingkaran blok aksen, label teknis, dan baris info tiga kolom di bawah; juga contoh klise starter pack (globe, segitiga peringatan, barcode) yang dibatasi.
+- `365b80a73b397b07225e4a02e5fbec1a.jpg` (FALSE MEMORY): tumpukan Display dua warna, kolase patung sobek, lingkaran blok aksen, label teknis, dan baris info tiga kolom di bawah; juga contoh klise starter pack (globe, segitiga peringatan, barcode) yang dibatasi. Dasar pola 3 (kolase sobek).
 - `3b39731360dc5c35073c12b5ec162798.jpg` (EGO FUELS THE ARTIST): varian bidang tinta, panel kertas dalam sel grid, figur halftone duotone menembus sel, dan tanggal bertumpuk di kolom kanan.
-- `4b977323105f1b55799266137ffe4f44.jpg` (BREAK THE GRID): garis grid bernomor yang terlihat, baris Display dua warna, perpaduan condensed dan grotesk lebar normal, serta bentuk geometris sebagai blok aksen.
+- `4b977323105f1b55799266137ffe4f44.jpg` (BREAK THE GRID): garis grid bernomor yang terlihat, baris Display dua warna, perpaduan condensed dan grotesk lebar normal, serta bentuk geometris sebagai blok aksen. Dasar pola 1 (poster grid) bersama a0fe….
 - `a0fe134a7f6909d382bf252b0e799ab2.jpg` (BRUTALISM DAY 04): kata dipenggal per suku kata, foto beton, blok merah berisi pernyataan, batang label, pita kata nilai, dan angka seri raksasa.
 - `a9bb426bc347bf8e404672059e18ddfc.jpg` (feed Estúdio Alastro): sistem feed dengan foto hitam-putih/merah, tipografi grotesk rapat, teks rata dua sisi, dan potret halftone; dasar pola carousel dan konsistensi antarpostingan.
 - `c9ca5dfa36893a3f47405938995fceb7.jpg` (UNSAVED): wajah close-up dipotong per sel grid dengan satu sel diganti, judul dua tekstur, dan kredit kecil rata kiri; dasar pola 4.

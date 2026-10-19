@@ -23,17 +23,19 @@ export const retroVintage: StyleMeta = {
       description: "Ceria ala 70-an dan 90-an: pelangi, kotak-kotak, stiker bulat.",
     },
   ],
-  archetypes: ["feed-kata-raksasa", "feed-kolase-diagonal", "feed-foto-konsep"],
+  archetypes: [
+    "feed-kata-dilompati",
+    "feed-poster-huruf",
+    "feed-sampul-editorial",
+    "feed-kata-raksasa",
+    "feed-kolase-diagonal",
+    "feed-foto-konsep",
+  ],
   plannedArchetypes: [
     {
       id: "feed-iklan-cetak",
       name: "Iklan cetak",
       description: "Iklan lawas dengan starburst dan blok harga.",
-    },
-    {
-      id: "feed-sampul-editorial",
-      name: "Sampul editorial",
-      description: "Sampul majalah 70-an dengan foto hangat.",
     },
     {
       id: "feed-potret-oval",
@@ -71,6 +73,9 @@ export const retroVintage: StyleMeta = {
     { id: "rainbow", name: "Pelangi", status: "ada" },
     { id: "retro-frame", name: "Bingkai retro", status: "ada" },
     { id: "round-badge", name: "Stiker bulat", status: "ada" },
+    { id: "kata-berselang", name: "Kata berselang depan-belakang subjek", status: "ada" },
+    { id: "bayangan-dinding", name: "Bayangan subjek di dinding", status: "ada" },
+    { id: "teks-aksen", name: "Teks font aksen (kalimat ketik, kredit)", status: "ada" },
   ],
   imagery: {
     kinds: ["photo", "cutout"],
@@ -153,8 +158,18 @@ export const retroVintage: StyleMeta = {
       description: "Tekstur cetak di atas seluruh kanvas",
     },
   ],
-  // Ambang QA desain dari bagian aturan PANDUAN.md (sub-varian iklan cetak dan groovy lebih longgar).
-  limits: { fontSizes: 4 },
+  // Ambang QA desain (T-134, keputusan pemilik): dikalibrasi dari pengukuran referensi pemilik
+  // (median warna dominan 43%, area tenang 66%, porsi selain dua warna utama 33%, 4–6 elemen):
+  // dominan minimal = kuartil bawah, warna kedua dan gambar maksimal = kuartil atas porsi selain
+  // dominan − aksen 12%, ruang kosong minimal = dominan − 5%, elemen maksimal = hitungan referensi.
+  // Iklan cetak dan groovy boleh satu elemen lebih (PANDUAN bagian 4).
+  limits: {
+    fontSizes: 4,
+    dominantMin: 0.3,
+    secondMax: 0.55,
+    emptyMin: 0.25,
+    elementsMax: 6,
+  },
   variantLimits: {
     "iklan-cetak": { centerAxis: true, emptyMin: 0.25, elementsMax: 7 },
     groovy: { centerAxis: true, emptyMin: 0.25, elementsMax: 7 },

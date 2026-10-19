@@ -1,21 +1,17 @@
 import {
   Blob,
   Button,
-  CanvasFrame,
   CurvedPanel,
   Disc,
-  Display,
-  HardFrame,
   IconDisc,
-  Marker,
-  Ring,
-  Scallop,
+  Image,
   Swoosh,
   Text,
 } from "../../primitives/index.ts";
-import { space } from "../../primitives/vars.ts";
+import { color, space } from "../../primitives/vars.ts";
 import type { SpecimenProps, StyleLayerProps, StyleRender } from "../../src/style.ts";
 import { SpecimenCell, SpecimenGrid } from "../specimen-grid.tsx";
+import { HangTag, Ripple, Stage, Swirl, Verdict } from "./parts.tsx";
 
 // Lapisan gaya Flat Design (PANDUAN.md bagian 7 dan 12): satu keluarga bentuk per postingan sesuai
 // varian (pita = swoosh, organik = blob, geometris = cakram), tanpa bayangan, tekstur, atau
@@ -49,66 +45,146 @@ function Backdrop({ style, subjectSide = "right" }: StyleLayerProps) {
   }
 }
 
-function Specimen(_: SpecimenProps) {
+function Specimen({ subject }: SpecimenProps) {
+  const center = { x: 150, y: 150 };
   return (
     <SpecimenGrid columns={3} rows={4}>
-      <SpecimenCell name="Swoosh garis">
-        <Swoosh color="primary" preset="wave" variant="line" />
+      <SpecimenCell name="Panggung dan subjek" background="primary">
+        <Stage
+          kind="cakram"
+          center={{ x: 150, y: 165 }}
+          size={160}
+          fill="secondary"
+          line="primary"
+        />
+        <div style={{ position: "absolute", left: "20%", right: "20%", top: "2%", bottom: 0 }}>
+          <Image src={subject} fit="contain" />
+        </div>
       </SpecimenCell>
-      <SpecimenCell name="Swoosh pita">
-        <Swoosh color="accent" preset="arc" variant="band" />
+      <SpecimenCell name="Lensa">
+        <Stage
+          kind="lensa"
+          center={{ x: 135, y: 110 }}
+          size={150}
+          fill="primary"
+          line="neutral-light"
+        />
+      </SpecimenCell>
+      <SpecimenCell name="Biji" background="primary">
+        <Stage kind="biji" center={center} size={200} fill="secondary" line="primary" />
+      </SpecimenCell>
+      <SpecimenCell name="Swirl dan riak" background="primary">
+        <Ripple center={{ x: 540, y: 560 }} field="primary" ink="secondary" from={120} count={6} />
+        <Swirl
+          center={{ x: 540, y: 560 }}
+          radius={300}
+          from={-150}
+          to={60}
+          color="accent"
+          thickness={54}
+        />
+      </SpecimenCell>
+      <SpecimenCell name="Tag gantung" style={{ display: "grid", placeItems: "center" }}>
+        <div style={{ marginTop: space(6) }}>
+          <HangTag
+            slot="tanda"
+            background="neutral-dark"
+            color="neutral-light"
+            string="neutral-dark"
+            drop={80}
+          >
+            Mitos vs Fakta
+          </HangTag>
+        </div>
+      </SpecimenCell>
+      <SpecimenCell
+        name="Vonis"
+        style={{ display: "grid", alignContent: "center", gap: space(3), padding: space(3) }}
+      >
+        <Verdict
+          icon="x"
+          label={{ slot: "labelMitos", text: "Mitos" }}
+          statement={{ slot: "mitos", text: "Dicoret" }}
+          mark="accent"
+          markInk="neutral-dark"
+          ink="neutral-dark"
+          struck="accent"
+        />
+        <Verdict
+          icon="check"
+          label={{ slot: "labelFakta", text: "Fakta" }}
+          statement={{ slot: "fakta", text: "Ditegaskan" }}
+          mark="primary"
+          markInk="neutral-light"
+          ink="neutral-dark"
+          strong
+        />
+      </SpecimenCell>
+      <SpecimenCell name="Tiket" background="primary" style={{ padding: space(4) }}>
+        <div
+          style={{
+            position: "relative",
+            height: "100%",
+            borderRadius: "var(--shape-radius)",
+            background: color("secondary"),
+          }}
+        >
+          {(["left", "right"] as const).map((side) => (
+            <span
+              key={side}
+              style={{
+                position: "absolute",
+                bottom: "22%",
+                [side]: "-18px",
+                width: "36px",
+                height: "36px",
+                borderRadius: "50%",
+                background: color("primary"),
+              }}
+            />
+          ))}
+          <span
+            style={{
+              position: "absolute",
+              bottom: "calc(22% + 16px)",
+              left: "28px",
+              right: "28px",
+              borderTop: `5px dashed ${color("primary")}`,
+            }}
+          />
+        </div>
       </SpecimenCell>
       <SpecimenCell name="Blob" style={{ padding: space(3) }}>
-        <Blob color="secondary" points={6} seed={2}>
-          <Text font="heading" size={2} color="neutral-dark">
-            Blob
-          </Text>
-        </Blob>
-      </SpecimenCell>
-      <SpecimenCell name="Scallop" style={{ padding: space(3) }}>
-        <Scallop color="accent" lobes={12}>
-          <Text font="heading" size={2} color="neutral-dark">
-            Kartu
-          </Text>
-        </Scallop>
+        <Blob color="secondary" points={6} seed={2} />
       </SpecimenCell>
       <SpecimenCell name="Panel gelombang" background="secondary">
         <CurvedPanel color="primary" edge="wave" at={0.5} />
-      </SpecimenCell>
-      <SpecimenCell name="Panel takik" background="secondary">
-        <CurvedPanel color="primary" edge="notch" at={0.5} />
-      </SpecimenCell>
-      <SpecimenCell name="Cakram dan cincin" style={{ display: "grid", placeItems: "center" }}>
-        <div style={{ position: "relative", width: 220, height: 220 }}>
-          <Disc color="secondary" diameter={220} />
-          <Ring color="primary" diameter={220} />
-        </div>
       </SpecimenCell>
       <SpecimenCell
         name="Ikon datar"
         style={{ display: "flex", alignItems: "center", gap: space(2), padding: space(3) }}
       >
         <IconDisc
-          name="star"
-          size={40}
+          name="calendar"
+          size={36}
           ratio={1.6}
-          shape="brand"
-          background="accent"
-          color="neutral-dark"
-        />
-        <IconDisc
-          name="pin"
-          size={40}
-          ratio={1.6}
-          shape="brand"
+          shape="circle"
           background="primary"
           color="neutral-light"
         />
         <IconDisc
-          name="calendar"
-          size={40}
+          name="pin"
+          size={36}
           ratio={1.6}
-          shape="brand"
+          shape="circle"
+          background="accent"
+          color="neutral-dark"
+        />
+        <IconDisc
+          name="check"
+          size={36}
+          ratio={1.6}
+          shape="circle"
           background="secondary"
           color="neutral-dark"
         />
@@ -117,39 +193,20 @@ function Specimen(_: SpecimenProps) {
         name="CTA berikon"
         style={{ display: "grid", alignContent: "center", padding: space(3) }}
       >
-        <Button>Coba</Button>
+        <Button shape="pill">Coba</Button>
       </SpecimenCell>
       <SpecimenCell
-        name="Penanda"
-        style={{ display: "grid", alignContent: "center", gap: space(2), padding: space(3) }}
+        name="Dua nada"
+        style={{ display: "grid", alignContent: "center", padding: space(3) }}
       >
-        <Marker mark="accent" color="neutral-dark">
-          Mitos
-        </Marker>
-        <Marker mark="primary" color="neutral-dark" shape="circle">
-          Fakta
-        </Marker>
-      </SpecimenCell>
-      <SpecimenCell name="Dua nada" style={{ padding: space(3) }}>
-        <Display
+        <Text
           font="heading"
-          scale={1}
+          size={4}
           color="neutral-dark"
-          stack
-          accentWords={{ text: "NADA", color: "primary" }}
+          accentWords={{ text: "nada", color: "primary" }}
         >
-          DUA NADA
-        </Display>
-      </SpecimenCell>
-      <SpecimenCell name="Bayangan datar" background="secondary" style={{ padding: space(4) }}>
-        <HardFrame shadow="primary" background="neutral-light">
-          <div style={{ padding: space(3) }}>
-            <Text font="heading" size={2} color="neutral-dark">
-              Kartu
-            </Text>
-          </div>
-        </HardFrame>
-        <CanvasFrame color="primary" opacity={0.5} />
+          Dua nada
+        </Text>
       </SpecimenCell>
     </SpecimenGrid>
   );

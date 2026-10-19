@@ -20,25 +20,23 @@ export const brutalism: StyleMeta = {
         "Bidang warna datar, border gelap tebal, bayangan keras tanpa blur; aturan lebih ketat.",
     },
   ],
-  archetypes: ["feed-kata-raksasa", "feed-kolase-diagonal", "feed-bidang-warna"],
+  // Arketipe khas (T-134) lebih dulu, lalu arketipe dasar yang juga cocok.
+  archetypes: [
+    "feed-poster-grid",
+    "feed-kolase-sobek",
+    "feed-sel-wajah",
+    "feed-kata-raksasa",
+    "feed-kolase-diagonal",
+    "feed-bidang-warna",
+  ],
   plannedArchetypes: [
-    {
-      id: "feed-poster-grid",
-      name: "Poster grid",
-      description: "Grid terlihat dengan sel teks dan foto.",
-    },
-    {
-      id: "feed-sel-wajah",
-      name: "Sel wajah",
-      description: "Wajah dipotong per sel grid untuk testimoni.",
-    },
     {
       id: "feed-indeks",
       name: "Indeks bernomor",
       description: "Daftar tips bernomor besar bergaya katalog.",
     },
     {
-      id: "feed-mitos-fakta",
+      id: "feed-coret-ganti",
       name: "Mitos dan fakta",
       description: "Pernyataan dicoret lalu diganti fakta.",
     },
@@ -120,12 +118,13 @@ export const brutalism: StyleMeta = {
     {
       rule: "P9",
       change: "relaxed",
-      limit: "Dominan ≥ 50%, aksen ≤ 18% sebagai blok struktural, maks 3 kemunculan",
+      limit:
+        "Dominan ≥ 38%, kedua + gambar ≤ 50%, aksen ≤ 18% sebagai blok struktural, maks 3 kemunculan",
     },
     {
       rule: "P10",
       change: "relaxed",
-      limit: "Ruang kosong ≥ 20%, maks 7 elemen (Neo: ≥ 30%, maks 6)",
+      limit: "Ruang kosong ≥ 30%, maks 10 elemen (Neo: maks 6)",
     },
     {
       rule: "P11",
@@ -164,15 +163,19 @@ export const brutalism: StyleMeta = {
       description: "Tampilkan garis grid dan tanda register",
     },
   ],
-  // Ambang QA desain dari bagian aturan PANDUAN.md (P1, P2, P8, P9, P10, P11 dilonggarkan).
+  // Ambang QA desain (PANDUAN bagian 4): P1, P2, P8, P11 dari panduan; P9 dan P10 dikalibrasi dari
+  // referensi pemilik (T-134): dominan = kuartil bawah referensi, kedua + gambar = kuartil atas
+  // porsi selain dominan − aksen 12%, ruang kosong = dominan − 5%, elemen = hitungan referensi.
   limits: {
     axes: 3,
     fontSizes: 4,
     thirdsTolerance: 0.1,
-    dominantMin: 0.5,
+    dominantMin: 0.38,
+    secondMax: 0.5,
     accentMax: 0.18,
-    emptyMin: 0.2,
-    elementsMax: 7,
+    emptyMin: 0.3,
+    elementsMax: 10,
   },
-  variantLimits: { neo: { emptyMin: 0.3, elementsMax: 6 } },
+  // Neo lebih tertata (kartu, tombol, satu bidang warna): maks 6 elemen (PANDUAN bagian 4).
+  variantLimits: { neo: { elementsMax: 6 } },
 };

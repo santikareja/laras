@@ -5,7 +5,7 @@ export const cyberpunk: StyleMeta = {
   id: "cyberpunk",
   name: "Cyberpunk/Futuristik",
   summary:
-    "Gelap dan menyala: panggung hitam, cahaya neon dari warna brand, subjek futuristik, detail HUD dan glitch yang terkendali.",
+    "Pernyataan heroik di masa depan: satu kata raksasa yang mengunci subjek bercahaya tepi di panggung gelap, cahaya neon dari warna brand, detail HUD dan glitch yang terkendali.",
   variants: [
     {
       id: "neon-gelap",
@@ -23,13 +23,8 @@ export const cyberpunk: StyleMeta = {
       description: "Bidang token jenuh terang, label vertikal, HUD lebih banyak.",
     },
   ],
-  archetypes: ["feed-kata-raksasa", "feed-satu-objek", "feed-foto-konsep"],
+  archetypes: ["feed-kata-terbelah", "feed-kata-raksasa", "feed-satu-objek", "feed-foto-konsep"],
   plannedArchetypes: [
-    {
-      id: "feed-panggung-neon",
-      name: "Panggung neon",
-      description: "Subjek di panggung gelap dengan rel neon.",
-    },
     { id: "feed-panel-hud", name: "Panel HUD", description: "Informasi dalam bingkai HUD." },
     {
       id: "feed-koordinat",
@@ -37,11 +32,6 @@ export const cyberpunk: StyleMeta = {
       description: "Acara dengan label koordinat dan waktu.",
     },
     { id: "feed-transmisi", name: "Transmisi", description: "Kutipan bergaya pesan masuk." },
-    {
-      id: "feed-poster-tekno",
-      name: "Poster tekno",
-      description: "Poster terang dengan label teknis.",
-    },
   ],
   typography: {
     heading: ["grotesk-condensed", "geometric-sans"],
@@ -69,6 +59,10 @@ export const cyberpunk: StyleMeta = {
     { id: "hud-label", name: "Label HUD", status: "ada" },
     { id: "pixel-scatter", name: "Piksel lepas", status: "ada" },
     { id: "ticker", name: "Pita berjalan", status: "ada" },
+    { id: "split-word", name: "Kata berpita dua lapis (pita di depan subjek)", status: "ada" },
+    { id: "hud-row", name: "Baris label HUD tiga kolom (font aksen)", status: "ada" },
+    { id: "spotlight", name: "Sorot panggung (kerucut, genangan, rel, meja)", status: "ada" },
+    { id: "echo-stack", name: "Gema kata bertumpuk", status: "ada" },
   ],
   imagery: {
     kinds: ["cutout", "concept", "photo"],
@@ -123,12 +117,18 @@ export const cyberpunk: StyleMeta = {
       rule: "P8",
       change: "relaxed",
       limit:
-        "Fokus boleh di sumbu tengah (±4%) pada garis sepertiga untuk neon-gelap dan neon-jalanan",
+        "Fokus boleh di sumbu tengah (±4%) pada garis sepertiga untuk neon-gelap dan neon-jalanan; pola simetris khas dikecualikan",
+    },
+    {
+      rule: "P9",
+      change: "relaxed",
+      limit: "Dominan ≥ 35%, warna kedua dan gambar ≤ 50% (kalibrasi referensi, T-134)",
     },
     {
       rule: "P10",
       change: "relaxed",
-      limit: "neon-jalanan dan poster-tekno: ruang kosong ≥ 25%, maks 6 elemen",
+      limit:
+        "Ruang kosong ≥ 30% (neon-jalanan dan poster-tekno ≥ 25%), maks 6 elemen (poster-tekno 8)",
     },
   ],
   compatibility: [
@@ -141,9 +141,10 @@ export const cyberpunk: StyleMeta = {
   options: [
     {
       name: "glow",
-      values: ["soft", "solid"],
+      values: ["soft", "solid", "tidak"],
       default: "soft",
-      description: "Glow lunak (blur), atau padat tanpa blur untuk brand yang melarang gradient",
+      description:
+        "Glow lunak (blur), padat tanpa blur untuk brand yang melarang gradient, atau tanpa halo pada subjek yang sudah bercahaya tepi",
     },
     {
       name: "foto",
@@ -157,11 +158,35 @@ export const cyberpunk: StyleMeta = {
       default: "scanline",
       description: "Tekstur layar di atas seluruh kanvas",
     },
+    {
+      name: "cahaya",
+      values: ["accent", "primary", "secondary"],
+      default: "accent",
+      description:
+        "Token jenuh yang menjadi cahaya neon (halo subjek, glow, rel); samakan dengan opsi cahaya arketipe khas",
+    },
+    {
+      name: "glitch",
+      values: ["iris", "kanal", "gema", "tidak"],
+      default: "iris",
+      description:
+        "Gangguan pada kata raksasa: iris geser, pemisahan kanal, gema warna cahaya, atau tanpa glitch untuk heading serif",
+    },
   ],
   // Ambang QA desain dari bagian aturan PANDUAN.md (P2 diperketat, fokus sumbu tengah boleh).
-  limits: { headlineRatio: 3, centerAxis: true },
+  // P9 dan P10 dikalibrasi dari referensi pemilik (T-134): dominan minimal = kuartil bawah
+  // referensi, warna kedua dan gambar maksimal = kuartil atas porsi selain dominan dikurangi aksen
+  // 12%, ruang kosong minimal = dominan − 5%, elemen maksimal = hitungan referensi (poster tekno 8).
+  limits: {
+    headlineRatio: 3,
+    centerAxis: true,
+    dominantMin: 0.35,
+    secondMax: 0.5,
+    emptyMin: 0.3,
+    elementsMax: 6,
+  },
   variantLimits: {
-    "neon-jalanan": { emptyMin: 0.25, elementsMax: 6 },
-    "poster-tekno": { emptyMin: 0.25, elementsMax: 6, centerAxis: false },
+    "neon-jalanan": { emptyMin: 0.25 },
+    "poster-tekno": { emptyMin: 0.25, elementsMax: 8, centerAxis: false },
   },
 };
