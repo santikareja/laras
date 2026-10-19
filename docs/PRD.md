@@ -316,6 +316,7 @@ AC: varian yang gagal QA setelah 2 putaran revisi tetap ditampilkan, dengan labe
 - Tahap 2 (enam belas gaya): Gaya Swiss, Bauhaus, Pop Art, Scrapbook/Digital Collage, Imperfect & Hand-drawn Aesthetics (Notes App Chic), Modernisme, Art Deco, Art Nouveau, Psychedelic, Y2K Nostalgia, Anti-Design, Maksimalisme, Retro-Futurisme, Immersive 3D & Spatial Design, Chaos Packaging, Neo-Minimalisme.
 - Setiap gaya punya folder di `packages/templates/styles/<id>/` berisi `PANDUAN.md` (panduan lengkap untuk generate desain: komposisi, tipografi, warna, perangkat grafis, foto, pola layout untuk berbagai jenis konten, do dan don't, kecocokan Brand Kit, checklist QA) dan definisi mesin `style.ts`. Panduan bersifat umum untuk semua jenis konten, bukan satu desain khusus.
 - AC: pengguna melihat pratinjau setiap gaya dengan brand-nya sebelum memilih; hasil generasi memakai gaya yang dipilih; QA visual menilai kesesuaian dengan gaya selain K1–K8 dan P1–P7.
+- Pipeline (keputusan pemilik 2026-10-19, T-133): gaya default disimpan di `project.json` project; brief boleh mengganti gaya; Claude mengutamakan arketipe gaya tetapi boleh memilih arketipe lain dari katalog, dan memilih opsi gaya per postingan sesuai aturan brand; QA visual menilai kesesuaian gaya di skor `referenceFit` dan menulis pelanggaran checklist gaya sebagai perbaikan.
 
 ---
 
