@@ -1,7 +1,9 @@
 # SESSION LOG
 
 ## Sesi #8, 2026-10-18
-- Task: T-105, T-106, T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116, T-118, T-117, T-120, T-121, T-122, T-119, T-123, T-128, T-132, T-130, T-131, T-134, T-133, T-135, T-124, T-125, T-126
+- Task: T-105, T-106, T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116, T-118, T-117, T-120, T-121, T-122, T-119, T-123, T-128, T-132, T-130, T-131, T-134, T-133, T-135, T-124, T-125, T-126, T-127
+- Hasil T-127 (2026-10-20): evaluasi ulang spike sembilan brief T-117 dengan gaya cocok bervariasi; Claude 71, Codex 25, ±$18,81, 52 menit. Pemilik menilai 6/9 layak (K2, S2, S3, R1, R2, R3): **GO** Fase 2 (PRD 11). QA visual meloloskan 0/9 dan skornya tidak memisahkan pilihan pemilik; revisi dua putaran tidak konvergen; temuan menjadi T-137 dan T-138.
+- Masalah dan solusinya T-127: dry-run Ritme gagal "teks terpotong di tepi" palsu karena Range mengukur area konten Anton, diperbaiki dengan menjepit batas vertikal baris ke kotak elemen sebelum kuota dipakai (a50dfc8). Pemilik ingin mengecek aplikasi di tengah evaluasi: `pnpm dev` di Terminal macet di `FSEStart` (fsevents), dijalankan dari shell agent; jendela kosong memang target Fase 0 (UI mulai E-201). Dicatat di KNOWLEDGE dan T-136.
 - Hasil T-126: rubric QA visual delapan aspek dengan ambang inti, pratinjau logo PNG untuk QA, knowledge dan hasil cek kode di prompt QA, larangan fakta karangan. 671 test, tanpa kuota.
 - Masalah dan solusinya T-126: pratinjau logo awalnya menggagalkan QA bila file logo tidak ada (folder project test), kini dilewati dengan keterangan; potongan teks test sempat merusak file karena penanda akhir blok tidak unik, diperbaiki.
 - Hasil T-125: konsep visual per angle dan setting di plan, layout mewujudkannya, setting ke prompt Codex, larangan klaim visual yang tidak bisa digambar. 667 test, tanpa kuota.

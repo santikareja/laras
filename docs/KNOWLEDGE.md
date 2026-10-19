@@ -298,6 +298,33 @@ Temuan teknis:
 
 Keputusan: **NO-GO** untuk Fase 2 (PRD 11: butuh ≥ 6 dari 9).
 
+## Evaluasi ulang spike T-127 (2026-10-20, gerbang Fase 1)
+
+Pengaturan: 9 percobaan `pnpm spike` sungguhan (izin pemilik), brief K1–R3 sama dengan T-117, 1 varian, arketipe dipilih Claude dari katalog 22 (arketipe gaya lebih dulu), satu gaya per percobaan (varian pertama gaya), batas per percobaan Claude 9 dan Codex 3, berurutan. Sejak T-117 ditambahkan: arketipe dan cut-out (T-122–T-123, T-131), gaya desain (T-128, T-132–T-134), aturan brand terstruktur (T-124), ide visual dan setting (T-125), rubric QA delapan aspek (T-126). Sebelum jalan, QA kode diperbaiki agar area konten font display tidak dihitung terpotong di tepi (dry-run Ritme). Laporan per percobaan di `out/spike/<brand>/runs/<briefId>/` (tidak di-commit); lembar banding T-117 vs T-127 dibuat dari laporan itu.
+
+| # | Gaya | Arketipe | Skor i/t/il/b/h/ba/r/p (rata) | Wajib/saran akhir | Rata per putaran (0 → 1 → 2) | Claude/Codex | Biaya CLI | Durasi | Pemilik |
+|---|---|---|---|---|---|---|---|---|---|
+| K1 | Retro/Vintage | feed-poster-huruf | 7/8/7/8/8/6/8/7 (7,4) | 0/3 | 7,5 → 7,4 → 7,4 | 8/2 | $2,29 | 307 s | tidak layak |
+| K2 | Brutalisme | feed-poster-grid | 7/8/8/7/8/8/9/8 (7,9) | 1/5 | 7,1 → 8,0 → 7,9 | 8/3 | $2,12 | 343 s | layak |
+| K3 | Flat | feed-subjek-lingkar | 5/7/4/6/7/5/9/6 (6,1) | 2/3 | 6,9 → 6,4 → 6,1 | 8/3 | $2,10 | 406 s | tidak layak |
+| S1 | Corporate | feed-kartu-kaca | 6/6/4/6/6/6/9/6 (6,1) | 0/4 | 7,0 → 5,5 → 6,1 | 8/3 | $2,13 | 455 s | tidak layak |
+| S2 | Glassmorphism | feed-kartu-kaca | 7/6/6/7/7/6/9/7 (6,9) | 0/5 | 7,0 → 7,6 → 6,9 | 8/3 | $2,06 | 319 s | layak |
+| S3 | Minimalism | feed-satu-objek | 7/7/5/7/7/6/8/6 (6,6) | 0/7 | 6,5 → 6,6 → 6,6 | 8/3 | $2,09 | 347 s | layak |
+| R1 | Flat | feed-bidang-warna | 6/7/6/6/7/5/9/6 (6,5) | 0/6 | 6,1 → 6,4 → 6,5 | 8/3 | $2,04 | 310 s | layak |
+| R2 | Retro/Vintage | feed-poster-huruf | 7/7/7/7/8/6/9/6 (7,1) | 0/5 | 7,1 → 6,9 → 7,1 | 8/3 | $2,13 | 364 s | layak |
+| R3 | Cyberpunk | feed-kata-terbelah | 7/8/7/7/8/7/9/8 (7,6) | 1/4 | gagal kode → 7,5 → 7,6 | 7/2 | $1,85 | 244 s | layak |
+
+Angka: Claude 71 panggilan (perkiraan 50–63, batas 81), Codex 25 (perkiraan 12–27), retry validasi 0, estimasi biaya CLI $18,81 (perkiraan $14–19), total 52 menit. Semua job selesai dan QA kode lolos 9/9 di putaran akhir; QA visual lolos 0/9; rata-rata skor visual 6,9 (sinyal dini PRD 10 "< 7" terpicu, dengan rubric delapan aspek yang lebih ketat dari T-117). Hanya R3 yang ≤ 5 menit (target PRD 3), karena kesembilan percobaan memakai dua putaran revisi penuh. **Layak menurut pemilik 6/9** (K2, S2, S3, R1, R2, R3; T-117: 0/9).
+
+Kalibrasi: skor QA visual tidak memisahkan pilihan pemilik. Yang ditolak K1 (7,4) lebih tinggi daripada yang diterima S3 (6,6) dan R1 (6,5); kini QA lebih ketat daripada pemilik, kebalikan dari T-117. Perbaikan wajib di dua postingan yang diterima (K2 garis penunjuk label ke benda yang salah, R3 angka pace di label HUD kecil padahal aturan brand meminta angka besar) nyata tetapi tidak menghalangi pemilik.
+
+Temuan teknis:
+- Revisi tidak konvergen: dari putaran 1 ke 2 skor turun di 3 percobaan (K2, K3, S2), tetap di 2 (K1, S3), dan perbaikan wajib baru muncul di K2, K3, dan R3; S1 turun 7,0 → 5,5 di putaran 1. Dua putaran memakai 4 dari 8 panggilan Claude per percobaan dan membuat 8 dari 9 percobaan melewati 5 menit.
+- Gaya bisa tidak tampak: S1 (Corporate) memakai `feed-kartu-kaca` yang bukan arketipe Corporate (katalog gaya lebih dulu tetapi utuh, keputusan T-133); QA hanya menyarankan menggantinya dan revisi tidak melakukannya. S1 dan S2 akhirnya mirip pola foto + kartu T-117.
+- Fakta di render sesuai knowledge di 9/9 (harga, jam buka, pace 5:00–8:30, Sunday run tanpa pendaftaran).
+
+Keputusan: **GO** untuk Fase 2 (PRD 11: ≥ 6 dari 9).
+
 ## Keputusan kecil (tanggal, keputusan, alasan)
 
 | Tanggal | Keputusan | Alasan |

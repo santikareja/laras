@@ -310,17 +310,28 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Rujukan: PRD F16, T-128, T-132
   - AC: enam belas gaya tahap 2 ditambahkan dengan pola T-128 dan T-132, masing-masing dengan panduan dan thumbnail.
 
-- [~] T-127 Evaluasi ulang spike
+- [x] T-127 Evaluasi ulang spike
   - Rujukan: PRD 11 (Fase 1), KNOWLEDGE "Evaluasi spike T-117"
   - AC: brief yang sama dengan T-117 dijalankan ulang; pemilik menilai; keputusan go/no-go tertulis.
   - Catatan: MEMAKAI KUOTA BESAR. Jadwalkan bersama pemilik.
   - Tambahan dari uji T-131 (dipulihkan 2026-10-20): katalog 22 arketipe membuat panggilan layout dan revise ±$0,35; batas panggilan spike 2 varian perlu ±16 Claude agar dua putaran revisi muat (Ritme v2 gagal di batas 14).
   - Keputusan pemilik 2026-10-20 (rencana disetujui): brief K1–K3, S1–S3, R1–R3 sama dengan T-117, 1 varian, arketipe dipilih Claude, berurutan; gaya cocok bervariasi: K1 Retro/Vintage, K2 Brutalisme, K3 Flat, S1 Corporate, S2 Glassmorphism, S3 Minimalism, R1 Flat, R2 Retro/Vintage, R3 Cyberpunk (varian pertama gaya); batas per percobaan Claude 9 dan Codex 3; perkiraan Claude 50–63, Codex 12–27, ±$14–19, ±50–70 menit; dry-run sembilan konfigurasi dulu, lalu sungguhan. Gerbang tetap PRD 11 (GO bila ≥ 6 dari 9 layak menurut pemilik).
+  - Selesai 2026-10-20: dry-run 9/9 lolos setelah perbaikan QA area konten font display (a50dfc8); jalan sungguhan Claude 71, Codex 25, ±$18,81, 52 menit; QA kode 9/9, QA visual 0/9 (rata 6,9). **Layak menurut pemilik 6/9 (K2, S2, S3, R1, R2, R3): GO** (PRD 11). Tabel, kalibrasi, dan temuan di KNOWLEDGE "Evaluasi ulang spike T-127"; temuan diteruskan ke T-137 dan T-138.
 
 - [ ] T-136 `pnpm dev` macet di Terminal pengguna (fsevents)
   - Rujukan: KNOWLEDGE "`pnpm dev` macet di Terminal pengguna"
   - AC: `pnpm dev` dari Terminal pengguna membuka jendela Laras; perubahan file di `apps/desktop/src` tetap memicu HMR.
   - Catatan: ditemukan 2026-10-20 saat pemilik ingin mengecek aplikasi di tengah T-127; sementara dijalankan dari shell agent. Pilihan: `server.watch.usePolling` di `vite.config.ts` (biaya CPU polling), atau cari penyebab fsevents di macOS 27.
+
+- [ ] T-137 Kalibrasi QA visual dan putaran revisi terhadap penilaian pemilik T-127
+  - Rujukan: KNOWLEDGE "Evaluasi ulang spike T-127", PRD F9, PRD 3 (waktu ≤ 5 menit), T-126
+  - AC: aturan lolos QA dan berhentinya revisi dikalibrasi ulang dengan sembilan render T-127 yang sudah dinilai pemilik (tanpa kuota baru bila memungkinkan); revisi tidak memperburuk hasil putaran sebelumnya.
+  - Catatan: QA visual meloloskan 0/9 sementara pemilik menerima 6/9; skor tidak memisahkan pilihan pemilik (K1 7,4 ditolak, S3 6,6 dan R1 6,5 diterima). Kesembilan percobaan memakai dua putaran revisi penuh, skor turun dari putaran 1 ke 2 di K2, K3, S2, dan 8 dari 9 percobaan melewati 5 menit. Pilihan yang perlu keputusan pemilik: ambang, revisi hanya untuk perbaikan wajib, atau mempertahankan putaran terbaik.
+
+- [ ] T-138 Gaya terpilih harus tampak di arketipe yang dipilih
+  - Rujukan: KNOWLEDGE "Evaluasi ulang spike T-127", ADR-016, T-133
+  - AC: postingan bergaya selalu menampakkan ciri gayanya; arketipe di luar daftar gaya hanya dipakai dengan alasan yang tertulis atau tidak dipakai sama sekali (keputusan pemilik).
+  - Catatan: S1 (Corporate) memakai `feed-kartu-kaca` yang bukan arketipe Corporate; QA hanya memberi saran mengganti dan revisi tidak melakukannya. Keputusan T-133 ("arketipe gaya lebih dulu, lalu semua") perlu ditinjau ulang bersama pemilik.
 
 ## Fase 2: Walking skeleton (epic)
 
