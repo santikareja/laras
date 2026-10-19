@@ -1,6 +1,6 @@
 import { type ColorToken, color } from "./vars.ts";
 
-type Shape = "arrow" | "underline" | "circle" | "sparkle";
+type Shape = "arrow" | "underline" | "circle" | "sparkle" | "cross";
 
 // Coretan tangan (PRD 4 K5); warna garis dari token brand.
 const VIEW_BOX: Record<Shape, string> = {
@@ -8,6 +8,7 @@ const VIEW_BOX: Record<Shape, string> = {
   underline: "0 40 200 44",
   circle: "0 0 200 100",
   sparkle: "40 0 120 100",
+  cross: "0 0 200 100",
 };
 
 const PATHS: Record<Shape, string[]> = {
@@ -17,6 +18,8 @@ const PATHS: Record<Shape, string[]> = {
   sparkle: [
     "M100 8 C 102 36, 112 48, 140 50 C 112 52, 102 64, 100 92 C 98 64, 88 52, 60 50 C 88 48, 98 36, 100 8",
   ],
+  // Silang kasar untuk mencoret pernyataan mitos (Brutalisme pola 6); pakai `fill` di atas teks.
+  cross: ["M10 14 C 62 30, 126 66, 192 88", "M188 10 C 136 34, 76 60, 8 90"],
 };
 
 type ScribbleProps = {

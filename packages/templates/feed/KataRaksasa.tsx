@@ -93,7 +93,11 @@ function KataRaksasaSlide({ slots, options, style }: SlideProps) {
           </Sticker>
         )}
       </div>
-      <StyleOverlay style={style} />
+      <StyleOverlay
+        style={style}
+        label={optionalSlot(slots, "label", "text")?.value}
+        corner={logoBottomRight ? "top-left" : "top-right"}
+      />
     </div>
   );
 }
@@ -129,6 +133,14 @@ export const kataRaksasa: Template = {
         maxChars: 40,
       },
       { name: "cta", type: "text", required: false, description: "Ajakan dari copy", maxChars: 28 },
+      {
+        name: "label",
+        type: "text",
+        required: false,
+        description:
+          "Label kecil dari copy (tanggal, lokasi, edisi) untuk gaya yang memakainya; tanpa gaya tidak tampil",
+        maxChars: 24,
+      },
       {
         name: "logo",
         type: "logo",

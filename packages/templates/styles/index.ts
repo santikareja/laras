@@ -8,6 +8,7 @@ import { minimalism } from "./minimalism/style.ts";
 import { retroVintage } from "./retro-vintage/style.ts";
 
 export { StyleBackdrop, StyleOverlay, styleCss, styleRender, styleTreatment } from "./layer.tsx";
+export { styleSpecimen } from "./specimen.tsx";
 
 // Gaya desain tahap 1 (PRD F16, T-128). Setiap folder berisi PANDUAN.md (panduan lengkap untuk
 // generate desain), style.ts (definisi mesin), dan render.tsx (lapisan gaya, T-132).

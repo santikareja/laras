@@ -34,17 +34,19 @@ function BidangWarnaSlide({ slots, options, style }: SlideProps) {
       }}
     >
       <StyleBackdrop style={style} />
-      <div
-        style={{
-          position: "absolute",
-          [far]: "-4%",
-          bottom: 0,
-          width: options.arch === "low" ? "46%" : "52%",
-          height: options.arch === "low" ? "50%" : "62%",
-          borderRadius: "999px 999px 0 0",
-          background: color("primary"),
-        }}
-      />
+      {options.arch !== "none" && (
+        <div
+          style={{
+            position: "absolute",
+            [far]: "-4%",
+            bottom: 0,
+            width: options.arch === "low" ? "46%" : "52%",
+            height: options.arch === "low" ? "50%" : "62%",
+            borderRadius: "999px 999px 0 0",
+            background: color("primary"),
+          }}
+        />
+      )}
       <div
         style={{
           position: "absolute",
@@ -112,7 +114,11 @@ function BidangWarnaSlide({ slots, options, style }: SlideProps) {
         )}
         <Logo slot="logo" src={slot(slots, "logo", "logo").src} height={6} />
       </div>
-      <StyleOverlay style={style} />
+      <StyleOverlay
+        style={style}
+        label={optionalSlot(slots, "label", "text")?.value}
+        {...(textBottom ? { corner: flip ? "top-right" : "top-left" } : {})}
+      />
     </div>
   );
 }
@@ -155,6 +161,14 @@ export const bidangWarna: Template = {
         maxChars: 32,
       },
       { name: "cta", type: "text", required: false, description: "Ajakan dari copy", maxChars: 28 },
+      {
+        name: "label",
+        type: "text",
+        required: false,
+        description:
+          "Label kecil dari copy (tanggal, lokasi, edisi) untuk gaya yang memakainya; tanpa gaya tidak tampil",
+        maxChars: 24,
+      },
       { name: "logo", type: "logo", required: true, description: "Logo di atas latar terang" },
     ],
     options: [
@@ -166,9 +180,10 @@ export const bidangWarna: Template = {
       },
       {
         name: "arch",
-        values: ["high", "low"],
+        values: ["high", "low", "none"],
         default: "high",
-        description: "Tinggi lengkung; low bila warna primary brand sangat kuat",
+        description:
+          "Tinggi lengkung; low bila warna primary brand sangat kuat; none bila gaya memakai bentuk sendiri",
       },
       {
         name: "flip",

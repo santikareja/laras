@@ -203,7 +203,7 @@
 | `Blob` dan `Scallop` | Blob: bentuk tertutup dengan 4–7 titik kontrol dan variasi jari-jari ±10–15%. Scallop: tepi bergelombang 10–16 lekuk dengan amplitudo 2–3% lebar bentuk. Untuk kartu teks (lebar ≥ 45% kanvas) atau penyangga subjek. |
 | `PanelLengkung` | Panel warna yang membagi kanvas dengan tepi gelombang S (amplitudo 40–100 px, satu panjang gelombang selebar kanvas) atau satu busur. Batasnya di 40–65% tinggi kanvas. Varian bertakik: takik chevron 48–80 px di tepi panel. |
 | `Cakram` dan `Cincin` | Diameter 50–75% lebar kanvas (540–810 px). Ketebalan cincin 8–12% diameter. Pusatnya di belakang subjek, dekat titik fokus. |
-| `IkonDatar` | Ikon dari pustaka ikon berlisensi terbuka (pemilihan pustaka dan alasannya diputuskan di T-132), satu gaya per desain (solid atau garis). Glyph 56–96 px di wadah lingkaran atau kotak membulat sebesar 1,6× glyph. Ketebalan garis seragam, minimal 3 px. Termasuk panah, chevron, pin lokasi, kalender, bintang, centang. Tidak pernah dibuat model gambar. |
+| `IkonDatar` | Ikon dari set ikon garis milik Laras (`primitives/Icons.tsx`, digambar sendiri tanpa dependency, keputusan T-132), satu gaya per desain (solid atau garis). Glyph 56–96 px di wadah lingkaran atau kotak membulat sebesar 1,6× glyph. Ketebalan garis seragam, minimal 3 px. Termasuk panah, chevron, pin lokasi, kalender, bintang, centang. Tidak pernah dibuat model gambar. |
 | CTA dengan ikon | Varian `Sticker`: tombol solid aksen dengan lingkaran kecil berisi panah di sisi kanan. Satu gaya tombol per seri. |
 | Penanda kotak | Kotak atau bulatan solid 24–32 px di depan label ("Mitos", "Fakta", nomor langkah). Bisa berupa varian `Badge`. |
 | Headline dua nada | Opsi warna per kata atau per baris di `Display` dan `Text`. |

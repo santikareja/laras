@@ -124,7 +124,11 @@ function KolaseDiagonalSlide({ slots, options, style }: SlideProps) {
           <Logo slot="logo" src={slot(slots, "logo", "logo").src} height={5} />
         </div>
       </div>
-      <StyleOverlay style={style} />
+      <StyleOverlay
+        style={style}
+        label={optionalSlot(slots, "label", "text")?.value}
+        corner={flip ? "top-left" : "top-right"}
+      />
     </div>
   );
 }
@@ -167,6 +171,14 @@ export const kolaseDiagonal: Template = {
         maxChars: 80,
       },
       { name: "cta", type: "text", required: false, description: "Ajakan", maxChars: 28 },
+      {
+        name: "label",
+        type: "text",
+        required: false,
+        description:
+          "Label kecil dari copy (tanggal, lokasi, edisi) untuk gaya yang memakainya; tanpa gaya tidak tampil",
+        maxChars: 24,
+      },
       { name: "logo", type: "logo", required: true, description: "Logo" },
     ],
     options: [

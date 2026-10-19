@@ -1,3 +1,4 @@
+import { type TextEffect, TextEffectFrame, type TextLayer } from "./Effects.tsx";
 import { Highlight, type HighlightStyle } from "./Highlight.tsx";
 import {
   type ColorToken,
@@ -22,11 +23,29 @@ type TextProps = {
   measure?: number;
   // Ratakan panjang baris agar tidak ada baris yatim (PRD 4 P4).
   balance?: boolean;
+  // Headline dua nada (Flat bagian 5): frasa yang diberi warna kedua; diabaikan bila tidak ada
+  // di teks atau bila sorot dipakai.
+  accentWords?: { text: string; color: ColorToken };
+  // Efek teks (Effects.tsx), mis. registrasi meleset atau glow pada headline besar. Teks dibungkus
+  // satu blok bersama salinan dekoratifnya.
+  effect?: TextEffect;
   children: string;
 };
 
 // Teks tidak pernah dipotong (tanpa line-clamp atau overflow hidden) agar overflow tertangkap QA.
-export function Text({
+export function Text({ effect, ...props }: TextProps) {
+  if (!effect) return <TextLayerElement {...props} />;
+  return (
+    <TextEffectFrame
+      effect={effect}
+      render={(layer) => <TextLayerElement {...props} layer={layer} />}
+    />
+  );
+}
+
+// Satu lapisan Text: teks asli, atau salinan efek tanpa slot, tanpa warna kedua, dan dengan
+// sorot yang tetap mengambil tempat tetapi tidak terlihat (baris pecah di titik yang sama).
+function TextLayerElement({
   font,
   size,
   color: tone,
@@ -36,17 +55,23 @@ export function Text({
   highlight,
   measure,
   balance = false,
+  accentWords,
+  layer,
   children,
-}: TextProps) {
+}: Omit<TextProps, "effect"> & { layer?: TextLayer }) {
   const Tag = as ?? (font === "heading" ? "h2" : "p");
+  const copy = layer?.copy ?? false;
   const at = highlight?.text ? children.indexOf(highlight.text) : -1;
   const end = at + (highlight?.text.length ?? 0);
   // Karakter non-spasi tepat sesudah sorotan (mis. koma) disatukan agar tidak pindah baris sendiri.
   const tail = children.slice(end).match(/^\S*/)?.[0] ?? "";
+  const accentAt = at < 0 && !copy && accentWords?.text ? children.indexOf(accentWords.text) : -1;
+  const accent = accentAt >= 0 ? accentWords : undefined;
+  const marker = highlight && at >= 0 && <Highlight {...highlight}>{highlight.text}</Highlight>;
   return (
     <Tag
-      data-slot={slot}
-      data-slot-type={slot ? "text" : undefined}
+      data-slot={copy ? undefined : slot}
+      data-slot-type={slot && !copy ? "text" : undefined}
       style={{
         margin: 0,
         fontFamily: fontFamily(font),
@@ -59,17 +84,24 @@ export function Text({
         // Huruf kapital dan jarak huruf heading dari lapisan gaya (T-132); tanpa gaya: bawaan.
         textTransform: font === "heading" ? "var(--style-heading-transform, none)" : undefined,
         letterSpacing: font === "heading" ? "var(--style-heading-tracking, normal)" : undefined,
-        color: color(tone),
+        color: color(layer?.color ?? tone),
+        ...layer?.style,
       }}
     >
-      {highlight && at >= 0 ? (
+      {marker ? (
         <>
           {children.slice(0, at)}
           <span style={{ whiteSpace: "nowrap" }}>
-            <Highlight {...highlight}>{highlight.text}</Highlight>
+            {copy ? <span style={{ visibility: "hidden" }}>{marker}</span> : marker}
             {tail}
           </span>
           {children.slice(end + tail.length)}
+        </>
+      ) : accent ? (
+        <>
+          {children.slice(0, accentAt)}
+          <span style={{ color: color(accent.color) }}>{accent.text}</span>
+          {children.slice(accentAt + accent.text.length)}
         </>
       ) : (
         children

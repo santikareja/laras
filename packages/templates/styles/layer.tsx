@@ -1,6 +1,6 @@
 import type { BrandKit, StyleChoice, StyleMeta } from "@laras/shared";
 import type { ImageTreatment } from "../primitives/Photo.tsx";
-import type { StyleRender, Variable } from "../src/style.ts";
+import type { StyleLayerProps, StyleRender, Variable } from "../src/style.ts";
 import { brutalismRender } from "./brutalism/render.tsx";
 import { corporateCleanRender } from "./corporate-clean/render.tsx";
 import { cyberpunkRender } from "./cyberpunk/render.tsx";
@@ -42,20 +42,20 @@ export function styleCss(meta: StyleMeta, choice: StyleChoice, brand: BrandKit):
   return `:root {\n${variables.map(([name, value]) => `  ${name}: ${value};`).join("\n")}\n}`;
 }
 
-type LayerProps = { style?: StyleChoice | undefined };
+type LayerProps = Omit<StyleLayerProps, "style"> & { style?: StyleChoice | undefined };
 
 // Lapisan gaya di atas bidang latar arketipe (di bawah subjek dan teks).
-export function StyleBackdrop({ style }: LayerProps) {
+export function StyleBackdrop({ style, ...rest }: LayerProps) {
   if (!style) return null;
   const { Backdrop } = styleRender(style.id);
-  return Backdrop ? <Backdrop style={style} /> : null;
+  return Backdrop ? <Backdrop style={style} {...rest} /> : null;
 }
 
-// Lapisan gaya teratas, tanpa teks penting.
-export function StyleOverlay({ style }: LayerProps) {
+// Lapisan gaya teratas, tanpa teks penting kecuali label dari copy.
+export function StyleOverlay({ style, ...rest }: LayerProps) {
   if (!style) return null;
   const { Overlay } = styleRender(style.id);
-  return Overlay ? <Overlay style={style} /> : null;
+  return Overlay ? <Overlay style={style} {...rest} /> : null;
 }
 
 export function styleTreatment(style: StyleChoice | undefined): ImageTreatment {

@@ -7,7 +7,7 @@ import { chromium, type Route } from "playwright-core";
 import sharp from "sharp";
 import { afterAll, describe, expect, it, vi } from "vitest";
 import { renderLayoutHtml } from "./layout.ts";
-import { toMaster, toUpload } from "./postprocess.ts";
+import { toMaster, toThumbnail, toUpload } from "./postprocess.ts";
 import { createRenderer, handleRequest, localFile, type SlideFolders } from "./renderer.ts";
 
 const BRANDS_DIR = fileURLToPath(new URL("../../../../fixtures/brands/", import.meta.url));
@@ -108,6 +108,12 @@ describe("createRenderer", () => {
       format: "jpeg",
       width: 1080,
       height: 1350,
+      profile: "sRGB",
+    });
+    expect(await describeImage(await toThumbnail(master))).toEqual({
+      format: "png",
+      width: 360,
+      height: 450,
       profile: "sRGB",
     });
   });

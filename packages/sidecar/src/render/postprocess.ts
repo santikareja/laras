@@ -21,3 +21,14 @@ export function toUpload(master: Buffer, format: UploadFormat): Promise<Buffer> 
     ? image.png().toBuffer()
     : image.jpeg({ quality: 92, chromaSubsampling: "4:4:4" }).toBuffer();
 }
+
+// Thumbnail lebar 360 px untuk library dan pemilih gaya (ARCH 7.3, PRD F16).
+export const THUMBNAIL_WIDTH = 360;
+
+export function toThumbnail(master: Buffer): Promise<Buffer> {
+  return sharp(master)
+    .resize({ width: THUMBNAIL_WIDTH, kernel: "lanczos3" })
+    .withIccProfile("srgb")
+    .png()
+    .toBuffer();
+}

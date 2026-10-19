@@ -6,7 +6,13 @@ import type { ImageTreatment } from "../primitives/Photo.tsx";
 // arketipe: variabel CSS, lapisan latar, lapisan atas, dan perlakuan foto. Tanpa gaya, arketipe
 // dirender persis seperti sebelumnya.
 
-export type StyleLayerProps = { style: StyleChoice };
+export type Corner = "top-left" | "top-right" | "bottom-left" | "bottom-right";
+
+// Label kecil dari copy (slot opsional `label` arketipe) dan sudut kosong yang disediakan
+// arketipe untuknya; gaya yang memakai label (mis. label teknis, label HUD) meletakkannya di sana.
+export type StyleLayerProps = { style: StyleChoice; label?: string | undefined; corner?: Corner };
+
+export type SpecimenProps = { style: StyleChoice; subject: string; photo: string; logo: string };
 
 export type Variable = [name: string, value: string];
 
@@ -19,4 +25,6 @@ export type StyleRender = {
   Overlay?: (props: StyleLayerProps) => ReactElement | null;
   // Perlakuan foto dan cut-out utama.
   treatment: (choice: StyleChoice) => ImageTreatment;
+  // Isi spesimen perangkat grafis gaya ini (styles/specimen.tsx).
+  Specimen?: (props: SpecimenProps) => ReactElement;
 };

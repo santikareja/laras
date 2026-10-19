@@ -1,4 +1,5 @@
 import { Logo, Photo, Text } from "../primitives/index.ts";
+import { FloorShadow } from "../primitives/Shapes.tsx";
 import { color, space } from "../primitives/vars.ts";
 import {
   optionalSlot,
@@ -99,19 +100,7 @@ function SatuObjekSlide({ slots, options, style }: SlideProps) {
       }}
     >
       <StyleBackdrop style={style} />
-      <div
-        style={{
-          position: "absolute",
-          left: "30%",
-          right: "30%",
-          bottom: "19%",
-          height: "3%",
-          borderRadius: "50%",
-          background: color("neutral-dark"),
-          opacity: dark ? 0.35 : 0.18,
-          filter: "blur(14px)",
-        }}
-      />
+      <FloorShadow dark={dark} />
       <div
         style={{ position: "absolute", left: "20%", right: "20%", bottom: "16%", height: "50%" }}
       >
