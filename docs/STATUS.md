@@ -8,10 +8,10 @@ Fase 1: Spike pipeline. Fase 0 selesai. Verifikasi CLI selesai: T-101 (generasi 
 Tidak ada. T-122 selesai: empat arketipe prototipe disetujui pemilik setelah revisi v4 sesuai aturan desain P8–P11. T-119 selesai: varian logo divalidasi terhadap Brand Kit di skema tahap layout dan revise.
 T-123 selesai: arketipe ada di `packages/templates/feed/` (daftar `archetypes`, belum katalog Claude), cut-out dianalisis (`pipeline/cutout.ts`), dan renderer memaskan kata raksasa ke lebar kotaknya. `pnpm render:demo` kini juga merender arketipe.
 T-128 selesai: panduan tujuh gaya tahap 1 di `packages/templates/styles/<id>/PANDUAN.md` dan definisi mesin `style.ts` (skema `StyleMeta`, `styleFit` di `shared`) disetujui pemilik, termasuk keempat usulannya (TASKS T-128).
-T-132 [~] menunggu penilaian pemilik: lapisan gaya, 54 perangkat grafis, arketipe `feed-panel-info` dan `feed-kartu-kaca`, dan `pnpm render:styles` (21 postingan pola khas, 21 spesimen, thumbnail 360 px, lembar ringkasan `out/styles/ringkasan-<brand>.png`) selesai dan lolos QA.
+T-132 selesai (thumbnail disetujui pemilik): lapisan gaya, 54 perangkat grafis, arketipe `feed-panel-info` dan `feed-kartu-kaca`, dan `pnpm render:styles` (21 postingan pola khas, 21 spesimen, thumbnail 360 px, lembar ringkasan `out/styles/ringkasan-<brand>.png`) selesai dan lolos QA.
 
 ## Berikutnya (urut)
-1. Penilaian pemilik atas thumbnail T-132 (`out/styles/ringkasan-*.png`), lalu T-130.
+1. T-130 QA desain terukur (sedang direncanakan).
 2. T-130 QA desain terukur, T-131 pipeline dengan arketipe, T-133 gaya di pipeline, T-134 arketipe baru dari panduan.
 3. T-124 sampai T-126 (aturan brand terstruktur dan perangkat grafis Brand Kit, ide besar dan art direction, rubric QA visual K1–K8 dan P1–P11).
 4. T-129 gaya tahap 2, lalu T-127 evaluasi ulang spike (memakai kuota besar; izin pemilik).
@@ -20,7 +20,6 @@ T-132 [~] menunggu penilaian pemilik: lapisan gaya, 54 perangkat grafis, arketip
 - Tidak ada.
 
 ## Menunggu keputusan pemilik
-- Penilaian thumbnail tujuh gaya T-132.
 - Jumlah template awal per format (PRD 12 pertanyaan 3; usulan 8 feed, 4 sistem carousel).
 - Penamaan token skala tipografi UI: DESIGN 4 mendefinisikan `--text-caption` … `--text-display` (ukuran), tetapi `tokens.css` di DESIGN 15 tidak memuatnya; prefix `--text-*` juga dipakai untuk warna (`--text-primary`) dan merupakan namespace ukuran font di Tailwind v4. Usulan: ganti nama token ukuran menjadi `--type-*` (dibutuhkan paling lambat E-201).
 
