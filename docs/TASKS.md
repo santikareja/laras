@@ -317,6 +317,11 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Tambahan dari uji T-131 (dipulihkan 2026-10-20): katalog 22 arketipe membuat panggilan layout dan revise ±$0,35; batas panggilan spike 2 varian perlu ±16 Claude agar dua putaran revisi muat (Ritme v2 gagal di batas 14).
   - Keputusan pemilik 2026-10-20 (rencana disetujui): brief K1–K3, S1–S3, R1–R3 sama dengan T-117, 1 varian, arketipe dipilih Claude, berurutan; gaya cocok bervariasi: K1 Retro/Vintage, K2 Brutalisme, K3 Flat, S1 Corporate, S2 Glassmorphism, S3 Minimalism, R1 Flat, R2 Retro/Vintage, R3 Cyberpunk (varian pertama gaya); batas per percobaan Claude 9 dan Codex 3; perkiraan Claude 50–63, Codex 12–27, ±$14–19, ±50–70 menit; dry-run sembilan konfigurasi dulu, lalu sungguhan. Gerbang tetap PRD 11 (GO bila ≥ 6 dari 9 layak menurut pemilik).
 
+- [ ] T-136 `pnpm dev` macet di Terminal pengguna (fsevents)
+  - Rujukan: KNOWLEDGE "`pnpm dev` macet di Terminal pengguna"
+  - AC: `pnpm dev` dari Terminal pengguna membuka jendela Laras; perubahan file di `apps/desktop/src` tetap memicu HMR.
+  - Catatan: ditemukan 2026-10-20 saat pemilik ingin mengecek aplikasi di tengah T-127; sementara dijalankan dari shell agent. Pilihan: `server.watch.usePolling` di `vite.config.ts` (biaya CPU polling), atau cari penyebab fsevents di macOS 27.
+
 ## Fase 2: Walking skeleton (epic)
 
 - [ ] E-201 Tauri + UI minimal + sidecar + satu tombol Buat
