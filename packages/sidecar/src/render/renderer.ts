@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { extname, resolve, sep } from "node:path";
 import type { RenderCheck } from "@laras/shared";
 import { type Browser, chromium, type Page, type Route } from "playwright-core";
+import { FIT_SCRIPT } from "./fit.ts";
 import { COLLECT_SCRIPT, HIDE_TEXT_CSS } from "./qa/collect.ts";
 import {
   evaluateQa,
@@ -65,6 +66,7 @@ export function createRenderer(): Renderer {
         const page = await context.newPage();
         await page.goto(`${RENDER_ORIGIN}${SLIDE_PATH}`, { waitUntil: "load" });
         await page.evaluate(READY_SCRIPT);
+        await page.evaluate(FIT_SCRIPT);
         const measurements = await page.evaluate<Measurements>(COLLECT_SCRIPT);
         const fonts = await platformFonts(page);
         for (const text of measurements.texts) text.platformFonts = fonts.get(text.id) ?? [];

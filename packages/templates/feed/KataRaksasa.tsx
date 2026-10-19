@@ -1,20 +1,29 @@
 import { Display, Image, Logo, Sticker, Text } from "../primitives/index.ts";
 import { color, space } from "../primitives/vars.ts";
+import { boxFromPercent, containedFocus, textBelowFocus } from "../src/geometry.ts";
 import { optionalSlot, type SlideProps, slot, type Template } from "../src/template.ts";
 
-// Prototipe A1 (T-122, PRD 4 K2, K3): kata raksasa di belakang subjek cut-out di atas bidang
-// warna brand. Posisi subjek, teks, dan logo adalah parameter agar aturan brand (mis. logo
-// kanan bawah) dan P1 (maksimal dua sumbu perataan) bisa dipenuhi. Bukan bagian katalog.
+// Arketipe A1 Kata raksasa (T-122, ADR-015; PRD 4 K2, K3): kata kunci raksasa di belakang subjek
+// cut-out di atas bidang warna brand. Ukuran kata dipaskan renderer (fit-to-width); headline dan
+// CTA berada di sisi seberang subjek, di bawah bila fokus subjek tinggi dan di tengah bila rendah
+// (PRD 4 P8). Logo mengikuti aturan brand lewat opsi.
 
-const SHIFT: Record<string, string> = { left: "-16%", center: "0%", right: "16%" };
+const SHIFT: Record<string, number> = { left: -16, center: 0, right: 16 };
 // Satu jarak tepi untuk semua elemen sudut, ditambah satu langkah karena stiker dimiringkan.
 const EDGE = `calc(var(--space-safe) + ${space(1)})`;
+const SUBJECT = { bottom: -5, width: 100, height: 84 };
 
 function KataRaksasaSlide({ slots, options }: SlideProps) {
   const dark = options.tone === "primary";
   const cta = optionalSlot(slots, "cta", "text");
-  const text = options.text ?? "bottom-left";
-  const right = text !== "bottom-left";
+  const image = slot(slots, "image", "image");
+  const side = options.side ?? "center";
+  const shift = SHIFT[side] ?? 0;
+  const textRight = side === "left";
+  const focus = image.subject
+    ? containedFocus(boxFromPercent({ ...SUBJECT, left: shift }), 4 / 5, image.subject)
+    : undefined;
+  const textBottom = focus ? textBelowFocus(focus.y) : true;
   const logoBottomRight = options.logo === "bottom-right";
   return (
     <div
@@ -26,13 +35,7 @@ function KataRaksasaSlide({ slots, options }: SlideProps) {
       }}
     >
       <div style={{ position: "absolute", top: "17%", left: EDGE, right: EDGE }}>
-        <Display
-          slot="kata"
-          font="heading"
-          scale={2.6}
-          charWidth={options.width === "condensed" ? 0.5 : 0.8}
-          color={dark ? "accent" : "primary"}
-        >
+        <Display slot="kata" font="heading" scale={2.6} color={dark ? "accent" : "primary"}>
           {slot(slots, "kata", "text").value}
         </Display>
       </div>
@@ -41,12 +44,12 @@ function KataRaksasaSlide({ slots, options }: SlideProps) {
           position: "absolute",
           left: 0,
           right: 0,
-          bottom: "-5%",
-          height: "84%",
-          transform: `translateX(${SHIFT[options.side ?? "center"]})`,
+          bottom: `${SUBJECT.bottom}%`,
+          height: `${SUBJECT.height}%`,
+          transform: `translateX(${shift}%)`,
         }}
       >
-        <Image slot="image" src={slot(slots, "image", "image").src} fit="contain" />
+        <Image slot="image" src={image.src} fit="contain" />
       </div>
       <div
         style={{
@@ -60,12 +63,12 @@ function KataRaksasaSlide({ slots, options }: SlideProps) {
         style={{
           position: "absolute",
           width: "34%",
-          ...(right ? { right: EDGE } : { left: EDGE }),
-          ...(text === "middle-right" ? { top: "46%" } : { bottom: `calc(${EDGE} + ${space(1)})` }),
+          ...(textRight ? { right: EDGE } : { left: EDGE }),
+          ...(textBottom ? { bottom: `calc(${EDGE} + ${space(1)})` } : { top: "46%" }),
           display: "grid",
           gap: space(3),
-          justifyItems: right ? "end" : "start",
-          textAlign: right ? "right" : "left",
+          justifyItems: textRight ? "end" : "start",
+          textAlign: textRight ? "right" : "left",
         }}
       >
         <Text
@@ -94,54 +97,54 @@ function KataRaksasaSlide({ slots, options }: SlideProps) {
 
 export const kataRaksasa: Template = {
   meta: {
-    id: "proto-kata-raksasa",
+    id: "feed-kata-raksasa",
     name: "Kata raksasa",
     format: "feed-4x5",
     description:
-      "Prototipe: satu kata kunci raksasa di belakang subjek cut-out, headline pendek dan CTA di sudut.",
+      "Satu kata kunci raksasa di belakang subjek cut-out di atas bidang warna brand, headline pendek dan CTA di sisi seberang subjek. Untuk pesan yang bisa dirangkum satu kata atau angka.",
     slots: [
       {
         name: "image",
         type: "image",
         required: true,
-        description: "Subjek cut-out berlatar transparan",
+        description: "Subjek cut-out berlatar transparan (orang atau produk)",
         aspectRatio: "4:5",
+        cutout: true,
       },
       {
         name: "kata",
         type: "text",
         required: true,
-        description: "Satu kata kunci raksasa",
+        description: "Satu kata kunci atau angka dari copy, ditampilkan raksasa",
         maxChars: 10,
       },
-      { name: "headline", type: "text", required: true, description: "Headline", maxChars: 40 },
-      { name: "cta", type: "text", required: false, description: "Ajakan", maxChars: 28 },
-      { name: "logo", type: "logo", required: true, description: "Logo" },
+      {
+        name: "headline",
+        type: "text",
+        required: true,
+        description: "Headline pendek dari copy",
+        maxChars: 40,
+      },
+      { name: "cta", type: "text", required: false, description: "Ajakan dari copy", maxChars: 28 },
+      {
+        name: "logo",
+        type: "logo",
+        required: true,
+        description: "Logo; pakai onDark bila tone primary",
+      },
     ],
     options: [
       {
         name: "tone",
         values: ["primary", "secondary"],
         default: "primary",
-        description: "Warna bidang",
+        description: "Warna bidang: primary (gelap) atau secondary",
       },
       {
         name: "side",
         values: ["left", "center", "right"],
         default: "center",
-        description: "Geser subjek",
-      },
-      {
-        name: "width",
-        values: ["wide", "condensed"],
-        default: "wide",
-        description: "Lebar huruf font heading, untuk ukuran kata raksasa",
-      },
-      {
-        name: "text",
-        values: ["bottom-left", "bottom-right", "middle-right"],
-        default: "bottom-left",
-        description: "Letak headline dan CTA",
+        description: "Geser subjek; headline dan CTA otomatis di sisi seberangnya",
       },
       {
         name: "logo",

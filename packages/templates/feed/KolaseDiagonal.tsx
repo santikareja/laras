@@ -2,7 +2,7 @@ import { Display, Frame, Image, Logo, Sticker, Tape, Text } from "../primitives/
 import { color, space } from "../primitives/vars.ts";
 import { optionalSlot, type SlideProps, slot, type Template } from "../src/template.ts";
 
-// Prototipe A4 v4 (T-122, PRD 4 K3, P2, P8–P11): kolase yang ditahan. Lima elemen: bingkai foto
+// Arketipe A4 Kolase diagonal (T-122 v4, ADR-015; PRD 4 K3, P2, P8–P11): kolase yang ditahan. Lima elemen: bingkai foto
 // (tepi sobek dan selotip sebagai satu keluarga dekorasi kertas), subjek cut-out yang keluar dari
 // bingkai sebagai satu-satunya fokus, pita headline di garis sepertiga bawah, blok body dan CTA,
 // logo. Pita memakai warna kedua, aksen hanya untuk CTA. `flip` menukar sisi.
@@ -66,14 +66,7 @@ function KolaseDiagonalSlide({ slots, options }: SlideProps) {
         }}
       >
         <div style={{ width: subjek ? "calc(1080px * 0.5)" : "100%" }}>
-          <Display
-            slot="headline"
-            font="heading"
-            scale={1}
-            charWidth={options.width === "condensed" ? 0.5 : 0.72}
-            align={near}
-            color={BAND_INK[band]}
-          >
+          <Display slot="headline" font="heading" scale={1} align={near} color={BAND_INK[band]}>
             {slot(slots, "headline", "text").value}
           </Display>
         </div>
@@ -132,11 +125,11 @@ function KolaseDiagonalSlide({ slots, options }: SlideProps) {
 
 export const kolaseDiagonal: Template = {
   meta: {
-    id: "proto-kolase-diagonal",
+    id: "feed-kolase-diagonal",
     name: "Kolase diagonal",
     format: "feed-4x5",
     description:
-      "Prototipe: bingkai foto bertepi sobek dengan selotip, subjek cut-out keluar bingkai sebagai fokus, pita headline miring, body dan CTA.",
+      "Kolase yang ditahan: bingkai foto bertepi sobek dengan selotip, subjek cut-out keluar dari bingkai sebagai fokus, pita headline miring, CTA. Untuk acara, ajakan komunitas, atau cerita di balik produk.",
     slots: [
       {
         name: "image",
@@ -151,6 +144,7 @@ export const kolaseDiagonal: Template = {
         required: false,
         description: "Subjek cut-out berlatar transparan yang keluar dari bingkai",
         aspectRatio: "4:5",
+        cutout: true,
       },
       {
         name: "headline",
@@ -175,12 +169,6 @@ export const kolaseDiagonal: Template = {
         values: ["neutral", "primary"],
         default: "neutral",
         description: "Warna bidang dominan",
-      },
-      {
-        name: "width",
-        values: ["wide", "condensed"],
-        default: "wide",
-        description: "Lebar huruf font heading, untuk ukuran teks pita",
       },
       {
         name: "band",

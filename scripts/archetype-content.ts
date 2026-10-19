@@ -1,27 +1,37 @@
-// Isi prototipe arketipe T-122: pesan sama dengan percobaan T-117 (Kopi K2, Seruni S1, Ritme R1)
-// agar strukturnya bisa dibandingkan; aset cut-out dan foto konsep dari fixtures/demo-assets.
+// Isi demo arketipe (T-122, T-123): pesan sama dengan percobaan T-117 (Kopi K2, Seruni S1, Ritme
+// R1); aset cut-out dan foto konsep dari fixtures/demo-assets. Cut-out dianalisis seperti di
+// pipeline (kotak alpha dan titik fokus) sehingga letak teks dihitung arketipe sendiri.
+import { join } from "node:path";
 import {
   type AssetManifest,
   LayoutSpec,
   layoutIssues,
   type SlotValue,
 } from "../packages/shared/src/index.ts";
+import { analyzeCutout, type SubjectKind } from "../packages/sidecar/src/pipeline/cutout.ts";
 import type { Template } from "../packages/templates/src/index.ts";
 import type { Brand } from "./demo-content.ts";
 
 type Case = {
   text: Record<string, string>;
-  badge?: Record<string, string>;
   // Slot image → file di fixtures/demo-assets/<brand>/ (semua 1122 × 1402, 4:5).
   images: Record<string, string>;
   options: Record<string, string>;
   logo: "primary" | "onDark";
 };
 
+// Jenis subjek setiap cut-out fixture, masukan analisis titik fokus.
+const CUTOUTS: Record<Brand, Record<string, SubjectKind>> = {
+  "kopi-lembayung": { "subjek.webp": "object", "interaksi.webp": "object" },
+  "seruni-skin": { "subjek.webp": "person", "interaksi.webp": "person" },
+  "ritme-run-club": { "subjek.webp": "person", "interaksi.webp": "person" },
+};
+
 // Aturan brand yang dipatuhi (PRD 4 prinsip 8): Kopi logo kanan bawah dan tanpa latar putih
-// polos; Seruni maksimal dua elemen visual utama; Ritme angka dan waktu ditulis besar.
-const CASES: Record<string, Record<Brand, Case>> = {
-  "proto-kata-raksasa": {
+// polos; Seruni maksimal dua elemen visual utama dan tanpa filter berlebihan pada kulit; Ritme
+// angka dan waktu ditulis besar.
+const CASES: Record<string, Partial<Record<Brand, Case>>> = {
+  "feed-kata-raksasa": {
     "kopi-lembayung": {
       text: {
         kata: "SANGRAI",
@@ -29,7 +39,7 @@ const CASES: Record<string, Record<Brand, Case>> = {
         cta: "Ambil sekantong",
       },
       images: { image: "subjek.webp" },
-      options: { tone: "primary", side: "left", text: "middle-right", logo: "bottom-right" },
+      options: { tone: "primary", side: "left", logo: "bottom-right" },
       logo: "onDark",
     },
     "seruni-skin": {
@@ -39,24 +49,17 @@ const CASES: Record<string, Record<Brand, Case>> = {
         cta: "Konsultasi gratis",
       },
       images: { image: "subjek.webp" },
-      options: { tone: "primary", side: "right", text: "bottom-left", logo: "top-left" },
+      options: { tone: "primary", side: "right", logo: "top-left" },
       logo: "onDark",
     },
     "ritme-run-club": {
       text: { kata: "FIRST 5K", headline: "Any pace. No sign-up.", cta: "Show up Sunday" },
       images: { image: "subjek.webp" },
-      options: {
-        tone: "secondary",
-        side: "center",
-        text: "bottom-left",
-        logo: "top-left",
-        width: "condensed",
-      },
+      options: { tone: "secondary", side: "center", logo: "top-left" },
       logo: "primary",
     },
   },
-  // v4: lima elemen, aksen hanya untuk sorotan dan CTA, fakta masuk ke penutup (PRD 4 P8–P11).
-  "proto-bidang-warna": {
+  "feed-bidang-warna": {
     "kopi-lembayung": {
       text: {
         pembuka: "Disangrai sendiri",
@@ -65,7 +68,7 @@ const CASES: Record<string, Record<Brand, Case>> = {
         cta: "Ambil sekantong",
       },
       images: { image: "interaksi.webp" },
-      options: { tone: "secondary", arch: "high", flip: "yes", text: "top" },
+      options: { tone: "secondary", arch: "high", flip: "yes" },
       logo: "primary",
     },
     "seruni-skin": {
@@ -76,7 +79,7 @@ const CASES: Record<string, Record<Brand, Case>> = {
         cta: "Konsultasi gratis",
       },
       images: { image: "interaksi.webp" },
-      options: { tone: "secondary", arch: "high", flip: "no", text: "top", width: "medium" },
+      options: { tone: "secondary", arch: "high", flip: "no" },
       logo: "primary",
     },
     "ritme-run-club": {
@@ -87,27 +90,27 @@ const CASES: Record<string, Record<Brand, Case>> = {
         cta: "Just show up",
       },
       images: { image: "interaksi.webp" },
-      options: { tone: "secondary", arch: "low", flip: "no", width: "condensed", text: "bottom" },
+      options: { tone: "secondary", arch: "low", flip: "no" },
       logo: "primary",
     },
   },
-  "proto-satu-objek": {
+  "feed-satu-objek": {
     "kopi-lembayung": {
       text: {
         headline: "Cek tanggal sangrainya.",
         body: "Biji Jawa Barat, kami sangrai sendiri setiap minggu.",
       },
       images: { image: "subjek.webp" },
-      options: { mode: "object", tone: "primary", logo: "bottom-right" },
+      options: { tone: "primary", logo: "bottom-right" },
       logo: "onDark",
     },
     "seruni-skin": {
       text: {
-        headline: "Kenali kulitmu sebelum merawatnya.",
-        body: "Setiap perawatan diawali konsultasi gratis dan foto kondisi kulit.",
+        headline: "Kenali kulitmu dulu.",
+        body: "Konsultasi gratis sebelum perawatan apa pun.",
       },
-      images: { image: "konsep.jpg" },
-      options: { mode: "full", tone: "neutral", logo: "top-left" },
+      images: { image: "subjek.webp" },
+      options: { tone: "secondary", logo: "bottom-center" },
       logo: "primary",
     },
     "ritme-run-club": {
@@ -116,25 +119,29 @@ const CASES: Record<string, Record<Brand, Case>> = {
         body: "The slowest group walks and runs. Free, no sign-up.",
       },
       images: { image: "subjek.webp" },
-      options: { mode: "object", tone: "secondary", logo: "bottom-center" },
+      options: { tone: "secondary", logo: "bottom-center" },
       logo: "primary",
     },
   },
-  // v4: kolase yang ditahan, maksimal lima elemen (bingkai, pita, subjek, CTA, logo; body hanya
-  // bila tanpa subjek); pita warna kedua, aksen hanya untuk CTA.
-  "proto-kolase-diagonal": {
-    "kopi-lembayung": {
+  // Foto konsep baru ada untuk Seruni (T-121); Kopi dan Ritme menyusul lewat pipeline (T-131).
+  "feed-foto-konsep": {
+    "seruni-skin": {
       text: {
-        headline: "SANGRAI SENDIRI",
-        cta: "Ambil sekantong, Rp85.000",
+        headline: "Kenali kulitmu sebelum merawatnya.",
+        body: "Setiap perawatan diawali konsultasi gratis dan foto kondisi kulit.",
       },
+      images: { image: "konsep.jpg" },
+      options: { logo: "top-left" },
+      logo: "primary",
+    },
+  },
+  "feed-kolase-diagonal": {
+    "kopi-lembayung": {
+      text: { headline: "SANGRAI SENDIRI", cta: "Ambil sekantong, Rp85.000" },
       images: { image: "foto.jpg", subjek: "interaksi.webp" },
-      // Bidang gelap: aturan Kopi melarang produk di latar putih polos.
       options: { tone: "primary", band: "secondary", duotone: "secondary", flip: "yes" },
       logo: "onDark",
     },
-    // Dua elemen visual utama (bingkai dan pita) tanpa subjek; tanpa duotone karena aturan
-    // Seruni meminta tekstur kulit asli tanpa filter berlebihan.
     "seruni-skin": {
       text: {
         headline: "KONSULTASI DULU",
@@ -146,18 +153,9 @@ const CASES: Record<string, Record<Brand, Case>> = {
       logo: "primary",
     },
     "ritme-run-club": {
-      text: {
-        headline: "SUNDAY 5:45 AM",
-        cta: "Join for free",
-      },
+      text: { headline: "SUNDAY 5:45 AM", cta: "Join for free" },
       images: { image: "foto.jpg", subjek: "interaksi.webp" },
-      options: {
-        tone: "primary",
-        band: "secondary",
-        width: "condensed",
-        duotone: "primary",
-        flip: "no",
-      },
+      options: { tone: "primary", band: "secondary", duotone: "primary", flip: "no" },
       logo: "onDark",
     },
   },
@@ -165,30 +163,39 @@ const CASES: Record<string, Record<Brand, Case>> = {
 
 const assetId = (file: string) => file.replace(/\.\w+$/, "");
 
-export function prototypeCase(template: Template, slug: Brand) {
+export function hasArchetypeCase(template: Template, slug: Brand): boolean {
+  return CASES[template.meta.id]?.[slug] !== undefined;
+}
+
+// LayoutSpec dan AssetManifest satu arketipe untuk satu brand, dengan analisis cut-out.
+export async function archetypeCase(template: Template, slug: Brand, assetsDir: string) {
   const item = CASES[template.meta.id]?.[slug];
-  if (!item) throw new Error(`Prototipe "${template.meta.id}" belum punya isi untuk ${slug}`);
+  if (!item) throw new Error(`Arketipe "${template.meta.id}" belum punya isi untuk ${slug}`);
   const slots: Record<string, SlotValue> = { logo: { type: "logo", variant: item.logo } };
   for (const [name, value] of Object.entries(item.text)) slots[name] = { type: "text", value };
-  for (const [name, value] of Object.entries(item.badge ?? {}))
-    slots[name] = { type: "badge", value };
   for (const [name, file] of Object.entries(item.images))
     slots[name] = { type: "image", assetId: assetId(file) };
-  const assets: AssetManifest["assets"] = [...new Set(Object.values(item.images))].map((path) => ({
-    id: assetId(path),
-    path,
-    width: 1122,
-    height: 1402,
-    source: "codex",
-  }));
+  const assets: AssetManifest["assets"] = [];
+  for (const path of new Set(Object.values(item.images))) {
+    const kind = CUTOUTS[slug][path];
+    assets.push({
+      id: assetId(path),
+      path,
+      width: 1122,
+      height: 1402,
+      source: "codex",
+      ...(kind ? { subject: await analyzeCutout(join(assetsDir, path), kind) } : {}),
+    });
+  }
   const spec = LayoutSpec.parse({
     templateId: template.meta.id,
     format: template.meta.format,
     slides: [{ slots, options: item.options }],
     assetRequests: assets.map((a) => ({
       id: a.id,
-      description: "Aset prototipe",
+      description: "Aset demo",
       aspectRatio: "4:5",
+      ...(a.subject ? { kind: "cutout" } : {}),
     })),
   });
   const issues = layoutIssues(spec, template.meta);

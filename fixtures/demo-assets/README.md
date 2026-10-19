@@ -14,7 +14,7 @@ Catatan: `seruni-skin/foto.jpg` berupa foto 3:2 yang ditempel di atas latar polo
 
 ## Aset prototipe arketipe (T-122)
 
-Dipakai `pnpm render:prototype` (`scripts/prototype-content.ts`), semua 1122 × 1402. Cut-out disimpan sebagai WebP beralpha (kualitas 88, alpha 100) setelah alpha ≥ 250 dinormalisasi menjadi 255 (KNOWLEDGE, T-121).
+Dipakai `pnpm render:demo` untuk arketipe (`scripts/archetype-content.ts`), semua 1122 × 1402. Cut-out disimpan sebagai WebP beralpha (kualitas 88, alpha 100) setelah alpha ≥ 250 dinormalisasi menjadi 255 (KNOWLEDGE, T-121).
 
 | File | Asal | Prompt (ringkas) |
 |---|---|---|

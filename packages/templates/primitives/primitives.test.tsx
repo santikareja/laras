@@ -119,15 +119,16 @@ describe("primitives", () => {
     }
   });
 
-  it("Display: kelipatan skala brand dibatasi lebar kotak", () => {
+  it("Display: ditandai untuk fit-to-width renderer dengan batas kelipatan skala brand", () => {
     const markup = html(
       <Display slot="kata" font="heading" scale={2.5} color="accent">
         SANGRAI
       </Display>,
     );
     expect(markup).toMatchSnapshot();
-    expect(markup).toContain("container-type:inline-size");
-    expect(markup).toContain("calc(100cqw / 4.90)");
+    expect(markup).toContain('data-fit="width"');
+    expect(markup).toContain('data-fit-max="calc(var(--font-size-6');
+    expect(markup).toContain("calc(100cqw / 4.20)");
   });
 
   it("Text dengan sorot: tanda baca sesudahnya tidak terpisah baris", () => {
@@ -207,9 +208,9 @@ describe("primitives", () => {
         MINGGU INI
       </Display>,
     );
-    expect(markup.match(/display:block;font-size:min\(/g)).toHaveLength(2);
-    expect(markup).toContain("calc(100cqw / 4.20)");
-    expect(markup).toContain("calc(100cqw / 2.10)");
+    expect(markup.match(/<span data-fit="width"/g)).toHaveLength(2);
+    expect(markup).toContain("calc(100cqw / 3.60)");
+    expect(markup).toContain("calc(100cqw / 1.80)");
   });
 
   it("Frame bertepi sobek dan duotone, Tape, dan Scribble yang mengisi kotak", () => {

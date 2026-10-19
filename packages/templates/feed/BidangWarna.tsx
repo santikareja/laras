@@ -1,24 +1,28 @@
 import { Display, Image, Logo, Sticker, Text } from "../primitives/index.ts";
 import { color, space } from "../primitives/vars.ts";
+import { boxFromPercent, containedFocus, textBelowFocus } from "../src/geometry.ts";
 import { optionalSlot, type SlideProps, slot, type Template } from "../src/template.ts";
 
-// Prototipe A2 v4 (T-122, PRD 4 P2, P8–P11): bidang warna dominan, lengkung warna kedua di
-// belakang subjek cut-out, satu blok teks (pembuka bersorot, frasa utama bertumpuk, penutup)
-// di sudut bawah seberang subjek, CTA tombol aksen dan logo. Lima elemen: lengkung, subjek,
-// blok teks, CTA, logo. Fokus subjek di titik potong atas grid 3×3, blok teks di titik potong
-// bawah seberangnya. Tanpa kemiringan. `flip` menukar sisi (logo kanan bawah untuk Kopi).
+// Arketipe A2 Bidang warna (T-122 v4, ADR-015; PRD 4 P2, P8–P11): bidang warna dominan, lengkung
+// warna kedua di belakang subjek cut-out, satu blok teks tiga tingkat (pembuka bersorot, frasa
+// utama bertumpuk yang dipaskan renderer, penutup), CTA tombol aksen dan logo. Lima elemen.
+// Blok teks berseberangan diagonal dengan titik fokus subjek: di bawah bila fokus tinggi, di atas
+// bila fokus rendah. `flip` menukar sisi (mis. logo kanan bawah sesuai aturan brand).
 
 const EDGE = `calc(var(--space-safe) + ${space(1)})`;
-// Perkiraan lebar huruf kapital per font heading (em); fit-to-width terukur menyusul di T-123.
-const CHAR_WIDTH: Record<string, number> = { wide: 0.78, medium: 0.64, condensed: 0.5 };
+const SUBJECT = { bottom: -3, width: 60, height: 82, offset: -6 };
 
 function BidangWarnaSlide({ slots, options }: SlideProps) {
   const flip = options.flip === "yes";
   const near = flip ? "right" : "left";
   const far = flip ? "left" : "right";
+  const image = slot(slots, "image", "image");
   const pembuka = optionalSlot(slots, "pembuka", "text");
   const penutup = optionalSlot(slots, "penutup", "text");
   const cta = optionalSlot(slots, "cta", "text");
+  const box = boxFromPercent({ ...SUBJECT, [far]: SUBJECT.offset });
+  const focus = image.subject ? containedFocus(box, 4 / 5, image.subject) : undefined;
+  const textBottom = focus ? textBelowFocus(focus.y) : true;
   return (
     <div
       style={{
@@ -40,19 +44,22 @@ function BidangWarnaSlide({ slots, options }: SlideProps) {
         }}
       />
       <div
-        style={{ position: "absolute", [far]: "-6%", bottom: "-3%", width: "60%", height: "82%" }}
+        style={{
+          position: "absolute",
+          [far]: `${SUBJECT.offset}%`,
+          bottom: `${SUBJECT.bottom}%`,
+          width: `${SUBJECT.width}%`,
+          height: `${SUBJECT.height}%`,
+        }}
       >
-        <Image slot="image" src={slot(slots, "image", "image").src} fit="contain" />
+        <Image slot="image" src={image.src} fit="contain" />
       </div>
-      {/* Blok teks di seberang diagonal titik fokus subjek (PRD 4 P8): atas bila fokus di bawah. */}
       <div
         style={{
           position: "absolute",
-          ...(options.text === "top"
-            ? { top: EDGE }
-            : { bottom: `calc(${EDGE} + ${space(7)} + ${space(3)})` }),
+          ...(textBottom ? { bottom: `calc(${EDGE} + ${space(7)} + ${space(3)})` } : { top: EDGE }),
           [near]: EDGE,
-          width: "48%",
+          width: "44%",
           display: "grid",
           gridTemplateColumns: "minmax(0, 1fr)",
           gap: space(3),
@@ -77,15 +84,7 @@ function BidangWarnaSlide({ slots, options }: SlideProps) {
             {pembuka.value}
           </Text>
         )}
-        <Display
-          slot="headline"
-          font="heading"
-          scale={2}
-          charWidth={CHAR_WIDTH[options.width ?? "wide"] ?? 0.78}
-          align={near}
-          stack
-          color="primary"
-        >
+        <Display slot="headline" font="heading" scale={2} align={near} stack color="primary">
           {slot(slots, "headline", "text").value}
         </Display>
         {penutup && (
@@ -117,41 +116,42 @@ function BidangWarnaSlide({ slots, options }: SlideProps) {
 
 export const bidangWarna: Template = {
   meta: {
-    id: "proto-bidang-warna",
+    id: "feed-bidang-warna",
     name: "Bidang warna",
     format: "feed-4x5",
     description:
-      "Prototipe: bidang warna dominan, lengkung di belakang subjek cut-out, satu blok teks tiga tingkat di sudut bawah seberang subjek, CTA tombol.",
+      "Bidang warna brand yang tenang dengan lengkung di belakang subjek cut-out, headline tiga tingkat (pembuka kecil, frasa utama raksasa, penutup), CTA tombol. Untuk promo produk atau ajakan dengan satu frasa kuat.",
     slots: [
       {
         name: "image",
         type: "image",
         required: true,
-        description: "Subjek cut-out berlatar transparan yang berinteraksi",
+        description: "Subjek cut-out berlatar transparan yang berinteraksi (memegang, bergerak)",
         aspectRatio: "4:5",
+        cutout: true,
       },
       {
         name: "pembuka",
         type: "text",
         required: false,
-        description: "Kalimat pembuka kecil bersorot",
+        description: "Kalimat pembuka kecil bersorot dari copy",
         maxChars: 28,
       },
       {
         name: "headline",
         type: "text",
         required: true,
-        description: "Frasa utama, satu sampai dua kata, ditumpuk satu kata per baris",
+        description: "Frasa utama satu sampai dua kata dari copy, ditumpuk satu kata per baris",
         maxChars: 16,
       },
       {
         name: "penutup",
         type: "text",
         required: false,
-        description: "Penutup, boleh berisi fakta",
+        description: "Penutup dari copy, boleh berisi fakta seperti harga",
         maxChars: 32,
       },
-      { name: "cta", type: "text", required: false, description: "Ajakan", maxChars: 28 },
+      { name: "cta", type: "text", required: false, description: "Ajakan dari copy", maxChars: 28 },
       { name: "logo", type: "logo", required: true, description: "Logo di atas latar terang" },
     ],
     options: [
@@ -165,19 +165,7 @@ export const bidangWarna: Template = {
         name: "arch",
         values: ["high", "low"],
         default: "high",
-        description: "Tinggi lengkung, untuk menjaga proporsi warna kedua",
-      },
-      {
-        name: "width",
-        values: ["wide", "medium", "condensed"],
-        default: "wide",
-        description: "Lebar huruf font heading, untuk ukuran frasa utama",
-      },
-      {
-        name: "text",
-        values: ["bottom", "top"],
-        default: "bottom",
-        description: "Letak blok teks, di seberang diagonal titik fokus subjek",
+        description: "Tinggi lengkung; low bila warna primary brand sangat kuat",
       },
       {
         name: "flip",
