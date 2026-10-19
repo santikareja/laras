@@ -228,7 +228,7 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Kalibrasi (keputusan pemilik 2026-10-19): arketipe terpusat dikecualikan dari P8, batas bawah P9 tidak berlaku bila dominan ≥ 65%, minimal panjang baris P4 hanya untuk paragraf ≥ 3 baris (PRD 4 diperbarui). AC disesuaikan: render yang disetujui lolos semua cek wajib, saran nyata yang tersisa dicatat untuk T-131.
   - Derau pengukuran yang diperbaiki saat kalibrasi: kotak `<svg>` penuh kanvas membuat semua teks dianggap di atas gambar; tombol diukur dari tinta teks, bukan kotaknya; label vertikal terbaca satu huruf per baris; panel bleed dan isi panel dihitung sebagai jarak tepi; lengkung bentuk dihitung sebagai radius kartu.
 
-- [~] T-131 Pipeline dengan arketipe
+- [x] T-131 Pipeline dengan arketipe
   - Rujukan: ADR-015, PRD F7, ARCH 5, T-121 (cut-out Codex)
   - AC: katalog Claude berisi arketipe; empat template lama dipensiunkan (keputusan pemilik 2026-10-19); prompt dan contoh layout serta revise diperbarui; tahap layout meminta aset `cutout` bila slot membutuhkannya; prompt Codex untuk cut-out transparan; `CodexAssetProvider` menjaga alpha, menganalisis cut-out, dan tidak memotongnya; dry-run spike lolos.
   - Catatan: uji Codex sungguhan hanya dengan izin pemilik.
@@ -238,6 +238,7 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Uji cut-out Codex sungguhan (2026-10-19): 9 aset gaya T-134 lewat `CodexAssetProvider` dan `asset-cutout.md`, semuanya lolos `storeAsset` tanpa pengulangan (KNOWLEDGE). Penilaian pemilik atas render T-131 berlanjut menjadi catatan gaya (T-134). Sisa: uji tahap layout Claude sungguhan dengan izin pemilik.
   - Keputusan pemilik 2026-10-19 (rencana uji layout): cakupan tiga brand × 2 varian dengan brief K2, S1, R1 dari T-117; katalog penuh 22 arketipe (arketipe khas gaya dirender tanpa lapisan gaya sampai T-133); batas per brand Claude 14 dan Codex 5 (perkiraan total Claude 30–42, Codex 6–15, ±25 menit, ±$5).
   - Hasil uji layout (2026-10-19, KNOWLEDGE): Claude 38, Codex 11, retry 0, ±$8,28 (melewati perkiraan karena katalog 22 arketipe), ±22 menit. Semua AC mekanisme terpenuhi dengan CLI asli: layout sah, variasi antarvarian, permintaan cut-out dengan `subject`, cut-out Codex lolos. QA lolos 2/6; perbaikan wajib yang muncul dicatat di T-126 (logo chevron), T-125 (klaim visual yang tidak bisa digambar), dan T-135 (`feed-sel-wajah`). Lembar `out/t131-live.png`.
+  - Keputusan pemilik 2026-10-19: T-131 ditutup; mekanisme lolos dengan CLI asli, temuan kualitas diteruskan ke T-125, T-126, T-133, dan T-135.
 
 - [ ] T-124 Perangkat grafis dan peran font tambahan di Brand Kit
   - Rujukan: PRD 4 (K2, K5), PRD F2, ARCH 6.1

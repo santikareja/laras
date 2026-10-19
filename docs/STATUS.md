@@ -11,11 +11,11 @@ T-128 selesai: panduan tujuh gaya tahap 1 di `packages/templates/styles/<id>/PAN
 T-132 selesai (thumbnail disetujui pemilik): lapisan gaya, 54 perangkat grafis, arketipe `feed-panel-info` dan `feed-kartu-kaca`, dan `pnpm render:styles` (21 postingan pola khas, 21 spesimen, thumbnail 360 px, lembar ringkasan `out/styles/ringkasan-<brand>.png`) selesai dan lolos QA.
 T-130 selesai: QA kode mengukur aturan desain PRD 4 (P1, P2, P4, P8–P11) sebagai saran dengan ambang per gaya; render yang disetujui lolos semua cek wajib, saran nyata yang tersisa menjadi bagian T-131. Repo GitHub bersih dari workflow Datadog.
 T-134 selesai (disetujui pemilik): 15 arketipe khas lima gaya, panduan dengan konsep dan ambang dari referensi, font aksen Brand Kit, 9 aset gaya Codex, dan tiga pelonggaran panduan T-128 diterima.
-T-131 [~]: katalog Claude berisi tujuh arketipe (empat template lama dihapus), cut-out Codex (`asset-cutout.md`, `storeAsset` WebP beralpha), variasi arketipe antarvarian, penempatan subjek ke titik sepertiga, dan perbaikan saran desain T-130. Lembar sebelum-sesudah di `out/t131-review/`. Belum di-push; uji cut-out Codex sudah lewat aset T-134, uji layout Claude sungguhan menunggu izin pemilik.
+T-131 selesai: katalog Claude = arketipe, cut-out Codex lewat pipeline, variasi antarvarian; uji sungguhan tiga brand × 2 varian (Claude 38, Codex 11, ±$8,28) membuktikan mekanismenya, QA lolos 2/6 dan temuannya diteruskan ke T-125, T-126, T-133, T-135.
 
 ## Berikutnya (urut)
-1. T-131: uji tahap layout Claude sungguhan (izin pemilik); uji cut-out Codex sudah lewat aset T-134.
-2. T-133 gaya di pipeline (termasuk catatan dari T-134).
+1. T-133 gaya di pipeline (termasuk catatan dari T-134 dan uji T-131).
+2. T-135 perbaikan `feed-sel-wajah` (kecil, tanpa kuota).
 3. T-124 sampai T-126 (aturan brand terstruktur dan perangkat grafis Brand Kit, ide besar dan art direction, rubric QA visual K1–K8 dan P1–P11).
 4. T-129 gaya tahap 2, lalu T-127 evaluasi ulang spike (memakai kuota besar; izin pemilik).
 
