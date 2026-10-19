@@ -28,7 +28,7 @@ type TextProps = {
   accentWords?: { text: string; color: ColorToken };
   // Efek teks (Effects.tsx), mis. registrasi meleset atau glow pada headline besar. Teks dibungkus
   // satu blok bersama salinan dekoratifnya.
-  effect?: TextEffect;
+  effect?: TextEffect | undefined;
   children: string;
 };
 

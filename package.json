@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json && pnpm -r --if-present typecheck",
     "test": "vitest run",
     "render:demo": "tsx --tsconfig tsconfig.base.json scripts/render-demo.ts",
+    "render:styles": "tsx --tsconfig tsconfig.base.json scripts/render-styles.ts",
     "spike": "tsx --tsconfig tsconfig.base.json scripts/spike/run.ts"
   },
   "devDependencies": {

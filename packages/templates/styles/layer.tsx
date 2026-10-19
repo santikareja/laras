@@ -1,6 +1,7 @@
 import type { BrandKit, StyleChoice, StyleMeta } from "@laras/shared";
+import type { TextEffect } from "../primitives/Effects.tsx";
 import type { ImageTreatment } from "../primitives/Photo.tsx";
-import type { StyleLayerProps, StyleRender, Variable } from "../src/style.ts";
+import type { EffectRole, StyleLayerProps, StyleRender, Variable } from "../src/style.ts";
 import { brutalismRender } from "./brutalism/render.tsx";
 import { corporateCleanRender } from "./corporate-clean/render.tsx";
 import { cyberpunkRender } from "./cyberpunk/render.tsx";
@@ -60,4 +61,12 @@ export function StyleOverlay({ style, ...rest }: LayerProps) {
 
 export function styleTreatment(style: StyleChoice | undefined): ImageTreatment {
   return style ? styleRender(style.id).treatment(style) : { kind: "natural" };
+}
+
+// Efek teks gaya untuk satu peran; tanpa gaya atau tanpa efek: tidak ada.
+export function styleEffect(
+  style: StyleChoice | undefined,
+  role: EffectRole,
+): TextEffect | undefined {
+  return style ? styleRender(style.id).effect?.(style, role) : undefined;
 }

@@ -42,6 +42,11 @@ describe("gaya tahap 1", () => {
 
   it.each(styles.map((s) => [s.id, s] as const))("%s", (id, style) => {
     expect(StyleMeta.safeParse(style).success).toBe(true);
+    // T-132: semua perangkat grafis gaya sudah dibuat; arketipe yang direncanakan belum ada.
+    expect(style.devices.filter((d) => d.status !== "ada")).toEqual([]);
+    for (const planned of style.plannedArchetypes) {
+      expect(archetypes.map((a) => a.meta.id)).not.toContain(planned.id);
+    }
     for (const archetype of style.archetypes) {
       expect(archetypes.map((a) => a.meta.id)).toContain(archetype);
     }

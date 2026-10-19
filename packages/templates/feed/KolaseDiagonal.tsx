@@ -1,7 +1,7 @@
 import { Display, Frame, Logo, Photo, Sticker, Tape, Text } from "../primitives/index.ts";
 import { color, space } from "../primitives/vars.ts";
 import { optionalSlot, type SlideProps, slot, type Template } from "../src/template.ts";
-import { StyleBackdrop, StyleOverlay, styleTreatment } from "../styles/layer.tsx";
+import { StyleBackdrop, StyleOverlay, styleEffect, styleTreatment } from "../styles/layer.tsx";
 
 // Arketipe A4 Kolase diagonal (T-122 v4, ADR-015; PRD 4 K3, P2, P8–P11): kolase yang ditahan. Lima elemen: bingkai foto
 // (tepi sobek dan selotip sebagai satu keluarga dekorasi kertas), subjek cut-out yang keluar dari
@@ -32,7 +32,7 @@ function KolaseDiagonalSlide({ slots, options, style }: SlideProps) {
         background: color(dark ? "primary" : "neutral-light"),
       }}
     >
-      <StyleBackdrop style={style} />
+      <StyleBackdrop style={style} subjectSide={far} />
       <div
         style={{
           position: "absolute",
@@ -71,7 +71,14 @@ function KolaseDiagonalSlide({ slots, options, style }: SlideProps) {
         }}
       >
         <div style={{ width: subjek ? "calc(1080px * 0.5)" : "100%" }}>
-          <Display slot="headline" font="heading" scale={1} align={near} color={BAND_INK[band]}>
+          <Display
+            slot="headline"
+            font="heading"
+            scale={1}
+            align={near}
+            color={BAND_INK[band]}
+            effect={styleEffect(style, "display")}
+          >
             {slot(slots, "headline", "text").value}
           </Display>
         </div>
@@ -128,6 +135,7 @@ function KolaseDiagonalSlide({ slots, options, style }: SlideProps) {
         style={style}
         label={optionalSlot(slots, "label", "text")?.value}
         corner={flip ? "top-left" : "top-right"}
+        surface={dark ? "dark" : "light"}
       />
     </div>
   );

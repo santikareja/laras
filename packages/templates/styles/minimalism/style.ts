@@ -45,10 +45,10 @@ export const minimalism: StyleMeta = {
   shape: { radius: "brand", shadow: "none", border: "none" },
   devices: [
     { id: "image-cutout", name: "Objek cut-out", status: "ada" },
-    { id: "garis", name: "Garis tipis", status: "perlu-dibuat" },
-    { id: "bingkai-garis", name: "Bingkai garis", status: "perlu-dibuat" },
-    { id: "label-vertikal", name: "Label vertikal 90°", status: "perlu-dibuat" },
-    { id: "bayangan-lantai", name: "Bayangan lantai", status: "perlu-dibuat" },
+    { id: "garis", name: "Garis tipis", status: "ada" },
+    { id: "bingkai-garis", name: "Bingkai garis", status: "ada" },
+    { id: "label-vertikal", name: "Label vertikal 90°", status: "ada" },
+    { id: "bayangan-lantai", name: "Bayangan lantai", status: "ada" },
   ],
   imagery: {
     kinds: ["cutout", "concept", "photo"],

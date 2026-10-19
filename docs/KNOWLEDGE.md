@@ -240,6 +240,12 @@ Panggilan yang dipakai (fixture di `packages/sidecar/test/fixtures/codex/`):
 - **Smart crop sharp ke 3:2 pada foto demo 1122 × 1402 (T-113):** `attention` memilih jendela berbeda dari tengah (Kopi mulai baris 654, Seruni 195, Ritme 239) dan menjaga subjek: bibir dan botol Seruni yang terpotong oleh crop tengah tetap ada; cangkir Kopi utuh beserta kain. `entropy` mirip, tetapi memotong botol Seruni.
 - **Durasi `pnpm test` sejak T-110 ~12,5 detik** (sebelumnya ~1,4 detik): 25 render Chromium untuk fixture QA dan isi demo seluruh katalog × 3 brand.
 
+- **Hit-testing QA dan lapisan dekoratif (T-132):** QA mencari latar teks lewat `document.elementsFromPoint`, dan `mask-image` tidak memengaruhi hit-testing. Lapisan warna dekoratif yang bertumpuk di bawah teks (perlakuan foto, tekstur) harus `pointer-events: none`, kalau tidak QA membacanya sebagai bidang padat dan melaporkan kontras 1:1 palsu.
+- **QA belum melihat bentuk SVG sebagai latar (T-132):** swoosh dan pelangi berupa SVG; teks yang tertimpa olehnya tidak tertangkap cek kontras (terlihat di render Flat pertama). Sampai T-130, letak bentuk dijaga lapisan gaya (`subjectSide`). Teks dekoratif ber-`aria-hidden` (nomor penggaris, tanda `[ ]`) tetap dihitung QA sebagai teks.
+- **Grain soft-light (T-132):** butir satu token dengan `soft-light` pada opasitas 6–12% hampir tidak terlihat di render; `Grain` mengalikan opasitas mode soft-light 3× (`SOFT_LIGHT_GAIN`) agar setara mode lain.
+- **`backdrop-filter` (T-132):** efek kaca hilang bila induk panel memakai `opacity < 1`, `filter`, `mask`, atau `mix-blend-mode` (induk menjadi backdrop root); panel kaca diletakkan bersaudara dengan lapisan foto.
+- **Huruf retro dan QA kontras (T-132):** QA mengukur isi huruf terhadap latar dan mengabaikan outline `-webkit-text-stroke`; huruf retro dengan isi terang di latar terang gagal kontras. Dipakai hanya di bidang yang kontras dengan isi huruf (QA tidak dilonggarkan, P7).
+
 ## Evaluasi spike T-117 (2026-10-18/19, gerbang Fase 1)
 
 Pengaturan: 9 percobaan `pnpm spike` sungguhan (izin pemilik), 1 varian, template dipilih Claude, batas per percobaan Claude 12 dan Codex 3, berurutan. Claude Code 2.1.302 (model default `claude-opus-5-5`), Codex 0.163.0. Laporan per percobaan di `out/spike/<brand>/runs/<briefId>/` (tidak di-commit).

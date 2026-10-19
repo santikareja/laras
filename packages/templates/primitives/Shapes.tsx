@@ -68,7 +68,7 @@ type Layer = { color: ColorToken };
 
 // --- Swoosh --------------------------------------------------------------------------------
 
-type SwooshPreset = "arc" | "wave" | "rise" | "corner";
+type SwooshPreset = "arc" | "wave" | "rise" | "corner" | "side";
 
 // Kurva Bézier kubik di kanvas 1080 × 1350, kedua ujung di luar kanvas. Jari-jari lengkung
 // minimum di bagian yang terlihat: arc 799, wave 431, rise 980, corner 773 px (≥ 300 px).
@@ -82,6 +82,9 @@ const SWOOSH: Record<SwooshPreset, { d: string; start: number }> = {
   rise: { d: "M -160 1260 C 420 1180, 700 640, 1240 140", start: 0.18 },
   // Menyapu sudut kiri bawah.
   corner: { d: "M -160 860 C 260 900, 560 1120, 660 1520", start: 0.32 },
+  // Naik dari tepi bawah di separuh kanan dan keluar di tepi kanan: tetap di sisi subjek,
+  // menjauhi teks di sisi seberang (pengganti lengkung feed-bidang-warna; flipX untuk sisi kiri).
+  side: { d: "M 620 1520 C 680 1120, 940 800, 1240 640", start: 0.3 },
 };
 
 const SWOOSH_WEIGHT = { line: 44, band: 160 } as const;

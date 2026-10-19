@@ -12,7 +12,7 @@ import { analyzeCutout, type SubjectKind } from "../packages/sidecar/src/pipelin
 import type { Template } from "../packages/templates/src/index.ts";
 import type { Brand } from "./demo-content.ts";
 
-type Case = {
+export type Case = {
   text: Record<string, string>;
   // Slot image → file di fixtures/demo-assets/<brand>/ (semua 1122 × 1402, 4:5).
   images: Record<string, string>;
@@ -171,6 +171,11 @@ export function hasArchetypeCase(template: Template, slug: Brand): boolean {
 export async function archetypeCase(template: Template, slug: Brand, assetsDir: string) {
   const item = CASES[template.meta.id]?.[slug];
   if (!item) throw new Error(`Arketipe "${template.meta.id}" belum punya isi untuk ${slug}`);
+  return caseSpec(template, slug, item, assetsDir);
+}
+
+// Isi demo → LayoutSpec dan AssetManifest; juga dipakai isi contoh gaya (scripts/style-content.ts).
+export async function caseSpec(template: Template, slug: Brand, item: Case, assetsDir: string) {
   const slots: Record<string, SlotValue> = { logo: { type: "logo", variant: item.logo } };
   for (const [name, value] of Object.entries(item.text)) slots[name] = { type: "text", value };
   for (const [name, file] of Object.entries(item.images))

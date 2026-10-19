@@ -50,12 +50,12 @@ export const flatDesign: StyleMeta = {
   devices: [
     { id: "display", name: "Kata raksasa", status: "ada" },
     { id: "sticker", name: "Chip dan tombol", status: "ada" },
-    { id: "swoosh", name: "Swoosh", status: "perlu-dibuat" },
-    { id: "blob", name: "Blob dan scallop", status: "perlu-dibuat" },
-    { id: "panel-lengkung", name: "Panel melengkung", status: "perlu-dibuat" },
-    { id: "cakram", name: "Cakram dan cincin", status: "perlu-dibuat" },
-    { id: "ikon-datar", name: "Ikon datar", status: "perlu-dibuat" },
-    { id: "headline-dua-nada", name: "Headline dua nada", status: "perlu-dibuat" },
+    { id: "swoosh", name: "Swoosh", status: "ada" },
+    { id: "blob", name: "Blob dan scallop", status: "ada" },
+    { id: "panel-lengkung", name: "Panel melengkung", status: "ada" },
+    { id: "cakram", name: "Cakram dan cincin", status: "ada" },
+    { id: "ikon-datar", name: "Ikon datar", status: "ada" },
+    { id: "headline-dua-nada", name: "Headline dua nada", status: "ada" },
   ],
   imagery: {
     kinds: ["cutout", "illustration"],

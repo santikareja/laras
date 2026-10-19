@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactElement } from "react";
+import { Glow, type GlowMode } from "./Effects.tsx";
 import { Image } from "./Image.tsx";
 import { noiseMask } from "./noise.ts";
 import { type ColorToken, color } from "./vars.ts";
@@ -18,7 +19,9 @@ export type ImageTreatment =
   // Grading hangat pudar dari satu token (Vintage/Retro).
   | { kind: "hangat"; tone: ColorToken }
   // Tint lembut satu token (Glassmorphism).
-  | { kind: "tint"; tone: ColorToken; strength?: number };
+  | { kind: "tint"; tone: ColorToken; strength?: number }
+  // Cyberpunk: mono atau warna asli, scanline hanya di atas subjek, halo glow di sekeliling alpha.
+  | { kind: "neon"; mono: boolean; scanline: boolean; glow: ColorToken; mode: GlowMode };
 
 type PhotoProps = {
   src: string;
@@ -28,6 +31,9 @@ type PhotoProps = {
 };
 
 const FILL: CSSProperties = { position: "absolute", inset: 0 };
+// Lapisan warna perlakuan tidak ikut hit-testing: QA mencari latar teks lewat elementsFromPoint, dan
+// mask tidak memengaruhi hit-testing, jadi lapisan ini akan terbaca sebagai bidang padat palsu.
+const DECOR: CSSProperties = { ...FILL, pointerEvents: "none" };
 
 // Foto dengan perlakuan gaya; mengisi kotak induknya. Tanpa perlakuan (natural) hasilnya sama
 // dengan Image. Lapisan warna dimask ke alpha gambar agar cut-out tetap bertepi bersih.
@@ -60,7 +66,7 @@ export function Photo({ src, fit = "cover", treatment = { kind: "natural" }, slo
     </div>
   );
   const layer = (key: string, style: CSSProperties) => (
-    <div key={key} style={{ ...FILL, ...style }} />
+    <div key={key} style={{ ...DECOR, ...style }} />
   );
   switch (treatment.kind) {
     case "mono":
@@ -84,7 +90,7 @@ export function Photo({ src, fit = "cover", treatment = { kind: "natural" }, slo
           <div
             key="titik"
             style={{
-              ...FILL,
+              ...DECOR,
               overflow: "hidden",
               background: color("neutral-light"),
               // Grayscale sesudah kontras: token netral yang sedikit berwarna tidak memunculkan
@@ -130,6 +136,25 @@ export function Photo({ src, fit = "cover", treatment = { kind: "natural" }, slo
           opacity: 0.12,
         }),
       ]);
+    case "neon": {
+      const subject = frame([
+        image(treatment.mono ? "grayscale(1) contrast(1.15)" : undefined),
+        ...(treatment.scanline
+          ? [
+              layer("scanline", {
+                // Garis 2 px setiap 6 px, tepi tajam (Cyberpunk 7).
+                background: `repeating-linear-gradient(0deg, ${color("neutral-dark")} 0 2px, transparent 2px 6px)`,
+                opacity: 0.28,
+              }),
+            ]
+          : []),
+      ]);
+      return (
+        <Glow color={treatment.glow} mode={treatment.mode}>
+          {subject}
+        </Glow>
+      );
+    }
     case "tint":
       return frame([
         image(),

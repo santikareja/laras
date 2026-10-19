@@ -2,7 +2,7 @@ import { Display, Logo, Photo, Sticker, Text } from "../primitives/index.ts";
 import { color, space } from "../primitives/vars.ts";
 import { boxFromPercent, containedFocus, textBelowFocus } from "../src/geometry.ts";
 import { optionalSlot, type SlideProps, slot, type Template } from "../src/template.ts";
-import { StyleBackdrop, StyleOverlay, styleTreatment } from "../styles/layer.tsx";
+import { StyleBackdrop, StyleOverlay, styleEffect, styleTreatment } from "../styles/layer.tsx";
 
 // Arketipe A1 Kata raksasa (T-122, ADR-015; PRD 4 K2, K3): kata kunci raksasa di belakang subjek
 // cut-out di atas bidang warna brand. Ukuran kata dipaskan renderer (fit-to-width); headline dan
@@ -35,9 +35,18 @@ function KataRaksasaSlide({ slots, options, style }: SlideProps) {
         background: color(dark ? "primary" : "secondary"),
       }}
     >
-      <StyleBackdrop style={style} />
+      <StyleBackdrop
+        style={style}
+        {...(side === "left" || side === "right" ? { subjectSide: side } : {})}
+      />
       <div style={{ position: "absolute", top: "17%", left: EDGE, right: EDGE }}>
-        <Display slot="kata" font="heading" scale={2.6} color={dark ? "accent" : "primary"}>
+        <Display
+          slot="kata"
+          font="heading"
+          scale={2.6}
+          color={dark ? "accent" : "primary"}
+          effect={styleEffect(style, "display")}
+        >
           {slot(slots, "kata", "text").value}
         </Display>
       </div>
@@ -97,6 +106,7 @@ function KataRaksasaSlide({ slots, options, style }: SlideProps) {
         style={style}
         label={optionalSlot(slots, "label", "text")?.value}
         corner={logoBottomRight ? "top-left" : "top-right"}
+        surface={dark ? "dark" : "light"}
       />
     </div>
   );

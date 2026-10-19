@@ -1,6 +1,6 @@
 import { Photo } from "../primitives/index.ts";
 import { type SlideProps, slot, type Template } from "../src/template.ts";
-import { StyleBackdrop, StyleOverlay, styleTreatment } from "../styles/layer.tsx";
+import { StyleBackdrop, StyleOverlay, styleEffect, styleTreatment } from "../styles/layer.tsx";
 import { PlacedLogo, TopCaption } from "./SatuObjek.tsx";
 
 // Arketipe A3 Foto konsep (T-122, ADR-015; PRD 4 K1, K7): satu foto konsep penuh dengan bagian
@@ -18,7 +18,7 @@ function FotoKonsepSlide({ slots, options, style }: SlideProps) {
           treatment={styleTreatment(style)}
         />
       </div>
-      <TopCaption slots={slots} dark={false} />
+      <TopCaption slots={slots} dark={false} effect={styleEffect(style, "headline")} />
       <PlacedLogo src={slot(slots, "logo", "logo").src} at={options.logo ?? "top-left"} />
       <StyleOverlay style={style} />
     </div>

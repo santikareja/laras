@@ -1,4 +1,4 @@
-import { Logo, Photo, Text } from "../primitives/index.ts";
+import { Logo, Photo, Text, type TextEffect } from "../primitives/index.ts";
 import { FloorShadow } from "../primitives/Shapes.tsx";
 import { color, space } from "../primitives/vars.ts";
 import {
@@ -8,7 +8,7 @@ import {
   slot,
   type Template,
 } from "../src/template.ts";
-import { StyleBackdrop, StyleOverlay, styleTreatment } from "../styles/layer.tsx";
+import { StyleBackdrop, StyleOverlay, styleEffect, styleTreatment } from "../styles/layer.tsx";
 
 // Arketipe A3 Satu objek (T-122, ADR-015; PRD 4 K1, K7): satu subjek cut-out kecil di bidang
 // warna dengan bayangan lantai, ruang kosong luas, satu kalimat dan satu baris pendukung di atas.
@@ -18,15 +18,22 @@ const BACKGROUND = {
   neutral: "neutral-light",
   secondary: "secondary",
   primary: "primary",
+  dark: "neutral-dark",
 } as const;
+const FLOOR = "16%";
+// Sudut kosong untuk label gaya, berseberangan dengan logo.
+const LABEL_CORNER = { "bottom-right": "bottom-left", "top-left": "bottom-right" } as const;
 
 // Headline dan satu baris pendukung di tengah atas, dipakai juga oleh feed-foto-konsep.
 export function TopCaption({
   slots,
   dark,
+  effect,
 }: {
   slots: Record<string, ResolvedSlot>;
   dark: boolean;
+  // Efek teks gaya untuk headline (mis. glow Cyberpunk); tanpa gaya tidak ada.
+  effect?: TextEffect | undefined;
 }) {
   const body = optionalSlot(slots, "body", "text");
   return (
@@ -48,6 +55,7 @@ export function TopCaption({
         font="heading"
         size={5}
         color={dark ? "neutral-light" : "primary"}
+        {...(effect ? { effect } : {})}
       >
         {slot(slots, "headline", "text").value}
       </Text>
@@ -88,7 +96,8 @@ export function PlacedLogo({ src, at }: { src: string; at: string }) {
 }
 
 function SatuObjekSlide({ slots, options, style }: SlideProps) {
-  const dark = options.tone === "primary";
+  const dark = options.tone === "primary" || options.tone === "dark";
+  const logoAt = options.logo ?? "bottom-center";
   const tone = BACKGROUND[(options.tone ?? "neutral") as keyof typeof BACKGROUND];
   return (
     <div
@@ -99,10 +108,10 @@ function SatuObjekSlide({ slots, options, style }: SlideProps) {
         background: color(tone ?? "neutral-light"),
       }}
     >
-      <StyleBackdrop style={style} />
+      <StyleBackdrop style={style} floor={FLOOR} />
       <FloorShadow dark={dark} />
       <div
-        style={{ position: "absolute", left: "20%", right: "20%", bottom: "16%", height: "50%" }}
+        style={{ position: "absolute", left: "20%", right: "20%", bottom: FLOOR, height: "50%" }}
       >
         <Photo
           slot="image"
@@ -111,9 +120,15 @@ function SatuObjekSlide({ slots, options, style }: SlideProps) {
           treatment={styleTreatment(style)}
         />
       </div>
-      <TopCaption slots={slots} dark={dark} />
-      <PlacedLogo src={slot(slots, "logo", "logo").src} at={options.logo ?? "bottom-center"} />
-      <StyleOverlay style={style} />
+      <TopCaption slots={slots} dark={dark} effect={styleEffect(style, "headline")} />
+      <PlacedLogo src={slot(slots, "logo", "logo").src} at={logoAt} />
+      <StyleOverlay
+        style={style}
+        label={optionalSlot(slots, "label", "text")?.value}
+        corner={LABEL_CORNER[logoAt as keyof typeof LABEL_CORNER] ?? "bottom-left"}
+        floor={FLOOR}
+        surface={dark ? "dark" : "light"}
+      />
     </div>
   );
 }
@@ -149,18 +164,26 @@ export const satuObjek: Template = {
         maxChars: 70,
       },
       {
+        name: "label",
+        type: "text",
+        required: false,
+        description:
+          "Label kecil dari copy (tanggal, lokasi, edisi) untuk gaya yang memakainya; tanpa gaya tidak tampil",
+        maxChars: 24,
+      },
+      {
         name: "logo",
         type: "logo",
         required: true,
-        description: "Logo; varian onDark bila tone primary",
+        description: "Logo; varian onDark bila tone primary atau dark",
       },
     ],
     options: [
       {
         name: "tone",
-        values: ["neutral", "secondary", "primary"],
+        values: ["neutral", "secondary", "primary", "dark"],
         default: "neutral",
-        description: "Warna bidang",
+        description: "Warna bidang; dark = netral gelap (mis. gaya Cyberpunk)",
       },
       {
         name: "logo",

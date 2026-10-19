@@ -14,7 +14,7 @@ type DisplayProps = {
   // yang termasuk frasa. Diabaikan bila frasa tidak ada di teks.
   accentWords?: { text: string; color: ColorToken };
   // Efek teks (Effects.tsx): glow, glitch, tinta aus, registrasi meleset, huruf retro.
-  effect?: TextEffect;
+  effect?: TextEffect | undefined;
   children: string;
 };
 

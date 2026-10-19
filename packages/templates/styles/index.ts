@@ -7,7 +7,14 @@ import { glassmorphismNeumorphism } from "./glassmorphism-neumorphism/style.ts";
 import { minimalism } from "./minimalism/style.ts";
 import { retroVintage } from "./retro-vintage/style.ts";
 
-export { StyleBackdrop, StyleOverlay, styleCss, styleRender, styleTreatment } from "./layer.tsx";
+export {
+  StyleBackdrop,
+  StyleOverlay,
+  styleCss,
+  styleEffect,
+  styleRender,
+  styleTreatment,
+} from "./layer.tsx";
 export { styleSpecimen } from "./specimen.tsx";
 
 // Gaya desain tahap 1 (PRD F16, T-128). Setiap folder berisi PANDUAN.md (panduan lengkap untuk

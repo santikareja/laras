@@ -20,13 +20,8 @@ export const glassmorphismNeumorphism: StyleMeta = {
         "Permukaan timbul atau cekung lembut tanpa foto; butuh bayangan lembut dan radius ≥ 16 px.",
     },
   ],
-  archetypes: ["feed-foto-konsep", "feed-satu-objek"],
+  archetypes: ["feed-kartu-kaca", "feed-foto-konsep", "feed-satu-objek"],
   plannedArchetypes: [
-    {
-      id: "feed-kartu-kaca",
-      name: "Kartu kaca",
-      description: "Foto penuh dengan kartu kaca berisi pesan.",
-    },
     {
       id: "feed-objek-timbul",
       name: "Objek timbul",
@@ -50,13 +45,13 @@ export const glassmorphismNeumorphism: StyleMeta = {
   shape: { radius: "large", shadow: "soft", border: "thin" },
   devices: [
     { id: "image", name: "Foto latar", status: "ada" },
-    { id: "glass-panel", name: "Panel kaca buram", status: "perlu-dibuat" },
-    { id: "soft-surface", name: "Permukaan timbul", status: "perlu-dibuat" },
-    { id: "icon-button", name: "Tombol ikon dan set ikon garis", status: "perlu-dibuat" },
-    { id: "pill-button", name: "Tombol pil", status: "perlu-dibuat" },
-    { id: "progress-track", name: "Bilah progres", status: "perlu-dibuat" },
-    { id: "keycap", name: "Tombol keycap", status: "perlu-dibuat" },
-    { id: "tint-foto", name: "Grain dan tint foto", status: "perlu-dibuat" },
+    { id: "glass-panel", name: "Panel kaca buram", status: "ada" },
+    { id: "soft-surface", name: "Permukaan timbul", status: "ada" },
+    { id: "icon-button", name: "Tombol ikon dan set ikon garis", status: "ada" },
+    { id: "pill-button", name: "Tombol pil", status: "ada" },
+    { id: "progress-track", name: "Bilah progres", status: "ada" },
+    { id: "keycap", name: "Tombol keycap", status: "ada" },
+    { id: "tint-foto", name: "Grain dan tint foto", status: "ada" },
   ],
   imagery: {
     kinds: ["photo", "cutout"],

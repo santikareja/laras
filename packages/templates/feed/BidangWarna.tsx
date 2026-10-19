@@ -2,7 +2,7 @@ import { Display, Logo, Photo, Sticker, Text } from "../primitives/index.ts";
 import { color, space } from "../primitives/vars.ts";
 import { boxFromPercent, containedFocus, textBelowFocus } from "../src/geometry.ts";
 import { optionalSlot, type SlideProps, slot, type Template } from "../src/template.ts";
-import { StyleBackdrop, StyleOverlay, styleTreatment } from "../styles/layer.tsx";
+import { StyleBackdrop, StyleOverlay, styleEffect, styleTreatment } from "../styles/layer.tsx";
 
 // Arketipe A2 Bidang warna (T-122 v4, ADR-015; PRD 4 P2, P8–P11): bidang warna dominan, lengkung
 // warna kedua di belakang subjek cut-out, satu blok teks tiga tingkat (pembuka bersorot, frasa
@@ -33,7 +33,7 @@ function BidangWarnaSlide({ slots, options, style }: SlideProps) {
         background: color(options.tone === "neutral" ? "neutral-light" : "secondary"),
       }}
     >
-      <StyleBackdrop style={style} />
+      <StyleBackdrop style={style} subjectSide={far} />
       {options.arch !== "none" && (
         <div
           style={{
@@ -88,7 +88,15 @@ function BidangWarnaSlide({ slots, options, style }: SlideProps) {
             {pembuka.value}
           </Text>
         )}
-        <Display slot="headline" font="heading" scale={2} align={near} stack color="primary">
+        <Display
+          slot="headline"
+          font="heading"
+          scale={2}
+          align={near}
+          stack
+          color="primary"
+          effect={styleEffect(style, "display")}
+        >
           {slot(slots, "headline", "text").value}
         </Display>
         {penutup && (
@@ -118,6 +126,7 @@ function BidangWarnaSlide({ slots, options, style }: SlideProps) {
         style={style}
         label={optionalSlot(slots, "label", "text")?.value}
         {...(textBottom ? { corner: flip ? "top-right" : "top-left" } : {})}
+        surface="light"
       />
     </div>
   );
