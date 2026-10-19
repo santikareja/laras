@@ -10,15 +10,14 @@ T-123 selesai: arketipe ada di `packages/templates/feed/` (daftar `archetypes`, 
 T-128 selesai: panduan tujuh gaya tahap 1 di `packages/templates/styles/<id>/PANDUAN.md` dan definisi mesin `style.ts` (skema `StyleMeta`, `styleFit` di `shared`) disetujui pemilik, termasuk keempat usulannya (TASKS T-128).
 T-132 selesai (thumbnail disetujui pemilik): lapisan gaya, 54 perangkat grafis, arketipe `feed-panel-info` dan `feed-kartu-kaca`, dan `pnpm render:styles` (21 postingan pola khas, 21 spesimen, thumbnail 360 px, lembar ringkasan `out/styles/ringkasan-<brand>.png`) selesai dan lolos QA.
 T-130 selesai: QA kode mengukur aturan desain PRD 4 (P1, P2, P4, P8–P11) sebagai saran dengan ambang per gaya; render yang disetujui lolos semua cek wajib, saran nyata yang tersisa menjadi bagian T-131. Repo GitHub bersih dari workflow Datadog.
-T-134 [~]: pemilik menilai desain gaya "terlalu datar dan tanpa konsep kuat" dan mengirim ulang referensi; keputusan: lima gaya sekaligus, ambang kepadatan dari pengukuran referensi, aset gaya Codex (9 panggilan, selesai), font aksen Brand Kit (selesai). Fondasi di commit 60812cd. Lima agen paralel membangun 15 arketipe khas dan menulis ulang panduan; semua render lolos QA wajib. Menunggu penilaian pemilik atas lembar `out/t134-review-<gaya>.jpg` dan keputusan tiga pelonggaran panduan (TASKS T-134).
+T-134 selesai (disetujui pemilik): 15 arketipe khas lima gaya, panduan dengan konsep dan ambang dari referensi, font aksen Brand Kit, 9 aset gaya Codex, dan tiga pelonggaran panduan T-128 diterima.
 T-131 [~]: katalog Claude berisi tujuh arketipe (empat template lama dihapus), cut-out Codex (`asset-cutout.md`, `storeAsset` WebP beralpha), variasi arketipe antarvarian, penempatan subjek ke titik sepertiga, dan perbaikan saran desain T-130. Lembar sebelum-sesudah di `out/t131-review/`. Belum di-push; uji cut-out Codex sudah lewat aset T-134, uji layout Claude sungguhan menunggu izin pemilik.
 
 ## Berikutnya (urut)
-1. T-134: penilaian pemilik dan keputusan tiga pelonggaran panduan; revisi bila ada catatan.
-2. T-131: uji tahap layout Claude sungguhan (izin pemilik); uji cut-out Codex sudah lewat aset T-134.
-3. T-133 gaya di pipeline.
-4. T-124 sampai T-126 (aturan brand terstruktur dan perangkat grafis Brand Kit, ide besar dan art direction, rubric QA visual K1–K8 dan P1–P11).
-5. T-129 gaya tahap 2, lalu T-127 evaluasi ulang spike (memakai kuota besar; izin pemilik).
+1. T-131: uji tahap layout Claude sungguhan (izin pemilik); uji cut-out Codex sudah lewat aset T-134.
+2. T-133 gaya di pipeline (termasuk catatan dari T-134).
+3. T-124 sampai T-126 (aturan brand terstruktur dan perangkat grafis Brand Kit, ide besar dan art direction, rubric QA visual K1–K8 dan P1–P11).
+4. T-129 gaya tahap 2, lalu T-127 evaluasi ulang spike (memakai kuota besar; izin pemilik).
 
 ## Blocker
 - Tidak ada.
