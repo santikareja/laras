@@ -16,10 +16,10 @@ T-133 selesai: gaya desain mengalir di pipeline (ADR-016): `project.json` gaya d
 T-135 selesai: judul `feed-sel-wajah` tidak lagi tampak di celah sel; fokus foto mengikuti letak yang diminta Claude di deskripsi aset (default atas).
 T-124 selesai: aturan brand terstruktur (posisi logo, tanpa gradient, maksimal elemen visual, arahan foto) ditegakkan kode sebagai cek wajib dan arahan Codex; perangkat grafis brand sebagai token `--device-*`; stiker miring digeser renderer ke dalam safe margin.
 T-125 selesai: plan menulis satu ide visual besar per varian dan setting dari knowledge; layout wajib mewujudkannya; setting dikirim ke setiap prompt Codex; klaim visual yang tidak bisa digambar dilarang.
+T-126 selesai: QA visual menilai delapan aspek K dan P dengan ambang ide dan profesional ≥ 8, membuka pratinjau logo, menerima knowledge dan hasil cek kode, dan dilarang menyarankan fakta di luar knowledge.
 
 ## Berikutnya (urut)
-1. T-126 (rubric QA visual K1–K8 dan P1–P11 beserta perbaikan QA visual dari uji T-117 dan T-131).
-2. T-129 gaya tahap 2, lalu T-127 evaluasi ulang spike (memakai kuota besar; izin pemilik).
+1. T-129 gaya tahap 2, lalu T-127 evaluasi ulang spike (memakai kuota besar; izin pemilik).
 
 ## Blocker
 - Tidak ada.

@@ -1,4 +1,13 @@
-import { appendFile, copyFile, mkdir, readFile, rename, stat, writeFile } from "node:fs/promises";
+import {
+  appendFile,
+  copyFile,
+  mkdir,
+  readdir,
+  readFile,
+  rename,
+  stat,
+  writeFile,
+} from "node:fs/promises";
 import { join } from "node:path";
 import {
   AssetManifest,
@@ -26,6 +35,7 @@ import { brandContext, renderPrompt, type Stage } from "../prompts/index.ts";
 import { findStyle, styleContext } from "../prompts/style-context.ts";
 import { buildRenderReport } from "../render/qa/report.ts";
 import type { AssetProvider } from "./assets.ts";
+import { logoPreviews } from "./logo-preview.ts";
 import {
   catalogFor,
   catalogForStyle,
@@ -378,12 +388,16 @@ async function runQa(
   if (!render) throw new Error("Tahap qa butuh hasil render");
   const deterministicPassed = render.slides.every((s) => !s.checks.some(isBlocking));
   if (!deterministicPassed) return { output: qaReport(step.round, render, null) };
+  const dir = jobDir(deps.projectDir, spec.id);
   const prompt = renderPrompt("qa-visual", {
     brand,
+    knowledge: deps.knowledge,
     copy: JSON.stringify(work.copy, null, 2),
     layout: JSON.stringify(work.layout, null, 2),
-    deterministic: "Semua cek kode lolos.",
-    references: "Tidak ada referensi visual.",
+    deterministic: deterministicSummary(render),
+    references: await referenceImages(deps.projectDir),
+    logo:
+      (await logoPreviews(deps.projectDir, dir, deps.brand)).join("\n") || "Logo tidak tersedia.",
     slides: render.slides.map((s) => `jobs/${spec.id}/${s.pngPath}`).join("\n"),
     style,
   });
@@ -392,6 +406,45 @@ async function runQa(
     output: qaReport(step.round, render, data),
     ...(costUsd !== undefined ? { costUsd } : {}),
   };
+}
+
+// Hasil kode untuk QA visual (T-126): cek wajib sudah lolos; saran desain terukur (T-130) dan aturan
+// brand terstruktur (T-124) disertakan agar tidak dinilai atau dilaporkan dua kali.
+function deterministicSummary(render: RenderReport): string {
+  const brandRules = new Set(["brand-logo-position", "brand-gradient", "brand-visuals"]);
+  const lines = ["Semua cek wajib kode lolos (kontras, overflow, safe margin, font, warna, aset)."];
+  const enforced = [
+    ...new Set(
+      render.slides.flatMap((s) => s.checks.map((c) => c.rule)).filter((r) => brandRules.has(r)),
+    ),
+  ];
+  if (enforced.length > 0)
+    lines.push(`Aturan brand terstruktur dicek dan lolos: ${enforced.join(", ")}.`);
+  const advice = render.slides.flatMap((slide) =>
+    slide.checks
+      .filter((c) => !c.passed && !isBlocking(c))
+      .map(
+        (c) =>
+          `- slide ${slide.index + 1}, ${c.rule}${c.target ? ` ${c.target}` : ""}: ${c.message}`,
+      ),
+  );
+  lines.push(
+    advice.length > 0 ? "Saran desain terukur:" : "Tidak ada saran desain terukur.",
+    ...advice,
+  );
+  return lines.join("\n");
+}
+
+// Gambar referensi project (ARCH 8.1, folder references/), relatif terhadap folder project.
+async function referenceImages(projectDir: string): Promise<string> {
+  const files = await readdir(join(projectDir, "references")).catch(() => [] as string[]);
+  const images = files
+    .filter((f) => /\.(png|jpe?g|webp)$/i.test(f))
+    .sort()
+    .slice(0, 6);
+  return images.length > 0
+    ? images.map((f) => `references/${f}`).join("\n")
+    : "Tidak ada referensi visual.";
 }
 
 function apply(work: Working, stage: JobStage, output: unknown) {

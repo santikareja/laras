@@ -131,13 +131,17 @@ export function revisionSchema(context: LayoutContext) {
   });
 }
 
-// Ambang lolos QA visual default (PRD F9): rata-rata ≥ 8 dan tidak ada aspek < 7.
-export const VISUAL_PASS = { average: 8, minimum: 7 };
+// Ambang lolos QA visual default (PRD F9, keputusan pemilik T-126): rata-rata ≥ 8, tidak ada aspek
+// < 7, dan ide serta kesan profesional ≥ 8 (inti keluhan T-117: generik dan AI-slop).
+export const VISUAL_PASS = { average: 8, minimum: 7, core: { idea: 8, professionalism: 8 } };
 
 export function visualPassed(visual: VisualQa): boolean {
   const scores = Object.values(visual.scores);
   const average = scores.reduce((sum, score) => sum + score, 0) / scores.length;
-  return average >= VISUAL_PASS.average && Math.min(...scores) >= VISUAL_PASS.minimum;
+  const core = Object.entries(VISUAL_PASS.core).every(
+    ([aspect, min]) => visual.scores[aspect as keyof VisualQa["scores"]] >= min,
+  );
+  return average >= VISUAL_PASS.average && Math.min(...scores) >= VISUAL_PASS.minimum && core;
 }
 
 // Tahap tempat perbaikan untuk cek deterministik yang gagal (ARCH 5.4).

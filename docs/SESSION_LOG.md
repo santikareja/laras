@@ -1,7 +1,9 @@
 # SESSION LOG
 
 ## Sesi #8, 2026-10-18
-- Task: T-105, T-106, T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116, T-118, T-117, T-120, T-121, T-122, T-119, T-123, T-128, T-132, T-130, T-131, T-134, T-133, T-135, T-124, T-125
+- Task: T-105, T-106, T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116, T-118, T-117, T-120, T-121, T-122, T-119, T-123, T-128, T-132, T-130, T-131, T-134, T-133, T-135, T-124, T-125, T-126
+- Hasil T-126: rubric QA visual delapan aspek dengan ambang inti, pratinjau logo PNG untuk QA, knowledge dan hasil cek kode di prompt QA, larangan fakta karangan. 671 test, tanpa kuota.
+- Masalah dan solusinya T-126: pratinjau logo awalnya menggagalkan QA bila file logo tidak ada (folder project test), kini dilewati dengan keterangan; potongan teks test sempat merusak file karena penanda akhir blok tidak unik, diperbaiki.
 - Hasil T-125: konsep visual per angle dan setting di plan, layout mewujudkannya, setting ke prompt Codex, larangan klaim visual yang tidak bisa digambar. 667 test, tanpa kuota.
 - Masalah dan solusinya T-125: saat membaca rujukan ditemukan bahwa catatan temuan uji T-131 untuk T-125, T-126, dan T-133 tidak pernah tersimpan (agent menulis ulang TASKS dari salinan lama setelah beberapa penggantian); catatan dipulihkan dan catatan T-133 yang tersisa dipindah ke T-127.
 - Hasil T-124: aturan brand terstruktur dan perangkat grafis brand sesuai keputusan pemilik (empat aturan wajib, teks dipindah, perangkat sebagai token). Render yang sudah disetujui tidak melanggar aturan brand baru. 664 test, tanpa kuota.

@@ -15,14 +15,18 @@ export const QaFix = z.strictObject({
 });
 export type QaFix = z.infer<typeof QaFix>;
 
-// Output QA visual dari Claude (PRD F9). Ambang lolos tidak di sini karena bisa diatur.
+// Output QA visual dari Claude (PRD F9, T-126): delapan aspek dari kriteria K dan prinsip P di
+// PRD 4. Ambang lolos tidak di sini karena bisa diatur.
 export const VisualQa = z.strictObject({
   scores: z.strictObject({
-    hierarchy: Score,
-    balance: Score,
-    readability: Score,
-    referenceFit: Score,
-    professionalism: Score,
+    idea: Score, // K1 satu ide besar
+    typography: Score, // K2 tipografi sebagai elemen visual, K7 teks hemat
+    interlock: Score, // K3 teks dan gambar mengunci, K4 cut-out di bidang warna bila cocok
+    brand: Score, // K5 perangkat grafis brand, aturan brand teks bebas, kesesuaian gaya
+    hierarchy: Score, // P2 satu elemen dominan, urutan baca
+    balance: Score, // P3 kedekatan, P5 anggaran visual, P6 keseimbangan
+    readability: Score, // P7 keterbacaan di ukuran feed
+    professionalism: Score, // dikerjakan desainer, bukan generik atau AI-slop
   }),
   summary: z.string().min(1),
   fixes: z.array(QaFix),

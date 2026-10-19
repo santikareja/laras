@@ -8,6 +8,7 @@ import {
   type JobSpec,
   type RenderCheck,
   type StyleChoice,
+  VisualQa,
 } from "@laras/shared";
 import { templates } from "@laras/templates";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -17,7 +18,7 @@ import type { Stage } from "../prompts/index.ts";
 import { findStyle } from "../prompts/style-context.ts";
 import type { AssetProvider } from "./assets.ts";
 import { jobDir, type PipelineDeps, runBrief, runJob, type StageCall } from "./engine.ts";
-import { layoutSchema, planSchema, revisionSchema } from "./stages.ts";
+import { layoutSchema, planSchema, revisionSchema, visualPassed } from "./stages.ts";
 
 const BRAND_DIR = new URL("../../../../fixtures/brands/kopi-lembayung/", import.meta.url);
 const read = (file: string): unknown => JSON.parse(readFileSync(new URL(file, BRAND_DIR), "utf8"));
@@ -71,10 +72,13 @@ const layout = {
 };
 const visual = (score: number) => ({
   scores: {
+    idea: score,
+    typography: score,
+    interlock: score,
+    brand: score,
     hierarchy: score,
     balance: score,
     readability: score,
-    referenceFit: score,
     professionalism: score,
   },
   summary: "Ringkasan",
@@ -394,6 +398,27 @@ describe("runJob", () => {
   });
 });
 
+describe("QA visual dengan knowledge, logo, dan hasil kode (T-126)", () => {
+  it("prompt QA memuat knowledge, keterangan logo, dan saran desain terukur dari render", async () => {
+    const advice: RenderCheck = {
+      rule: "thirds",
+      passed: false,
+      severity: "saran",
+      target: "fokus subjek",
+      message: "Fokus subjek 12% dari titik potong terdekat",
+    };
+    const f = fake({ renderChecks: [[PASSED, advice]] });
+    await runJob(spec(), f.deps);
+    const prompt = f.calls.find((c) => c.stage === "qa-visual")?.prompt ?? "";
+    expect(prompt).toContain("<knowledge>\nKedai kopi di Bandung.\n</knowledge>");
+    expect(prompt).toContain("<logo>\nLogo tidak tersedia.\n</logo>");
+    expect(prompt).toContain("Saran desain terukur:");
+    expect(prompt).toContain(
+      "- slide 1, thirds fokus subjek: Fokus subjek 12% dari titik potong terdekat",
+    );
+  });
+});
+
 describe("konsep visual dan setting dari plan (T-125)", () => {
   it("angle berisi ide visual ke copy dan layout; setting ke layout dan setiap aset", async () => {
     const f = fake({});
@@ -517,6 +542,17 @@ describe("skema tahap", () => {
       .safeParse(long)
       .error?.issues.map((i) => i.message);
     expect(messages).toContain('Slide 1: slot "headline" melebihi 40 karakter');
+  });
+
+  it("ambang QA visual: rata-rata ≥ 8, semua ≥ 7, ide dan profesional ≥ 8 (T-126)", () => {
+    const scored = (score: number, overrides: Record<string, number> = {}) =>
+      VisualQa.parse({ ...visual(score), scores: { ...visual(score).scores, ...overrides } });
+    expect(visualPassed(scored(8))).toBe(true);
+    expect(visualPassed(scored(9, { idea: 7 }))).toBe(false);
+    expect(visualPassed(scored(9, { professionalism: 7 }))).toBe(false);
+    expect(visualPassed(scored(9, { balance: 7 }))).toBe(true);
+    expect(visualPassed(scored(9, { balance: 6 }))).toBe(false);
+    expect(visualPassed(scored(7))).toBe(false);
   });
 
   it("layout dan revisi hanya boleh memakai varian logo yang ada di Brand Kit (T-119)", () => {

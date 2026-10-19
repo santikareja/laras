@@ -55,10 +55,12 @@ export type PromptInputs = {
   };
   "qa-visual": {
     brand: string;
+    knowledge: string;
     copy: string;
     layout: string;
     deterministic: string;
     references: string;
+    logo: string;
     slides: string;
     style: string;
   };

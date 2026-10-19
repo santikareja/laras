@@ -3,7 +3,16 @@ import { QaReport, VisualQa } from "./qa-report.ts";
 import { issuesOf } from "./test-utils.ts";
 
 const visual = (): VisualQa => ({
-  scores: { hierarchy: 8, balance: 9, readability: 8, referenceFit: 7, professionalism: 8 },
+  scores: {
+    idea: 8,
+    typography: 8,
+    interlock: 7,
+    brand: 8,
+    hierarchy: 8,
+    balance: 9,
+    readability: 8,
+    professionalism: 8,
+  },
   summary: "Hierarki jelas, CTA kurang kontras",
   fixes: [
     {

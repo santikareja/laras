@@ -47,6 +47,8 @@ const SAMPLE_INPUTS: PromptInputs = {
   },
   "qa-visual": {
     brand: "b",
+    knowledge: "k",
+    logo: "logo.png",
     copy: "{}",
     layout: "{}",
     deterministic: "[]",
