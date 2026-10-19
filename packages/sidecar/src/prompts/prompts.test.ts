@@ -113,6 +113,15 @@ describe("aturan temuan spike (T-118)", () => {
   });
 });
 
+describe("varian logo (T-119)", () => {
+  it("layout dan revise hanya memakai varian logo yang tersedia di brand", () => {
+    for (const stage of ["layout", "revise"] as const) {
+      expect(promptTemplate(stage)).toContain("Varian logo tersedia");
+      expect(promptTemplate(stage)).toContain("selain itu `primary`");
+    }
+  });
+});
+
 describe("renderPrompt", () => {
   it("mengisi semua placeholder termasuk JSON Schema tahap", () => {
     for (const stage of stages) {
@@ -148,6 +157,7 @@ describe("brandContext", () => {
     expect(context).toContain("Emoji: boleh, maksimal 2 per postingan");
     expect(context).toContain("Hashtag di caption: maksimal 5, wajib #KopiLembayung");
     expect(context).toContain("- Tanpa gradient");
+    expect(context).toContain("Varian logo tersedia: primary, onDark");
     expect(context).toContain("Contoh copy yang buruk:");
   });
 });

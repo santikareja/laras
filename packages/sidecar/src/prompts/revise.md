@@ -27,6 +27,7 @@ Aturan:
 - `copy` dan `layout` selalu dikembalikan utuh. Bila teks copy berubah, slot layout yang memakai teks itu ikut disesuaikan, dan sebaliknya.
 - Layout tetap harus patuh katalog: template dan opsi yang ada, slot wajib terisi, teks tidak melebihi `maxChars`, dan `aspectRatio` aset sama dengan slotnya.
 - Ikuti bahasa, tone, dan larangan brand. Jangan mengarang fakta baru.
+- Varian logo hanya boleh yang tersedia di brand (lihat "Varian logo tersedia" di `<brand>`): `onDark` bila latar gelap dan tersedia, selain itu `primary`.
 - Satu informasi hanya tampil di satu slot: jangan sampai revisi membuat fakta atau frasa kunci muncul di dua slot (badge, headline, body, CTA).
 - `regenerateAssets` berisi id `assetRequests` yang fotonya harus dibuat ulang, hanya bila perbaikan memang menyangkut foto itu. Bila deskripsi aset berubah, id-nya wajib ada di sini. Bila tidak ada foto yang perlu diganti, isi dengan daftar kosong.
 - `summary` menjelaskan singkat apa saja yang berubah, dalam bahasa Indonesia.

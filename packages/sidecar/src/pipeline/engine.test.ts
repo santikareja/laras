@@ -10,7 +10,7 @@ import { LimitReachedError } from "../cli/limits.ts";
 import type { Stage } from "../prompts/index.ts";
 import type { AssetProvider } from "./assets.ts";
 import { jobDir, type PipelineDeps, runBrief, runJob, type StageCall } from "./engine.ts";
-import { layoutSchema, planSchema } from "./stages.ts";
+import { layoutSchema, planSchema, revisionSchema } from "./stages.ts";
 
 const BRAND_DIR = new URL("../../../../fixtures/brands/kopi-lembayung/", import.meta.url);
 const read = (file: string): unknown => JSON.parse(readFileSync(new URL(file, BRAND_DIR), "utf8"));
@@ -331,6 +331,33 @@ describe("runJob", () => {
     expect(f.calls.map((c) => c.stage)).toEqual(["copy", "layout", "qa-visual"]);
   });
 
+  it("revisi dengan varian logo yang tidak ada di Brand Kit ditolak sebelum render (T-119)", async () => {
+    const bad = structuredClone(revision([]));
+    bad.layout.slides[0] = {
+      ...bad.layout.slides[0],
+      slots: { ...bad.layout.slides[0]?.slots, logo: { type: "logo", variant: "onLight" } },
+    } as (typeof layout.slides)[number];
+    const f = fake({ answers: { revise: [bad] }, renderChecks: [[FAILED_CONTRAST], [PASSED]] });
+    const result = await runJob(spec(), f.deps);
+    expect(result.status).toBe("failed");
+    expect(result.error).toContain(
+      "varian logo onLight tidak ada di Brand Kit (tersedia: primary, onDark)",
+    );
+    expect(f.renders).toBe(1);
+  });
+
+  it("file layout lama dengan varian logo yang tidak ada dianggap tidak valid saat resume", async () => {
+    const f = fake({});
+    await runJob(spec(), f.deps);
+    const path = join(jobDir(tmp, "brief-1-v1"), "03-layout.json");
+    const stored = JSON.parse(readFileSync(path, "utf8"));
+    stored.slides[0].slots.logo.variant = "icon";
+    writeFileSync(path, JSON.stringify(stored));
+    f.calls.length = 0;
+    expect((await runJob(spec(), f.deps)).status).toBe("done");
+    expect(f.calls.map((c) => c.stage)).toEqual(["layout", "qa-visual"]);
+  });
+
   it("berstatus cancelled bila dibatalkan", async () => {
     const controller = new AbortController();
     controller.abort();
@@ -360,6 +387,12 @@ describe("runBrief", () => {
   });
 });
 
+const layoutContext = () => ({
+  catalog,
+  slideCount: 1,
+  logo: BrandKit.parse(read("brand.json")).logo,
+});
+
 describe("skema tahap", () => {
   it("menolak plan dengan jumlah angle salah dan layout yang melanggar katalog", () => {
     expect(planSchema(spec({ variantCount: 2 })).safeParse(plan(1)).error?.issues[0]?.message).toBe(
@@ -370,9 +403,34 @@ describe("skema tahap", () => {
       ...long.slides[0],
       slots: { ...long.slides[0]?.slots, headline: { type: "text", value: "x".repeat(46) } },
     } as (typeof layout.slides)[number];
-    const messages = layoutSchema(catalog, 1)
+    const messages = layoutSchema(layoutContext())
       .safeParse(long)
       .error?.issues.map((i) => i.message);
     expect(messages).toContain('Slide 1: slot "headline" melebihi 45 karakter');
+  });
+
+  it("layout dan revisi hanya boleh memakai varian logo yang ada di Brand Kit (T-119)", () => {
+    const withLogo = (variant: string) => {
+      const l = structuredClone(layout);
+      l.slides[0] = {
+        ...l.slides[0],
+        slots: { ...l.slides[0]?.slots, logo: { type: "logo", variant } },
+      } as (typeof layout.slides)[number];
+      return l;
+    };
+    const expected =
+      'Slide 1 slot "logo": varian logo onLight tidak ada di Brand Kit (tersedia: primary, onDark)';
+    expect(layoutSchema(layoutContext()).safeParse(withLogo("onDark")).success).toBe(true);
+    expect(
+      layoutSchema(layoutContext())
+        .safeParse(withLogo("onLight"))
+        .error?.issues.map((i) => i.message),
+    ).toEqual([expected]);
+    const revised = { ...revision([]), layout: withLogo("onLight") };
+    expect(
+      revisionSchema(layoutContext())
+        .safeParse(revised)
+        .error?.issues.map((i) => i.message),
+    ).toEqual([expected]);
   });
 });

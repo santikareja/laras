@@ -269,7 +269,7 @@ async function runStep(
         templatePreference: spec.templatePreference ?? "Tidak ada preferensi",
         userAssets: userAssets.length > 0 ? userAssets.join(", ") : "Tidak ada",
       });
-      return ask("layout", prompt, layoutSchema(catalog, spec.slideCount));
+      return ask("layout", prompt, layoutSchema(layoutContext(spec, deps, catalog)));
     }
     case "assets":
       return { output: await produceAssets(spec, deps, work, dir) };
@@ -285,7 +285,7 @@ async function runStep(
         catalog: json(catalog),
         fixes: json(fixesForRevision(need(work.qa, "qa"))),
       });
-      return ask("revise", prompt, revisionSchema(catalog, spec.slideCount));
+      return ask("revise", prompt, revisionSchema(layoutContext(spec, deps, catalog)));
     }
   }
 }
@@ -395,6 +395,13 @@ function apply(work: Working, stage: JobStage, output: unknown) {
   }
 }
 
+// Konteks validasi layout dan revisi: katalog format job, jumlah slide, dan logo Brand Kit.
+const layoutContext = (spec: JobSpec, deps: PipelineDeps, catalog: TemplateMeta[]) => ({
+  catalog,
+  slideCount: spec.slideCount,
+  logo: deps.brand.logo,
+});
+
 // Output langkah yang tersimpan, divalidasi skema tahap; undefined bila belum ada atau rusak.
 async function readStep(dir: string, step: Step, spec: JobSpec, deps: PipelineDeps, work: Working) {
   const path = join(dir, stepFile(step));
@@ -405,7 +412,7 @@ async function readStep(dir: string, step: Step, spec: JobSpec, deps: PipelineDe
     case "copy":
       return work.plan ? validJson(path, copySchema(work.plan)) : undefined;
     case "layout":
-      return validJson(path, layoutSchema(catalog, spec.slideCount));
+      return validJson(path, layoutSchema(layoutContext(spec, deps, catalog)));
     case "assets": {
       const manifest = await validJson(path, AssetManifest);
       const files = manifest
@@ -423,7 +430,7 @@ async function readStep(dir: string, step: Step, spec: JobSpec, deps: PipelineDe
     case "qa":
       return validJson(path, QaReport);
     case "revise":
-      return validJson(path, revisionSchema(catalog, spec.slideCount));
+      return validJson(path, revisionSchema(layoutContext(spec, deps, catalog)));
   }
 }
 

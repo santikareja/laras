@@ -180,10 +180,11 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Catatan: MEMAKAI KUOTA BESAR. Jadwalkan bersama pemilik. Temuan jalan spike pertama (T-116) untuk kalibrasi: (1) QA visual lolos (rata-rata 8,2) padahal menulis 3 perbaikan nyata (jam buka disebut dua kali, "sebelum kerja" di headline dan CTA, logo kecil) yang tidak diterapkan; pertimbangkan ambang lebih ketat atau satu putaran revisi bila ada fixes. (2) Logo di panel `feed-foto-penuh` (tinggi langkah 5 = 48 px) dinilai terlalu kecil; kandidat perbaikan template. (3) Prompt copy perlu larangan mengulang informasi yang sama antar slot (badge, body, CTA). Ketiganya ditangani T-118; T-117 memeriksa efeknya pada model asli.
   - Hasil 2026-10-19: 9 percobaan dijalankan (izin pemilik; Claude 61, Codex 15, retry 0, ±30 menit). R3 gagal teknis di render putaran 1 (bug varian logo, lihat T-119). QA lolos 5/9, layak menurut pemilik **0/9** ("terlalu generik, kaku dan AI slop"). Keputusan: NO-GO. Tabel, kalibrasi, dan temuan di KNOWLEDGE "Evaluasi spike T-117". Status [!] karena verifikasi ≥ 6/9 tidak tercapai; arah perbaikan menunggu pemilik (T-120).
 
-- [ ] T-119 Validasi varian logo terhadap Brand Kit sebelum render
+- [x] T-119 Validasi varian logo terhadap Brand Kit sebelum render
   - Rujukan: KNOWLEDGE "Evaluasi spike T-117", ARCH 5.4
   - AC: layout dan revisi yang memakai varian logo yang tidak ada di Brand Kit ditolak saat validasi tahap (masuk retry validasi), dan prompt layout serta revise menyebut varian yang tersedia.
   - Verifikasi: test validasi tahap dan engine; dry-run spike lolos; tanpa kuota.
+  - Selesai 2026-10-19: `logoVariants` dan `logoIssues` di `shared`; `layoutSchema` dan `revisionSchema` menerima konteks (katalog, jumlah slide, logo Brand Kit) dan menolak varian tanpa file dengan pesan yang menyebut varian tersedia; engine meneruskan logo di empat titik (tanya dan resume); `brandContext` menulis "Varian logo tersedia", aturan logo di prompt layout dan revise disesuaikan. Test: skema layout dan revise, revisi dengan `onLight` ditolak sebelum render, file layout lama dengan varian tanpa file diulang saat resume, prompt. 289 test lolos, dry-run spike lolos, tanpa kuota.
 
 - [x] T-120 Arah ulang kualitas desain setelah NO-GO
   - Rujukan: KNOWLEDGE "Evaluasi spike T-117", PRD 4 (anti AI-slop), PRD 10, DESIGN

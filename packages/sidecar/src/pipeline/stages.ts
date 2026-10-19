@@ -1,10 +1,12 @@
 import {
+  type BrandKit,
   type ContentFormat,
   ContentPlan,
   CopyDraft,
   type JobSpec,
   LayoutSpec,
   layoutIssues,
+  logoIssues,
   type QaFix,
   QaReport,
   type RenderReport,
@@ -46,24 +48,29 @@ export function catalogFor(catalog: TemplateMeta[], format: ContentFormat): Temp
   return catalog.filter((meta) => meta.format === format);
 }
 
-function catalogIssues(layout: LayoutSpec, catalog: TemplateMeta[], slideCount: number): string[] {
+type LayoutContext = { catalog: TemplateMeta[]; slideCount: number; logo: BrandKit["logo"] };
+
+// Layout harus cocok dengan katalog dan Brand Kit: template, slot, opsi, jumlah slide, dan varian
+// logo yang benar-benar ada (T-119), agar kesalahan masuk retry validasi, bukan gagal di render.
+function layoutContextIssues(layout: LayoutSpec, { catalog, slideCount, logo }: LayoutContext) {
   const meta = catalog.find((t) => t.id === layout.templateId && t.format === layout.format);
   if (!meta)
     return [`Template "${layout.templateId}" tidak ada di katalog format ${layout.format}`];
   const count =
     layout.slides.length === slideCount ? [] : [`Layout harus berisi ${slideCount} slide`];
-  return [...layoutIssues(layout, meta), ...count];
+  return [...layoutIssues(layout, meta), ...count, ...logoIssues(layout, logo)];
 }
 
-export function layoutSchema(catalog: TemplateMeta[], slideCount: number) {
+export function layoutSchema(context: LayoutContext) {
   return LayoutSpec.superRefine((layout, ctx) => {
-    for (const message of catalogIssues(layout, catalog, slideCount)) issue(ctx, "slides", message);
+    for (const message of layoutContextIssues(layout, context)) issue(ctx, "slides", message);
   });
 }
 
-export function revisionSchema(catalog: TemplateMeta[], slideCount: number) {
+export function revisionSchema(context: LayoutContext) {
+  const { slideCount } = context;
   return Revision.superRefine((revision, ctx) => {
-    for (const message of catalogIssues(revision.layout, catalog, slideCount)) {
+    for (const message of layoutContextIssues(revision.layout, context)) {
       issue(ctx, "layout", message);
     }
     if (revision.copy.slides.length !== slideCount) {

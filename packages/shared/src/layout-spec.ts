@@ -1,7 +1,9 @@
 import { z } from "zod";
+import type { BrandKit } from "./brand-kit.ts";
 import { AspectRatio, ContentFormat, duplicates, Slug, slideCountError } from "./common.ts";
 
 export const LogoVariant = z.enum(["primary", "onDark", "onLight", "icon"]);
+export type LogoVariant = z.infer<typeof LogoVariant>;
 
 export const SlotValue = z.discriminatedUnion("type", [
   z.strictObject({ type: z.literal("text"), value: z.string().min(1) }),
@@ -56,3 +58,25 @@ export const LayoutSpec = z
     });
   });
 export type LayoutSpec = z.infer<typeof LayoutSpec>;
+
+// Varian logo yang punya file di Brand Kit (primary selalu ada).
+export function logoVariants(logo: BrandKit["logo"]): LogoVariant[] {
+  return LogoVariant.options.filter((variant) => logo[variant] !== undefined);
+}
+
+// Kecocokan slot logo dengan Brand Kit (T-119): varian tanpa file ditolak saat validasi tahap,
+// sebelum sampai ke renderer. Mengembalikan daftar masalah (kosong bila cocok).
+export function logoIssues(spec: LayoutSpec, logo: BrandKit["logo"]): string[] {
+  const available = logoVariants(logo);
+  const issues: string[] = [];
+  spec.slides.forEach((slide, index) => {
+    for (const [name, value] of Object.entries(slide.slots)) {
+      if (value.type === "logo" && !available.includes(value.variant)) {
+        issues.push(
+          `Slide ${index + 1} slot "${name}": varian logo ${value.variant} tidak ada di Brand Kit (tersedia: ${available.join(", ")})`,
+        );
+      }
+    }
+  });
+  return issues;
+}

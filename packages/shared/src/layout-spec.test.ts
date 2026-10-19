@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { LayoutSpec } from "./layout-spec.ts";
+import { LayoutSpec, logoIssues, logoVariants } from "./layout-spec.ts";
 import { issuesOf } from "./test-utils.ts";
 
 const spec = (): LayoutSpec => ({
@@ -59,5 +59,31 @@ describe("LayoutSpec", () => {
     expect(issuesOf(LayoutSpec, { ...spec(), slides: [] })).toContain(
       "Format feed-4x5 harus berisi tepat 1 slide",
     );
+  });
+});
+
+describe("varian logo terhadap Brand Kit (T-119)", () => {
+  const logo = { primary: "logo/primary.svg", onDark: "logo/on-dark.svg" };
+
+  it("hanya varian yang punya file", () => {
+    expect(logoVariants(logo)).toEqual(["primary", "onDark"]);
+    expect(logoVariants({ primary: "logo/p.svg", icon: "logo/i.svg" })).toEqual([
+      "primary",
+      "icon",
+    ]);
+  });
+
+  it("menerima varian yang tersedia", () => {
+    expect(logoIssues(spec(), logo)).toEqual([]);
+  });
+
+  it("menolak varian tanpa file dan menyebut varian yang tersedia", () => {
+    const s = spec();
+    const slide = s.slides[0];
+    if (!slide) throw new Error("fixture tanpa slide");
+    slide.slots.logo = { type: "logo", variant: "onLight" };
+    expect(logoIssues(s, logo)).toEqual([
+      'Slide 1 slot "logo": varian logo onLight tidak ada di Brand Kit (tersedia: primary, onDark)',
+    ]);
   });
 });

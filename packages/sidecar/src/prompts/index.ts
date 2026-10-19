@@ -5,6 +5,7 @@ import {
   CopyDraft,
   type CopyGuide,
   LayoutSpec,
+  logoVariants,
   Revision,
   VisualQa,
 } from "@laras/shared";
@@ -88,6 +89,7 @@ export function brandContext(brand: BrandKit, guide: CopyGuide): string {
     `Kata terlarang: ${guide.forbiddenWords.join(", ") || "tidak ada"}`,
     `Emoji: ${guide.emoji.allowed ? `boleh, maksimal ${guide.emoji.max} per postingan` : "tidak boleh"}`,
     `Hashtag di caption: maksimal ${guide.hashtags.max}${always}`,
+    `Varian logo tersedia: ${logoVariants(brand.logo).join(", ")}`,
     "Aturan desain dan foto brand:",
     ...list(brand.rules),
     "Contoh copy yang baik:",

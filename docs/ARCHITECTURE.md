@@ -227,7 +227,7 @@ Status khusus: waiting_quota · interrupted · failed · cancelled
 - Nomor langkah naik terus, termasuk putaran revisi: `01-plan`, `02-copy`, `03-layout`, `04-assets`, `05-render`, `06-qa`, lalu per putaran `revise`, `assets`, `render`, `qa` (`07`–`10`, `11`–`14`). Revise menghasilkan `Revision` (copy dan layout sekaligus), jadi putaran revisi masuk ulang di `assets`: hanya `regenerateAssets` dan aset baru yang dibuat, sisanya dipakai ulang. PNG dan HTML slide disimpan di `jobs/<job-id>/slides/<nn>-<i>.png`.
 - `job.resume` memulai dari tahap pertama yang belum punya output valid (lolos skema tahap; aset dan PNG yang dirujuk harus ada). Begitu satu langkah dijalankan ulang, file langkah sesudahnya dianggap basi. File ditulis atomik (tulis sementara lalu rename).
 - `LimitReachedError` menghentikan job dengan status `waiting_quota` (dan `resumeAt` bila diketahui); pembatalan menjadi `cancelled`; error lain menjadi `failed`. `runBrief` menjalankan job varian berurutan dan berhenti di `waiting_quota` atau `cancelled`.
-- Implementasi: `packages/sidecar/src/pipeline/engine.ts` (`runBrief`, `runJob`) dan `stages.ts` (skema tahap yang diperketat konteks job, QA, pemetaan perbaikan).
+- Implementasi: `packages/sidecar/src/pipeline/engine.ts` (`runBrief`, `runJob`) dan `stages.ts` (skema tahap yang diperketat konteks job, QA, pemetaan perbaikan). Skema tahap layout dan revise memeriksa template, slot, opsi, jumlah slide, dan varian logo yang benar-benar ada di Brand Kit (`logoIssues` di `shared`, T-119), sehingga output yang salah masuk retry validasi atau diulang saat resume, bukan gagal di renderer.
 
 ### 5.2 Tahap dan kontraknya
 

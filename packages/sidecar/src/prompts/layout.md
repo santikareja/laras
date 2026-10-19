@@ -32,7 +32,7 @@ Aturan:
 - Isi setiap slot wajib template. Slot opsional boleh dikosongkan bila copy tidak punya isinya. Jangan menambah slot yang tidak ada di meta template.
 - Teks slot diambil dari copy. Boleh dipersingkat agar muat, tetapi wajib tidak melebihi `maxChars` slot dan tidak boleh mengubah fakta. Untuk slot seperti `highlight` atau `badge`, ambil kata atau angka pendek dari copy.
 - Satu informasi hanya tampil di satu slot. Bila badge atau sorotan memakai fakta dari body (mis. jam atau harga), hapus fakta itu dari body; jangan biarkan dua slot menyebut hal yang sama.
-- Opsi slide hanya memakai nama dan nilai dari `options` template. Untuk logo, pakai varian `onDark` bila opsi membuat latar gelap (lihat deskripsi slot logo), selain itu `primary`.
+- Opsi slide hanya memakai nama dan nilai dari `options` template. Untuk logo, pakai hanya varian yang tersedia di brand (lihat "Varian logo tersedia" di `<brand>`): `onDark` bila opsi membuat latar gelap dan varian itu tersedia (lihat deskripsi slot logo), selain itu `primary`.
 - Setiap slot gambar merujuk satu `assetRequests` dengan `aspectRatio` sama persis dengan slot itu. Bila ada aset pengguna yang cocok, pakai id-nya. Bila tidak, tulis `description` foto yang konkret (subjek, suasana, cahaya, komposisi) dan patuh aturan foto brand. Deskripsi tidak boleh meminta teks, huruf, angka, logo, atau label apa pun di gambar.
 
 Kirim hasil lewat tool StructuredOutput sesuai skema berikut:
