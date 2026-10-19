@@ -218,11 +218,12 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Catatan: dipecah 2026-10-19 atas persetujuan pemilik menjadi T-123 (fondasi), T-130 (QA desain terukur), dan T-131 (pipeline dengan arketipe). Katalog Claude belum diganti di task ini.
   - Selesai 2026-10-19 (tanpa kuota): `SubjectInfo` di `AssetManifest`, `AssetKind` dan slot `cutout` dengan pemeriksaan di `layoutIssues`; `normalizeCutout` dan `analyzeCutout` (`pipeline/cutout.ts`, jenis subjek orang atau objek, galat fokus ≤ 0,08 pada 6 fixture); langkah fit-to-width di renderer (`render/fit.ts`); arketipe di `packages/templates/feed/` dengan letak teks dihitung dari fokus subjek dan tanpa parameter lebar huruf; A3 dipecah menjadi `feed-satu-objek` (cut-out) dan `feed-foto-konsep` (foto penuh) karena jenis asetnya berbeda; `render:demo` merender 13 kombinasi arketipe × brand (foto konsep baru ada untuk Seruni; Seruni satu objek adalah kombinasi baru) dan `render:prototype` dihapus. Render arketipe setara v4 yang disetujui; lebar blok teks A2 diturunkan dari 48% ke 44% karena frasa utama yang dipaskan penuh menyentuh lengan pelari Ritme (tertangkap QA kontras). 311 test lolos, dry-run spike lolos.
 
-- [ ] T-130 QA desain terukur
+- [~] T-130 QA desain terukur
   - Rujukan: PRD 4 (P1, P2, P4, P8–P11), ARCH 7.2, catatan T-122
   - AC: aturan QA kode baru untuk sumbu perataan (P1), hierarki dan jumlah ukuran huruf (P2), baris yatim dan panjang baris (P4), titik fokus terhadap grid 3×3 memakai titik fokus subjek dan kotak kata utama (P8), proporsi warna dari piksel render terhadap Brand Kit (P9), ruang kosong dan jumlah elemen (P10), serta jarak tepi, radius, dan kemiringan yang konsisten (P11); elemen non-slot ditandai agar bisa dihitung; kedua belas render arketipe yang disetujui lolos semua aturan.
   - Catatan: keputusan pemilik 2026-10-19: aturan baru awalnya bertingkat saran (tidak menggagalkan QA) sampai terkalibrasi, lalu dinaikkan menjadi wajib.
   - Tambahan dari T-132: QA kontras belum membaca bentuk SVG (swoosh, pelangi) sebagai latar teks dan mengabaikan outline huruf retro; teks dekoratif ber-`aria-hidden` ikut dihitung (KNOWLEDGE, Gotcha).
+  - Keputusan pemilik 2026-10-19 (rencana disetujui): ambang aturan per gaya diambil dari panduan setiap gaya (tanpa gaya: angka PRD 4); ruang kosong P10 dilewati pada latar foto penuh (jumlah elemen tetap dicek); bentuk SVG di belakang teks diukur kontrasnya dari piksel; render yang disetujui yang gagal aturan baru dilaporkan ke pemilik, ambang tidak dilonggarkan diam-diam.
 
 - [ ] T-131 Pipeline dengan arketipe
   - Rujukan: ADR-015, PRD F7, ARCH 5, T-121 (cut-out Codex)
