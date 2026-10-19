@@ -228,11 +228,12 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Kalibrasi (keputusan pemilik 2026-10-19): arketipe terpusat dikecualikan dari P8, batas bawah P9 tidak berlaku bila dominan ≥ 65%, minimal panjang baris P4 hanya untuk paragraf ≥ 3 baris (PRD 4 diperbarui). AC disesuaikan: render yang disetujui lolos semua cek wajib, saran nyata yang tersisa dicatat untuk T-131.
   - Derau pengukuran yang diperbaiki saat kalibrasi: kotak `<svg>` penuh kanvas membuat semua teks dianggap di atas gambar; tombol diukur dari tinta teks, bukan kotaknya; label vertikal terbaca satu huruf per baris; panel bleed dan isi panel dihitung sebagai jarak tepi; lengkung bentuk dihitung sebagai radius kartu.
 
-- [ ] T-131 Pipeline dengan arketipe
+- [~] T-131 Pipeline dengan arketipe
   - Rujukan: ADR-015, PRD F7, ARCH 5, T-121 (cut-out Codex)
   - AC: katalog Claude berisi arketipe; empat template lama dipensiunkan (keputusan pemilik 2026-10-19); prompt dan contoh layout serta revise diperbarui; tahap layout meminta aset `cutout` bila slot membutuhkannya; prompt Codex untuk cut-out transparan; `CodexAssetProvider` menjaga alpha, menganalisis cut-out, dan tidak memotongnya; dry-run spike lolos.
   - Catatan: uji Codex sungguhan hanya dengan izin pemilik.
   - Tambahan dari T-130 (saran desain nyata pada render arketipe yang disetujui, diperbaiki saat arketipe masuk pipeline): fokus subjek arketipe asimetris meleset 9–14% dari titik potong 3×3 (kata raksasa Kopi dan Ritme, bidang warna Seruni dan Ritme, kolase Ritme), kata utama bidang warna Seruni 11%; kolase Kopi headline pita 55 px kurang dari 2× teks 32 px dan warna kedua 40%; bidang warna Ritme warna kedua 36%; satu objek Kopi baris yatim headline ("sangrainya.") dan dua jarak tepi (caption 1,5× safe margin). Daftar terbaru: `pnpm render:demo` dan `pnpm render:styles`.
+  - Keputusan pemilik 2026-10-19 (rencana disetujui): empat template lama dihapus seluruhnya (kode, isi demo, test); saran desain T-130 diperbaiki di task ini dengan render sebelum-sesudah dinilai pemilik; cut-out Codex tanpa latar transparan menggagalkan job dengan pesan jelas tanpa panggilan ulang otomatis; layout menghindari arketipe yang sudah dipakai varian lain dari brief yang sama (K6).
 
 - [ ] T-124 Perangkat grafis dan peran font tambahan di Brand Kit
   - Rujukan: PRD 4 (K2, K5), PRD F2, ARCH 6.1
