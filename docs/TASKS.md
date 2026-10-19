@@ -310,11 +310,12 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Rujukan: PRD F16, T-128, T-132
   - AC: enam belas gaya tahap 2 ditambahkan dengan pola T-128 dan T-132, masing-masing dengan panduan dan thumbnail.
 
-- [ ] T-127 Evaluasi ulang spike
+- [~] T-127 Evaluasi ulang spike
   - Rujukan: PRD 11 (Fase 1), KNOWLEDGE "Evaluasi spike T-117"
   - AC: brief yang sama dengan T-117 dijalankan ulang; pemilik menilai; keputusan go/no-go tertulis.
   - Catatan: MEMAKAI KUOTA BESAR. Jadwalkan bersama pemilik.
   - Tambahan dari uji T-131 (dipulihkan 2026-10-20): katalog 22 arketipe membuat panggilan layout dan revise ±$0,35; batas panggilan spike 2 varian perlu ±16 Claude agar dua putaran revisi muat (Ritme v2 gagal di batas 14).
+  - Keputusan pemilik 2026-10-20 (rencana disetujui): brief K1–K3, S1–S3, R1–R3 sama dengan T-117, 1 varian, arketipe dipilih Claude, berurutan; gaya cocok bervariasi: K1 Retro/Vintage, K2 Brutalisme, K3 Flat, S1 Corporate, S2 Glassmorphism, S3 Minimalism, R1 Flat, R2 Retro/Vintage, R3 Cyberpunk (varian pertama gaya); batas per percobaan Claude 9 dan Codex 3; perkiraan Claude 50–63, Codex 12–27, ±$14–19, ±50–70 menit; dry-run sembilan konfigurasi dulu, lalu sungguhan. Gerbang tetap PRD 11 (GO bila ≥ 6 dari 9 layak menurut pemilik).
 
 ## Fase 2: Walking skeleton (epic)
 

@@ -43,7 +43,15 @@ export const COLLECT_SCRIPT = String.raw`(() => {
     const style = getComputedStyle(el);
     const range = document.createRange();
     range.selectNodeContents(el);
-    const lines = [...range.getClientRects()].map(box);
+    // Range memakai area konten font: huruf display (Anton ±0,35 em) melapor di luar kotak barisnya,
+    // sehingga kata raksasa di dekat tepi dianggap terpotong padahal hurufnya utuh (T-127). Batas
+    // vertikal baris dijepit ke kotak elemen; horizontal tetap dari Range.
+    const own = el.getBoundingClientRect();
+    const lines = [...range.getClientRects()].map((r) => ({
+      ...box(r),
+      top: Math.max(r.top, own.top),
+      bottom: Math.min(r.bottom, own.bottom),
+    }));
     const points = lines.slice(0, 8).flatMap((line) =>
       [0.15, 0.5, 0.85].map((f) => [line.left + (line.right - line.left) * f, (line.top + line.bottom) / 2]),
     );

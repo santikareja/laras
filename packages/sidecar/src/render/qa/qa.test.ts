@@ -74,6 +74,14 @@ describe("QA deterministik di Chromium", { timeout: 30_000 }, () => {
     expect(await failures(wide)).toEqual(["overflow teks"]);
     const cut = text("left: 100px; top: 1330px", "Terpotong");
     expect(await failures(cut)).toContain("overflow teks");
+    // Kata raksasa dengan line-height rapat di dekat tepi atas: area konten font di atas kotak
+    // baris bukan huruf yang terpotong (T-127).
+    const display = text(
+      "left: 100px; top: 24px; font-family: var(--font-heading); font-weight: 700; font-size: 220px; line-height: 0.9",
+      "KOPI",
+      "headline",
+    );
+    expect(await failures(display)).not.toContain("overflow headline");
     const collide =
       text("left: 100px; top: 100px", "Judul pertama", "headline") +
       text("left: 150px; top: 110px", "Menimpa", "cta");
