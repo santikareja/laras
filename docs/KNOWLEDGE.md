@@ -331,6 +331,31 @@ Derau QA visual (T-137, 2026-10-20, izin pemilik): sembilan PNG akhir T-127 dini
 
 Kalibrasi dan replay (T-137, 2026-10-20, tanpa kuota): pemilik menilai ulang secara buta ketiga putaran setiap percobaan (urutan diacak, tanpa skor) dan menilai per percobaan: layak K1, K2, S1, S2, S3, R2, R3; kurang layak K3, R1. Dibanding T-127, K1 dan S1 naik, R1 turun, jadi pemilik sendiri berubah di kasus perbatasan. Skor `idea` akhir 7 → layak 11 dari 12 penilaian, 6 → berubah-ubah (S1, R1), 5 → ditolak (K3). Aturan baru (ide ≥ 7, rata ≥ 6, tanpa wajib, 1 putaran, putaran terbaik) di-replay pada folder job T-127 dengan engine baru (laporan QA dihitung ulang dari render dan QA visual tersimpan, panggilan CLI dihentikan): K2, S2, R2 lolos di putaran 0; K1, S3, R3 lolos setelah 1 revisi; K3 gagal dan memakai putaran 0; S1 dan R1 gagal dan revisi lamanya ditolak larangan buat ulang gambar (perbaikan wajibnya bertarget layout) sehingga di jalan sungguhan revise diminta ulang. Total 48 panggilan Claude (T-127: 71), durasi 118–282 s (semua ≤ 5 menit); keputusan lolos cocok dengan penilaian buta pemilik 8/9 (S1 meleset).
 
+## Spike T-140: latar penuh dari model gambar (2026-10-20)
+
+Pengaturan: plan dan copy sembilan job T-127 dipakai ulang; Claude menulis art direction (`art-direction.md`, skema `ArtDirection`), Codex `image_gen` membuat karya latar penuh tanpa teks (`asset-art.md`), teks dan logo HTML di arketipe eksperimen `feed-latar-penuh`; zona dan nada teks dipilih dari kontras persentil-10 piksel dengan kandidat cadangan bila cek kontras render gagal; satu putaran tanpa revisi (`pnpm spike:latar`). Lapisan B (subjek diambil lewat edit gambar) gagal di percobaan pertama karena tidak sejajar piksel dan dihentikan sesuai keputusan pemilik.
+
+| # | Zona (diminta → dipakai) | QA kode | QA | Skor i/t/il/b/h/ba/r/p (rata) | Pemilik |
+|---|---|---|---|---|---|
+| K1 | atas-tengah → atas-kanan | lolos | gagal | 6/6/5/7/6/7/9/7 (6,6) | layak |
+| K2 | atas-kanan → atas-kanan | lolos | gagal | 5/6/6/5/7/6/8/5 (6,0) | tidak |
+| K3 | atas-kiri → atas-tengah | gagal (kontras) | – | – | tidak |
+| S1 | atas-kiri → atas-kanan | gagal (kontras) | – | – | tidak |
+| S2 | atas-kiri → atas-kiri | lolos | lolos | 8/7/6/6/8/8/9/8 (7,5) | layak |
+| S3 | atas-kiri → atas-kiri | lolos | lolos | 7/8/6/8/8/8/9/8 (7,8) | layak |
+| R1 | atas-kiri → atas-kiri | lolos | gagal | 6/6/5/6/7/6/8/6 (6,3) | oke, teks menimpa objek |
+| R2 | atas-tengah → atas-kanan | lolos | gagal | 5/5/3/4/6/6/7/5 (5,1) | oke, teks menimpa objek |
+| R3 | atas-tengah → atas-tengah | lolos | gagal | 5/6/4/5/6/6/7/6 (5,6) | oke, teks menimpa objek |
+
+Angka: Claude 16 (art direction 9, QA visual 7; QA visual $1,40, biaya art direction tidak tercatat karena skrip membuang `costUsd`), Codex 10 (9 latar + 1 uji lapisan B), 13 menit (±1,5 menit per percobaan). Penilaian pemilik: layak K1, S2, S3; Ritme R1–R3 "sudah oke" dengan catatan posisi teks menimpa objek gambar sehingga sedikit tidak terbaca dan kurang profesional; K2, K3, S1 tidak disebut layak.
+
+Temuan:
+- Foto dan cahaya dari model gambar lebih natural dan terasa seperti foto kampanye; tipografi polos tanpa perangkat grafis dan tanpa teks yang mengunci gambar terasa kurang berkarakter dibanding arketipe T-127.
+- Model gambar tidak selalu mengosongkan zona teks yang diminta. Pengukur zona hanya melihat kontras, bukan letak subjek, sehingga kandidat cadangan bisa menaruh teks di atas kepala atau wajah (K3, S1) atau objek (Ritme).
+- Larangan gradient brand tidak tertangkap untuk gradasi di dalam foto (R2 langit bergradasi); cek kode hanya membaca CSS.
+
+Keputusan pemilik: **gabungkan**. Arketipe tetap memimpin komposisi, tipografi, dan perangkat grafis; model gambar mendapat peran lebih besar lewat art direction Claude untuk latar dan adegan; teks di belakang subjek tetap memakai cut-out terpisah (T-141).
+
 ## Keputusan kecil (tanggal, keputusan, alasan)
 
 | Tanggal | Keputusan | Alasan |
