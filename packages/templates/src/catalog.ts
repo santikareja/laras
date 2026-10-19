@@ -1,8 +1,6 @@
-import { fotoPenuh } from "../feed/FotoPenuh.tsx";
-import { fotoTeks } from "../feed/FotoTeks.tsx";
-import { kutipan } from "../feed/Kutipan.tsx";
-import { sorotan } from "../feed/Sorotan.tsx";
+import { archetypes } from "./archetypes.ts";
 import type { Template } from "./template.ts";
 
-// Katalog template yang boleh dipilih Claude di tahap layout (ARCH 6.2).
-export const templates: Template[] = [fotoTeks, sorotan, fotoPenuh, kutipan];
+// Katalog template yang boleh dipilih Claude di tahap layout (ARCH 6.2): arketipe komposisi
+// (ADR-015, T-131). Empat template feed lama dipensiunkan (keputusan pemilik 2026-10-19).
+export const templates: Template[] = archetypes;

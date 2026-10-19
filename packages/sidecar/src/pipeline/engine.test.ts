@@ -39,7 +39,7 @@ const copy = {
   hashtags: ["#KopiLembayung"],
 };
 const layout = {
-  templateId: "feed-foto-teks",
+  templateId: "feed-foto-konsep",
   format: "feed-4x5",
   slides: [
     {
@@ -48,10 +48,10 @@ const layout = {
         headline: { type: "text", value: "Kopi pagi yang pelan" },
         logo: { type: "logo", variant: "primary" },
       },
-      options: { tone: "light" },
+      options: { logo: "top-left" },
     },
   ],
-  assetRequests: [{ id: "hero", description: "Cangkir kopi di teras", aspectRatio: "3:2" }],
+  assetRequests: [{ id: "hero", description: "Cangkir kopi di teras", aspectRatio: "4:5" }],
 };
 const visual = (score: number) => ({
   scores: {
@@ -401,12 +401,12 @@ describe("skema tahap", () => {
     const long = structuredClone(layout);
     long.slides[0] = {
       ...long.slides[0],
-      slots: { ...long.slides[0]?.slots, headline: { type: "text", value: "x".repeat(46) } },
+      slots: { ...long.slides[0]?.slots, headline: { type: "text", value: "x".repeat(41) } },
     } as (typeof layout.slides)[number];
     const messages = layoutSchema(layoutContext())
       .safeParse(long)
       .error?.issues.map((i) => i.message);
-    expect(messages).toContain('Slide 1: slot "headline" melebihi 45 karakter');
+    expect(messages).toContain('Slide 1: slot "headline" melebihi 40 karakter');
   });
 
   it("layout dan revisi hanya boleh memakai varian logo yang ada di Brand Kit (T-119)", () => {

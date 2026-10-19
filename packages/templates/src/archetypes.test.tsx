@@ -33,13 +33,11 @@ const render = (template: Template, subjectY?: number, options = {}) =>
   );
 
 describe("arketipe", () => {
-  it("id unik, berawalan feed-, dan belum masuk katalog", () => {
+  it("id unik, berawalan feed-, dan menjadi katalog Claude (T-131)", () => {
     const ids = archetypes.map((a) => a.meta.id);
     expect(new Set(ids).size).toBe(ids.length);
-    for (const id of ids) {
-      expect(id).toMatch(/^feed-/);
-      expect(templates.map((t) => t.meta.id)).not.toContain(id);
-    }
+    for (const id of ids) expect(id).toMatch(/^feed-/);
+    expect(templates.map((t) => t.meta.id)).toEqual(ids);
   });
 
   it.each(archetypes.map((a) => [a.meta.id, a] as const))(

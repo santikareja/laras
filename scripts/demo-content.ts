@@ -1,5 +1,6 @@
-// Isi demo untuk `pnpm render:demo` dan test QA: copy contoh per template × brand fixture,
-// varian "maks" (setiap slot teks tepat maxChars), dan foto contoh per rasio slot.
+// Isi demo untuk `pnpm render:demo` dan test QA: spesimen brand per brand fixture, helper varian
+// "maks" (setiap slot teks tepat maxChars), dan foto contoh per rasio slot. Isi arketipe ada di
+// archetype-content.ts.
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -35,138 +36,6 @@ type DemoCopy = {
   maxOptions?: Record<string, string>;
 };
 
-const FOTO_TEKS: Record<Brand, DemoCopy> = {
-  "kopi-lembayung": {
-    text: {
-      badge: "Menu tetap",
-      headline: "Kopi susu gula aren, diseduh pelan",
-      body: "Biji Jawa Barat yang kami sangrai sendiri tiap minggu. Manisnya pas untuk pagi.",
-      cta: "Mampir sebelum kerja",
-    },
-    options: { tone: "light" },
-    maxOptions: { tone: "secondary" },
-  },
-  "seruni-skin": {
-    text: {
-      badge: "Facial hidrasi",
-      headline: "Kulit lembap dimulai dari konsultasi",
-      body: "Terapis memeriksa kondisi kulitmu dulu, lalu menyesuaikan perawatan.",
-      cta: "Jadwalkan konsultasi gratis",
-    },
-    options: { tone: "secondary" },
-    maxOptions: { tone: "light" },
-  },
-  "ritme-run-club": {
-    text: {
-      badge: "Sunday group run",
-      headline: "Every pace has a group waiting",
-      body: "Pace groups from 5:00 to 8:30 min/km. Every run ends with coffee and stretching.",
-      cta: "Show up at 5:45 AM",
-    },
-    options: { tone: "light" },
-    maxOptions: { tone: "secondary" },
-  },
-};
-
-const SOROTAN: Record<Brand, DemoCopy> = {
-  "kopi-lembayung": {
-    text: {
-      badge: "Setiap hari",
-      highlight: "06.30",
-      headline: "Teras kami sudah buka sepagi ini",
-      body: "Kursi teras sudah kami lap. Tinggal kamu yang datang.",
-      cta: "Pesan kopimu di teras",
-    },
-    options: { tone: "dark" },
-    maxOptions: { tone: "light" },
-  },
-  "seruni-skin": {
-    text: {
-      badge: "Konsultasi",
-      highlight: "Gratis",
-      headline: "Kenali kulitmu sebelum memilih perawatan",
-      body: "30 menit bersama terapis bersertifikat untuk memahami kebutuhan kulitmu.",
-      cta: "Jadwalkan lewat WhatsApp",
-    },
-    options: { tone: "dark" },
-    maxOptions: { tone: "light" },
-  },
-  "ritme-run-club": {
-    text: {
-      badge: "Sunday",
-      highlight: "5K",
-      headline: "Free group run, every pace welcome",
-      body: "Meet at 5:45 AM. The 8:30 pace group walks and runs, so nobody runs alone.",
-      cta: "Save your spot",
-    },
-    options: { tone: "dark" },
-    maxOptions: { tone: "light" },
-  },
-};
-
-const FOTO_PENUH: Record<Brand, DemoCopy> = {
-  "kopi-lembayung": {
-    text: {
-      badge: "Biji baru",
-      headline: "Sangrai minggu ini sudah siap",
-      body: "Biji Jawa Barat 200 g. Tanggal sangrai tertulis di kemasan.",
-      cta: "Ambil di kedai",
-    },
-    options: { tone: "light", position: "top" },
-    maxOptions: { tone: "dark", position: "bottom" },
-  },
-  "seruni-skin": {
-    text: {
-      badge: "Edukasi",
-      headline: "Pori dan tekstur itu bagian dari kulit sehat",
-      body: "Kami merawat kulitmu, bukan menutupinya. Konsultasi dulu, perawatan kemudian.",
-      cta: "Baca penjelasan lengkapnya",
-    },
-    options: { tone: "light", position: "bottom" },
-    maxOptions: { tone: "dark", position: "top" },
-  },
-  "ritme-run-club": {
-    text: {
-      badge: "Ritme 10K City Race",
-      headline: "Your first 10K starts on Sunday",
-      body: "Train with pace groups from 5:00 to 8:30 min/km before race day.",
-      cta: "Save your spot",
-    },
-    options: { tone: "dark", position: "bottom" },
-    maxOptions: { tone: "light", position: "bottom" },
-  },
-};
-
-const KUTIPAN: Record<Brand, DemoCopy> = {
-  "kopi-lembayung": {
-    text: {
-      badge: "Kata pelanggan",
-      quote: "Teras kecil ini tempat saya memulai pagi sebelum kerja, sejak kedai ini buka.",
-      attribution: "Rina, pelanggan sejak 2022",
-    },
-    options: { tone: "secondary" },
-    maxOptions: { tone: "dark" },
-  },
-  "seruni-skin": {
-    text: {
-      badge: "Cerita klien",
-      quote: "Saya jadi paham kenapa kulit saya kering, bukan sekadar ditawari produk.",
-      attribution: "Dimas, klien facial hidrasi",
-    },
-    options: { tone: "dark" },
-    maxOptions: { tone: "secondary" },
-  },
-  "ritme-run-club": {
-    text: {
-      badge: "Member story",
-      quote: "I joined the 8:30 pace group as a walker. Six months later I ran my first 10K.",
-      attribution: "Sari, member since 2024",
-    },
-    options: { tone: "secondary" },
-    maxOptions: { tone: "dark" },
-  },
-};
-
 const titleCase = (slug: string) =>
   slug.replace(
     /(^|-)(\w)/g,
@@ -181,14 +50,10 @@ const DEMO_COPY: Record<string, (brand: BrandKit, slug: Brand) => DemoCopy> = {
       body: `${brand.typography.heading.family} untuk judul, ${brand.typography.body.family} untuk isi.`,
     },
   }),
-  "feed-foto-teks": (_, slug) => FOTO_TEKS[slug],
-  "feed-sorotan": (_, slug) => SOROTAN[slug],
-  "feed-foto-penuh": (_, slug) => FOTO_PENUH[slug],
-  "feed-kutipan": (_, slug) => KUTIPAN[slug],
 };
 
 // Mengulang contoh sampai tepat maxChars, agar baris terpanjang yang diizinkan ikut dirender.
-function fill(sample: string, max: number): string {
+export function fill(sample: string, max: number): string {
   let text = sample;
   while (text.length < max) text = `${text} ${sample}`;
   return text.slice(0, max).trimEnd();

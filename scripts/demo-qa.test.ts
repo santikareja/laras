@@ -2,12 +2,12 @@ import { afterAll, describe, expect, it } from "vitest";
 import { isBlocking } from "../packages/shared/src/index.ts";
 import { renderLayoutHtml } from "../packages/sidecar/src/render/layout.ts";
 import { createRenderer } from "../packages/sidecar/src/render/renderer.ts";
-import { specimen, type Template, templates } from "../packages/templates/src/index.ts";
+import { specimen, type Template } from "../packages/templates/src/index.ts";
 import { BRANDS, demoBrand, demoCases } from "./demo-content.ts";
 
-// Fixture patuh untuk QA deterministik (T-110): setiap template katalog dan spesimen, untuk
-// ketiga brand, dengan isi contoh dan maks (setiap slot teks tepat maxChars), lolos semua aturan.
-const catalog: Template[] = [specimen, ...templates];
+// Fixture patuh untuk QA deterministik (T-110): spesimen brand untuk ketiga brand lolos semua
+// aturan wajib. Arketipe katalog diuji di archetype-qa.test.ts (contoh dan maks).
+const catalog: Template[] = [specimen];
 const renderer = createRenderer();
 afterAll(() => renderer.close());
 

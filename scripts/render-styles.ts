@@ -94,8 +94,7 @@ async function main() {
         });
       }
     }
-    if (only.length > 0) return;
-    for (const slug of BRANDS) {
+    for (const slug of only.length > 0 ? [] : BRANDS) {
       const { folders, qa } = demoBrand(slug);
       const html = overviewHtml(entries.filter((e) => e.brand === slug));
       const { png } = await renderer.render(html, { ...folders, jobDir: OUT_DIR }, qa);
@@ -105,7 +104,9 @@ async function main() {
       );
       console.log(`out/styles/ringkasan-${slug}.png`);
     }
-    await writeFile(join(OUT_DIR, "index.json"), `${JSON.stringify(entries, null, 2)}\n`);
+    if (only.length === 0) {
+      await writeFile(join(OUT_DIR, "index.json"), `${JSON.stringify(entries, null, 2)}\n`);
+    }
   } finally {
     await renderer.close();
   }

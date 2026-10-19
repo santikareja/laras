@@ -40,6 +40,7 @@ export type PromptInputs = {
     angle: string;
     catalog: string;
     templatePreference: string;
+    usedTemplates: string;
     userAssets: string;
   };
   "qa-visual": {

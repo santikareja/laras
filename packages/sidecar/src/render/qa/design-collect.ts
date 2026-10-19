@@ -31,19 +31,27 @@ export const DESIGN_SCRIPT = String.raw`(() => {
       bottom: Math.max(...rects.map((r) => r.bottom)),
     };
   };
+  // Range memakai area konten font: huruf display dengan line-height rapat (Anton, Fraunces 0,8)
+  // melapor atas dan bawah di luar kotak barisnya. Untuk perataan dan jarak tepi (P1, P11)
+  // batas vertikal dijepit ke kotak elemen.
+  const blockInk = (el) => {
+    const rect = ink(el);
+    const own = el.getBoundingClientRect();
+    return { ...rect, top: Math.max(rect.top, own.top), bottom: Math.min(rect.bottom, own.bottom) };
+  };
   const slots = [...document.querySelectorAll("[data-slot]")].filter((el) => !hidden(el));
   const typeOf = (el) => el.getAttribute("data-slot-type");
   const groups = [...document.querySelectorAll('[data-qa-element="group"]')];
   const standalone = slots.filter((el) => !marked(el, ["group", "background", "shape", "decor"]));
 
   const blocks = [
-    ...groups.map((el) => ({ name: el.getAttribute("data-qa-name") || "grup", rect: ink(el) })),
+    ...groups.map((el) => ({ name: el.getAttribute("data-qa-name") || "grup", rect: blockInk(el) })),
     ...standalone
       .filter((el) => ["text", "badge", "logo"].includes(typeOf(el)))
       .map((el) => ({
         name: el.getAttribute("data-slot"),
         // Tombol dan stiker berlatar menempel ke sumbu lewat kotaknya, teks biasa lewat tintanya.
-        rect: typeOf(el) === "text" && !painted(el) ? ink(el) : box(el.getBoundingClientRect()),
+        rect: typeOf(el) === "text" && !painted(el) ? blockInk(el) : box(el.getBoundingClientRect()),
       })),
   ];
 

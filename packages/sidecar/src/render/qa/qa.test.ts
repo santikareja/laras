@@ -127,6 +127,19 @@ describe("QA deterministik di Chromium", { timeout: 30_000 }, () => {
     expect(await failures(broken)).toEqual(["asset-load http://laras.invalid/job/tidak-ada.png"]);
   });
 
+  it("P11: jarak tepi teks display diukur dari kotak barisnya, bukan area konten font", async () => {
+    // Fraunces 112 px dengan line-height 0,8: Range melaporkan atas ~20 px di luar kotak baris.
+    const display = text(
+      "left: 64px; top: 64px; font-family: var(--font-heading); font-size: 112px; line-height: 0.8",
+      "Kopi",
+      "headline",
+    );
+    const cta = text("left: 64px; bottom: 64px", "Pesan sekarang", "cta");
+    const { checks } = await renderer.render(slide(display + cta), folders, qa);
+    const edges = checks.filter((check) => check.target === "jarak tepi" && !check.passed);
+    expect(edges.map((check) => check.message)).toEqual([]);
+  });
+
   it("menyusun RenderReport yang lolos skema", async () => {
     const { checks } = await renderer.render(
       slide(text("left: 100px; top: 100px", "Kopi")),

@@ -29,7 +29,14 @@ const CASES: Record<string, Record<Brand, StyleCase>> = {
         label: "Sangrai tiap minggu",
       },
       images: { image: "foto.jpg", subjek: "interaksi.webp" },
-      options: { tone: "neutral", band: "primary", duotone: "none", flip: "yes", tape: "no" },
+      options: {
+        tone: "neutral",
+        band: "primary",
+        duotone: "none",
+        flip: "yes",
+        tape: "no",
+        headline: "dua",
+      },
       logo: "primary",
     },
     "seruni-skin": {

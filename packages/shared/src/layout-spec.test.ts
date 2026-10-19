@@ -26,6 +26,18 @@ describe("LayoutSpec", () => {
     expect(issuesOf(LayoutSpec, spec())).toEqual([]);
   });
 
+  it("aset cutout wajib menyebut jenis subjek (T-131)", () => {
+    const s = spec();
+    const request = s.assetRequests[0];
+    if (!request) throw new Error("fixture tanpa assetRequests");
+    s.assetRequests = [{ ...request, kind: "cutout" }];
+    expect(issuesOf(LayoutSpec, s)).toContain(
+      'Aset cutout wajib punya subject "person" atau "object"',
+    );
+    s.assetRequests = [{ ...request, kind: "cutout", subject: "object" }];
+    expect(issuesOf(LayoutSpec, s)).toEqual([]);
+  });
+
   it("menolak slot gambar yang merujuk aset tidak dikenal", () => {
     const s = spec();
     s.assetRequests = [];

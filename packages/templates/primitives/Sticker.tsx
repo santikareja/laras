@@ -15,6 +15,8 @@ type StickerProps = {
   edge?: ColorToken;
   rotate?: number;
   size?: FontSizeStep;
+  // Teks panjang boleh terlipat dua baris di dalam kolomnya (T-131); bawaan satu baris.
+  wrap?: boolean;
   slot?: string;
   children: string;
 };
@@ -26,6 +28,7 @@ export function Sticker({
   edge,
   rotate = 0,
   size = 2,
+  wrap = false,
   slot,
   children,
 }: StickerProps) {
@@ -46,7 +49,9 @@ export function Sticker({
         fontSize: fontSize(size),
         fontSynthesis: "none",
         lineHeight: 1.1,
-        whiteSpace: "nowrap",
+        whiteSpace: wrap ? "normal" : "nowrap",
+        maxWidth: wrap ? "100%" : undefined,
+        boxSizing: wrap ? "border-box" : undefined,
         color: color(tone),
         transform: `rotate(${rotate}deg)`,
       }}

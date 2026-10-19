@@ -12,7 +12,7 @@ import {
   type JobStage,
   JobState,
   type JobStatus,
-  type LayoutSpec,
+  LayoutSpec,
   QaReport,
   type RenderCheck,
   RenderReport,
@@ -268,6 +268,7 @@ async function runStep(
         angle: json(angle()),
         catalog: json(catalog),
         templatePreference: spec.templatePreference ?? "Tidak ada preferensi",
+        usedTemplates: await usedTemplates(spec, deps),
         userAssets: userAssets.length > 0 ? userAssets.join(", ") : "Tidak ada",
       });
       return ask("layout", prompt, layoutSchema(layoutContext(spec, deps, catalog)));
@@ -397,6 +398,19 @@ function apply(work: Working, stage: JobStage, output: unknown) {
 }
 
 // Konteks validasi layout dan revisi: katalog format job, jumlah slide, dan logo Brand Kit.
+// Arketipe yang sudah dipilih varian sebelumnya dari brief yang sama (PRD 4 K6, T-131), dibaca
+// dari file langkah layout mereka agar tetap benar saat job dilanjutkan.
+async function usedTemplates(spec: JobSpec, deps: PipelineDeps): Promise<string> {
+  const used: string[] = [];
+  const file = stepFile({ n: 3, stage: "layout", round: 0 });
+  for (let variant = 1; variant < spec.variant; variant++) {
+    const sibling = `${spec.briefId}-v${variant}`;
+    const layout = await validJson(join(jobDir(deps.projectDir, sibling), file), LayoutSpec);
+    if (layout && !used.includes(layout.templateId)) used.push(layout.templateId);
+  }
+  return used.length > 0 ? used.join(", ") : "Belum ada";
+}
+
 const layoutContext = (spec: JobSpec, deps: PipelineDeps, catalog: TemplateMeta[]) => ({
   catalog,
   slideCount: spec.slideCount,

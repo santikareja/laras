@@ -29,6 +29,7 @@ Aturan:
 - Ikuti bahasa, tone, dan larangan brand. Jangan mengarang fakta baru.
 - Varian logo hanya boleh yang tersedia di brand (lihat "Varian logo tersedia" di `<brand>`): `onDark` bila latar gelap dan tersedia, selain itu `primary`.
 - Satu informasi hanya tampil di satu slot: jangan sampai revisi membuat fakta atau frasa kunci muncul di dua slot (badge, headline, body, CTA).
+- Opsi arketipe tetap mematuhi aturan brand (posisi logo, latar, pasangan warna). Cut-out tetap `kind` `"cutout"` dengan `subject` yang sama.
 - `regenerateAssets` berisi id `assetRequests` yang fotonya harus dibuat ulang, hanya bila perbaikan memang menyangkut foto itu. Bila deskripsi aset berubah, id-nya wajib ada di sini. Bila tidak ada foto yang perlu diganti, isi dengan daftar kosong.
 - `summary` menjelaskan singkat apa saja yang berubah, dalam bahasa Indonesia.
 
@@ -45,8 +46,8 @@ Contoh format output yang valid (hanya contoh bentuk untuk brand lain, jangan me
   "copy": {
     "slides": [
       {
-        "headline": "Roti hangat jam tujuh",
-        "body": "Sobek keju dan kopi susu siap dibawa ke kantor.",
+        "headline": "JAM TUJUH",
+        "body": "Roti sobek keju, masih hangat.",
         "cta": "Ambil satu pagi ini"
       }
     ],
@@ -54,29 +55,31 @@ Contoh format output yang valid (hanya contoh bentuk untuk brand lain, jangan me
     "hashtags": ["#RotiSenja"]
   },
   "layout": {
-    "templateId": "feed-foto-teks",
+    "templateId": "feed-bidang-warna",
     "format": "feed-4x5",
     "slides": [
       {
         "slots": {
-          "image": { "type": "image", "assetId": "roti-pagi" },
-          "headline": { "type": "text", "value": "Roti hangat jam tujuh" },
-          "body": { "type": "text", "value": "Sobek keju dan kopi susu siap dibawa ke kantor." },
+          "image": { "type": "image", "assetId": "roti-cutout" },
+          "headline": { "type": "text", "value": "JAM TUJUH" },
+          "penutup": { "type": "text", "value": "Roti sobek keju, masih hangat." },
           "cta": { "type": "text", "value": "Ambil satu pagi ini" },
           "logo": { "type": "logo", "variant": "primary" }
         },
-        "options": { "tone": "secondary" }
+        "options": { "tone": "secondary", "arch": "low", "flip": "yes" }
       }
     ],
     "assetRequests": [
       {
-        "id": "roti-pagi",
-        "description": "Roti sobek keju di atas talenan kayu dekat jendela, latar kanan bawah tenang, cahaya pagi hangat",
-        "aspectRatio": "3:2"
+        "id": "roti-cutout",
+        "description": "Tangan perempuan mengangkat roti sobek keju yang baru dipanggang dari samping, siku masuk dari tepi bawah, cahaya pagi hangat dari kiri",
+        "aspectRatio": "4:5",
+        "kind": "cutout",
+        "subject": "object"
       }
     ]
   },
-  "regenerateAssets": ["roti-pagi"],
-  "summary": "Badge dihapus, tone latar diganti ke secondary, dan foto dibuat ulang dengan sisi kanan bawah yang lebih tenang."
+  "regenerateAssets": ["roti-cutout"],
+  "summary": "Teks pembuka dihapus karena mengulang penutup, subjek dipindah ke kiri dengan lengkung lebih rendah, dan cut-out dibuat ulang agar lengan masuk dari tepi bawah."
 }
 ```

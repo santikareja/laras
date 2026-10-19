@@ -1,4 +1,4 @@
-import type { SubjectInfo } from "@laras/shared";
+import type { SubjectInfo, SubjectKind } from "@laras/shared";
 import sharp from "sharp";
 
 // Aset cut-out berlatar transparan (T-121, T-123): normalisasi alpha dan analisis subjek untuk
@@ -12,8 +12,9 @@ const VISIBLE = 16;
 // Titik fokus heuristik: pusat massa bagian teratas kotak alpha. 30% untuk orang (wajah) dan 75%
 // untuk objek (produk tanpa tangan atau pegangan di bawahnya). Dikalibrasi pada 6 cut-out fixture
 // dengan galat terbesar 0,08 lebar atau tinggi gambar.
-const FOCUS_SHARE = { person: 0.3, object: 0.75 } as const;
-export type SubjectKind = keyof typeof FOCUS_SHARE;
+const FOCUS_SHARE: Record<SubjectKind, number> = { person: 0.3, object: 0.75 };
+
+export type { SubjectKind };
 
 async function rgba(file: string) {
   return sharp(file).ensureAlpha().raw().toBuffer({ resolveWithObject: true });

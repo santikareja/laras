@@ -30,7 +30,7 @@ describe("spike --dry-run", () => {
     expect(job).toMatchObject({
       status: "done",
       round: 2,
-      templateId: "feed-foto-teks",
+      templateId: "feed-bidang-warna",
       qaPassed: false,
       failures: [],
     });

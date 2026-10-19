@@ -42,7 +42,8 @@ export function TopCaption({
       data-qa-name="teks"
       style={{
         position: "absolute",
-        top: "calc(var(--space-safe) * 1.5)",
+        // Satu jarak tepi untuk caption dan logo (P11, T-131).
+        top: "var(--space-safe)",
         left: "15%",
         right: "15%",
         display: "grid",
@@ -160,14 +161,14 @@ export const satuObjek: Template = {
         type: "text",
         required: true,
         description: "Headline dari copy",
-        maxChars: 40,
+        maxChars: 32,
       },
       {
         name: "body",
         type: "text",
         required: false,
         description: "Satu baris dari copy",
-        maxChars: 70,
+        maxChars: 56,
       },
       {
         name: "label",

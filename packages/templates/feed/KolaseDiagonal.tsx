@@ -1,5 +1,6 @@
 import { Display, Frame, Logo, Photo, Sticker, Tape, Text } from "../primitives/index.ts";
 import { color, space } from "../primitives/vars.ts";
+import { boxFromPercent, thirdsPlacement } from "../src/geometry.ts";
 import { optionalSlot, type SlideProps, slot, type Template } from "../src/template.ts";
 import { StyleBackdrop, StyleOverlay, styleEffect, styleTreatment } from "../styles/layer.tsx";
 
@@ -23,6 +24,15 @@ function KolaseDiagonalSlide({ slots, options, style }: SlideProps) {
   const cta = optionalSlot(slots, "cta", "text");
   const duotone = DUOTONE[(options.duotone ?? "") as keyof typeof DUOTONE];
   const tilt = flip ? 5 : -5;
+  // Fokus subjek di titik sepertiga sisinya (P8, T-131).
+  const placement = subjek?.subject
+    ? thirdsPlacement(
+        boxFromPercent({ [far]: -4, bottom: -3, width: 56, height: 80 }),
+        4 / 5,
+        subjek.subject,
+        far,
+      )
+    : undefined;
   return (
     <div
       style={{
@@ -62,7 +72,8 @@ function KolaseDiagonalSlide({ slots, options, style }: SlideProps) {
         data-qa-name="pita headline"
         style={{
           position: "absolute",
-          top: "62%",
+          // Pita dua baris naik agar tidak menabrak blok body di bawahnya.
+          top: options.headline === "dua" ? "52%" : "62%",
           left: "-10%",
           right: "-10%",
           padding: `${space(3)} calc(1080px * 0.1 + ${EDGE} + ${space(1)})`,
@@ -80,6 +91,7 @@ function KolaseDiagonalSlide({ slots, options, style }: SlideProps) {
             align={near}
             color={BAND_INK[band]}
             effect={styleEffect(style, "display")}
+            stack={options.headline === "dua"}
           >
             {slot(slots, "headline", "text").value}
           </Display>
@@ -87,7 +99,14 @@ function KolaseDiagonalSlide({ slots, options, style }: SlideProps) {
       </div>
       {subjek && (
         <div
-          style={{ position: "absolute", [far]: "-4%", bottom: "-3%", width: "56%", height: "80%" }}
+          style={{
+            position: "absolute",
+            [far]: "-4%",
+            bottom: "-3%",
+            width: "56%",
+            height: "80%",
+            transform: placement?.transform,
+          }}
         >
           <Photo
             slot="subjek"
@@ -221,6 +240,13 @@ export const kolaseDiagonal: Template = {
         values: ["no", "yes"],
         default: "no",
         description: "Bingkai di kanan, subjek di kiri, blok teks dan logo di kanan",
+      },
+      {
+        name: "headline",
+        values: ["satu", "dua"],
+        default: "satu",
+        description:
+          "Headline pita satu baris, atau dua kata ditumpuk satu kata per baris agar huruf tetap besar (headline dua kata yang panjang)",
       },
       {
         name: "tape",

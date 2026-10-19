@@ -5,9 +5,11 @@ import type { AssetManifest, AssetRequest, BrandKit } from "@laras/shared";
 import sharp from "sharp";
 import { runCodex } from "../cli/codex.ts";
 import type { SpawnLines } from "../cli/stream.ts";
+import { analyzeCutout, normalizeCutout } from "./cutout.ts";
 
-// Tahap assets (ARCH 5.2, 5.3): setiap AssetRequest menjadi file di jobs/<id>/assets/ yang
-// sudah dipotong ke rasio slot. Path sumber dan tujuan divalidasi (ARCH 9).
+// Tahap assets (ARCH 5.2, 5.3): setiap AssetRequest menjadi file di jobs/<id>/assets/. Foto
+// dipotong ke rasio slot; cut-out (T-131) tetap utuh dan beralpha, lalu dianalisis subjeknya.
+// Path sumber dan tujuan divalidasi (ARCH 9).
 
 export type AssetEntry = AssetManifest["assets"][number];
 export type JobContext = {
@@ -67,7 +69,59 @@ function entry(
   return { id, path: relative(ctx.jobDir, path).split(sep).join("/"), ...size, source };
 }
 
-const PROMPT_TEMPLATE = new URL("../prompts/asset-image.md", import.meta.url);
+const PROMPT_TEMPLATES = {
+  photo: new URL("../prompts/asset-image.md", import.meta.url),
+  cutout: new URL("../prompts/asset-cutout.md", import.meta.url),
+};
+const SUBJECT_WORDS = { person: "person", object: "product or object" } as const;
+
+// Cut-out sah bila sebagian gambar benar-benar transparan; Codex tanpa permintaan transparan
+// memberi RGB tanpa alpha (KNOWLEDGE T-121).
+const MIN_TRANSPARENT = 0.05;
+const TRANSPARENT_ALPHA = 16;
+
+async function transparentShare(file: string): Promise<number> {
+  const { data, info } = await sharp(file)
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  let clear = 0;
+  for (let i = 3; i < data.length; i += info.channels) {
+    if ((data[i] ?? 255) < TRANSPARENT_ALPHA) clear++;
+  }
+  return clear / (info.width * info.height);
+}
+
+// Simpan satu gambar sumber sebagai aset job: foto dipotong ke rasio slot (JPG), cut-out
+// dinormalkan alpha-nya (WebP), tidak dipotong, dan diberi data subjek (kotak alpha, fokus).
+export async function storeAsset(
+  request: AssetRequest,
+  source: string,
+  ctx: JobContext,
+  origin: AssetEntry["source"],
+): Promise<AssetEntry> {
+  if (request.kind !== "cutout") {
+    const path = assetPath(ctx.jobDir, request.id, ".jpg");
+    return entry(
+      ctx,
+      request.id,
+      path,
+      await cropToRatio(source, path, request.aspectRatio),
+      origin,
+    );
+  }
+  const share = await transparentShare(source);
+  if (share < MIN_TRANSPARENT) {
+    throw new Error(
+      `Gambar untuk aset cut-out "${request.id}" tidak berlatar transparan (${Math.round(share * 100)}% piksel transparan); buat ulang asetnya atau pakai PNG beralpha`,
+    );
+  }
+  const path = assetPath(ctx.jobDir, request.id, ".webp");
+  await mkdir(dirname(path), { recursive: true });
+  const size = await normalizeCutout(source, path);
+  const subject = await analyzeCutout(path, request.subject ?? "object");
+  return { ...entry(ctx, request.id, path, size, origin), subject };
+}
 
 export async function assetPrompt(request: AssetRequest, brand: BrandKit): Promise<string> {
   const [w = 1, h = 1] = request.aspectRatio.split(":").map(Number);
@@ -78,8 +132,10 @@ export async function assetPrompt(request: AssetRequest, brand: BrandKit): Promi
     orientation: w > h ? "Landscape" : w < h ? "Portrait" : "Square",
     aspectRatio: request.aspectRatio,
     palette: `primary ${primary}, secondary ${secondary}, accent ${accent}`,
+    subject: SUBJECT_WORDS[request.subject ?? "object"],
   };
-  const template = await readFile(PROMPT_TEMPLATE, "utf8");
+  const kind = request.kind === "cutout" ? "cutout" : "photo";
+  const template = await readFile(PROMPT_TEMPLATES[kind], "utf8");
   return template.replace(/\{\{(\w+)\}\}/g, (_, key: string) => {
     const value = values[key];
     if (value === undefined) throw new Error(`Placeholder prompt tidak dikenal: ${key}`);
@@ -127,14 +183,7 @@ export class CodexAssetProvider implements AssetProvider {
     const original = assetPath(ctx.jobDir, request.id, `.original${extname(source).toLowerCase()}`);
     await mkdir(dirname(original), { recursive: true });
     await copyFile(source, original);
-    const path = assetPath(ctx.jobDir, request.id, ".jpg");
-    return entry(
-      ctx,
-      request.id,
-      path,
-      await cropToRatio(original, path, request.aspectRatio),
-      "codex",
-    );
+    return storeAsset(request, original, ctx, "codex");
   }
 }
 
@@ -165,7 +214,6 @@ export class UserUploadAssetProvider implements AssetProvider {
     if (!meta?.width || !meta.height || !IMAGE_FILE.test(`.${meta.format}`)) {
       throw new Error(`File bukan gambar PNG, JPG, atau WebP: ${file}`);
     }
-    const path = assetPath(ctx.jobDir, request.id, ".jpg");
-    return entry(ctx, request.id, path, await cropToRatio(real, path, request.aspectRatio), "user");
+    return storeAsset(request, real, ctx, "user");
   }
 }

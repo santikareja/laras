@@ -13,16 +13,19 @@ import { BRANDS, demoBrand } from "./demo-content.ts";
 const renderer = createRenderer();
 afterAll(() => renderer.close());
 
+// Isi contoh dan varian maks (setiap slot teks tepat maxChars, T-131).
 const cases = archetypes.flatMap((template) =>
-  BRANDS.filter((slug) => hasArchetypeCase(template, slug)).map(
-    (slug) => [`${template.meta.id} ${slug}`, template, slug] as const,
+  BRANDS.filter((slug) => hasArchetypeCase(template, slug)).flatMap((slug) =>
+    [false, true].map(
+      (max) => [`${template.meta.id} ${slug}${max ? " maks" : ""}`, template, slug, max] as const,
+    ),
   ),
 );
 
 describe("arketipe demo", () => {
-  it.each(cases)("%s lolos QA", { timeout: 60_000 }, async (_, template, slug) => {
+  it.each(cases)("%s lolos QA", { timeout: 60_000 }, async (_, template, slug, max) => {
     const { folders, qa } = demoBrand(slug);
-    const { spec, assets } = await archetypeCase(template, slug, folders.jobDir);
+    const { spec, assets } = await archetypeCase(template, slug, folders.jobDir, max);
     for (const asset of assets.assets)
       expect(existsSync(join(folders.jobDir, asset.path))).toBe(true);
     const failures: string[] = [];

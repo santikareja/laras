@@ -10,6 +10,8 @@ export function Highlight({ background, color: tone, tilt = -2, children }: High
     <span
       style={{
         display: "inline-block",
+        // Sorotan panjang terlipat di dalam kotaknya, tidak meluber (T-131); induknya nowrap.
+        whiteSpace: "normal",
         padding: "0 0.15em",
         background: color(background),
         color: color(tone),

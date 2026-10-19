@@ -114,22 +114,33 @@ function PanelInfoSlide({ slots, options, style }: SlideProps) {
           style={{
             marginTop: "auto",
             [`margin${flip ? "Right" : "Left"}`]: "var(--space-safe)",
+            // Lipatan terjadi di dalam kolom panel, bukan meluber ke luar kanvas (T-131).
+            maxWidth: "calc(100% - var(--space-safe))",
             display: "flex",
             flexDirection: flip ? "row-reverse" : "row",
             alignItems: "center",
             gap: space(5),
           }}
         >
-          {/* Logo pertama: di tepi luar sisi panel (kanan bawah bila panel di kanan). */}
-          {logoBottom && logo}
+          {/* Logo pertama: di tepi luar sisi panel (kanan bawah bila panel di kanan), sejajar
+              tengah tombol (tombol 96 px, logo 48 px) juga saat blok aksi terlipat dua baris. */}
+          {logoBottom && (
+            <div style={{ alignSelf: "flex-end", marginBottom: space(3) }}>{logo}</div>
+          )}
           <div
             data-qa-element="group"
             data-qa-name="blok aksi"
             style={{
               display: "flex",
               flexDirection: flip ? "row-reverse" : "row",
+              // Bila tidak muat, kontak naik ke atas tombol (baris kaki menempel ke bawah kanvas).
+              flexWrap: "wrap-reverse",
+              alignContent: "flex-start",
+              flex: "1 1 auto",
+              minWidth: 0,
               alignItems: "center",
-              gap: space(5),
+              columnGap: space(5),
+              rowGap: space(3),
             }}
           >
             {cta && <Button slot="cta">{cta.value}</Button>}
@@ -197,26 +208,26 @@ export const panelInfo: Template = {
         type: "text",
         required: false,
         description: "Kategori atau konteks pendek di atas headline",
-        maxChars: 28,
+        maxChars: 24,
       },
       {
         name: "headline",
         type: "text",
         required: true,
         description: "Headline dari copy, 3–4 baris",
-        maxChars: 48,
+        maxChars: 36,
       },
       {
         name: "subjudul",
         type: "text",
         required: false,
         description: "Satu kalimat pendukung",
-        maxChars: 64,
+        maxChars: 56,
       },
-      { name: "poin1", type: "text", required: false, description: "Poin fakta 1", maxChars: 28 },
-      { name: "poin2", type: "text", required: false, description: "Poin fakta 2", maxChars: 28 },
-      { name: "poin3", type: "text", required: false, description: "Poin fakta 3", maxChars: 28 },
-      { name: "cta", type: "text", required: false, description: "Ajakan 2–3 kata", maxChars: 22 },
+      { name: "poin1", type: "text", required: false, description: "Poin fakta 1", maxChars: 26 },
+      { name: "poin2", type: "text", required: false, description: "Poin fakta 2", maxChars: 26 },
+      { name: "poin3", type: "text", required: false, description: "Poin fakta 3", maxChars: 26 },
+      { name: "cta", type: "text", required: false, description: "Ajakan 2–3 kata", maxChars: 16 },
       {
         name: "kontak",
         type: "text",

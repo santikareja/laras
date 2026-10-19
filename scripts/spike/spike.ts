@@ -2,7 +2,7 @@
 // QA → revisi, untuk satu brand fixture. MEMAKAI KUOTA kecuali dryRun; jumlah panggilan CLI
 // dibatasi (termasuk retry validasi) sebagai pengaman kuota.
 import { copyFile, cp, mkdir, readFile, writeFile } from "node:fs/promises";
-import { join, resolve } from "node:path";
+import { extname, join, resolve } from "node:path";
 import {
   type AssetManifest,
   BrandKit,
@@ -20,7 +20,7 @@ import { type SpawnLines, spawnLines } from "../../packages/sidecar/src/cli/stre
 import {
   type AssetProvider,
   CodexAssetProvider,
-  cropToRatio,
+  storeAsset,
 } from "../../packages/sidecar/src/pipeline/assets.ts";
 import {
   type JobResult,
@@ -132,15 +132,20 @@ export async function spike(options: SpikeOptions): Promise<SpikeReport> {
     const codex: AssetProvider = live
       ? new CodexAssetProvider({ codexPath: live.codex, spawn: counted("codex", options.maxCodex) })
       : {
-          // Dry-run: foto demo brand menggantikan hasil Codex, crop tetap sungguhan.
+          // Dry-run: foto atau cut-out demo brand menggantikan hasil Codex; penyimpanan aset
+          // (crop foto, normalisasi dan analisis cut-out) tetap sungguhan.
           async generate(request, ctx) {
             calls.codex++;
-            const original = join(ctx.jobDir, "assets", `${request.id}.original.jpg`);
+            const cutout = request.kind === "cutout";
+            const fixture = cutout ? "subjek.webp" : "foto.jpg";
+            const original = join(
+              ctx.jobDir,
+              "assets",
+              `${request.id}.original${extname(fixture)}`,
+            );
             await mkdir(join(ctx.jobDir, "assets"), { recursive: true });
-            await copyFile(join(ROOT, "fixtures/demo-assets", options.brand, "foto.jpg"), original);
-            const path = `assets/${request.id}.jpg`;
-            const size = await cropToRatio(original, join(ctx.jobDir, path), request.aspectRatio);
-            return { id: request.id, path, ...size, source: "codex" };
+            await copyFile(join(ROOT, "fixtures/demo-assets", options.brand, fixture), original);
+            return storeAsset(request, original, ctx, "codex");
           },
         };
 

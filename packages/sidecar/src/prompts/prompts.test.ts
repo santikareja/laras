@@ -39,6 +39,7 @@ const SAMPLE_INPUTS: PromptInputs = {
     angle: "{}",
     catalog: "[]",
     templatePreference: "-",
+    usedTemplates: "-",
     userAssets: "-",
   },
   "qa-visual": {

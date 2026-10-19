@@ -17,13 +17,24 @@ export type SlotValue = z.infer<typeof SlotValue>;
 export const AssetKind = z.enum(["photo", "cutout"]);
 export type AssetKind = z.infer<typeof AssetKind>;
 
-// Kebutuhan aset gambar tanpa teks (ARCH 4.5, PRD 4 prinsip 1). Tanpa `kind` berarti foto.
-export const AssetRequest = z.strictObject({
-  id: Slug,
-  description: z.string().min(1),
-  aspectRatio: AspectRatio,
-  kind: AssetKind.optional(),
-});
+// Jenis subjek cut-out: menentukan titik fokus (wajah untuk orang, badan untuk objek) (T-123).
+export const SubjectKind = z.enum(["person", "object"]);
+export type SubjectKind = z.infer<typeof SubjectKind>;
+
+// Kebutuhan aset gambar tanpa teks (ARCH 4.5, PRD 4 prinsip 1). Tanpa `kind` berarti foto;
+// cut-out wajib menyebut jenis subjeknya (T-131).
+export const AssetRequest = z
+  .strictObject({
+    id: Slug,
+    description: z.string().min(1),
+    aspectRatio: AspectRatio,
+    kind: AssetKind.optional(),
+    subject: SubjectKind.optional(),
+  })
+  .refine((request) => request.kind !== "cutout" || request.subject !== undefined, {
+    message: 'Aset cutout wajib punya subject "person" atau "object"',
+    path: ["subject"],
+  });
 export type AssetRequest = z.infer<typeof AssetRequest>;
 
 export const LayoutSlide = z.strictObject({

@@ -1,6 +1,11 @@
 import { Display, Logo, Photo, Sticker, Text } from "../primitives/index.ts";
 import { color, space } from "../primitives/vars.ts";
-import { boxFromPercent, containedFocus, textBelowFocus } from "../src/geometry.ts";
+import {
+  boxFromPercent,
+  containedFocus,
+  textBelowFocus,
+  thirdsPlacement,
+} from "../src/geometry.ts";
 import { optionalSlot, type SlideProps, slot, type Template } from "../src/template.ts";
 import { StyleBackdrop, StyleOverlay, styleEffect, styleTreatment } from "../styles/layer.tsx";
 
@@ -21,13 +26,20 @@ function KataRaksasaSlide({ slots, options, style }: SlideProps) {
   const side = options.side ?? "center";
   const shift = SHIFT[side] ?? 0;
   const textRight = side === "left";
-  const focus = image.subject
-    ? containedFocus(boxFromPercent({ ...SUBJECT, left: shift }), 4 / 5, image.subject)
-    : undefined;
+  // Subjek di sisi kiri atau kanan ditempatkan agar fokusnya di titik sepertiga (P8, T-131),
+  // tanpa naik agar tidak menutup huruf kata raksasa; subjek di tengah adalah komposisi terpusat.
+  const box = boxFromPercent({ ...SUBJECT, left: shift });
+  const placement =
+    image.subject && side !== "center"
+      ? thirdsPlacement(box, 4 / 5, image.subject, side === "left" ? "left" : "right", false)
+      : undefined;
+  const focus =
+    placement?.focus ?? (image.subject ? containedFocus(box, 4 / 5, image.subject) : undefined);
   const textBottom = focus ? textBelowFocus(focus.y) : true;
   const logoBottomRight = options.logo === "bottom-right";
   return (
     <div
+      data-qa-composition={side === "center" ? "center" : undefined}
       style={{
         position: "relative",
         height: "100%",
@@ -57,7 +69,7 @@ function KataRaksasaSlide({ slots, options, style }: SlideProps) {
           right: 0,
           bottom: `${SUBJECT.bottom}%`,
           height: `${SUBJECT.height}%`,
-          transform: `translateX(${shift}%)`,
+          transform: `translateX(${shift}%)${placement?.transform ? ` ${placement.transform}` : ""}`,
         }}
       >
         <Photo
@@ -83,6 +95,7 @@ function KataRaksasaSlide({ slots, options, style }: SlideProps) {
           ...(textRight ? { right: EDGE } : { left: EDGE }),
           ...(textBottom ? { bottom: `calc(${EDGE} + ${space(1)})` } : { top: "46%" }),
           display: "grid",
+          gridTemplateColumns: "minmax(0, 1fr)",
           gap: space(3),
           justifyItems: textRight ? "end" : "start",
           textAlign: textRight ? "right" : "left",
@@ -99,6 +112,7 @@ function KataRaksasaSlide({ slots, options, style }: SlideProps) {
         </Text>
         {cta && (
           <Sticker
+            wrap
             slot="cta"
             background={dark ? "accent" : "primary"}
             color={dark ? "neutral-dark" : "neutral-light"}
@@ -146,7 +160,7 @@ export const kataRaksasa: Template = {
         type: "text",
         required: true,
         description: "Headline pendek dari copy",
-        maxChars: 40,
+        maxChars: 32,
       },
       { name: "cta", type: "text", required: false, description: "Ajakan dari copy", maxChars: 28 },
       {

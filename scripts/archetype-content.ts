@@ -10,7 +10,7 @@ import {
 } from "../packages/shared/src/index.ts";
 import { analyzeCutout, type SubjectKind } from "../packages/sidecar/src/pipeline/cutout.ts";
 import type { Template } from "../packages/templates/src/index.ts";
-import type { Brand } from "./demo-content.ts";
+import { type Brand, fill } from "./demo-content.ts";
 
 export type Case = {
   text: Record<string, string>;
@@ -139,7 +139,13 @@ const CASES: Record<string, Partial<Record<Brand, Case>>> = {
     "kopi-lembayung": {
       text: { headline: "SANGRAI SENDIRI", cta: "Ambil sekantong, Rp85.000" },
       images: { image: "foto.jpg", subjek: "interaksi.webp" },
-      options: { tone: "primary", band: "secondary", duotone: "secondary", flip: "yes" },
+      options: {
+        tone: "primary",
+        band: "secondary",
+        duotone: "secondary",
+        flip: "yes",
+        headline: "dua",
+      },
       logo: "onDark",
     },
     "seruni-skin": {
@@ -159,6 +165,91 @@ const CASES: Record<string, Partial<Record<Brand, Case>>> = {
       logo: "onDark",
     },
   },
+  // Panel info dan kartu kaca (T-132, T-131): isi sama dengan contoh gaya Corporate dan Glassmorphism.
+  "feed-panel-info": {
+    "kopi-lembayung": {
+      text: {
+        eyebrow: "Biji kopi sangrai",
+        headline: "Disangrai sendiri setiap minggu",
+        subjudul: "Biji dari petani Jawa Barat, tanggal sangrai di kemasan.",
+        poin1: "200 g, Rp85.000",
+        poin2: "Pesan antar radius 3 km",
+        poin3: "Buka 06.30–21.00",
+        cta: "Pesan sekarang",
+        kontak: "Bandung",
+      },
+      images: { image: "interaksi.webp" },
+      options: { tone: "secondary", panel: "primary", flip: "yes", logo: "bottom", kontak: "pin" },
+      logo: "primary",
+    },
+    "seruni-skin": {
+      text: {
+        eyebrow: "Facial dasar",
+        headline: "Setiap perawatan diawali konsultasi",
+        subjudul: "Terapis bersertifikat dan dokter kulit mitra.",
+        poin1: "Konsultasi 30 menit gratis",
+        poin2: "Facial dasar Rp250.000",
+        poin3: "Tanpa paket produk wajib",
+        cta: "Reservasi",
+        kontak: "Reservasi via WhatsApp",
+      },
+      images: { image: "subjek.webp" },
+      options: { tone: "neutral", panel: "primary", flip: "no", logo: "top", kontak: "chat" },
+      logo: "primary",
+    },
+    "ritme-run-club": {
+      text: {
+        headline: "Sunday 5:45 AM. Free group run.",
+        subjudul: "Every run ends with coffee and stretching.",
+        poin1: "Pace groups for everyone",
+        poin2: "No sign-up needed",
+        poin3: "Beginners welcome",
+        cta: "Join free",
+        kontak: "Jakarta",
+      },
+      images: { image: "subjek.webp" },
+      options: { tone: "neutral", panel: "primary", flip: "no", logo: "top", kontak: "pin" },
+      logo: "primary",
+    },
+  },
+  "feed-kartu-kaca": {
+    "kopi-lembayung": {
+      text: {
+        chip: "Menu pagi",
+        headline: "Kopi susu gula aren",
+        angka: "Rp22.000",
+        body: "Buka setiap hari 06.30–21.00.",
+        cta: "Pesan antar",
+      },
+      images: { image: "foto.jpg" },
+      options: { kaca: "light", posisi: "bawah", logo: "bottom-right" },
+      logo: "primary",
+    },
+    "seruni-skin": {
+      text: {
+        chip: "Facial hidrasi",
+        headline: "Kulit lembap, langkah demi langkah",
+        angka: "Rp350.000",
+        body: "Diawali konsultasi dan foto kondisi kulit.",
+        cta: "Reservasi",
+      },
+      images: { image: "foto-4x5.jpg" },
+      options: { kaca: "light", posisi: "bawah", logo: "top-left" },
+      logo: "primary",
+    },
+    "ritme-run-club": {
+      text: {
+        chip: "City race",
+        headline: "Ritme 10K City Race",
+        angka: "IDR 250,000",
+        body: "Entry fees fund free water stations.",
+        cta: "Register",
+      },
+      images: { image: "foto.jpg" },
+      options: { kaca: "dark", posisi: "bawah", logo: "top-left" },
+      logo: "primary",
+    },
+  },
 };
 
 const assetId = (file: string) => file.replace(/\.\w+$/, "");
@@ -168,10 +259,24 @@ export function hasArchetypeCase(template: Template, slug: Brand): boolean {
 }
 
 // LayoutSpec dan AssetManifest satu arketipe untuk satu brand, dengan analisis cut-out.
-export async function archetypeCase(template: Template, slug: Brand, assetsDir: string) {
+// `max`: setiap slot teks yang terisi diulang sampai tepat maxChars (uji batas karakter, T-131),
+// karena Claude boleh mengisi slot sampai batas itu.
+export async function archetypeCase(
+  template: Template,
+  slug: Brand,
+  assetsDir: string,
+  max = false,
+) {
   const item = CASES[template.meta.id]?.[slug];
   if (!item) throw new Error(`Arketipe "${template.meta.id}" belum punya isi untuk ${slug}`);
-  return caseSpec(template, slug, item, assetsDir);
+  if (!max) return caseSpec(template, slug, item, assetsDir);
+  const text = Object.fromEntries(
+    Object.entries(item.text).map(([name, value]) => {
+      const limit = template.meta.slots.find((slot) => slot.name === name)?.maxChars;
+      return [name, limit ? fill(value, limit) : value];
+    }),
+  );
+  return caseSpec(template, slug, { ...item, text }, assetsDir);
 }
 
 // Isi demo → LayoutSpec dan AssetManifest; juga dipakai isi contoh gaya (scripts/style-content.ts).
@@ -200,7 +305,7 @@ export async function caseSpec(template: Template, slug: Brand, item: Case, asse
       id: a.id,
       description: "Aset demo",
       aspectRatio: "4:5",
-      ...(a.subject ? { kind: "cutout" } : {}),
+      ...(a.subject ? { kind: "cutout", subject: CUTOUTS[slug][a.path] } : {}),
     })),
   });
   const issues = layoutIssues(spec, template.meta);

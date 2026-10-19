@@ -40,7 +40,9 @@ describe("katalog template", () => {
 
       it("merender setiap slot di meta dengan data-slot yang sama", () => {
         const markup = render(template, filledSlots(template.meta, true));
-        expect(slotNames(markup)).toEqual(template.meta.slots.map((s) => s.name).sort());
+        // Slot `label` hanya tampil bila postingan memakai gaya desain (T-132).
+        const expected = template.meta.slots.map((s) => s.name).filter((n) => n !== "label");
+        expect(slotNames(markup)).toEqual(expected.sort());
       });
 
       it("tetap merender tanpa slot opsional", () => {

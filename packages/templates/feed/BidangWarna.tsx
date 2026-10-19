@@ -1,6 +1,6 @@
 import { Display, Logo, Photo, Sticker, Text } from "../primitives/index.ts";
 import { color, space } from "../primitives/vars.ts";
-import { boxFromPercent, containedFocus, textBelowFocus } from "../src/geometry.ts";
+import { boxFromPercent, textBelowFocus, thirdsPlacement } from "../src/geometry.ts";
 import { optionalSlot, type SlideProps, slot, type Template } from "../src/template.ts";
 import { StyleBackdrop, StyleOverlay, styleEffect, styleTreatment } from "../styles/layer.tsx";
 
@@ -22,8 +22,9 @@ function BidangWarnaSlide({ slots, options, style }: SlideProps) {
   const penutup = optionalSlot(slots, "penutup", "text");
   const cta = optionalSlot(slots, "cta", "text");
   const box = boxFromPercent({ ...SUBJECT, [far]: SUBJECT.offset });
-  const focus = image.subject ? containedFocus(box, 4 / 5, image.subject) : undefined;
-  const textBottom = focus ? textBelowFocus(focus.y) : true;
+  // Fokus subjek di titik sepertiga sisi subjek (P8, T-131).
+  const placement = image.subject ? thirdsPlacement(box, 4 / 5, image.subject, far) : undefined;
+  const textBottom = placement ? textBelowFocus(placement.focus.y) : true;
   return (
     <div
       style={{
@@ -56,6 +57,7 @@ function BidangWarnaSlide({ slots, options, style }: SlideProps) {
           bottom: `${SUBJECT.bottom}%`,
           width: `${SUBJECT.width}%`,
           height: `${SUBJECT.height}%`,
+          transform: placement?.transform,
         }}
       >
         <Photo
@@ -170,7 +172,7 @@ export const bidangWarna: Template = {
         type: "text",
         required: true,
         description: "Frasa utama satu sampai dua kata dari copy, ditumpuk satu kata per baris",
-        maxChars: 16,
+        maxChars: 12,
       },
       {
         name: "penutup",
