@@ -53,7 +53,11 @@ async function launch(node: string, client: RpcClient, onExit: () => void): Prom
     client.disconnect("Sidecar berhenti");
     onExit();
   });
-  const child = await command.spawn();
+  const child = await command.spawn().catch((error: unknown) => {
+    console.error(`Sidecar dengan ${node} tidak bisa dijalankan`, error);
+    return null;
+  });
+  if (!child) return null;
   client.connect((line) => child.write(line));
   const timeout = new Promise<never>((_, reject) =>
     setTimeout(() => reject(new Error("app.hello tidak terjawab")), HELLO_TIMEOUT_MS),
@@ -75,7 +79,10 @@ export function connectSidecar(client: RpcClient, onState: (state: SidecarState)
 
   async function start(state: SidecarState) {
     onState(state);
-    const candidates = await resolveNode();
+    const candidates = await resolveNode().catch((error: unknown) => {
+      console.error("Path Node tidak bisa di-resolve", error);
+      return [];
+    });
     let ready = false;
     for (const node of candidates) {
       // Kandidat yang gagal ikut memanggil onExit; restart hanya dari proses yang pernah siap.

@@ -1,45 +1,33 @@
-import type { ProjectSummary } from "@laras/shared";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { TooltipProvider } from "../components/ui/tooltip.tsx";
+import { StudioLayout } from "../features/studio/StudioLayout.tsx";
 import { createRpcClient } from "../lib/rpc.ts";
-import { connectSidecar, type SidecarState } from "../lib/sidecar.ts";
+import { connectSidecar } from "../lib/sidecar.ts";
+import { useStudio } from "../stores/studio.ts";
 
-// Sementara (T-203): status sambungan sidecar dan daftar project, untuk membuktikan UI ↔ sidecar.
-// Layout Studio menggantikannya di T-204 dan T-205.
+// Satu sambungan sidecar untuk seluruh aplikasi (T-203); keadaannya disimpan di store Studio.
 const client = createRpcClient();
 let connection: ReturnType<typeof connectSidecar> | null = null;
 
-const STATE_TEXT: Record<SidecarState, string> = {
-  starting: "Menyiapkan Laras",
-  ready: "Siap",
-  reconnecting: "Menyambung ulang",
-  failed:
-    "Proses latar Laras tidak bisa dijalankan. Pastikan Node.js terpasang, lalu buka ulang Laras.",
-};
-
-// Area seret setinggi toolbar (DESIGN 5) karena title bar memakai gaya Overlay.
 export function App() {
-  const [state, setState] = useState<SidecarState>("starting");
-  const [projects, setProjects] = useState<ProjectSummary[]>([]);
-
   useEffect(() => {
-    connection ??= connectSidecar(client, (next) => {
-      setState(next);
-      if (next === "ready") void client.request("project.list").then(setProjects);
+    connection ??= connectSidecar(client, (state) => {
+      const studio = useStudio.getState();
+      studio.setSidecar(state);
+      if (state !== "ready") return;
+      client
+        .request("project.list")
+        .then(studio.setProjects)
+        .catch((error: unknown) => {
+          studio.setProjectsError(error instanceof Error ? error.message : String(error));
+        });
     });
   }, []);
 
   return (
-    <>
-      <div data-tauri-drag-region className="h-11" />
-      <main className="px-5" aria-live="polite">
-        <p>{STATE_TEXT[state]}</p>
-        <ul>
-          {projects.map((project) => (
-            <li key={project.slug}>{project.name}</li>
-          ))}
-        </ul>
-      </main>
-    </>
+    <TooltipProvider>
+      <StudioLayout />
+    </TooltipProvider>
   );
 }
 

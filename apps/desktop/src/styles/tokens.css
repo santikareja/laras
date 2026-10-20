@@ -24,6 +24,15 @@
   --font-brand: "Plus Jakarta Sans", system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
 
+  --type-caption: 11px;     --type-caption-line: 14px;     --type-caption-weight: 400;
+  --type-label: 12px;       --type-label-line: 16px;       --type-label-weight: 500;
+  --type-body: 13px;        --type-body-line: 18px;        --type-body-weight: 400;
+  --type-body-strong: 13px; --type-body-strong-line: 18px; --type-body-strong-weight: 600;
+  --type-panel-title: 15px; --type-panel-title-line: 20px; --type-panel-title-weight: 600;
+  --type-section: 17px;     --type-section-line: 22px;     --type-section-weight: 600;
+  --type-page: 22px;        --type-page-line: 28px;        --type-page-weight: 600;
+  --type-display: 28px;     --type-display-line: 34px;     --type-display-weight: 700;
+
   --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
   --space-5: 24px; --space-6: 32px; --space-7: 48px;
 

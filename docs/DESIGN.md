@@ -126,14 +126,16 @@ Plus Jakarta Sans dirancang oleh Tokotype untuk identitas kota Jakarta. Font ini
 
 | Token | Ukuran | Line height | Bobot | Pemakaian |
 |---|---|---|---|---|
-| `--text-caption` | 11 px | 14 px | 400 | Keterangan, metadata |
-| `--text-label` | 12 px | 16 px | 500 | Label field, header kolom |
-| `--text-body` | 13 px | 18 px | 400 | Teks default |
-| `--text-body-strong` | 13 px | 18 px | 600 | Penekanan di dalam teks |
-| `--text-panel-title` | 15 px | 20 px | 600 | Judul panel dan dialog |
-| `--text-section` | 17 px | 22 px | 600 | Judul bagian halaman |
-| `--text-page` | 22 px | 28 px | 600 | Judul halaman |
-| `--text-display` | 28 px | 34 px | 700 | Judul halaman kosong (Plus Jakarta Sans) |
+| `--type-caption` | 11 px | 14 px | 400 | Keterangan, metadata |
+| `--type-label` | 12 px | 16 px | 500 | Label field, header kolom |
+| `--type-body` | 13 px | 18 px | 400 | Teks default |
+| `--type-body-strong` | 13 px | 18 px | 600 | Penekanan di dalam teks |
+| `--type-panel-title` | 15 px | 20 px | 600 | Judul panel dan dialog |
+| `--type-section` | 17 px | 22 px | 600 | Judul bagian halaman |
+| `--type-page` | 22 px | 28 px | 600 | Judul halaman |
+| `--type-display` | 28 px | 34 px | 700 | Judul halaman kosong (Plus Jakarta Sans) |
+
+Nama `--type-*` (keputusan pemilik E-201) karena `--text-*` sudah dipakai warna teks (`--text-primary`) dan merupakan namespace ukuran font Tailwind v4. Setiap peran punya tiga token: ukuran (`--type-body`), tinggi baris (`--type-body-line`), dan bobot (`--type-body-weight`); di kelas Tailwind dipakai sebagai `text-caption` sampai `text-display` (bagian 15).
 
 ### Aturan
 
@@ -346,11 +348,11 @@ Muncul di kanan bawah di atas status bar. Isi: ikon status, satu kalimat, dan ma
 
 ### 10.7 Dialog
 
-Lebar 440 px. Judul `--text-panel-title`, isi maksimal tiga kalimat, tombol di kanan bawah dengan aksi utama paling kanan. Esc menutup dialog, ↵ menjalankan aksi utama kecuali pada dialog hapus.
+Lebar 440 px. Judul `--type-panel-title`, isi maksimal tiga kalimat, tombol di kanan bawah dengan aksi utama paling kanan. Esc menutup dialog, ↵ menjalankan aksi utama kecuali pada dialog hapus.
 
 ### 10.8 Halaman kosong
 
-Ikon 20 px, judul `--text-display` (Plus Jakarta Sans), satu kalimat penjelasan, satu tombol utama. Rata tengah di area konten.
+Ikon 20 px, judul `--type-display` (Plus Jakarta Sans), satu kalimat penjelasan, satu tombol utama. Rata tengah di area konten.
 
 ---
 
@@ -480,6 +482,15 @@ Pola berikut membuat UI terlihat seperti template generik dan tidak boleh dipaka
   --font-brand: "Plus Jakarta Sans", system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
 
+  --type-caption: 11px;     --type-caption-line: 14px;     --type-caption-weight: 400;
+  --type-label: 12px;       --type-label-line: 16px;       --type-label-weight: 500;
+  --type-body: 13px;        --type-body-line: 18px;        --type-body-weight: 400;
+  --type-body-strong: 13px; --type-body-strong-line: 18px; --type-body-strong-weight: 600;
+  --type-panel-title: 15px; --type-panel-title-line: 20px; --type-panel-title-weight: 600;
+  --type-section: 17px;     --type-section-line: 22px;     --type-section-weight: 600;
+  --type-page: 22px;        --type-page-line: 28px;        --type-page-weight: 600;
+  --type-display: 28px;     --type-display-line: 34px;     --type-display-weight: 700;
+
   --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
   --space-5: 24px; --space-6: 32px; --space-7: 48px;
 
@@ -549,6 +560,14 @@ Nama `accent` di shadcn/ui berarti latar hover menu dan tombol ghost, bukan warn
 | `border` | `--border` |
 | `input` | `--border-strong` |
 | `ring` | `--accent` |
+| `primary-hover` | `--accent-hover` |
+| `canvas` | `--surface-canvas` |
+| `selected` | `--surface-selected` |
+| `disabled` | `--text-disabled` |
+
+Palet warna dan skala ukuran teks bawaan Tailwind dikosongkan (`--color-*: initial`, `--text-*: initial`), sehingga hanya nama di tabel ini yang menghasilkan kelas.
+
+Tipografi: `text-caption`, `text-label`, `text-body`, `text-body-strong`, `text-panel-title`, `text-section`, `text-page`, dan `text-display` memetakan ukuran, tinggi baris, dan bobot dari token `--type-*` bagian 4; `font-display` memakai `--font-brand`. Ring fokus bagian 12 dipasang global di `:focus-visible`, bukan per komponen.
 
 Radius: `--radius-md` → `--radius-control`, `--radius-lg` → `--radius-card`, `--radius-xl` → `--radius-float`. Komponen shadcn/ui disesuaikan agar memakai kelas radius sesuai bagian 7 (kontrol `rounded-md`, kartu `rounded-lg`, popover, menu, dialog, dan toast `rounded-xl`).
 
