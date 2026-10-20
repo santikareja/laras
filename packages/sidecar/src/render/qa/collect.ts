@@ -27,7 +27,9 @@ export const COLLECT_SCRIPT = String.raw`(() => {
     for (const node of stack.slice(start)) {
       // Bentuk SVG (swoosh, pelangi) di belakang teks: kontras diukur dari piksel (T-130). Hanya
       // geometri yang tergambar di titik itu; kotak <svg> sendiri menutupi seluruh lapisannya.
-      if (node.tagName === "IMG" || (node instanceof SVGElement && node.tagName.toLowerCase() !== "svg")) {
+      // Foto dan cut-out (IMG) ditandai photo untuk cek keramaian latar (T-141).
+      if (node.tagName === "IMG") return { kind: "image", photo: true };
+      if (node instanceof SVGElement && node.tagName.toLowerCase() !== "svg") {
         return { kind: "image" };
       }
       const color = getComputedStyle(node).backgroundColor;
@@ -129,4 +131,5 @@ export const HIDE_TEXT_CSS = `[data-qa-text] {
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
   text-shadow: none !important;
+  text-decoration-color: transparent !important;
 }`;

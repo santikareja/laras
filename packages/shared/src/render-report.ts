@@ -12,6 +12,8 @@ export const RenderRule = z.enum([
   "forbidden-word",
   "emoji-hashtag",
   "asset-load",
+  // Teks di atas area foto yang ramai (T-141, keputusan pemilik: wajib).
+  "busy-background",
   // Aturan brand terstruktur (BrandKit.constraints, T-124), bertingkat wajib.
   "brand-logo-position",
   "brand-gradient",

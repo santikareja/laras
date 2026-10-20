@@ -13,9 +13,10 @@ import {
   type Measurements,
   type PlatformFont,
   type QaContext,
+  type SampledBusy,
   type SampledContrast,
 } from "./qa/rules.ts";
-import { sampleContrast } from "./qa/sample.ts";
+import { sampleBusy, sampleContrast } from "./qa/sample.ts";
 
 // Renderer slide (ARCH 7.1, ADR-014). Halaman dimuat dari origin palsu yang hanya dilayani
 // route Playwright: /project/ dan /job/ dibaca dari disk, request lain diblokir.
@@ -81,13 +82,12 @@ export function createRenderer(): Renderer {
           t.backgrounds.some((b) => b.kind === "image"),
         );
         let sampled: SampledContrast = new Map();
+        let busy: SampledBusy = new Map();
         if (overImage.length > 0) {
           await page.addStyleTag({ content: HIDE_TEXT_CSS });
-          sampled = await sampleContrast(
-            await page.screenshot(SCREENSHOT),
-            overImage,
-            DEVICE_SCALE,
-          );
+          const background = await page.screenshot(SCREENSHOT);
+          sampled = await sampleContrast(background, overImage, DEVICE_SCALE);
+          busy = await sampleBusy(background, overImage, DEVICE_SCALE);
         }
         const { primary, secondary, accent, neutral } = qa.brand.colors;
         const pixels = await pixelStats(
@@ -97,7 +97,7 @@ export function createRenderer(): Renderer {
           design.canvas,
         );
         const checks = [
-          ...evaluateQa(measurements, qa, sampled),
+          ...evaluateQa(measurements, qa, sampled, busy),
           ...(qa.brandRules === false ? [] : brandRuleChecks(measurements, design, qa.brand)),
           ...designChecks(design, pixels, qa.design ?? DEFAULT_DESIGN_LIMITS, qa.brand),
         ];

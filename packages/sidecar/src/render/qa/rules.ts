@@ -10,11 +10,14 @@ export type QaContext = {
   copyGuide: CopyGuide;
   design?: DesignLimits;
   brandRules?: boolean;
+  // Ambang variasi luminans di balik teks di atas foto (T-141); bawaan BUSY_LIMIT.
+  busyLimit?: number;
 };
 
 export type Rect = { left: number; top: number; right: number; bottom: number };
 
-export type TextBackground = { kind: "color"; color: string } | { kind: "image" };
+// `photo`: latar berupa foto atau cut-out (IMG), bukan bentuk SVG atau panel tembus pandang.
+export type TextBackground = { kind: "color"; color: string } | { kind: "image"; photo?: boolean };
 
 export type PlatformFont = { family: string; custom: boolean; glyphs: number };
 
@@ -47,6 +50,14 @@ export type Measurements = {
 
 // Kontras teks di atas foto dari sampling piksel (id teks → rasio persentil ke-5).
 export type SampledContrast = Map<number, number>;
+// Simpangan baku luma (0–255) petak paling ramai di kotak baris teks di atas foto (T-141).
+export type SampledBusy = Map<number, number>;
+
+// Ambang teks di atas area foto yang ramai, dikalibrasi dari render T-127 dan T-140 yang sudah
+// dinilai pemilik (KNOWLEDGE "Spike T-140").
+export const BUSY_LIMIT = 13;
+// Teks setinggi ini atau lebih adalah kata raksasa (di atas langkah terbesar skala brand).
+const DISPLAY_SIZE = 180;
 
 const MIN_FONT_SIZE = 24; // PRD F9
 const LARGE_TEXT = 32; // PRD F9: teks besar ≥ 32 px cukup 3:1
@@ -108,6 +119,27 @@ const round = (value: number) => Math.round(value * 100) / 100;
 
 function fail(rule: RenderRule, target: string, message: string, extra = {}): RenderCheck {
   return { rule, passed: false, target, message, ...extra };
+}
+
+// Teks di atas foto yang menimpa objek, wajah, atau tekstur ramai (catatan pemilik T-140) tidak
+// selalu gagal kontras, jadi variasi latarnya diukur terpisah.
+function busyChecks(m: Measurements, busy: SampledBusy, limit: number): RenderCheck[] {
+  return m.texts.flatMap((text) => {
+    // Kata raksasa sengaja mengunci dengan subjek (K3) dan tetap terbaca karena ukurannya; teks
+    // di atas bentuk atau panel (kaca) tidak langsung menimpa foto.
+    if (text.fontSize >= DISPLAY_SIZE) return [];
+    if (!text.backgrounds.some((b) => b.kind === "image" && b.photo)) return [];
+    const measured = busy.get(text.id);
+    if (measured === undefined || measured <= limit) return [];
+    return [
+      fail(
+        "busy-background",
+        targetOf(text),
+        `Teks menimpa area foto yang ramai (variasi ${Math.round(measured)}, maksimal ${limit}): pindahkan teks ke area tenang atau buat ulang foto dengan area polos di balik teks`,
+        { measured: Math.round(measured), threshold: limit },
+      ),
+    ];
+  });
 }
 
 function contrastChecks(m: Measurements, sampled: SampledContrast): RenderCheck[] {
@@ -340,6 +372,7 @@ export const CORE_RULES = [
   "forbidden-word",
   "emoji-hashtag",
   "asset-load",
+  "busy-background",
 ] as const satisfies readonly RenderRule[];
 
 const PASSED: Record<(typeof CORE_RULES)[number], string> = {
@@ -352,6 +385,7 @@ const PASSED: Record<(typeof CORE_RULES)[number], string> = {
   "forbidden-word": "Tidak ada kata terlarang",
   "emoji-hashtag": "Emoji dan hashtag sesuai panduan",
   "asset-load": "Semua gambar dan font termuat",
+  "busy-background": "Teks di atas foto berada di area yang tenang",
 };
 
 // Satu cek gagal per pelanggaran; aturan tanpa pelanggaran menghasilkan satu cek lolos.
@@ -359,9 +393,11 @@ export function evaluateQa(
   m: Measurements,
   ctx: QaContext,
   sampled: SampledContrast,
+  busy: SampledBusy = new Map(),
 ): RenderCheck[] {
   const failures = [
     ...contrastChecks(m, sampled),
+    ...busyChecks(m, busy, ctx.busyLimit ?? BUSY_LIMIT),
     ...overflowChecks(m),
     ...safeMarginChecks(m, ctx.brand.spacing.safeMargin),
     ...fontSizeChecks(m),

@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { BrandKit, CopyGuide } from "@laras/shared";
 import { describe, expect, it } from "vitest";
 import {
+  BUSY_LIMIT,
   CORE_RULES,
   contrastRatio,
   countEmoji,
@@ -230,5 +231,39 @@ describe("evaluateQa", () => {
       fontFaces: [{ family: "Fraunces", status: "error" }],
     });
     expect(failures(m).map((check) => check.rule)).toEqual(["asset-load", "asset-load"]);
+  });
+});
+
+describe("teks di atas area foto yang ramai (T-141)", () => {
+  const photo = text({ backgrounds: [{ kind: "image", photo: true }] });
+  const busy = (value: number) => new Map([[0, value]]);
+  const run = (t: TextMeasure, value: number) =>
+    evaluateQa(measure({ texts: [t] }), ctx, new Map([[0, 9]]), busy(value)).filter(
+      (c) => c.rule === "busy-background",
+    );
+
+  it("gagal wajib di atas ambang, lolos di bawahnya", () => {
+    expect(run(photo, BUSY_LIMIT + 5)).toMatchObject([
+      { passed: false, target: "headline", measured: BUSY_LIMIT + 5, threshold: BUSY_LIMIT },
+    ]);
+    expect(run(photo, BUSY_LIMIT - 4)).toMatchObject([{ passed: true }]);
+  });
+
+  it("kata raksasa dan teks di atas bentuk atau panel tidak diukur", () => {
+    expect(run(text({ ...photo, fontSize: 220 }), 60)).toMatchObject([{ passed: true }]);
+    expect(run(text({ backgrounds: [{ kind: "image" }] }), 60)).toMatchObject([{ passed: true }]);
+  });
+
+  it("ambang bisa diatur lewat konteks QA (kalibrasi)", () => {
+    const strict = evaluateQa(
+      measure({ texts: [photo] }),
+      { ...ctx, busyLimit: 0 },
+      new Map([[0, 9]]),
+      busy(3),
+    );
+    expect(strict.find((c) => c.rule === "busy-background")).toMatchObject({
+      passed: false,
+      measured: 3,
+    });
   });
 });

@@ -194,6 +194,9 @@ const RULE_TARGET: Record<RenderRule, QaFix["target"]> = {
   "forbidden-word": "copy",
   "emoji-hashtag": "copy",
   "asset-load": "assets",
+  // Teks di atas area foto yang ramai (T-141): foto dibuat ulang dengan area tenang di balik teks,
+  // atau layout memindahkan teks.
+  "busy-background": "assets",
   // Aturan brand terstruktur (T-124): posisi logo, gradient, dan jumlah visual diatur layout.
   "brand-logo-position": "layout",
   "brand-gradient": "layout",

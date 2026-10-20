@@ -1,5 +1,11 @@
 import sharp from "sharp";
-import { contrastRatio, parseColor, type SampledContrast, type TextMeasure } from "./rules.ts";
+import {
+  contrastRatio,
+  parseColor,
+  type SampledBusy,
+  type SampledContrast,
+  type TextMeasure,
+} from "./rules.ts";
 
 // Kontras teks di atas foto (ARCH 7.2): piksel latar di area setiap baris teks, diambil dari
 // screenshot dengan teks disembunyikan. Rasio persentil ke-5: 95% piksel latar memenuhinya.
@@ -46,6 +52,56 @@ export async function sampleContrast(
     if (ratios.length === 0) continue;
     ratios.sort((a, b) => a - b);
     result.set(text.id, ratios[Math.floor(ratios.length * PERCENTILE)] ?? 0);
+  }
+  return result;
+}
+
+// Keramaian latar di balik teks di atas foto (T-141): setiap baris dibagi petak persegi setinggi
+// barisnya, dan nilai teks adalah simpangan baku luma sRGB (0–255) petak paling ramai. Rata-rata
+// satu kotak baris menenggelamkan tumpang tindih kecil (kepala di bawah sebagian baris).
+export async function sampleBusy(
+  background: Buffer,
+  texts: TextMeasure[],
+  scale: number,
+): Promise<SampledBusy> {
+  const { data, info } = await sharp(background)
+    .removeAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const clampX = (x: number) => Math.min(info.width, Math.max(0, Math.round(x * scale)));
+  const clampY = (y: number) => Math.min(info.height, Math.max(0, Math.round(y * scale)));
+  const deviation = (x0: number, x1: number, y0: number, y1: number) => {
+    let sum = 0;
+    let squares = 0;
+    let count = 0;
+    for (let y = y0; y < y1; y++) {
+      for (let x = x0; x < x1; x++) {
+        const offset = (y * info.width + x) * info.channels;
+        const luma =
+          0.2126 * (data[offset] ?? 0) +
+          0.7152 * (data[offset + 1] ?? 0) +
+          0.0722 * (data[offset + 2] ?? 0);
+        sum += luma;
+        squares += luma * luma;
+        count++;
+      }
+    }
+    if (count === 0) return 0;
+    const mean = sum / count;
+    return Math.sqrt(Math.max(0, squares / count - mean * mean));
+  };
+  const result: SampledBusy = new Map();
+  for (const text of texts) {
+    let worst = -1;
+    for (const line of text.lines) {
+      const [y0, y1] = [clampY(line.top), clampY(line.bottom)];
+      const [x0, x1] = [clampX(line.left), clampX(line.right)];
+      const tile = Math.max(1, y1 - y0);
+      for (let x = x0; x < x1; x += tile) {
+        worst = Math.max(worst, deviation(x, Math.min(x1, x + tile), y0, y1));
+      }
+    }
+    if (worst >= 0) result.set(text.id, worst);
   }
   return result;
 }

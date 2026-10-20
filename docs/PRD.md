@@ -260,6 +260,7 @@ AC:
 
 **QA deterministik (kode, wajib lolos):**
 - Rasio kontras teks terhadap latar ≥ 4.5:1 (teks body) dan ≥ 3:1 (teks besar ≥ 32 px).
+- Teks yang langsung berada di atas foto tidak menimpa area yang ramai (objek, wajah, tekstur); kata raksasa dan teks di atas panel dikecualikan (keputusan pemilik 2026-10-20, T-141).
 - Tidak ada teks yang overflow atau terpotong.
 - Semua elemen penting berada di dalam safe margin (default 64 px dari tepi pada ukuran dasar).
 - Ukuran font minimum 24 px pada ukuran dasar 1080 px.
