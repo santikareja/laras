@@ -1,4 +1,4 @@
-import type { SubjectInfo, SubjectKind } from "@laras/shared";
+import { SUBJECT_BANDS, type SubjectInfo, type SubjectKind } from "@laras/shared";
 import sharp from "sharp";
 
 // Aset cut-out berlatar transparan (T-121, T-123): normalisasi alpha dan analisis subjek untuk
@@ -36,13 +36,17 @@ export async function analyzeCutout(file: string, kind: SubjectKind): Promise<Su
   let top = height;
   let right = -1;
   let bottom = -1;
+  const bands: ([number, number] | null)[] = Array.from({ length: SUBJECT_BANDS }, () => null);
   for (let y = 0; y < height; y++) {
+    const band = Math.min(SUBJECT_BANDS - 1, Math.floor((y / height) * SUBJECT_BANDS));
     for (let x = 0; x < width; x++) {
       if (!visible(x, y)) continue;
       left = Math.min(left, x);
       right = Math.max(right, x);
       top = Math.min(top, y);
       bottom = Math.max(bottom, y);
+      const [l, r] = bands[band] ?? [x, x];
+      bands[band] = [Math.min(l, x), Math.max(r, x)];
     }
   }
   if (right < 0) throw new Error("Cut-out tidak punya subjek (alpha kosong)");
@@ -66,5 +70,6 @@ export async function analyzeCutout(file: string, kind: SubjectKind): Promise<Su
       bottom: (bottom + 1) / height,
     },
     focus: { x: (sumX / count + 0.5) / width, y: (sumY / count + 0.5) / height },
+    bands: bands.map((band) => (band ? [band[0] / width, (band[1] + 1) / width] : null)),
   };
 }

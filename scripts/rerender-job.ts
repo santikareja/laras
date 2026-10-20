@@ -1,6 +1,7 @@
 // Render ulang layout akhir job yang tersimpan dengan template terkini, tanpa memanggil Claude
 // atau Codex: untuk memeriksa perbaikan arketipe pada hasil nyata (T-139, T-141).
-// Pakai: pnpm rerender:job -- <awalan-keluaran> <folder job>...
+// Pakai: pnpm rerender:job -- [--analyze] <awalan-keluaran> <folder job>...
+// --analyze: analisis cut-out dihitung ulang dengan penganalisis terkini (mis. profil pita T-139).
 // Menulis <awalan>-<n>.png (1080 px) dan mencetak cek QA wajib yang gagal per job.
 import { readFile, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
@@ -13,13 +14,16 @@ import {
   LayoutSpec,
   Revision,
 } from "../packages/shared/src/index.ts";
+import { analyzeCutout } from "../packages/sidecar/src/pipeline/cutout.ts";
 import { findStyle } from "../packages/sidecar/src/prompts/style-context.ts";
 import { renderLayoutHtml } from "../packages/sidecar/src/render/layout.ts";
 import { toUpload } from "../packages/sidecar/src/render/postprocess.ts";
 import { createRenderer } from "../packages/sidecar/src/render/renderer.ts";
 import { experimentalArchetypes, templates } from "../packages/templates/src/index.ts";
 
-const [out, ...jobs] = process.argv.slice(2).filter((arg) => arg !== "--");
+const args = process.argv.slice(2).filter((arg) => arg !== "--");
+const analyze = args.includes("--analyze");
+const [out, ...jobs] = args.filter((arg) => arg !== "--analyze");
 if (!out || jobs.length === 0) {
   console.error("Pakai: pnpm rerender:job -- <awalan-keluaran> <folder job>...");
   process.exit(2);
@@ -57,6 +61,13 @@ try {
       (data) => AssetManifest.parse(data),
     );
     if (!layout || !assets) throw new Error(`Job tidak lengkap: ${dir}`);
+    if (analyze) {
+      for (const asset of assets.assets) {
+        const request = layout.assetRequests.find((r) => r.id === asset.id);
+        if (!asset.subject || request?.kind !== "cutout") continue;
+        asset.subject = await analyzeCutout(join(dir, asset.path), request.subject ?? "object");
+      }
+    }
     const style = spec.spec.style
       ? { ...spec.spec.style, options: layout.styleOptions ?? {} }
       : undefined;

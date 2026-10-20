@@ -40,6 +40,34 @@ describe("cut-out (T-123)", () => {
     expect(info.focus.y).toBeLessThan(0.55);
   });
 
+  it("mencatat profil lebar subjek per pita horizontal (T-139)", async () => {
+    // Kepala sempit di atas badan lebar: pita atas hanya selebar kepala, pita kosong null.
+    const file = join(tmp, "profil.png");
+    const block = (width: number, height: number) =>
+      sharp({
+        create: { width, height, channels: 4, background: { r: 90, g: 90, b: 90, alpha: 1 } },
+      })
+        .png()
+        .toBuffer();
+    await sharp({
+      create: { width: 100, height: 160, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
+    })
+      .composite([
+        { input: await block(20, 40), left: 10, top: 20 },
+        { input: await block(80, 60), left: 10, top: 60 },
+      ])
+      .png()
+      .toFile(file);
+    const { bands } = await analyzeCutout(file, "person");
+    // 160 px dibagi 16 pita: tiap pita 10 px.
+    expect(bands?.[0]).toBeNull();
+    expect(bands?.[2]).toEqual([0.1, 0.3]);
+    expect(bands?.[5]).toEqual([0.1, 0.3]);
+    expect(bands?.[6]).toEqual([0.1, 0.9]);
+    expect(bands?.[11]).toEqual([0.1, 0.9]);
+    expect(bands?.[12]).toBeNull();
+  });
+
   it("menormalkan alpha subjek 253 menjadi 255 dan menyimpan WebP beralpha", async () => {
     const source = join(tmp, "codex.png");
     const target = join(tmp, "codex.webp");

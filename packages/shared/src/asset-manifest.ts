@@ -12,10 +12,19 @@ const Fraction = z.number().min(0).max(1);
 
 // Hasil analisis cut-out (T-123): kotak alpha dan titik fokus dalam pecahan lebar/tinggi gambar,
 // dipakai arketipe untuk menempatkan subjek dan teks (PRD 4 P8).
+export const SUBJECT_BANDS = 16;
+
 export const SubjectInfo = z
   .strictObject({
     box: z.strictObject({ left: Fraction, top: Fraction, right: Fraction, bottom: Fraction }),
     focus: z.strictObject({ x: Fraction, y: Fraction }),
+    // Profil lebar subjek (T-139): pita horizontal dari atas ke bawah gambar, masing-masing tepi kiri
+    // dan kanan alpha (pecahan lebar), null bila pita kosong. Arketipe memakainya agar hanya bagian
+    // subjek yang benar-benar masuk kolom teks yang menentukan letaknya.
+    bands: z
+      .array(z.tuple([Fraction, Fraction]).nullable())
+      .length(SUBJECT_BANDS)
+      .optional(),
   })
   .refine(({ box }) => box.left < box.right && box.top < box.bottom, {
     message: "Kotak subjek harus punya lebar dan tinggi",
