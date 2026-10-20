@@ -318,10 +318,11 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - Keputusan pemilik 2026-10-20 (rencana disetujui): brief K1–K3, S1–S3, R1–R3 sama dengan T-117, 1 varian, arketipe dipilih Claude, berurutan; gaya cocok bervariasi: K1 Retro/Vintage, K2 Brutalisme, K3 Flat, S1 Corporate, S2 Glassmorphism, S3 Minimalism, R1 Flat, R2 Retro/Vintage, R3 Cyberpunk (varian pertama gaya); batas per percobaan Claude 9 dan Codex 3; perkiraan Claude 50–63, Codex 12–27, ±$14–19, ±50–70 menit; dry-run sembilan konfigurasi dulu, lalu sungguhan. Gerbang tetap PRD 11 (GO bila ≥ 6 dari 9 layak menurut pemilik).
   - Selesai 2026-10-20: dry-run 9/9 lolos setelah perbaikan QA area konten font display (a50dfc8); jalan sungguhan Claude 71, Codex 25, ±$18,81, 52 menit; QA kode 9/9, QA visual 0/9 (rata 6,9). **Layak menurut pemilik 6/9 (K2, S2, S3, R1, R2, R3): GO** (PRD 11). Tabel, kalibrasi, dan temuan di KNOWLEDGE "Evaluasi ulang spike T-127"; temuan diteruskan ke T-137 dan T-138.
 
-- [ ] T-136 `pnpm dev` macet di Terminal pengguna (fsevents)
+- [x] T-136 `pnpm dev` macet di Terminal pengguna (fsevents)
   - Rujukan: KNOWLEDGE "`pnpm dev` macet di Terminal pengguna"
   - AC: `pnpm dev` dari Terminal pengguna membuka jendela Laras; perubahan file di `apps/desktop/src` tetap memicu HMR.
   - Catatan: ditemukan 2026-10-20 saat pemilik ingin mengecek aplikasi di tengah T-127; sementara dijalankan dari shell agent. Pilihan: `server.watch.usePolling` di `vite.config.ts` (biaya CPU polling), atau cari penyebab fsevents di macOS 27.
+  - Selesai 2026-10-20 (rencana disetujui pemilik), tanpa perubahan kode: penyebabnya dialog izin TCC "folder Documents" untuk Claude.app yang menahan `FSEventStreamCreate` sampai dijawab (bukti log `tccd` dan `fseventsd` di KNOWLEDGE). Izin sudah tersimpan sejak 01:55. Uji dari panel Terminal: fsevents mentah mulai dalam 3–61 ms di `/tmp`, `~`, `~/Documents`, dan `apps/desktop`; `pnpm dev` siap 151 ms, `target/debug/laras` berjalan dengan jendela tampil (CGWindowList `onscreen`), dan perubahan `apps/desktop/src/app/App.tsx` memicu `hmr update` dengan fsevents (file dikembalikan). Polling tidak dipasang.
 
 - [x] T-137 Kalibrasi QA visual dan putaran revisi terhadap penilaian pemilik T-127
   - Rujukan: KNOWLEDGE "Evaluasi ulang spike T-127", PRD F9, PRD 3 (waktu ≤ 5 menit), T-126
