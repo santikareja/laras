@@ -3,7 +3,8 @@ import { type ColorToken, color, space } from "../primitives/vars.ts";
 import { optionalSlot, type SlideProps, slot, type Template } from "../src/template.ts";
 import { styleTreatment } from "../styles/layer.tsx";
 
-// Arketipe eksperimen Konsep terang (T-139, referensi pemilik "Don't Get TRAPPED"): iklan cetak
+// Arketipe Konsep terang (T-139, referensi pemilik "Don't Get TRAPPED"; masuk katalog Claude
+// setelah disetujui pemilik 2026-10-20): iklan cetak
 // yang lapang. Satu foto konsep besar (cut-out) diagonal dari sudut bawah dengan bayangan lantai
 // lembut, satu benda pendamping kecil sebagai penyeimbang, dan blok teks tiga tingkat di kolom
 // seberang: pembuka sedang, satu kata kunci raksasa berwarna brand, penutup sedang, lalu body kecil
@@ -12,7 +13,22 @@ import { styleTreatment } from "../styles/layer.tsx";
 
 const EDGE = "var(--space-safe)";
 // Kotak subjek 4:5 (px): sekitar 62% lebar kanvas.
-const SUBJECT = { width: 670, height: 838 };
+const SUBJECT = { width: 670, height: 838, offset: -43 };
+// Kolom teks di sisi seberang: lebar 56% dari tepi aman (safe margin terbesar fixture 80 px).
+const TEXT_WIDTH = 0.56;
+const TEXT_INNER_EDGE = 1080 - 80 - TEXT_WIDTH * 1080;
+const TEXT_ANCHOR = "--konsep-teks";
+
+// Puncak kotak subjek: dasar alpha menembus tepi bawah kanvas (potongan datar cut-out tidak boleh
+// melayang, tampak seperti persegi ditempel). Bila alpha subjek melebar ke kolom teks, puncak alpha
+// didorong ke bawah dasar blok teks (anchor CSS) agar teks tidak pernah menimpa subjek.
+function subjectTop(box: { top: number; right: number; bottom: number } | undefined) {
+  const { top = 0, right = 1, bottom = 1 } = box ?? {};
+  const resting = 1350 + 12 - bottom * SUBJECT.height;
+  const reach = SUBJECT.offset + right * SUBJECT.width;
+  if (reach <= TEXT_INNER_EDGE - 16) return `${Math.round(resting)}px`;
+  return `max(${Math.round(resting)}px, calc(anchor(${TEXT_ANCHOR} bottom) + 32px - ${Math.round(top * SUBJECT.height)}px))`;
+}
 const ICONS: IconName[] = ["pin", "globe", "clock", "calendar", "check", "arrow-right"];
 // Bayangan lantai lembut dari token, seperti foto produk di atas lantai terang.
 const SHADOW =
@@ -76,26 +92,6 @@ function KonsepTerangSlide({ slots, options, style }: SlideProps) {
     >
       <Arc size={700} style={{ [near]: "-400px", top: "-380px" }} />
       <Arc size={460} style={{ [far]: "-230px", bottom: "-170px" }} />
-      <div
-        style={{
-          position: "absolute",
-          [near]: "-4%",
-          // Kotak 4:5 dan dasar alpha subjek menembus tepi bawah kanvas: potongan datar cut-out
-          // tidak boleh melayang di atas tepi (tampak seperti persegi ditempel).
-          bottom: `${-Math.round((1 - (image.subject?.box.bottom ?? 1)) * SUBJECT.height) - 12}px`,
-          width: `${SUBJECT.width}px`,
-          height: `${SUBJECT.height}px`,
-          filter: SHADOW,
-        }}
-      >
-        <Photo
-          slot="image"
-          src={image.src}
-          fit="contain"
-          treatment={treatment}
-          focus={image.subject?.focus}
-        />
-      </div>
       {pendamping && (
         <div
           style={{
@@ -117,7 +113,9 @@ function KonsepTerangSlide({ slots, options, style }: SlideProps) {
           position: "absolute",
           top: "15%",
           [far]: EDGE,
-          width: "56%",
+          width: `${TEXT_WIDTH * 100}%`,
+          anchorName: TEXT_ANCHOR,
+          zIndex: 1,
           display: "grid",
           gridTemplateColumns: "minmax(0, 1fr)",
           justifyItems: "start",
@@ -125,7 +123,7 @@ function KonsepTerangSlide({ slots, options, style }: SlideProps) {
         }}
       >
         {pembuka && (
-          <Text slot="pembuka" font="body" size={4} color="neutral-dark" strong balance>
+          <Text slot="pembuka" font="body" size={3} color="neutral-dark" strong balance>
             {pembuka.value}
           </Text>
         )}
@@ -133,7 +131,7 @@ function KonsepTerangSlide({ slots, options, style }: SlideProps) {
           {slot(slots, "kata", "text").value}
         </Display>
         {penutup && (
-          <Text slot="penutup" font="body" size={4} color="neutral-dark" strong balance>
+          <Text slot="penutup" font="body" size={3} color="neutral-dark" strong balance>
             {penutup.value}
           </Text>
         )}
@@ -165,6 +163,25 @@ function KonsepTerangSlide({ slots, options, style }: SlideProps) {
             </Text>
           </div>
         )}
+      </div>
+      {/* Subjek setelah blok teks di DOM: anchor CSS hanya berlaku untuk anchor yang mendahului. */}
+      <div
+        style={{
+          position: "absolute",
+          [near]: `${SUBJECT.offset}px`,
+          top: subjectTop(image.subject?.box),
+          width: `${SUBJECT.width}px`,
+          height: `${SUBJECT.height}px`,
+          filter: SHADOW,
+        }}
+      >
+        <Photo
+          slot="image"
+          src={image.src}
+          fit="contain"
+          treatment={treatment}
+          focus={image.subject?.focus}
+        />
       </div>
       <div
         style={{
@@ -220,7 +237,7 @@ export const konsepTerang: Template = {
         type: "text",
         required: false,
         description: "Baris pembuka sebelum kata kunci",
-        maxChars: 22,
+        maxChars: 20,
       },
       { name: "kata", type: "text", required: true, description: "Satu kata kunci", maxChars: 10 },
       {
@@ -228,7 +245,7 @@ export const konsepTerang: Template = {
         type: "text",
         required: false,
         description: "Baris penutup setelah kata kunci",
-        maxChars: 26,
+        maxChars: 24,
       },
       { name: "body", type: "text", required: false, description: "Satu kalimat", maxChars: 70 },
       {

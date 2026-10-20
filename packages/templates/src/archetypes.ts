@@ -25,6 +25,8 @@ export const archetypes: Template[] = [
   kolaseDiagonal,
   panelInfo,
   kartuKaca,
+  // Gaya referensi pemilik "Don't Get TRAPPED" (T-139), disetujui 2026-10-20.
+  konsepTerang,
   ...corporateCleanArchetypes,
   ...cyberpunkArchetypes,
   ...retroVintageArchetypes,
@@ -33,5 +35,5 @@ export const archetypes: Template[] = [
 ];
 
 // Arketipe eksperimen yang tidak masuk katalog Claude; dirender skrip spike dengan katalog sendiri.
-export const experimentalArchetypes: Template[] = [latarPenuh, konsepTerang];
+export const experimentalArchetypes: Template[] = [latarPenuh];
 export { TEXT_ZONES } from "../feed/LatarPenuh.tsx";

@@ -271,6 +271,46 @@ const CASES: Record<string, Partial<Record<Brand, Case>>> = {
   },
 };
 
+// Konsep terang (T-139): kata kunci satu kata, pembuka dan penutup pendek, body satu kalimat.
+CASES["feed-konsep-terang"] = {
+  "kopi-lembayung": {
+    text: {
+      pembuka: "Disangrai minggu ini",
+      kata: "SEGAR",
+      penutup: "tanggalnya di kemasan.",
+      body: "200 g, disangrai sendiri setiap minggu. Rp85.000.",
+      cta: "Mampir, ambil sekantong",
+    },
+    images: { image: "interaksi.webp" },
+    options: { side: "left", tone: "neutral", kata: "primary", ikon: "pin", logo: "bottom" },
+    logo: "primary",
+  },
+  "seruni-skin": {
+    text: {
+      pembuka: "Sebelum perawatan,",
+      kata: "KENALI",
+      penutup: "kulitmu dulu.",
+      body: "Konsultasi gratis dan foto kondisi kulit di awal setiap perawatan.",
+      cta: "Jadwalkan konsultasi gratis",
+    },
+    images: { image: "subjek.webp" },
+    options: { side: "right", tone: "secondary", kata: "primary", ikon: "calendar", logo: "top" },
+    logo: "primary",
+  },
+  "ritme-run-club": {
+    text: {
+      pembuka: "Never run 5K before?",
+      kata: "SUNDAY",
+      penutup: "5:45 AM. Any pace.",
+      body: "Free group run. The 8:30 pace group walks and runs.",
+      cta: "Just show up",
+    },
+    images: { image: "interaksi.webp" },
+    options: { side: "left", tone: "neutral", kata: "primary", ikon: "clock", logo: "top" },
+    logo: "primary",
+  },
+};
+
 const assetId = (file: string) => file.replace(/\.\w+$/, "");
 
 // Arketipe khas gaya (T-134) tidak punya isi di sini: isi pola gaya yang memakainya dipakai,
