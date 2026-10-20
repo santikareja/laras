@@ -3,6 +3,7 @@ import { color, space } from "../primitives/vars.ts";
 import { boxFromPercent, textBelowFocus, thirdsPlacement } from "../src/geometry.ts";
 import { optionalSlot, type SlideProps, slot, type Template } from "../src/template.ts";
 import { StyleBackdrop, StyleOverlay, styleEffect, styleTreatment } from "../styles/layer.tsx";
+import { SceneBackdrop, sceneSlot } from "./scene.tsx";
 
 // Arketipe A2 Bidang warna (T-122 v4, ADR-015; PRD 4 P2, P8–P11): bidang warna dominan, lengkung
 // warna kedua di belakang subjek cut-out, satu blok teks tiga tingkat (pembuka bersorot, frasa
@@ -21,6 +22,7 @@ function BidangWarnaSlide({ slots, options, style }: SlideProps) {
   const pembuka = optionalSlot(slots, "pembuka", "text");
   const penutup = optionalSlot(slots, "penutup", "text");
   const cta = optionalSlot(slots, "cta", "text");
+  const scene = optionalSlot(slots, "adegan", "image");
   const box = boxFromPercent({ ...SUBJECT, [far]: SUBJECT.offset });
   // Fokus subjek di titik sepertiga sisi subjek (P8, T-131).
   const placement = image.subject ? thirdsPlacement(box, 4 / 5, image.subject, far) : undefined;
@@ -34,8 +36,12 @@ function BidangWarnaSlide({ slots, options, style }: SlideProps) {
         background: color(options.tone === "neutral" ? "neutral-light" : "secondary"),
       }}
     >
-      <StyleBackdrop style={style} subjectSide={far} />
-      {options.arch !== "none" && (
+      {scene ? (
+        <SceneBackdrop src={scene.src} treatment={styleTreatment(style)} />
+      ) : (
+        <StyleBackdrop style={style} subjectSide={far} />
+      )}
+      {!scene && options.arch !== "none" && (
         <div
           data-qa-element="shape"
           data-qa-name="lengkung"
@@ -152,6 +158,10 @@ export const bidangWarna: Template = {
     description:
       "Bidang warna brand yang tenang dengan lengkung di belakang subjek cut-out, headline tiga tingkat (pembuka kecil, frasa utama raksasa, penutup), CTA tombol. Untuk promo produk atau ajakan dengan satu frasa kuat.",
     slots: [
+      sceneSlot(
+        "Keep the half on the text side calm and plain for the text block; the subject stands on the other side.",
+        { secondary: "light", neutral: "light" },
+      ),
       {
         name: "image",
         type: "image",

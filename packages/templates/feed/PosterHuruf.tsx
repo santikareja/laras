@@ -10,6 +10,7 @@ import {
   LAYER,
   wordRows,
 } from "../styles/retro-vintage/parts.tsx";
+import { SceneBackdrop, sceneSlot } from "./scene.tsx";
 
 // Arketipe Poster huruf (T-134, Vintage/Retro pola 3; PRD 4 K2, K3, K8): poster acara 70-an.
 // Kata kunci raksasa memenuhi lebar di separuh atas bidang warna, subjek cut-out berdiri atau
@@ -40,6 +41,7 @@ function PosterHurufSlide({ slots, options, style }: SlideProps) {
   if (!tone) throw new Error("Tone tidak dikenal");
   const ink: ColorToken = options.huruf === "accent" ? "accent" : tone.ink;
   const image = slot(slots, "image", "image");
+  const scene = optionalSlot(slots, "adegan", "image");
   const box = image.subject?.box ?? FALLBACK_BOX;
   const kredit = optionalSlot(slots, "kredit", "text");
   const info = optionalSlot(slots, "info", "text");
@@ -66,7 +68,11 @@ function PosterHurufSlide({ slots, options, style }: SlideProps) {
         background: color(tone.field),
       }}
     >
-      <StyleBackdrop style={style} subjectSide={subjectLeft ? "left" : "right"} />
+      {scene ? (
+        <SceneBackdrop src={scene.src} treatment={styleTreatment(style)} />
+      ) : (
+        <StyleBackdrop style={style} subjectSide={subjectLeft ? "left" : "right"} />
+      )}
       {(kredit || info) && (
         <div
           data-qa-element="group"
@@ -110,7 +116,8 @@ function PosterHurufSlide({ slots, options, style }: SlideProps) {
             // Pusat tubuh di sepertiga kanvas sisi subjek.
             left: `calc(${subjectLeft ? 33 : 67}cqw - var(--space-safe))`,
             transform: `translateX(-${(((box.left + box.right) / 2) * 100).toFixed(1)}%)`,
-            filter: shadow,
+            // Bayangan keras di dinding hanya untuk bidang warna; adegan punya cahayanya sendiri.
+            filter: scene ? undefined : shadow,
           }}
         >
           <Photo
@@ -185,6 +192,10 @@ export const posterHuruf: Template = {
     description:
       "Poster acara 70-an: kata kunci atau angka raksasa memenuhi lebar separuh atas bidang warna, subjek cut-out di depan bagian bawah hurufnya dengan bayangan di dinding, baris kredit kecil di atas, dan blok detail (headline pendek, tiga kolom fakta, CTA) di sisi seberang subjek. Untuk acara, profil orang, atau satu angka kunci.",
     slots: [
+      sceneSlot(
+        "Keep the upper half calm and plain (wall, sky, or backdrop), because a giant word fills it, and keep the lower corner opposite the subject calm for a small text block.",
+        { primary: "dark", secondary: "light", accent: "light", neutral: "light" },
+      ),
       {
         name: "image",
         type: "image",

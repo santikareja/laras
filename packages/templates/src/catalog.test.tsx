@@ -69,7 +69,9 @@ describe("katalog template", () => {
       });
 
       it("menerima setiap nilai opsi yang diizinkan", () => {
-        const slots = filledSlots(template.meta, true);
+        // Opsi bidang (lengkung, bayangan, riak) diuji di mode bidang: latar adegan (T-141)
+        // sengaja menggantikannya.
+        const { adegan: _, ...slots } = filledSlots(template.meta, true);
         for (const option of template.meta.options) {
           const outputs = option.values.map((value) =>
             render(template, slots, { [option.name]: value }),

@@ -18,6 +18,7 @@ import {
   subjectStyle,
 } from "../styles/flat-design/parts.tsx";
 import { styleEffect, styleTreatment } from "../styles/layer.tsx";
+import { SceneBackdrop, sceneSlot } from "./scene.tsx";
 
 // Arketipe Subjek dan lingkar (T-134, PANDUAN Flat Design pola 1; referensi Opay): satu bentuk
 // besar pembawa metafora (cakram matahari, cincin, lensa kaca pembesar, biji kopi, blob) di
@@ -63,6 +64,7 @@ function SubjekLingkarSlide({ slots, options, style }: SlideProps) {
   const mirror = (x: number) => (flip ? CANVAS.width - x : x);
 
   const info = optionalSlot(slots, "info", "text");
+  const scene = optionalSlot(slots, "adegan", "image");
   const sorotan = optionalSlot(slots, "sorotan", "text");
   const cta = optionalSlot(slots, "cta", "text");
   const icon = ICONS.find((name) => name === options.ikon);
@@ -135,7 +137,8 @@ function SubjekLingkarSlide({ slots, options, style }: SlideProps) {
         background: color(field),
       }}
     >
-      {options.pola !== "none" && (
+      {scene && <SceneBackdrop src={scene.src} treatment={styleTreatment(style)} />}
+      {!scene && options.pola !== "none" && (
         <Ripple center={stage} field={field} ink={fill} from={Math.round(size / 2) + 56} />
       )}
       {options.bingkai === "garis" && (
@@ -265,6 +268,10 @@ export const subjekLingkar: Template = {
     description:
       "Subjek cut-out di depan satu bentuk besar pembawa metafora (cakram matahari, cincin, lensa kaca pembesar, biji kopi, blob) dengan kepala keluar dari tepi atasnya, garis swirl tebal, headline dua nada, chip info, CTA. Untuk ajakan, promo, atau brand awareness dengan satu ide visual.",
     slots: [
+      sceneSlot(
+        "A large circle shape sits behind the subject, so keep the area around it simple, and keep the text side and the top band calm for the headline.",
+        { primary: "dark", secondary: "light", neutral: "light" },
+      ),
       {
         name: "image",
         type: "image",

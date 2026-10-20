@@ -8,6 +8,7 @@ import {
 } from "../src/geometry.ts";
 import { optionalSlot, type SlideProps, slot, type Template } from "../src/template.ts";
 import { StyleBackdrop, StyleOverlay, styleEffect, styleTreatment } from "../styles/layer.tsx";
+import { SceneBackdrop, sceneSlot } from "./scene.tsx";
 
 // Arketipe A1 Kata raksasa (T-122, ADR-015; PRD 4 K2, K3): kata kunci raksasa di belakang subjek
 // cut-out di atas bidang warna brand. Ukuran kata dipaskan renderer (fit-to-width); headline dan
@@ -23,6 +24,7 @@ function KataRaksasaSlide({ slots, options, style }: SlideProps) {
   const dark = options.tone === "primary";
   const cta = optionalSlot(slots, "cta", "text");
   const image = slot(slots, "image", "image");
+  const scene = optionalSlot(slots, "adegan", "image");
   const side = options.side ?? "center";
   const shift = SHIFT[side] ?? 0;
   const textRight = side === "left";
@@ -47,10 +49,14 @@ function KataRaksasaSlide({ slots, options, style }: SlideProps) {
         background: color(dark ? "primary" : "secondary"),
       }}
     >
-      <StyleBackdrop
-        style={style}
-        {...(side === "left" || side === "right" ? { subjectSide: side } : {})}
-      />
+      {scene ? (
+        <SceneBackdrop src={scene.src} treatment={styleTreatment(style)} />
+      ) : (
+        <StyleBackdrop
+          style={style}
+          {...(side === "left" || side === "right" ? { subjectSide: side } : {})}
+        />
+      )}
       <div style={{ position: "absolute", top: "17%", left: EDGE, right: EDGE }}>
         <Display
           slot="kata"
@@ -140,6 +146,10 @@ export const kataRaksasa: Template = {
     description:
       "Satu kata kunci raksasa di belakang subjek cut-out di atas bidang warna brand, headline pendek dan CTA di sisi seberang subjek. Untuk pesan yang bisa dirangkum satu kata atau angka.",
     slots: [
+      sceneSlot(
+        "Keep the upper two thirds calm and low in detail, because a giant word spans the canvas behind the subject, and keep the side opposite the subject calm for the headline.",
+        { primary: "dark", secondary: "light" },
+      ),
       {
         name: "image",
         type: "image",
