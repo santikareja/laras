@@ -248,6 +248,9 @@ export const posterTekno: Template = {
           "Subjek cut-out berlatar transparan (orang atau objek); monokrom dengan gaya Cyberpunk bila aturan brand mengizinkan",
         aspectRatio: "4:5",
         cutout: true,
+        composition: {
+          base: "Large subject standing tall, centered, and facing the camera, full body or knees up, readable as a strong silhouette in front of repeated giant words.",
+        },
       },
       {
         name: "kata",

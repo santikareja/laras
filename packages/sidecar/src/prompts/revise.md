@@ -35,7 +35,7 @@ Aturan:
 - Satu informasi hanya tampil di satu slot: jangan sampai revisi membuat fakta atau frasa kunci muncul di dua slot (badge, headline, body, CTA).
 - Opsi arketipe tetap mematuhi aturan brand (posisi logo, latar, pasangan warna). Cut-out tetap `kind` `"cutout"` dengan `subject` yang sama.
 - Bila `<style>` memuat gaya, `styleOptions` disalin apa adanya kecuali perbaikan menyebutnya, dan tetap memakai nama dan nilai dari "Opsi gaya". Arketipe pengganti diutamakan dari daftar "Arketipe gaya ini".
-- Deskripsi aset yang diubah tetap mewujudkan ide visual yang sama dengan deskripsi lamanya; perbaiki eksekusinya (pose, cahaya, ruang kosong), jangan mengganti idenya.
+- Deskripsi aset yang diubah tetap mewujudkan ide visual yang sama dengan deskripsi lamanya dan tetap berupa brief art director berbahasa Inggris yang sejalan dengan `composition` slot di katalog; perbaiki eksekusinya (pose, arah hadap, cahaya, ruang kosong), jangan mengganti idenya.
 - `regenerateAssets` berisi id `assetRequests` yang fotonya harus dibuat ulang, hanya bila daftar perbaikan memuat perbaikan bertarget `assets` untuk foto itu. Bila deskripsi aset berubah, id-nya wajib ada di sini. Tanpa perbaikan bertarget `assets`, isi dengan daftar kosong dan salin deskripsi aset persis; masalah komposisi diperbaiki lewat layout (opsi, fokus, posisi), bukan dengan membuat foto baru.
 - `summary` menjelaskan singkat apa saja yang berubah, dalam bahasa Indonesia.
 
@@ -78,7 +78,7 @@ Contoh format output yang valid (hanya contoh bentuk untuk brand lain, jangan me
     "assetRequests": [
       {
         "id": "roti-cutout",
-        "description": "Tangan perempuan mengangkat roti sobek keju yang baru dipanggang dari samping, siku masuk dari tepi bawah, cahaya pagi hangat dari kiri",
+        "description": "Editorial close-up of a woman's hand lifting a freshly baked cheese milk bun from the side, the elbow entering from the lower edge, thin steam rising, warm morning window light from the left, sleeve in the brand secondary color, turned slightly toward the left where the text sits",
         "aspectRatio": "4:5",
         "kind": "cutout",
         "subject": "object"

@@ -31,6 +31,22 @@ describe("katalog template", () => {
     expect(templates.length).toBeGreaterThanOrEqual(2);
   });
 
+  // Kontrak komposisi gambar (T-141): setiap slot gambar katalog punya arahan untuk model gambar,
+  // dan kalimat per nilai opsi mencakup tepat semua nilai opsi yang dirujuk.
+  it.each(templates.map((t) => [t.meta.id, t] as const))(
+    "%s: komposisi slot gambar lengkap",
+    (_, t) => {
+      for (const slot of t.meta.slots.filter((s) => s.type === "image")) {
+        expect(slot.composition, `${t.meta.id}.${slot.name}`).toBeDefined();
+        const { option, byValue } = slot.composition ?? {};
+        if (!option) continue;
+        const values = t.meta.options.find((o) => o.name === option)?.values;
+        expect(values, `opsi ${option}`).toBeDefined();
+        expect(Object.keys(byValue ?? {}).sort()).toEqual([...(values ?? [])].sort());
+      }
+    },
+  );
+
   describe.each([...templates, specimen].map((t) => [t.meta.id, t] as const))(
     "%s",
     (_, template) => {

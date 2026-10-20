@@ -17,6 +17,18 @@ export const TemplateSlot = z
     aspectRatio: AspectRatio.optional(),
     // Slot gambar yang membutuhkan subjek cut-out berlatar transparan (T-123).
     cutout: z.boolean().optional(),
+    // Kontrak komposisi gambar untuk model gambar (T-141, bahasa Inggris): kalimat dasar, dan
+    // kalimat per nilai satu opsi (mis. sisi subjek), dirangkai sistem dari opsi layout.
+    composition: z
+      .strictObject({
+        base: z.string().min(1),
+        option: z.string().min(1).optional(),
+        byValue: z.record(z.string(), z.string().min(1)).optional(),
+      })
+      .refine((c) => (c.option === undefined) === (c.byValue === undefined), {
+        message: "option dan byValue komposisi diisi bersamaan",
+      })
+      .optional(),
   })
   .superRefine((slot, ctx) => {
     const textual = slot.type === "text" || slot.type === "badge";
@@ -36,6 +48,13 @@ export const TemplateSlot = z
     }
     if (slot.cutout !== undefined && slot.type !== "image") {
       ctx.addIssue({ code: "custom", path: ["cutout"], message: "cutout hanya untuk slot image" });
+    }
+    if (slot.composition !== undefined && slot.type !== "image") {
+      ctx.addIssue({
+        code: "custom",
+        path: ["composition"],
+        message: "composition hanya untuk slot image",
+      });
     }
   });
 export type TemplateSlot = z.infer<typeof TemplateSlot>;
@@ -118,4 +137,20 @@ export function layoutIssues(spec: LayoutSpec, meta: TemplateMeta): string[] {
     }
   });
   return issues;
+}
+
+// Arahan komposisi satu slot gambar untuk opsi layout yang dipilih (T-141): kalimat dasar
+// ditambah kalimat untuk nilai opsinya (atau nilai default opsi bila layout tidak mengisinya).
+export function slotComposition(
+  slot: TemplateSlot,
+  meta: TemplateMeta,
+  options: Record<string, string>,
+): string | undefined {
+  const composition = slot.composition;
+  if (!composition) return undefined;
+  const name = composition.option;
+  if (!name || !composition.byValue) return composition.base;
+  const value = options[name] ?? meta.options.find((o) => o.name === name)?.default;
+  const extra = value === undefined ? undefined : composition.byValue[value];
+  return extra ? `${composition.base} ${extra}` : composition.base;
 }

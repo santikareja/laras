@@ -108,6 +108,8 @@ type Fake = {
   assetCalls: string[];
   // Setting yang diterima penyedia aset per panggilan (T-125).
   settings: unknown[];
+  // Kontrak komposisi per aset yang diterima penyedia aset (T-141).
+  compositions: unknown[];
   renders: number;
   // Pilihan gaya yang diterima render per panggilan (T-133).
   styles: (StyleChoice | undefined)[];
@@ -152,6 +154,7 @@ function fake(options: {
     async generate(request, ctx) {
       assetCalls.push(request.id);
       result.settings.push(ctx.setting);
+      result.compositions.push(ctx.compositions);
       await mkdir(join(ctx.jobDir, "assets"), { recursive: true });
       await writeFile(join(ctx.jobDir, "assets", `${request.id}.jpg`), "jpg");
       return {
@@ -167,6 +170,7 @@ function fake(options: {
     calls,
     assetCalls,
     settings: [],
+    compositions: [],
     renders: 0,
     styles: [],
     deps: undefined as unknown as PipelineDeps,
@@ -459,6 +463,8 @@ describe("konsep visual dan setting dari plan (T-125)", () => {
     expect(layoutPrompt).toContain("<setting>");
     expect(layoutPrompt).toContain("a quiet alley in Bandung, Indonesia");
     expect(f.settings).toEqual([plan(1).setting]);
+    // Slot gambar feed-foto-konsep membawa kontrak komposisinya ke penyedia aset (T-141).
+    expect(f.compositions).toEqual([{ hero: expect.stringContaining("upper 40% of the frame") }]);
   });
 });
 

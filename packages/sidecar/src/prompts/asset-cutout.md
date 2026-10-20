@@ -12,6 +12,8 @@ Requirements:
 - Transparent background: output a PNG with an alpha channel where everything except the subject is fully transparent. No background color, no floor, no cast shadow, no frame.
 - The whole subject stays inside the frame with empty margin on every side, unless the description says a part of it (for example a forearm) enters from an edge.
 - Clothing, props, and materials may use the brand palette where it fits naturally: {{palette}}.
+- Composition for this layout (it decides where text and graphics sit): {{composition}}
+- Quality: an editorial campaign photograph by a professional photographer, with intentional composition, natural light and color, and real textures; never a stock-photo or plastic CGI look.
 - Setting: {{setting}}
 - Visual style: {{styleDirection}}
 - Brand photo rules (they override the visual style): {{photoRules}}

@@ -182,6 +182,9 @@ export const kolaseDiagonal: Template = {
         required: true,
         description: "Foto utuh untuk bingkai",
         aspectRatio: "4:5",
+        composition: {
+          base: "A full scene that gives context to the cut-out subject; keep its point of interest centered with margin, because the photo sits in a tilted torn-paper frame and its edges are cropped.",
+        },
       },
       {
         name: "subjek",
@@ -190,6 +193,14 @@ export const kolaseDiagonal: Template = {
         description: "Subjek cut-out berlatar transparan yang keluar dari bingkai",
         aspectRatio: "4:5",
         cutout: true,
+        composition: {
+          base: "Cut-out subject that breaks out of the photo frame toward the viewer; whole figure or upper body with an energetic, readable pose.",
+          option: "flip",
+          byValue: {
+            no: "Turn the body and gaze slightly toward the left, where the text sits.",
+            yes: "Turn the body and gaze slightly toward the right, where the text sits.",
+          },
+        },
       },
       {
         name: "headline",

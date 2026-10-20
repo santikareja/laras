@@ -110,6 +110,16 @@ export const kartuKaca: Template = {
         required: true,
         description: "Foto suasana atau produk dalam konteks, bagian bawah cukup tenang",
         aspectRatio: "4:5",
+        composition: {
+          base: "Atmospheric photo of the place or product in context with soft depth; a frosted glass text card covers part of the frame, so keep faces and the product clear of it.",
+          option: "posisi",
+          byValue: {
+            bawah:
+              "Keep the main subject in the upper 55% of the frame; the lower 45% stays calm and simple.",
+            tengah:
+              "Keep the main subject in the upper third or toward the sides; the middle band stays calm and simple.",
+          },
+        },
       },
       {
         name: "chip",

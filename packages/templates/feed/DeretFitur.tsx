@@ -330,6 +330,9 @@ export const deretFitur: Template = {
           "Orang nyata setengah badan ke atas (cut-out), menghadap kamera atau sedikit ke samping, memegang alat kerja atau produk",
         aspectRatio: "4:5",
         cutout: true,
+        composition: {
+          base: "Real person from the waist up facing the camera or slightly turned, holding work tools or the product; head and shoulders fully visible, because the head breaks out of the top of a window frame.",
+        },
       },
       {
         name: "eyebrow",

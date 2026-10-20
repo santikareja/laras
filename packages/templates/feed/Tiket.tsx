@@ -280,6 +280,14 @@ export const tiket: Template = {
           "Orang cut-out (bergerak, menunjuk, memegang produk) atau produk cut-out berlatar transparan",
         aspectRatio: "4:5",
         cutout: true,
+        composition: {
+          base: "Person moving, pointing, or holding the product, or a product alone, whole and readable; it breaks through the far edge of a giant ticket.",
+          option: "flip",
+          byValue: {
+            no: "Turn the body and gaze slightly toward the left, where the text sits.",
+            yes: "Turn the body and gaze slightly toward the right, where the text sits.",
+          },
+        },
       },
       {
         name: "kepala",

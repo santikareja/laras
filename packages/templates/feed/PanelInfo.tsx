@@ -202,6 +202,14 @@ export const panelInfo: Template = {
         description: "Subjek cut-out (orang yang bekerja atau memegang produk)",
         aspectRatio: "4:5",
         cutout: true,
+        composition: {
+          base: "Cut-out of a real person at work or holding the product, upper body or three-quarter body, cropped flat at the bottom; the inner edge of the body overlaps a brand panel.",
+          option: "flip",
+          byValue: {
+            no: "Turn the body and gaze slightly toward the left, where the text sits.",
+            yes: "Turn the body and gaze slightly toward the right, where the text sits.",
+          },
+        },
       },
       {
         name: "eyebrow",

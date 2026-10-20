@@ -147,6 +147,15 @@ export const kataRaksasa: Template = {
         description: "Subjek cut-out berlatar transparan (orang atau produk)",
         aspectRatio: "4:5",
         cutout: true,
+        composition: {
+          base: "Cut-out subject shown at least from head to mid-thigh with head and shoulders fully visible and unobstructed, because a giant word sits behind the upper body; strong, readable silhouette.",
+          option: "side",
+          byValue: {
+            left: "Turn the body and gaze slightly toward the right, where the text sits.",
+            right: "Turn the body and gaze slightly toward the left, where the text sits.",
+            center: "Face the camera with a symmetric pose.",
+          },
+        },
       },
       {
         name: "kata",

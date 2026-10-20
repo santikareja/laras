@@ -26,6 +26,7 @@ import {
   type RenderCheck,
   RenderReport,
   type StyleChoice,
+  slotComposition,
   type TemplateMeta,
   VisualQa,
 } from "@laras/shared";
@@ -337,6 +338,22 @@ const reviseSchema = (spec: JobSpec, deps: PipelineDeps, work: Working, catalog:
   );
 
 // Aset lama dipakai ulang kecuali diminta dibuat ulang lewat revise atau belum ada.
+// Kontrak komposisi slot gambar arketipe untuk setiap aset (T-141), dirangkai dari opsi layout.
+function assetCompositions(layout: LayoutSpec, catalog: TemplateMeta[]): Record<string, string> {
+  const meta = catalog.find((t) => t.id === layout.templateId);
+  const result: Record<string, string> = {};
+  if (!meta) return result;
+  for (const slide of layout.slides) {
+    for (const [name, value] of Object.entries(slide.slots)) {
+      const slot = meta.slots.find((s) => s.name === name);
+      if (value.type !== "image" || !slot) continue;
+      const text = slotComposition(slot, meta, slide.options);
+      if (text) result[value.assetId] = text;
+    }
+  }
+  return result;
+}
+
 async function produceAssets(spec: JobSpec, deps: PipelineDeps, work: Working, dir: string) {
   const layout = work.layout;
   if (!layout) throw new Error("Tahap assets butuh layout");
@@ -354,6 +371,7 @@ async function produceAssets(spec: JobSpec, deps: PipelineDeps, work: Working, d
       brand: deps.brand,
       style: spec.style,
       ...(work.plan ? { setting: work.plan.setting } : {}),
+      compositions: assetCompositions(layout, deps.catalog),
     };
     assets.push(
       await provider.generate(request, deps.signal ? { ...ctx, signal: deps.signal } : ctx),

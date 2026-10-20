@@ -402,6 +402,14 @@ export const posterGrid: Template = {
         description: "Subjek cut-out berlatar transparan (produk atau orang)",
         aspectRatio: "4:5",
         cutout: true,
+        composition: {
+          base: "Cut-out product or person, upright and whole, that rises into the bottom of a stacked giant word; strong silhouette.",
+          option: "side",
+          byValue: {
+            left: "Turn the body and gaze slightly toward the right, where the text sits.",
+            right: "Turn the body and gaze slightly toward the left, where the text sits.",
+          },
+        },
       },
       {
         name: "seri",

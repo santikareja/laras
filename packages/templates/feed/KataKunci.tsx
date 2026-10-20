@@ -311,6 +311,9 @@ export const kataKunci: Template = {
           "Orang nyata seluruh atau tiga perempat badan (cut-out) yang menjalankan layanan, memegang alat kerja atau produk",
         aspectRatio: "4:5",
         cutout: true,
+        composition: {
+          base: "Real person in full or three-quarter body performing the service with tools or the product, facing the camera or slightly turned; head and shoulders fully visible, because they cover the bottom of a giant word.",
+        },
       },
       {
         name: "kata",

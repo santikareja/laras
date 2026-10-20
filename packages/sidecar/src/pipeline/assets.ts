@@ -27,6 +27,8 @@ export type JobContext = {
   style?: StyleSelection | null;
   // Lokasi dan orang dari plan (T-125), dikirim ke setiap prompt gambar.
   setting?: ContentPlan["setting"];
+  // Kontrak komposisi slot arketipe per id aset (T-141), dirangkai engine dari opsi layout.
+  compositions?: Record<string, string>;
   signal?: AbortSignal;
 };
 export type AssetProvider = {
@@ -147,6 +149,10 @@ export function photoRules(brand: BrandKit, request: AssetRequest): string {
     rules.realSkin &&
       "Any person shows real, unretouched skin texture with natural pores; no beauty filter or airbrushing.",
     rules.motion && "Any person is clearly in motion, never a static pose.",
+    // Gradasi di dalam foto tidak tertangkap cek gradient CSS (temuan T-140, langit R2).
+    brand.constraints?.noGradient &&
+      request.kind !== "cutout" &&
+      "No color gradients: backdrops, skies, walls, and light are solid or evenly lit, never a gradient color wash.",
   ].filter((line): line is string => typeof line === "string");
   return lines.length > 0 ? lines.join(" ") : "None beyond the palette above.";
 }
@@ -163,6 +169,7 @@ export async function assetPrompt(
   brand: BrandKit,
   style: StyleSelection | null = null,
   setting?: ContentPlan["setting"],
+  composition?: string,
 ): Promise<string> {
   const [w = 1, h = 1] = request.aspectRatio.split(":").map(Number);
   const { primary, secondary, accent } = brand.colors;
@@ -176,6 +183,7 @@ export async function assetPrompt(
     styleDirection: styleImageDirection(style),
     photoRules: photoRules(brand, request),
     setting: settingLine(setting, request),
+    composition: composition ?? "As described.",
   };
   const kind = request.kind === "cutout" ? "cutout" : "photo";
   const template = await readFile(PROMPT_TEMPLATES[kind], "utf8");
@@ -217,7 +225,13 @@ export class CodexAssetProvider implements AssetProvider {
     const run = await runCodex({
       codexPath: this.#codexPath,
       cwd: ctx.projectDir,
-      prompt: await assetPrompt(request, ctx.brand, ctx.style ?? null, ctx.setting),
+      prompt: await assetPrompt(
+        request,
+        ctx.brand,
+        ctx.style ?? null,
+        ctx.setting,
+        ctx.compositions?.[request.id],
+      ),
       ...(ctx.signal ? { signal: ctx.signal } : {}),
       ...(this.#spawn ? { spawn: this.#spawn } : {}),
     });

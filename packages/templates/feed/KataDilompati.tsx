@@ -245,6 +245,15 @@ export const kataDilompati: Template = {
           "Subjek cut-out seluruh badan yang melompat atau menari, berlatar transparan; kaki di separuh bawah",
         aspectRatio: "4:5",
         cutout: true,
+        composition: {
+          base: "Full-body subject jumping or dancing mid-air with the whole body inside the frame and the legs in the lower half, because it bursts through stacked giant words.",
+          option: "side",
+          byValue: {
+            left: "Turn the body and gaze slightly toward the right, where the text sits.",
+            right: "Turn the body and gaze slightly toward the left, where the text sits.",
+            center: "Face the camera with a symmetric pose.",
+          },
+        },
       },
       {
         name: "kata",

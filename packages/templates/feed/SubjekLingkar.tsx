@@ -273,6 +273,14 @@ export const subjekLingkar: Template = {
           "Orang cut-out berlatar transparan (seluruh badan untuk susunan samping, setengah badan untuk susunan atas), busana warna brand",
         aspectRatio: "4:5",
         cutout: true,
+        composition: {
+          base: "Person in brand-colored clothing, full body for the side layout or from the waist up for the top layout, with the head clear above a large circle shape behind them.",
+          option: "flip",
+          byValue: {
+            no: "Turn the body and gaze slightly toward the left, where the text sits.",
+            yes: "Turn the body and gaze slightly toward the right, where the text sits.",
+          },
+        },
       },
       {
         name: "headline",

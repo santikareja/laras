@@ -282,6 +282,14 @@ export const selWajah: Template = {
         description:
           "Foto penuh dengan bentuk besar yang tetap terbaca bila dipotong: close-up wajah atau kulit, kelompok orang, benda dari atas. Minta di deskripsi aset letak bagian terpenting (wajah kelompok, mata pada close-up, produk) di sepertiga atas foto, dengan ruang tubuh atau latar di bawahnya",
         aspectRatio: "4:5",
+        composition: {
+          base: "Full photo with large shapes that stay readable when cut into a 4 by 3 grid: a face or skin close-up, a group, or objects from above; keep the most important part (eyes, faces, product) in the upper third with body or backdrop below.",
+          option: "side",
+          byValue: {
+            right: "Place the focal point on the right half.",
+            left: "Place the focal point on the left half.",
+          },
+        },
       },
       {
         name: "seri",

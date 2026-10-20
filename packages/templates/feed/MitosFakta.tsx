@@ -324,6 +324,14 @@ export const mitosFakta: Template = {
           "Orang cut-out setengah badan berekspresi ragu, berpikir, atau menunjuk (atau tangan memegang produk), terpotong di bawah",
         aspectRatio: "4:5",
         cutout: true,
+        composition: {
+          base: "Person from the waist up, cropped flat at the bottom, with a doubtful, thinking, or pointing expression (or a hand holding the product); head clear, because a hanging tag sits above it.",
+          option: "flip",
+          byValue: {
+            no: "Turn the body and gaze slightly toward the left, where the text sits.",
+            yes: "Turn the body and gaze slightly toward the right, where the text sits.",
+          },
+        },
       },
       {
         name: "tanda",

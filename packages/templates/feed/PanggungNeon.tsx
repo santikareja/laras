@@ -304,6 +304,9 @@ export const panggungNeon: Template = {
           "Subjek cut-out berlatar transparan: objek atau orang utuh yang berdiri, atau orang setengah badan (panggung meja)",
         aspectRatio: "4:5",
         cutout: true,
+        composition: {
+          base: "Subject displayed like a trophy under a top spotlight: a whole standing object or person, or a person from the waist up behind a glowing table; centered and facing the camera.",
+        },
       },
       {
         name: "kata",

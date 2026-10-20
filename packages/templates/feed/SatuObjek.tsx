@@ -186,6 +186,9 @@ export const satuObjek: Template = {
         description: "Subjek cut-out berlatar transparan",
         aspectRatio: "4:5",
         cutout: true,
+        composition: {
+          base: "One small subject shown whole and upright at eye level or slightly from above, like a calm product or portrait still; it sits on a floor shadow below the headline, so nothing extends far sideways.",
+        },
       },
       {
         name: "headline",

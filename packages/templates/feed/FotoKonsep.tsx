@@ -48,6 +48,9 @@ export const fotoKonsep: Template = {
         description:
           "Foto konsep satu objek atau metafora dengan latar polos terang dan 40% atas kosong",
         aspectRatio: "4:5",
+        composition: {
+          base: "Keep the upper 40% of the frame a calm, plain area of a single tone (backdrop, wall, or sky) with no objects or texture, because the headline sits there; place the main subject in the lower half, centered.",
+        },
       },
       {
         name: "headline",

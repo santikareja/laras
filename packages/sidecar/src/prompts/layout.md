@@ -52,8 +52,9 @@ Aturan:
 - Setiap slot gambar merujuk satu `assetRequests` dengan `aspectRatio` sama persis dengan slot itu. Bila ada aset pengguna yang cocok, pakai id-nya.
 - Wujudkan ide visual angle (`visual` di `<angle>`): pilih arketipe yang slot gambarnya cocok dengan `visual.kind` (`cutout` → slot bertanda `cutout: true`; `concept` → foto konsep atau foto penuh dengan area tenang; `photo` → slot foto utuh), dan turunkan deskripsi aset dari `visual.image`. Detail boleh disesuaikan agar muat slot (rasio, ruang kosong, pose), tetapi idenya tidak boleh diganti foto suasana biasa. Lokasi dan orang mengikuti `<setting>` (sistem juga menambahkannya ke prompt gambar), jadi jangan menulis lokasi atau orang yang bertentangan.
 - Detail yang tidak bisa digambar (tulisan di kemasan, tanggal, angka di layar) ditampilkan sebagai teks di slot (label, chip, anotasi, kredit), bukan diminta di gambar. Bila copy merujuk detail di gambar yang tidak akan terlihat, tulis faktanya langsung di slot teks.
-- Slot gambar bertanda `cutout: true` membutuhkan subjek cut-out berlatar transparan: isi `kind` `"cutout"` dan `subject` `"person"` (orang) atau `"object"` (produk atau benda). Deskripsinya menyebut subjek saja: siapa atau apa, pose atau sudut, pakaian atau bahan, dan cahaya. Jangan menyebut latar, ruangan, lantai, atau bayangan; latar dibuat sistem dari warna brand. Orang dalam gerak atau berinteraksi dengan produk lebih kuat daripada pose diam.
-- Slot gambar lain membutuhkan foto utuh (tanpa `kind`, atau `kind` `"photo"`): tulis foto yang konkret (subjek, suasana, cahaya, komposisi). Untuk arketipe foto konsep atau kartu kaca, sebutkan bagian foto yang harus tenang dan kosong agar teks terbaca (mis. sepertiga atas kosong).
+- Tulis `description` setiap aset dalam bahasa Inggris sebagai brief art director (paling banyak ±600 karakter), dikerjakan seperti foto kampanye editorial, bukan foto stok: subjek dan aksinya, pose dan arah hadap, letak di bingkai, sudut kamera dan lensa, cahaya (arah dan suasana), peran warna brand (primary, secondary, accent; sistem menambahkan kodenya), dan bahan atau tekstur. Brief wajib sejalan dengan `composition` slot gambar itu di katalog untuk opsi yang kamu pilih (mis. arah hadap subjek ke sisi teks, area yang harus tenang); sistem juga mengirim kontrak itu ke model gambar.
+- Slot gambar bertanda `cutout: true` membutuhkan subjek cut-out berlatar transparan: isi `kind` `"cutout"` dan `subject` `"person"` (orang) atau `"object"` (produk atau benda). Brief menyebut subjek saja (siapa atau apa, pose, pakaian atau bahan, cahaya); jangan menyebut latar, ruangan, lantai, atau bayangan, karena latar dibuat sistem. Orang dalam gerak atau berinteraksi dengan produk lebih kuat daripada pose diam.
+- Slot gambar lain membutuhkan foto utuh (tanpa `kind`, atau `kind` `"photo"`): brief juga menyebut bagian foto yang harus tenang dan polos agar teks terbaca, sesuai `composition` slot (mis. "the upper 40% is a plain cream wall").
 - Semua deskripsi patuh aturan foto brand dan tidak boleh meminta teks, huruf, angka, logo, atau label apa pun di gambar.
 - Bila ada gaya, deskripsi aset mengikuti arahan foto gaya (subjek, cahaya, perlakuan) selama tidak bertentangan dengan aturan foto brand.
 
@@ -85,7 +86,7 @@ Contoh format output yang valid (hanya contoh bentuk untuk brand lain, jangan me
   "assetRequests": [
     {
       "id": "roti-cutout",
-      "description": "Tangan perempuan mengangkat roti sobek keju yang baru dipanggang, uap tipis naik, dilihat dari samping, cahaya pagi hangat dari kiri",
+      "description": "Editorial close-up of a woman's hand lifting a freshly baked cheese milk bun, thin steam rising, seen from the side at eye level with a 50mm lens, warm morning window light from the left, sleeve in the brand secondary color, turned slightly toward the left where the text sits",
       "aspectRatio": "4:5",
       "kind": "cutout",
       "subject": "object"

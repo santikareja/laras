@@ -192,6 +192,14 @@ export const posterHuruf: Template = {
         description: "Subjek cut-out seluruh badan (berdiri atau duduk) berlatar transparan",
         aspectRatio: "4:5",
         cutout: true,
+        composition: {
+          base: "Full-body subject standing or sitting with the whole figure inside the frame, posed like a 1970s poster portrait; a giant word sits behind the head and shoulders.",
+          option: "side",
+          byValue: {
+            left: "Turn the body and gaze slightly toward the right, where the text sits.",
+            right: "Turn the body and gaze slightly toward the left, where the text sits.",
+          },
+        },
       },
       {
         name: "kata",

@@ -199,6 +199,14 @@ export const sampulEditorial: Template = {
         description:
           "Foto penuh bernuansa film dengan area tenang polos (langit, dinding, kain) di atas atau bawah",
         aspectRatio: "4:5",
+        composition: {
+          base: "Film-toned full photo with a calm, plain area (sky, wall, or fabric) large enough for one giant word; the subject stays clear of that area.",
+          option: "zona",
+          byValue: {
+            atas: "Keep the upper 40% calm and plain; place the subject in the lower part.",
+            bawah: "Keep the lower 40% calm and plain; place the subject in the upper part.",
+          },
+        },
       },
       {
         name: "kata",

@@ -219,14 +219,26 @@ describe("assetPrompt", () => {
       "- Brand photo rules (they override the visual style): Products and scenes are lit with natural daylight",
     );
     expect(photo).toContain("Never a plain white seamless backdrop");
+    // Gradasi di dalam foto tidak tertangkap cek gradient CSS (T-141); cut-out tidak berlatar.
+    expect(photo).toContain("No color gradients");
     const cut = photoRules(kopi, { ...request, kind: "cutout", subject: "object" });
     expect(cut).not.toContain("backdrop");
+    expect(cut).not.toContain("gradient");
     expect(photoRules(fixture("seruni-skin"), request)).toContain("real, unretouched skin texture");
     expect(photoRules(fixture("ritme-run-club"), request)).toBe(
       "Any person is clearly in motion, never a static pose.",
     );
     const { constraints: _, ...plain } = kopi;
     expect(photoRules(plain, request)).toBe("None beyond the palette above.");
+  });
+
+  it("kontrak komposisi slot dan baris kualitas editorial di prompt gambar (T-141)", async () => {
+    const prompt = await assetPrompt(request, brand, null, undefined, "Keep the upper 40% calm.");
+    expect(prompt).toContain(
+      "- Composition for this layout (it decides where text and graphics sit): Keep the upper 40% calm.",
+    );
+    expect(prompt).toContain("editorial campaign photograph");
+    expect(await assetPrompt(request, brand)).toContain("sit): As described.");
   });
 
   it("setting dari plan: lokasi dan orang untuk foto, orang saja untuk cut-out (T-125)", async () => {

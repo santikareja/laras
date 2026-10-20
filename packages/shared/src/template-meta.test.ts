@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { LayoutSpec } from "./layout-spec.ts";
-import { layoutIssues, TemplateMeta } from "./template-meta.ts";
+import { layoutIssues, slotComposition, TemplateMeta } from "./template-meta.ts";
 import { issuesOf } from "./test-utils.ts";
 
 const meta = (): TemplateMeta => ({
@@ -58,6 +58,47 @@ describe("TemplateMeta", () => {
       { name: "tone", values: ["light", "dark"], default: "x", description: "y" },
     ];
     expect(issuesOf(TemplateMeta, badDefault)).toContain("Default opsi harus salah satu nilainya");
+  });
+});
+
+describe("slotComposition (T-141)", () => {
+  const composed = (): TemplateMeta => {
+    const m = meta();
+    m.slots[0] = {
+      ...m.slots[0],
+      name: "image",
+      type: "image",
+      required: true,
+      description: "Foto",
+      aspectRatio: "3:2",
+      composition: {
+        base: "Keep the upper third calm.",
+        option: "tone",
+        byValue: { dark: "Low-key light." },
+      },
+    };
+    return m;
+  };
+
+  it("merangkai kalimat dasar dengan kalimat nilai opsi, atau default opsi", () => {
+    const m = composed();
+    const slot = m.slots[0];
+    if (!slot) throw new Error("slot");
+    expect(slotComposition(slot, m, { tone: "dark" })).toBe(
+      "Keep the upper third calm. Low-key light.",
+    );
+    expect(slotComposition(slot, m, {})).toBe("Keep the upper third calm.");
+    expect(slotComposition({ ...slot, composition: undefined }, m, {})).toBeUndefined();
+  });
+
+  it("hanya untuk slot image, dan option bersama byValue", () => {
+    const m = meta();
+    m.slots[1] = { ...m.slots[1], composition: { base: "x" } } as never;
+    expect(TemplateMeta.safeParse(m).success).toBe(false);
+    const half = composed();
+    half.slots[0] = { ...half.slots[0], composition: { base: "x", option: "tone" } } as never;
+    expect(TemplateMeta.safeParse(half).success).toBe(false);
+    expect(TemplateMeta.safeParse(composed()).success).toBe(true);
   });
 });
 

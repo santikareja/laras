@@ -352,7 +352,7 @@ Angka: Claude 16 (art direction 9, QA visual 7; QA visual $1,40, biaya art direc
 Temuan:
 - Foto dan cahaya dari model gambar lebih natural dan terasa seperti foto kampanye; tipografi polos tanpa perangkat grafis dan tanpa teks yang mengunci gambar terasa kurang berkarakter dibanding arketipe T-127.
 - Model gambar tidak selalu mengosongkan zona teks yang diminta. Pengukur zona hanya melihat kontras, bukan letak subjek, sehingga kandidat cadangan bisa menaruh teks di atas kepala atau wajah (K3, S1) atau objek (Ritme).
-- Larangan gradient brand tidak tertangkap untuk gradasi di dalam foto (R2 langit bergradasi); cek kode hanya membaca CSS.
+- Gradasi di dalam foto tidak tertangkap cek larangan gradient (cek kode hanya membaca CSS); risiko nyata untuk brand dengan `noGradient` (hanya Kopi Lembayung). Koreksi: R2 memakai langit bergradasi, tetapi Ritme (dan Seruni) tidak melarang gradient; laporan awal agent yang menyebut R2 melanggar aturan brand keliru.
 
 Keputusan pemilik: **gabungkan**. Arketipe tetap memimpin komposisi, tipografi, dan perangkat grafis; model gambar mendapat peran lebih besar lewat art direction Claude untuk latar dan adegan; teks di belakang subjek tetap memakai cut-out terpisah (T-141).
 

@@ -159,6 +159,14 @@ export const bidangWarna: Template = {
         description: "Subjek cut-out berlatar transparan yang berinteraksi (memegang, bergerak)",
         aspectRatio: "4:5",
         cutout: true,
+        composition: {
+          base: "Cut-out subject caught mid-action (holding, reaching, or moving) with the whole body or upper body readable as one silhouette; a curved color shape sits behind it.",
+          option: "flip",
+          byValue: {
+            no: "Turn the body and gaze slightly toward the left, where the text sits.",
+            yes: "Turn the body and gaze slightly toward the right, where the text sits.",
+          },
+        },
       },
       {
         name: "pembuka",

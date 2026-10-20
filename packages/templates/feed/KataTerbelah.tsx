@@ -287,6 +287,9 @@ export const kataTerbelah: Template = {
           "Subjek cut-out dramatis berlatar transparan (objek simbolis atau orang dengan cahaya tepi)",
         aspectRatio: "4:5",
         cutout: true,
+        composition: {
+          base: "Dramatic hero subject (a symbolic object, or a person with rim light) shown large, upright, centered, and facing the camera, so a giant word behind and a strip in front can sandwich it.",
+        },
       },
       {
         name: "kata",

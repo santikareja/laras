@@ -300,6 +300,9 @@ export const panelBerlapis: Template = {
           "Orang nyata seluruh badan atau tiga perempat badan (cut-out), duduk atau melangkah, memegang alat kerja atau produk",
         aspectRatio: "4:5",
         cutout: true,
+        composition: {
+          base: "Real person in full or three-quarter body, sitting or stepping, holding work tools or the product, in a natural working posture turned slightly toward the panel; feet or seat visible, because a contact bar acts as the floor.",
+        },
       },
       {
         name: "eyebrow",

@@ -288,6 +288,14 @@ export const kolaseSobek: Template = {
           "Subjek cut-out yang disobek: orang bergerak (sobekan di bawah wajah) atau produk",
         aspectRatio: "4:5",
         cutout: true,
+        composition: {
+          base: "Cut-out of a person in motion (the tear runs below the face) or a product, whole and upright, readable when sliced into three horizontal strips.",
+          option: "side",
+          byValue: {
+            left: "Turn the body and gaze slightly toward the right, where the text sits.",
+            right: "Turn the body and gaze slightly toward the left, where the text sits.",
+          },
+        },
       },
       {
         name: "seri",

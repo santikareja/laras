@@ -10,6 +10,8 @@ Requirements:
 - {{orientation}} orientation, aspect ratio {{aspectRatio}}.
 - One continuous photograph or illustration that fills the whole frame edge to edge: no borders, no padding, no inset picture, no collage.
 - Use the brand palette where it fits naturally: {{palette}}.
+- Composition for this layout (it decides where text and graphics sit): {{composition}}
+- Quality: an editorial campaign photograph by a professional photographer, with intentional composition, natural light and color, and real textures; never a stock-photo or plastic CGI look.
 - Setting: {{setting}}
 - Visual style: {{styleDirection}}
 - Brand photo rules (they override the visual style): {{photoRules}}
