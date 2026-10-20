@@ -19,10 +19,13 @@ T-125 selesai: plan menulis satu ide visual besar per varian dan setting dari kn
 T-126 selesai: QA visual menilai delapan aspek K dan P dengan ambang ide dan profesional ≥ 8, membuka pratinjau logo, menerima knowledge dan hasil cek kode, dan dilarang menyarankan fakta di luar knowledge.
 T-127 selesai (GO): Claude 71, Codex 25, ±$18,81, 52 menit; QA visual meloloskan 0/9 padahal pemilik menerima 6/9, revisi dua putaran tidak konvergen, dan 8 dari 9 percobaan melewati 5 menit (T-137); gaya Corporate tidak tampak karena arketipe di luar gaya (T-138). `pnpm dev` dari Terminal pemilik macet di fsevents (T-136).
 T-137 selesai: QA lolos bila ide ≥ 7, rata ≥ 6, tanpa wajib; revisi 1 putaran; hasil akhir putaran terbaik; gambar dibuat ulang hanya untuk perbaikan aset (ADR-017). Replay T-127: 48 panggilan Claude dari 71, semua ≤ 5 menit. Pemilik menilai hasil sudah meningkat tetapi belum setara desainer profesional, dan mengarahkan ke latar penuh dari model gambar Codex dengan teks HTML berlapis (T-140).
+T-139 dikerjakan (menunggu tinjauan pemilik): `feed-satu-objek` caption dan objek satu kolom mulai 18% dengan logo bawaan di tengah atas; `feed-subjek-lingkar` susunan atas untuk subjek lebar dan CTA baris teks bergaris.
+T-141 dikerjakan (menunggu penilaian pemilik): kontrak komposisi 23 slot gambar dan brief art director (ADR-018), slot `adegan` di empat arketipe bidang warna, cek wajib `busy-background` (ambang 13), `pnpm spike --reuse-plan`, `pnpm rerender:job`. Evaluasi sungguhan: Claude 30, Codex 12, ±$10,36, 25 menit, QA 3/9, adegan tidak dipakai Claude; tabrakan K1 dan K2 sudah diperbaiki tanpa kuota.
 T-140 selesai: spike latar penuh dari model gambar (Claude 16, Codex 10, 13 menit); pemilik menilai layak K1, S2, S3 dan Ritme oke dengan catatan teks menimpa objek; lapisan B (edit gambar) tidak sejajar piksel. Arah dipilih pemilik: gabungkan arketipe dengan art direction gambar (T-141).
 
 ## Berikutnya (urut)
-1. T-141 gabungkan arketipe dengan art direction gambar (arah pemilik setelah T-140), lalu keputusan pemilik soal Fase 2 (E-201) atau perbaikan Fase 1 lain (T-139 temuan visual S3 dan K3, T-138 gaya tampak, T-129 gaya tahap 2, T-136 `pnpm dev`).
+1. Penilaian pemilik atas evaluasi T-141 (lembar `out/eval/t141/lembar/`) dan tinjauan T-139 (`out/eval/t139/t139-sebelum-sesudah.png`); bila diterima, tutup keduanya. Opsional dengan izin kuota: uji ulang T-141 untuk latar adegan dan perbaikan tabrakan.
+2. Keputusan pemilik soal Fase 2 (E-201) atau perbaikan Fase 1 lain (T-138 gaya tampak, T-129 gaya tahap 2, T-136 `pnpm dev`).
 
 ## Blocker
 - Tidak ada.
