@@ -384,6 +384,8 @@ Temuan:
 
 Tindak lanjut tanpa kuota (2026-10-20): `feed-kata-raksasa` menaikkan blok teks setinggi logo bila keduanya di kanan bawah, dan `feed-poster-grid` memasang anotasi di celah antara dasar kata raksasa dan puncak blok teks (atas dan bawahnya di-anchor) alih-alih cadangan tetap 96 px; layout K1 dan K2 yang sama kini lolos QA kode (`pnpm rerender:job`, skrip baru untuk render ulang job tersimpan tanpa kuota). Prompt layout kini menyebut kapan slot `adegan` diisi (ide yang hidup di tempat nyata dari setting) dan deskripsi slotnya tidak lagi menyuruh mengosongkan; belum diuji di jalan sungguhan.
 
+Evaluasi ulang (2026-10-20, izin pemilik, batas sama): Claude 30, Codex 14, ±$10,47, 29 menit; QA kode 8/9, QA 2/9 (S2, R3). Latar adegan dipakai di K1 (pelat teras kedai di gang Bandung tanpa orang, kata "Jeda" di dinding polos, pria di depan huruf) dan tampak natural, tetapi gagal kontras palsu: pengambil sampel menghitung seluruh kotak baris di screenshot latar, termasuk bagian huruf yang tertutup tubuh subjek. Di mode bidang tidak terjadi karena latarnya warna padat. Perbaikan: screenshot penanda dengan teks magenta murni (`MARK_TEXT_CSS`) menandai piksel huruf yang benar-benar terlihat, dan kontras di atas foto hanya diukur di bawah piksel itu; job K1 yang sama lalu lolos QA kode, dan demo serta spesimen gaya tetap lolos. K2 lolos QA kode setelah perbaikan anotasi. Skor visual sejalan dengan jalan pertama (6,3–7,3), dan hasil QA visual per percobaan berubah antarjalan (S1 lolos lalu gagal), sesuai derau yang diukur di T-137. Lembar T-127 | T-141 | T-141 ulang di `out/eval/t141/lembar-ulang/` (pembuat lembar `out/eval/t141/sheet.cjs`).
+
 ## Keputusan kecil (tanggal, keputusan, alasan)
 
 | Tanggal | Keputusan | Alasan |

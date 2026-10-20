@@ -9,6 +9,8 @@ import {
 
 // Kontras teks di atas foto (ARCH 7.2): piksel latar di area setiap baris teks, diambil dari
 // screenshot dengan teks disembunyikan. Rasio persentil ke-5: 95% piksel latar memenuhinya.
+// Dengan screenshot penanda (teks magenta), hanya piksel di bawah huruf yang terlihat yang diukur:
+// huruf kata raksasa yang tertutup subjek di depannya tidak terlihat, jadi tidak dinilai (T-141).
 const PERCENTILE = 0.05;
 
 const LINEAR = Array.from({ length: 256 }, (_, channel) => {
@@ -20,11 +22,18 @@ export async function sampleContrast(
   background: Buffer,
   texts: TextMeasure[],
   scale: number,
+  marked?: Buffer,
 ): Promise<SampledContrast> {
   const { data, info } = await sharp(background)
     .removeAlpha()
     .raw()
     .toBuffer({ resolveWithObject: true });
+  const mask = marked ? await sharp(marked).removeAlpha().raw().toBuffer() : null;
+  // Piksel huruf terlihat: dominan magenta (merah dan biru jauh di atas hijau), termasuk tepi halus.
+  const visible = (offset: number) =>
+    !mask ||
+    ((mask[offset] ?? 0) - (mask[offset + 1] ?? 0) > 96 &&
+      (mask[offset + 2] ?? 0) - (mask[offset + 1] ?? 0) > 96);
   const pixelLuminance = (offset: number) =>
     0.2126 * (LINEAR[data[offset] ?? 0] ?? 0) +
     0.7152 * (LINEAR[data[offset + 1] ?? 0] ?? 0) +
@@ -45,6 +54,7 @@ export async function sampleContrast(
       for (let y = clampY(line.top); y < clampY(line.bottom); y++) {
         for (let x = clampX(line.left); x < clampX(line.right); x++) {
           const offset = (y * info.width + x) * info.channels;
+          if (!visible(offset)) continue;
           ratios.push(contrastRatio(textLuminance, pixelLuminance(offset)));
         }
       }

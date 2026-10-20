@@ -47,6 +47,23 @@ describe("QA deterministik di Chromium", { timeout: 30_000 }, () => {
     expect(await failures(overPhoto)).toEqual([]);
   });
 
+  it("contrast di atas foto hanya menilai huruf yang terlihat, bukan yang tertutup subjek (T-141)", async () => {
+    // Kata gelap di atas foto terang, separuh kanannya tertutup gambar gelap di depannya (seperti
+    // subjek cut-out pada latar adegan): bagian tertutup tidak ikut menurunkan kontras.
+    const word = text("left: 100px; top: 300px; font-size: 200px; z-index: 1", "JEDA");
+    const front = photo(
+      "foto.jpg",
+      "left: 520px; top: 260px; width: 500px; height: 220px; z-index: 2; filter: brightness(0.15)",
+    );
+    expect(await failures(photo("foto.jpg") + word + front)).toEqual([]);
+    // Teks yang benar-benar terlihat tetapi pucat di atas foto terang tetap gagal.
+    const pale = text(
+      "left: 100px; top: 300px; color: var(--color-secondary)",
+      "Pucat di atas linen",
+    );
+    expect(await failures(photo("foto.jpg") + pale)).toContain("contrast teks");
+  });
+
   it("contrast memakai latar elemen teks itu sendiri, mis. badge di atas latar gelap", async () => {
     const dark =
       '<div style="position: absolute; inset: 0; background: var(--color-primary)"></div>';

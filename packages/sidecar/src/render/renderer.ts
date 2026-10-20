@@ -4,7 +4,7 @@ import { DEFAULT_DESIGN_LIMITS, type RenderCheck } from "@laras/shared";
 import { type Browser, chromium, type Page, type Route } from "playwright-core";
 import { FIT_SCRIPT, ROTATION_SCRIPT } from "./fit.ts";
 import { brandRuleChecks } from "./qa/brand.ts";
-import { COLLECT_SCRIPT, HIDE_TEXT_CSS } from "./qa/collect.ts";
+import { COLLECT_SCRIPT, HIDE_TEXT_CSS, MARK_TEXT_CSS } from "./qa/collect.ts";
 import { type DesignMeasurements, designChecks } from "./qa/design.ts";
 import { DESIGN_SCRIPT } from "./qa/design-collect.ts";
 import { pixelStats } from "./qa/pixels.ts";
@@ -84,9 +84,12 @@ export function createRenderer(): Renderer {
         let sampled: SampledContrast = new Map();
         let busy: SampledBusy = new Map();
         if (overImage.length > 0) {
+          const mark = await page.addStyleTag({ content: MARK_TEXT_CSS });
+          const marked = await page.screenshot(SCREENSHOT);
+          await mark.evaluate((node) => node.remove());
           await page.addStyleTag({ content: HIDE_TEXT_CSS });
           const background = await page.screenshot(SCREENSHOT);
-          sampled = await sampleContrast(background, overImage, DEVICE_SCALE);
+          sampled = await sampleContrast(background, overImage, DEVICE_SCALE, marked);
           busy = await sampleBusy(background, overImage, DEVICE_SCALE);
         }
         const { primary, secondary, accent, neutral } = qa.brand.colors;

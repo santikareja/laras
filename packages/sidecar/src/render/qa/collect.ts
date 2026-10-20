@@ -127,6 +127,16 @@ export const COLLECT_SCRIPT = String.raw`(() => {
 })()`;
 
 // Dipasang sebelum screenshot kedua: hanya piksel latar yang tersisa untuk sampling kontras.
+// Teks diwarnai magenta murni tanpa efek untuk screenshot penanda: piksel yang tetap magenta adalah
+// bagian huruf yang terlihat, bagian yang tertutup subjek di depannya tidak (T-141).
+export const MARK_TEXT_CSS = `[data-qa-text] {
+  color: #ff00ff !important;
+  -webkit-text-fill-color: #ff00ff !important;
+  -webkit-text-stroke: 0 !important;
+  text-shadow: none !important;
+  text-decoration-color: transparent !important;
+}`;
+
 export const HIDE_TEXT_CSS = `[data-qa-text] {
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
