@@ -14,7 +14,8 @@
     "render:demo": "tsx --tsconfig tsconfig.base.json scripts/render-demo.ts",
     "render:styles": "tsx --tsconfig tsconfig.base.json scripts/render-styles.ts",
     "spike": "tsx --tsconfig tsconfig.base.json scripts/spike/run.ts",
-    "spike:latar": "tsx --tsconfig tsconfig.base.json scripts/spike-latar/run.ts"
+    "spike:latar": "tsx --tsconfig tsconfig.base.json scripts/spike-latar/run.ts",
+    "rerender:job": "tsx --tsconfig tsconfig.base.json scripts/rerender-job.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",

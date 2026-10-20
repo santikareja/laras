@@ -39,6 +39,9 @@ function KataRaksasaSlide({ slots, options, style }: SlideProps) {
     placement?.focus ?? (image.subject ? containedFocus(box, 4 / 5, image.subject) : undefined);
   const textBottom = focus ? textBelowFocus(focus.y) : true;
   const logoBottomRight = options.logo === "bottom-right";
+  // Logo kanan bawah dan blok teks di kanan bawah berbagi sudut: blok teks naik setinggi logo
+  // agar tidak bertabrakan (T-141 K1, aturan logo Kopi).
+  const aboveLogo = logoBottomRight && textRight && textBottom;
   return (
     <div
       data-qa-composition={side === "center" ? "center" : undefined}
@@ -99,7 +102,9 @@ function KataRaksasaSlide({ slots, options, style }: SlideProps) {
           position: "absolute",
           width: "34%",
           ...(textRight ? { right: EDGE } : { left: EDGE }),
-          ...(textBottom ? { bottom: `calc(${EDGE} + ${space(1)})` } : { top: "46%" }),
+          ...(textBottom
+            ? { bottom: `calc(${EDGE} + ${aboveLogo ? `${space(6)} + ${space(5)}` : space(1)})` }
+            : { top: "46%" }),
           display: "grid",
           gridTemplateColumns: "minmax(0, 1fr)",
           gap: space(3),

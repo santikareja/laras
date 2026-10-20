@@ -33,7 +33,7 @@ export function sceneSlot(areas: string, tones: Record<string, "light" | "dark">
     type: "image",
     required: false,
     description:
-      "Foto adegan latar tanpa orang atau subjek utama, menggantikan bidang warna; subjek cut-out tetap di depannya. Kosongkan bila bidang warna lebih cocok",
+      "Foto pelat latar (tempat nyata tanpa orang atau subjek utama) yang menggantikan bidang warna; subjek cut-out tetap di depannya. Isi bila ide hidup di tempat atau suasana nyata, kosongkan bila bidang warna brand lebih kuat",
     aspectRatio: "4:5",
     composition: {
       base: `${PLATE} ${areas}`,

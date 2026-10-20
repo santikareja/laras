@@ -358,6 +358,32 @@ Kalibrasi cek keramaian latar (T-141, tanpa kuota, render ulang job tersimpan): 
 
 Keputusan pemilik: **gabungkan**. Arketipe tetap memimpin komposisi, tipografi, dan perangkat grafis; model gambar mendapat peran lebih besar lewat art direction Claude untuk latar dan adegan; teks di belakang subjek tetap memakai cut-out terpisah (T-141).
 
+## Evaluasi T-141: arketipe + brief art director (2026-10-20)
+
+Pengaturan: sembilan brief T-127 dengan plan dan copy dipakai ulang (`pnpm spike --reuse-plan`), gaya sama dengan T-127, kebijakan QA T-137 (1 putaran, putaran terbaik), kontrak komposisi dan brief art director (T-141 A, B), slot `adegan` tersedia di empat arketipe (C), cek `busy-background` wajib (D); batas per percobaan Claude 4 dan Codex 3 (`out/eval/t141/run.sh`). Lembar T-127 | T-140 | T-141 di `out/eval/t141/lembar/`.
+
+| # | Arketipe | Adegan | QA | Skor i/t/il/b/h/ba/r/p (rata) | Wajib/saran | Putaran | Claude/Codex | Biaya | Durasi |
+|---|---|---|---|---|---|---|---|---|---|
+| K1 | feed-kata-raksasa | tidak | gagal kode (logo menabrak CTA) | – | 1/0 | 1 | 2/1 | $0,97 | 131 s |
+| K2 | feed-poster-grid | tidak | gagal kode (pernyataan menabrak catatan) | – | 1/0 | 1 | 2/1 | $0,92 | 96 s |
+| K3 | feed-subjek-lingkar | tidak | gagal | 6/7/6/7/8/6/8/7 (6,9) | 0/5 | 0 | 4/2 | $1,31 | 236 s |
+| S1 | feed-foto-konsep | tidak | lolos | 7/7/5/7/7/7/9/7 (7,0) | 0/3 | 1 | 4/2 | $1,29 | 217 s |
+| S2 | feed-kartu-kaca | tidak | lolos | 7/6/5/8/6/6/9/7 (6,8) | 0/5 | 0 | 2/1 | $0,62 | 98 s |
+| S3 | feed-satu-objek | tidak | gagal | 6/7/4/7/7/5/9/6 (6,4) | 0/7 | 0 | 4/2 | $1,32 | 231 s |
+| R1 | feed-bidang-warna | tidak | gagal | 6/8/5/6/8/5/9/6 (6,6) | 0/6 | 1 | 4/1 | $1,26 | 134 s |
+| R2 | feed-poster-huruf | tidak | gagal | 7/7/7/7/8/7/8/7 (7,3) | 1/3 | 1 | 4/1 | $1,38 | 190 s |
+| R3 | feed-kata-terbelah | tidak | lolos | 7/8/6/7/8/7/9/7 (7,4) | 0/5 | 1 | 4/1 | $1,29 | 146 s |
+
+Angka: Claude 30, Codex 12, ±$10,36, 25 menit (96–236 s per percobaan, semua ≤ 5 menit). QA kode 7/9, QA 3/9. Cek `busy-background` tidak menggagalkan satu pun hasil.
+
+Temuan:
+- Slot `adegan` tidak pernah diisi Claude: prompt layout tidak menyebutnya dan deskripsi slot menyuruh mengosongkan bila bidang warna lebih cocok, jadi latar adegan belum teruji di jalan sungguhan.
+- Brief art director menghasilkan foto lebih natural dan arah hadap subjek mengikuti sisi teks (K1, S1, S2).
+- Dua cacat arketipe yang tidak tertangkap demo: logo menabrak CTA di `feed-kata-raksasa` (logo kanan bawah sesuai aturan Kopi, CTA di sisi yang sama), dan pernyataan menabrak catatan di `feed-poster-grid`; satu putaran revisi tidak membereskannya.
+- Penilaian pemilik belum diberikan.
+
+Tindak lanjut tanpa kuota (2026-10-20): `feed-kata-raksasa` menaikkan blok teks setinggi logo bila keduanya di kanan bawah, dan `feed-poster-grid` memasang anotasi di celah antara dasar kata raksasa dan puncak blok teks (atas dan bawahnya di-anchor) alih-alih cadangan tetap 96 px; layout K1 dan K2 yang sama kini lolos QA kode (`pnpm rerender:job`, skrip baru untuk render ulang job tersimpan tanpa kuota). Prompt layout kini menyebut kapan slot `adegan` diisi (ide yang hidup di tempat nyata dari setting) dan deskripsi slotnya tidak lagi menyuruh mengosongkan; belum diuji di jalan sungguhan.
+
 ## Keputusan kecil (tanggal, keputusan, alasan)
 
 | Tanggal | Keputusan | Alasan |

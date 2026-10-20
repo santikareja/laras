@@ -349,7 +349,8 @@ function PosterGridSlide({ slots, options, style }: SlideProps) {
         </div>
       </div>
       {catatan && (
-        // Anotasi setinggi titik tuju pada subjek, di bawah kata raksasa dan di atas body.
+        // Anotasi di celah antara dasar kata raksasa dan puncak blok teks, dipusatkan di celah itu:
+        // dengan cadangan tetap, catatan yang terbungkus tiga baris menimpa pernyataan (T-141 K2).
         <div
           data-qa-element="group"
           data-qa-name="anotasi"
@@ -358,8 +359,8 @@ function PosterGridSlide({ slots, options, style }: SlideProps) {
             [near]: "var(--space-safe)",
             // anchor() di `left`/`right` sudah berupa jarak tepi itu ke titik pada subjek.
             [far]: `anchor(${ANCHOR.subjek} ${point.x}%)`,
-            // Penjaga bawah kata raksasa dipasang terakhir agar selalu menang.
-            top: `max(min(anchor(${ANCHOR.subjek} ${point.y}%) - 20px, anchor(${TEXT_ANCHOR} top) - 96px), anchor(${ANCHOR.kata} bottom) + ${space(4)})`,
+            top: `calc(anchor(${ANCHOR.kata} bottom) + ${space(4)})`,
+            bottom: `calc(anchor(${TEXT_ANCHOR} top) + ${space(3)})`,
             display: "flex",
             flexDirection: right ? "row" : "row-reverse",
             alignItems: "center",
