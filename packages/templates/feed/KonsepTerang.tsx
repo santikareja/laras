@@ -17,8 +17,10 @@ const EDGE = "var(--space-safe)";
 const TEXT_WIDTH = 0.56;
 const TEXT_INNER_EDGE = 1080 - 80 - TEXT_WIDTH * 1080;
 const TEXT_ANCHOR = "--konsep-teks";
-// Kotak subjek 4:5: tepi sisi menembus kanvas 54 px, dasar alpha menembus tepi bawah 12 px.
-const SUBJECT = { offset: -54, bleed: 12, ratio: 0.8 };
+// Kotak subjek 4:5: tepi sisi menembus kanvas 54 px, dasar alpha menembus tepi bawah 12 px, dan
+// bagian bawah subjek setinggi `sink` dari tinggi alpha terpotong tepi bawah (keputusan pemilik
+// T-139: kaki boleh terpotong sedikit agar subjek lebih besar).
+const SUBJECT = { offset: -54, bleed: 12, ratio: 0.8, sink: 0.14 };
 // Jarak subjek ke kolom teks (horizontal) dan ke dasar blok teks (vertikal).
 const GAP = { side: 24, below: 40 };
 // Zona tetap yang tidak boleh dimasuki subjek: logo di sudut bawah (tinggi logo space-5, lebar
@@ -32,18 +34,20 @@ type Placed = { box: AlphaBox; bands?: Band[] | undefined };
 const FALLBACK_BOX: AlphaBox = { top: 0.05, left: 0.1, right: 0.9, bottom: 0.95 };
 
 // Letak subjek dari kotak dan profil lebar alpha per pita (T-139). Dasar alpha selalu menembus
-// tepi bawah kanvas (potongan datar cut-out tidak boleh melayang), subjek dibuat sebesar mungkin,
+// tepi bawah kanvas (potongan datar cut-out tidak boleh melayang) sampai bagian `sink` terpotong;
+// `ground` adalah pecahan tinggi kotak yang duduk di tepi bawah. Subjek dibuat sebesar mungkin,
 // dan teks tidak pernah menimpanya: pita yang menjangkau kolom teks harus berada di bawah dasar
 // blok teks. Tinggi blok teks baru diketahui di browser, jadi batas tinggi subjek ditulis sebagai
 // min() atas pita dengan anchor CSS: pita i aman bila jangkauannya belum sampai kolom teks pada
-// tinggi itu, atau bila puncaknya (1350 + bleed - (bottom - i/16) × H) di bawah dasar teks.
+// tinggi itu, atau bila puncaknya (1350 + bleed - (ground - i/16) × H) di bawah dasar teks.
 function placement(
   { box, bands }: Placed,
   near: "left" | "right",
   zones: { logo: boolean; pendamping: boolean },
 ) {
   const { top, left, right, bottom } = box;
-  const { offset, bleed, ratio } = SUBJECT;
+  const { offset, bleed, ratio, sink } = SUBJECT;
+  const ground = bottom - sink * (bottom - top);
   const profile: Band[] =
     bands ??
     Array.from({ length: SUBJECT_BANDS }, (_, i) => {
@@ -53,8 +57,8 @@ function placement(
   // Jangkauan pita dari tepi sisi subjek ke arah kolom teks, dalam px pada tinggi kotak h.
   const reach = (band: [number, number], h: number) =>
     offset + (near === "left" ? band[1] : 1 - band[0]) * ratio * h;
-  // Dasar pita i di kanvas pada tinggi kotak h.
-  const base = (i: number, h: number) => 1350 + bleed - (bottom - (i + 1) / SUBJECT_BANDS) * h;
+  // Puncak pita i di kanvas pada tinggi kotak h; pita yang puncaknya di bawah kanvas tidak tampak.
+  const crest = (i: number, h: number) => 1350 + bleed - (ground - i / SUBJECT_BANDS) * h;
   // Batas statis: alpha setinggi 86% kanvas dan selebar 92% kanvas, lalu dikecilkan sampai pita
   // yang sejajar zona logo atau pendamping tidak masuk zona itu.
   const fixed = [
@@ -63,19 +67,20 @@ function placement(
   ];
   const clear = (h: number) =>
     profile.every((band, i) => {
-      if (!band) return true;
-      return fixed.every((zone) => base(i, h) < zone.top || reach(band, h) <= zone.inner);
+      if (!band || crest(i, h) >= 1350) return true;
+      const base = crest(i + 1, h);
+      return fixed.every((zone) => base < zone.top || reach(band, h) <= zone.inner);
     });
-  let cap = Math.min((0.86 * 1350) / (bottom - top), (0.92 * 1080) / ((right - left) * ratio));
+  let cap = Math.min((0.86 * 1350) / (ground - top), (0.92 * 1080) / ((right - left) * ratio));
   while (cap > 400 && !clear(cap)) cap -= 8;
   const limit = TEXT_INNER_EDGE - GAP.side;
   const terms = profile.flatMap((band, i) => {
-    if (!band) return [];
+    const rise = ground - i / SUBJECT_BANDS;
+    if (!band || rise <= 0) return [];
     const free = (limit - offset) / (reach(band, 1) - offset || 1e-6);
     if (free >= cap) return [];
-    const rise = (bottom - i / SUBJECT_BANDS).toFixed(4);
     return [
-      `max(${Math.round(free)}px, calc((${1350 + bleed - GAP.below}px - anchor(${TEXT_ANCHOR} bottom)) / ${rise}))`,
+      `max(${Math.round(free)}px, calc((${1350 + bleed - GAP.below}px - anchor(${TEXT_ANCHOR} bottom)) / ${rise.toFixed(4)}))`,
     ];
   });
   const height =
@@ -84,8 +89,8 @@ function placement(
   return {
     [near]: `${offset}px`,
     [far]: `calc(${1080 - offset}px - ${ratio} * ${height})`,
-    top: `calc(${1350 + bleed}px - ${bottom.toFixed(4)} * ${height})`,
-    bottom: `calc(${-bleed}px - ${(1 - bottom).toFixed(4)} * ${height})`,
+    top: `calc(${1350 + bleed}px - ${ground.toFixed(4)} * ${height})`,
+    bottom: `calc(${-bleed}px - ${(1 - ground).toFixed(4)} * ${height})`,
   };
 }
 const ICONS: IconName[] = ["pin", "globe", "clock", "calendar", "check", "arrow-right"];
