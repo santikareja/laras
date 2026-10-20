@@ -30,6 +30,10 @@ import { SceneBackdrop, sceneSlot } from "./scene.tsx";
 // bawah seperti matahari terbit (subjek setengah badan).
 
 const MARGIN = "var(--space-safe)";
+// Batas atas cakram di susunan atas (px), di bawah blok headline dan CTA; logo di atas menurunkan
+// blok teks 96 px, jadi batasnya ikut turun.
+const DISC_TOP = 0.4 * 1350;
+const LOGO_TOP_OFFSET = 96;
 const STAGE: Record<StageKind, { size: number; drop: number }> = {
   // drop: jarak pusat bentuk di bawah wajah, sebagai bagian diameter.
   cakram: { size: 600, drop: 0.68 },
@@ -71,15 +75,17 @@ function SubjekLingkarSlide({ slots, options, style }: SlideProps) {
 
   // Wajah di titik sepertiga sisi jauh: atas untuk susunan samping, bawah untuk susunan atas.
   const cut = (image.subject?.box.bottom ?? 1) >= 0.97;
-  const frame = placeSubject(
+  // Susunan atas simetris (catatan pemilik T-139 lanjutan): subjek di tengah, cakram besar di
+  // belakang kepalanya seperti matahari sore, headline terpusat di atas.
+  const placed = placeSubject(
     image.subject,
     side === "atas"
       ? {
-          focus: { x: mirror(720), y: 840 },
+          focus: { x: CANVAS.width / 2, y: 860 },
           bottom: CANVAS.height + 170,
-          maxWidth: 720,
-          minLeft: flip ? -400 : 300,
-          maxRight: flip ? 780 : CANVAS.width + 400,
+          maxWidth: 780,
+          minLeft: -400,
+          maxRight: CANVAS.width + 400,
         }
       : {
           focus: { x: mirror(770), y: 430 },
@@ -90,10 +96,33 @@ function SubjekLingkarSlide({ slots, options, style }: SlideProps) {
         },
     side === "atas" ? { width: 900 } : { width: 760 },
   );
-  const { size, drop } = STAGE[kind];
+  // Susunan atas: kotak subjek (bukan wajah) di tengah kanvas, agar kelompok lebar seimbang.
+  const shift =
+    side === "atas" && box
+      ? CANVAS.width / 2 - (placed.left + ((box.left + box.right) / 2) * placed.width)
+      : 0;
+  const frame = {
+    ...placed,
+    left: placed.left + shift,
+    focus: { ...placed.focus, x: placed.focus.x + shift },
+  };
+  const stageKind = STAGE[kind];
+  // Cakram di susunan atas lebih besar dan naik ke belakang kepala agar terbaca utuh sebagai halo.
+  const size = side === "atas" ? Math.round(stageKind.size * 1.25) : stageKind.size;
+  const drop = side === "atas" ? Math.min(stageKind.drop, 0.2) : stageKind.drop;
   const stage = {
-    x: frame.focus.x + (flip ? -1 : 1) * (kind === "biji" ? 40 : kind === "lensa" ? 0 : 30),
-    y: frame.focus.y + size * drop,
+    x:
+      side === "atas"
+        ? frame.focus.x
+        : frame.focus.x + (flip ? -1 : 1) * (kind === "biji" ? 40 : kind === "lensa" ? 0 : 30),
+    // Puncak cakram tidak lebih tinggi dari 40% kanvas agar headline dan CTA di atasnya bebas.
+    y:
+      side === "atas"
+        ? Math.max(
+            frame.focus.y + size * drop,
+            DISC_TOP + (logoBottom ? 0 : LOGO_TOP_OFFSET) + size / 2,
+          )
+        : frame.focus.y + size * drop,
   };
   const headlineSize = side === "atas" ? 6 : 5;
   const swirl =
@@ -122,6 +151,7 @@ function SubjekLingkarSlide({ slots, options, style }: SlideProps) {
         size={headlineSize}
         color={options.sorot === "secondary" ? "secondary" : "accent"}
         effect={styleEffect(style, "headline")}
+        balance
       >
         {sorotan.value}
       </Text>
@@ -155,7 +185,8 @@ function SubjekLingkarSlide({ slots, options, style }: SlideProps) {
                 to: 125,
               }
             : side === "atas"
-              ? { center: stage, radius: size / 2 + 70, from: -150, to: 10 }
+              ? // Busur kiri bawah: tidak naik ke area headline dan CTA di atas cakram.
+                { center: stage, radius: size / 2 + 70, from: 110, to: 200 }
               : { center: stage, radius: size / 2 + 70, from: -100, to: 110 })}
           color={swirl}
           flip={flip}
@@ -176,13 +207,12 @@ function SubjekLingkarSlide({ slots, options, style }: SlideProps) {
         data-qa-name="headline"
         style={{
           position: "absolute",
-          [near]: MARGIN,
-          top: side === "atas" ? `calc(${MARGIN} + ${logoBottom ? "0px" : "96px"})` : "21%",
-          width: side === "atas" ? "64%" : "40%",
+          ...(side === "atas" ? { left: MARGIN, right: MARGIN } : { [near]: MARGIN, width: "40%" }),
+          top: side === "atas" ? `calc(${MARGIN} + ${logoBottom ? 0 : LOGO_TOP_OFFSET}px)` : "21%",
           display: "grid",
           gridTemplateColumns: "minmax(0, 1fr)",
-          justifyItems: flip ? "end" : "start",
-          textAlign: near,
+          justifyItems: side === "atas" ? "center" : flip ? "end" : "start",
+          textAlign: side === "atas" ? "center" : near,
           gap: space(1),
         }}
       >
@@ -223,6 +253,7 @@ function SubjekLingkarSlide({ slots, options, style }: SlideProps) {
           size={headlineSize}
           color={ink}
           effect={styleEffect(style, "headline")}
+          balance
         >
           {slot(slots, "headline", "text").value}
         </Text>
@@ -234,7 +265,7 @@ function SubjekLingkarSlide({ slots, options, style }: SlideProps) {
             style={{
               display: "grid",
               gap: space(2),
-              justifyItems: flip ? "end" : "start",
+              justifyItems: side === "atas" ? "center" : flip ? "end" : "start",
               marginTop: space(4),
             }}
           >
