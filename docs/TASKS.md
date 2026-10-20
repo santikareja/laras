@@ -370,10 +370,36 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
 
 ## Fase 2: Walking skeleton (epic)
 
-- [ ] E-201 Tauri + UI minimal + sidecar + satu tombol Buat
+- [~] E-201 Tauri + UI minimal + sidecar + satu tombol Buat
   - Rujukan: PRD 11 (Fase 2), ARCH 4.1–4.4, ADR-004, ADR-005, ADR-008, DESIGN 6, DESIGN 10.5, DESIGN 15
   - AC: menekan Buat di UI menghasilkan PNG dengan progres real-time di Bilah Laras.
   - Cakupan awal: resolusi path Node (ADR-008), plugin shell dengan scope sempit, server dan klien JSON-RPC stdio, shadcn/ui dan Lucide sesuai pemetaan DESIGN 15, Plus Jakarta Sans dibundel, kerangka layout Studio, Bilah Laras, CSP Tauri (saat ini `csp: null` dari `tauri init`), posisi traffic lights terhadap toolbar 44 px (`trafficLightPosition`), token skala tipografi UI (DESIGN 4 belum ada di `tokens.css` DESIGN 15; menunggu keputusan pemilik soal penamaan, lihat STATUS).
+  - Keputusan pemilik 2026-10-20 (rencana disetujui): E-201 dipecah menjadi T-201 sampai T-206; token ukuran teks UI diganti nama menjadi `--type-*` (karena `--text-*` sudah dipakai warna teks dan merupakan namespace ukuran font Tailwind v4); tiga brand fixture disalin sekali ke folder data `~/Library/Application Support/Laras/projects/` sebagai project skeleton (pembuatan project lewat UI di E-301); dependency baru disetujui: `@tauri-apps/api`, `@tauri-apps/plugin-shell` (dan crate Rust-nya), `lucide-react`, `zustand`, `@fontsource/plus-jakarta-sans`, dependency komponen shadcn (`class-variance-authority`, `clsx`, `tailwind-merge`, Radix sesuai komponen), dan `tsup` di sidecar. TanStack Query ditunda ke E-301. Kuota hanya di T-206 dengan izin pemilik.
+
+- [x] T-201 Kontrak RPC UI ↔ sidecar
+  - Rujukan: ARCH 4.3, ADR-005, `packages/shared/src/job.ts`, `cli-status.ts`
+  - AC: `packages/shared/src/rpc.ts` mendefinisikan amplop JSON-RPC 2.0 (request, response, error, notifikasi) satu pesan per baris, method `app.hello`, `cli.status`, `project.list`, `job.start` dengan skema params dan hasil, notifikasi `job.event` dan `job.finished`, kode error, serta pembaca dan penulis baris pesan yang dipakai kedua sisi; dites tanpa CLI.
+  - Selesai 2026-10-20: `rpc.ts` (amplop dan kode error, `RPC_METHODS`, `RPC_NOTIFICATIONS`, `readRpcLine`, `writeRpcLine`, `isRpcMethod`), 8 test di `rpc.test.ts`; ARCH 4.3 diperbarui. Nama project untuk `project.list` diambil sidecar di T-202 (Brand Kit belum punya field nama).
+
+- [ ] T-202 Server RPC sidecar lewat stdio
+  - Rujukan: ARCH 4.3, 4.4, 8.1, T-201, `pipeline/engine.ts`, `scripts/spike/spike.ts`
+  - AC: `packages/sidecar/src/main.ts` menjalankan server RPC di stdin/stdout (stdout khusus RPC, log ke stderr dan `logs/`); folder data dibuat dan tiga brand fixture disalin sekali; `job.start` menjalankan satu brief sekaligus lewat `runBrief` dan mengirim setiap event tahap sebagai `job.event` lalu `job.finished`; job kedua saat sibuk ditolak dengan error `busy`; mode `dryRun` memakai jawaban palsu yang dipindah dari skrip spike sehingga tanpa kuota; dites dengan stream di dalam proses.
+
+- [ ] T-203 Menjalankan sidecar dari Tauri
+  - Rujukan: ARCH 4.1, 4.4, ADR-004, ADR-008, KNOWLEDGE bagian Lingkungan
+  - AC: sidecar dibundel tsup menjadi satu file `.mjs`; path Node di-resolve lewat login shell dengan normalisasi path fnm (ADR-008); plugin shell dengan scope sempit (program dan argumen tervalidasi, tanpa shell bebas; bila scope tidak bisa memvalidasi path Node dinamis, ajukan ADR dulu); klien `apps/desktop/src/lib/rpc.ts` dengan status menyambung ulang bila sidecar mati.
+
+- [ ] T-204 Fondasi UI
+  - Rujukan: DESIGN 4, 5, 6, 15, 16; ARCH 4.2
+  - AC: shadcn/ui dan Lucide terpasang sesuai pemetaan DESIGN 15, Plus Jakarta Sans dibundel lokal, token `--type-*` di `tokens.css` dan DESIGN 4/15 diperbarui, CSP Tauri tidak lagi `null`, `trafficLightPosition` sejajar toolbar 44 px, kerangka layout Studio (toolbar, sidebar 240 px, inspector 320 px, status bar 36 px) lolos checklist DESIGN 16.
+
+- [ ] T-205 Bilah Laras dan alur Buat
+  - Rujukan: DESIGN 9, 10.5, 11; PRD 11 (Fase 2)
+  - AC: Bilah Laras enam bilah dengan state DESIGN 10.5 dan `aria-live`; kolom brief, pilihan project, dan tombol Buat memanggil `job.start`; progres tampil real-time dari `job.event`; PNG hasil tampil di preview lewat asset protocol Tauri yang dibatasi ke folder data Laras; store event job dites.
+
+- [ ] T-206 Verifikasi walking skeleton
+  - Rujukan: PRD 11 (Fase 2), T-201 sampai T-205
+  - AC: dry-run dari aplikasi menghasilkan PNG dengan progres real-time tanpa kuota; satu jalan sungguhan dengan izin pemilik (perkiraan Claude 4–6, Codex 1–3, ±$1–1,5) menghasilkan PNG; tampilan jendela dikonfirmasi pemilik.
 
 ## Fase 3: Irisan vertikal (epic)
 

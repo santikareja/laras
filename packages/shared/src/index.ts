@@ -13,5 +13,6 @@ export * from "./project-settings.ts";
 export * from "./qa-report.ts";
 export * from "./render-report.ts";
 export * from "./revision.ts";
+export * from "./rpc.ts";
 export * from "./style-meta.ts";
 export * from "./template-meta.ts";

@@ -32,7 +32,6 @@ T-140 selesai: spike latar penuh dari model gambar (Claude 16, Codex 10, 13 meni
 
 ## Menunggu keputusan pemilik
 - Jumlah template awal per format (PRD 12 pertanyaan 3; usulan 8 feed, 4 sistem carousel).
-- Penamaan token skala tipografi UI: DESIGN 4 mendefinisikan `--text-caption` … `--text-display` (ukuran), tetapi `tokens.css` di DESIGN 15 tidak memuatnya; prefix `--text-*` juga dipakai untuk warna (`--text-primary`) dan merupakan namespace ukuran font di Tailwind v4. Usulan: ganti nama token ukuran menjadi `--type-*` (dibutuhkan paling lambat E-201).
 
 ## Catatan untuk sesi berikutnya
 - Baca docs/KNOWLEDGE.md sebelum task yang menyentuh CLI, build, atau lingkungan.

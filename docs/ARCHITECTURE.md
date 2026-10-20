@@ -123,9 +123,9 @@ Package manager: **pnpm workspaces**, scope paket `@laras/*`. Lint dan format: *
 ### 4.3 Komunikasi UI ↔ Sidecar
 
 - Protokol: **JSON-RPC 2.0 lewat stdin/stdout**, satu pesan JSON per baris (NDJSON).
-- Request dari UI: misalnya `project.create`, `brandKit.update`, `job.start`, `job.resume`, `content.revise`, `export.run`.
-- Notifikasi dari sidecar: `job.event` (perubahan tahap, log progres, hasil parsial), `cli.status`.
-- Semua method dan payload didefinisikan di `packages/shared/src/rpc.ts` dan divalidasi di kedua sisi.
+- Request dari UI (walking skeleton, T-201): `app.hello` (versi dan folder data), `cli.status`, `project.list`, `job.start` (project, brief, format, jumlah slide dan varian, `dryRun`). Fase 3 menambah misalnya `project.create`, `brandKit.update`, `job.resume`, `content.revise`, `export.run`.
+- Notifikasi dari sidecar: `job.event` (event tahap job, skema `JobEvent`) dan `job.finished` (status akhir, path PNG slide, hasil QA). `cli.status` sebagai notifikasi saat status CLI berubah ditambahkan bila dibutuhkan UI.
+- Semua method dan payload didefinisikan di `packages/shared/src/rpc.ts` (`RPC_METHODS`, `RPC_NOTIFICATIONS`) dan divalidasi di kedua sisi; `readRpcLine` dan `writeRpcLine` membaca dan menulis satu pesan per baris. Kode error memakai kode standar JSON-RPC ditambah `busy` (-32001) dan `projectNotFound` (-32002).
 - Log sidecar ditulis ke **stderr dan file log**, tidak pernah ke stdout (stdout khusus RPC).
 - Bila proses sidecar mati, UI menampilkan status "Menyambung ulang", menjalankan ulang sidecar, lalu job yang berjalan ditandai `interrupted` dan dapat dilanjutkan.
 
