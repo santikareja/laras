@@ -2,49 +2,44 @@
 // QA → revisi, untuk satu brand fixture. MEMAKAI KUOTA kecuali dryRun; jumlah panggilan CLI
 // dibatasi (termasuk retry validasi) sebagai pengaman kuota.
 
-import { existsSync } from "node:fs";
 import { copyFile, cp, mkdir, readFile, writeFile } from "node:fs/promises";
-import { extname, join, resolve } from "node:path";
+import { join, resolve } from "node:path";
 import {
-  type AssetManifest,
-  BrandKit,
   ContentPlan,
-  CopyGuide,
-  designLimits,
   type JobEvent,
   type JobSpec,
   LayoutSpec,
-  ProjectSettings,
   type QaFix,
   RenderReport,
   Revision,
-  type StyleChoice,
   type StyleSelection,
   styleFit,
 } from "../../packages/shared/src/index.ts";
-import { runClaude } from "../../packages/sidecar/src/cli/claude.ts";
-import { resolveClis } from "../../packages/sidecar/src/cli/resolvePath.ts";
 import { type SpawnLines, spawnLines } from "../../packages/sidecar/src/cli/stream.ts";
 import {
   type AssetProvider,
   CodexAssetProvider,
-  storeAsset,
 } from "../../packages/sidecar/src/pipeline/assets.ts";
 import {
   type JobResult,
   jobDir,
   type PipelineDeps,
   runBrief,
-  type SlideRenderOutput,
   type StageCall,
   stepFile,
   stepOf,
 } from "../../packages/sidecar/src/pipeline/engine.ts";
-import { promptTemplate, type Stage } from "../../packages/sidecar/src/prompts/index.ts";
+import {
+  claudeStage,
+  demoAssets,
+  dryRunAnswer,
+  liveClis,
+  loadProject,
+  slideRender,
+} from "../../packages/sidecar/src/pipeline/wiring.ts";
 import { findStyle } from "../../packages/sidecar/src/prompts/style-context.ts";
-import { renderLayoutHtml } from "../../packages/sidecar/src/render/layout.ts";
-import { toMaster, toUpload } from "../../packages/sidecar/src/render/postprocess.ts";
-import { createRenderer, SLIDE_SIZE } from "../../packages/sidecar/src/render/renderer.ts";
+import { toUpload } from "../../packages/sidecar/src/render/postprocess.ts";
+import { createRenderer } from "../../packages/sidecar/src/render/renderer.ts";
 import { templates } from "../../packages/templates/src/index.ts";
 import { caseSpec } from "../archetype-content.ts";
 import type { Brand } from "../demo-content.ts";
@@ -99,7 +94,6 @@ export type SpikeReport = {
 };
 
 const ROOT = resolve(import.meta.dirname, "../..");
-const MASTER = { width: SLIDE_SIZE.width * 2, height: SLIDE_SIZE.height * 2 };
 
 export async function spike(options: SpikeOptions): Promise<SpikeReport> {
   const log = options.log ?? ((line: string) => console.log(line));
@@ -113,13 +107,7 @@ export async function spike(options: SpikeOptions): Promise<SpikeReport> {
   // ulang dari fixture setiap jalan, jobs/ lama dibiarkan.
   await cp(fixtureDir, projectDir, { recursive: true, force: true });
   await mkdir(runDir, { recursive: true });
-  const read = async (file: string) => readFile(join(projectDir, file), "utf8");
-  const brand = BrandKit.parse(JSON.parse(await read("brand.json")));
-  const copyGuide = CopyGuide.parse(JSON.parse(await read("copy-guide.json")));
-  const knowledge = await read("knowledge/business.md");
-  const settings = existsSync(join(projectDir, "project.json"))
-    ? ProjectSettings.parse(JSON.parse(await read("project.json")))
-    : { style: null };
+  const { brand, copyGuide, knowledge, settings } = await loadProject(projectDir);
   const style = options.style === undefined ? settings.style : options.style;
 
   const calls = { claude: 0, codex: 0 };
@@ -137,19 +125,16 @@ export async function spike(options: SpikeOptions): Promise<SpikeReport> {
       };
 
     const claude: StageCall = live
-      ? async (_stage, prompt, schema) => {
-          const run = await runClaude({
-            claudePath: live.claude,
-            cwd: projectDir,
-            prompt,
-            schema,
-            spawn: counted("claude", options.maxClaude),
-            ...(options.model ? { model: options.model } : {}),
-            ...(options.signal ? { signal: options.signal } : {}),
-          });
-          retries += run.attempts - 1;
-          return { data: run.data, costUsd: run.costUsd };
-        }
+      ? claudeStage({
+          claudePath: live.claude,
+          cwd: projectDir,
+          spawn: counted("claude", options.maxClaude),
+          ...(options.model ? { model: options.model } : {}),
+          ...(options.signal ? { signal: options.signal } : {}),
+          onRetries: (count) => {
+            retries += count;
+          },
+        })
       : async (stage, _prompt, schema) => {
           calls.claude++;
           const answer =
@@ -159,57 +144,14 @@ export async function spike(options: SpikeOptions): Promise<SpikeReport> {
           return { data: schema.parse(answer) };
         };
 
+    // Dry-run: aset pola demo gaya (id = nama file demo, mis. gaya-retro) dipakai apa adanya agar
+    // dry-run bergaya setia pada polanya; selain itu cut-out atau foto demo brand.
     const codex: AssetProvider = live
       ? new CodexAssetProvider({ codexPath: live.codex, spawn: counted("codex", options.maxCodex) })
-      : {
-          // Dry-run: foto atau cut-out demo brand menggantikan hasil Codex; penyimpanan aset
-          // (crop foto, normalisasi dan analisis cut-out) tetap sungguhan.
-          async generate(request, ctx) {
-            calls.codex++;
-            const cutout = request.kind === "cutout";
-            // Aset pola demo gaya (id = nama file demo, mis. gaya-retro) dipakai apa adanya agar
-            // dry-run bergaya setia pada polanya; selain itu cut-out atau foto demo brand.
-            const demoDir = join(ROOT, "fixtures/demo-assets", options.brand);
-            const named = [".webp", ".jpg"]
-              .map((ext) => `${request.id}${ext}`)
-              .find((file) => existsSync(join(demoDir, file)));
-            const fixture = named ?? (cutout ? "subjek.webp" : "foto.jpg");
-            const original = join(
-              ctx.jobDir,
-              "assets",
-              `${request.id}.original${extname(fixture)}`,
-            );
-            await mkdir(join(ctx.jobDir, "assets"), { recursive: true });
-            await copyFile(join(demoDir, fixture), original);
-            return storeAsset(request, original, ctx, "codex");
-          },
-        };
-
-    // Render bergaya: lapisan gaya dan ambang QA desain gaya serta variannya (T-133).
-    const render = async (
-      layout: LayoutSpec,
-      assets: AssetManifest,
-      dir: string,
-      choice: StyleChoice | undefined,
-    ) => {
-      const pages = renderLayoutHtml(layout, {
-        brand,
-        assets,
-        templates,
-        ...(choice ? { style: choice } : {}),
-      });
-      const design = choice ? designLimits(findStyle(choice.id), choice.variant) : undefined;
-      const slides: SlideRenderOutput[] = [];
-      for (const html of pages) {
-        const { png, checks } = await renderer.render(
-          html,
-          { projectDir, jobDir: dir },
-          { brand, copyGuide, ...(design ? { design } : {}) },
-        );
-        slides.push({ png: await toMaster(png), html, ...MASTER, checks });
-      }
-      return slides;
-    };
+      : demoAssets(join(ROOT, "fixtures/demo-assets", options.brand), () => {
+          calls.codex++;
+        });
+    const render = slideRender(renderer, projectDir, { brand, copyGuide });
 
     const deps: PipelineDeps = {
       projectDir,
@@ -260,17 +202,6 @@ export async function spike(options: SpikeOptions): Promise<SpikeReport> {
   }
 }
 
-async function liveClis() {
-  const statuses = await resolveClis();
-  const path = (name: "claude" | "codex") => {
-    const status = statuses.find((s) => s.name === name);
-    if (!status?.found) throw new Error(`${name} tidak ditemukan`);
-    if (!status.loggedIn) throw new Error(`${name} belum login`);
-    return status.path;
-  };
-  return { claude: path("claude"), codex: path("codex") };
-}
-
 // Dry-run bergaya: layout dari pola demo pertama gaya untuk brand ini (scripts/style-cases), karena
 // contoh di prompt belum tentu memakai arketipe gaya itu (T-133).
 async function styleLayoutAnswer(styleId: string, brand: string): Promise<LayoutSpec> {
@@ -284,22 +215,6 @@ async function styleLayoutAnswer(styleId: string, brand: string): Promise<Layout
     join(ROOT, "fixtures/demo-assets", brand),
   );
   return item.styleOptions ? { ...spec, styleOptions: item.styleOptions } : spec;
-}
-
-// Dry-run: contoh output di prompt T-114, disesuaikan jumlah angle. Contoh QA visual berada di
-// bawah ambang, sehingga kedua putaran revisi ikut berjalan.
-function dryRunAnswer(stage: Stage, variants: number): unknown {
-  const blocks = [...promptTemplate(stage).matchAll(/```json\n([\s\S]*?)```/g)];
-  const example = JSON.parse(blocks.at(-1)?.[1] ?? "null") as Record<string, unknown>;
-  if (stage !== "plan") return example;
-  const angles = example.angles as unknown[];
-  return {
-    ...example,
-    angles: Array.from({ length: variants }, (_, i) => ({
-      ...(angles[i % angles.length] as object),
-      id: `angle-${i + 1}`,
-    })),
-  };
 }
 
 function eventLine(jobId: string, event: JobEvent): string {

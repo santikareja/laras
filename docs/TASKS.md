@@ -381,9 +381,10 @@ Target: skrip tanpa UI brief → copy → layout → aset → render → QA. Ger
   - AC: `packages/shared/src/rpc.ts` mendefinisikan amplop JSON-RPC 2.0 (request, response, error, notifikasi) satu pesan per baris, method `app.hello`, `cli.status`, `project.list`, `job.start` dengan skema params dan hasil, notifikasi `job.event` dan `job.finished`, kode error, serta pembaca dan penulis baris pesan yang dipakai kedua sisi; dites tanpa CLI.
   - Selesai 2026-10-20: `rpc.ts` (amplop dan kode error, `RPC_METHODS`, `RPC_NOTIFICATIONS`, `readRpcLine`, `writeRpcLine`, `isRpcMethod`), 8 test di `rpc.test.ts`; ARCH 4.3 diperbarui. Nama project untuk `project.list` diambil sidecar di T-202 (Brand Kit belum punya field nama).
 
-- [ ] T-202 Server RPC sidecar lewat stdio
+- [x] T-202 Server RPC sidecar lewat stdio
   - Rujukan: ARCH 4.3, 4.4, 8.1, T-201, `pipeline/engine.ts`, `scripts/spike/spike.ts`
   - AC: `packages/sidecar/src/main.ts` menjalankan server RPC di stdin/stdout (stdout khusus RPC, log ke stderr dan `logs/`); folder data dibuat dan tiga brand fixture disalin sekali; `job.start` menjalankan satu brief sekaligus lewat `runBrief` dan mengirim setiap event tahap sebagai `job.event` lalu `job.finished`; job kedua saat sibuk ditolak dengan error `busy`; mode `dryRun` memakai jawaban palsu yang dipindah dari skrip spike sehingga tanpa kuota; dites dengan stream di dalam proses.
+  - Selesai 2026-10-20: `main.ts` (console ke stderr, log ke `logs/sidecar.log`, env `LARAS_DATA_DIR` dan `LARAS_FIXTURES_DIR`, `pnpm sidecar`), `rpc/server.ts` (`serveRpc`, `RpcError`), `queue/runner.ts` (satu brief sekaligus, `busy`, `projectNotFound`, varian yang tidak dijalankan dilaporkan `cancelled`), `storage/data-dir.ts` (salin fixture sekali dengan penanda `.contoh-disalin`, nama project dari judul `knowledge/business.md`), `finalSlides` di engine, dan `pipeline/wiring.ts` yang kini dipakai bersama `pnpm spike` (spike dry-run tetap 6 Claude, 2 Codex). Dry-run tanpa gaya karena jawaban contoh prompt tidak mengenal gaya; jalan sungguhan memakai gaya default project. Uji proses sungguhan lewat stdin: dry-run Kopi 10 langkah selesai dalam 1,9 detik, PNG ada, stdout hanya RPC. 11 test baru, 750 test lolos.
 
 - [ ] T-203 Menjalankan sidecar dari Tauri
   - Rujukan: ARCH 4.1, 4.4, ADR-004, ADR-008, KNOWLEDGE bagian Lingkungan

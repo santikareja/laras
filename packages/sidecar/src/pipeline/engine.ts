@@ -203,6 +203,16 @@ export async function runJob(spec: JobSpec, deps: PipelineDeps): Promise<JobResu
   }
 }
 
+// PNG slide hasil akhir job (path absolut): render putaran terbaik (T-137); kosong bila job berhenti
+// sebelum QA.
+export async function finalSlides(projectDir: string, result: JobResult): Promise<string[]> {
+  const step = result.qa ? stepOf("render", result.qa.round) : undefined;
+  if (!step) return [];
+  const dir = jobDir(projectDir, result.jobId);
+  const report = RenderReport.parse(JSON.parse(await readFile(join(dir, stepFile(step)), "utf8")));
+  return report.slides.map((slide) => join(dir, slide.pngPath));
+}
+
 // Brief dengan N varian: plan dijalankan sekali (di job pertama) lalu disalin ke job lain,
 // masing-masing memakai angle sesuai nomor variannya.
 export type BriefInput = Omit<JobSpec, "id" | "variant">;
