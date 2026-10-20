@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { isAbsolute } from "node:path";
 import { z } from "zod";
+import { promptUrl } from "../prompts/index.ts";
 import { LimitReachedError, limitInText } from "./limits.ts";
 import { parseEventLine, type SpawnLines, type StreamEvent, spawnLines } from "./stream.ts";
 
@@ -9,10 +10,7 @@ import { parseEventLine, type SpawnLines, type StreamEvent, spawnLines } from ".
 
 export const DEFAULT_MODEL = "claude-opus-5-5";
 const MAX_RETRIES = 2;
-const RETRY_PROMPT = readFileSync(
-  new URL("../prompts/retry-invalid-output.md", import.meta.url),
-  "utf8",
-);
+const RETRY_PROMPT = readFileSync(promptUrl("retry-invalid-output"), "utf8");
 
 export type ClaudeEvent = StreamEvent;
 export type RateLimitInfo = { status: string; resetsAt: number | null };

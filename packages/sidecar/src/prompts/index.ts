@@ -89,8 +89,12 @@ export type PromptInputs = {
 // Blok data: tag pembuka, satu placeholder, tag penutup, masing-masing di barisnya sendiri.
 export const DATA_BLOCK = /<([a-z][a-z-]*)>\n\{\{(\w+)\}\}\n<\/\1>/g;
 
+// Lokasi file prompt. Semua pembacaan prompt lewat sini, sehingga bundel sidecar cukup menyalin
+// prompts/*.md ke sebelah file bundel (T-203).
+export const promptUrl = (name: string): URL => new URL(`./${name}.md`, import.meta.url);
+
 export function promptTemplate(stage: Stage): string {
-  return readFileSync(new URL(`./${stage}.md`, import.meta.url), "utf8");
+  return readFileSync(promptUrl(stage), "utf8");
 }
 
 export function renderPrompt<S extends Stage>(stage: S, inputs: PromptInputs[S]): string {

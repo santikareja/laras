@@ -103,7 +103,7 @@ Package manager: **pnpm workspaces**, scope paket `@laras/*`. Lint dan format: *
 
 - Mengelola jendela, menu, dialog file, dan izin akses file system.
 - Identifier aplikasi: `id.laras.desktop` (ADR-009).
-- Menjalankan sidecar lewat `@tauri-apps/plugin-shell` dengan scope yang dibatasi (hanya path absolut `node` hasil resolusi ADR-008, dengan argumen ke file sidecar).
+- Menjalankan sidecar lewat `@tauri-apps/plugin-shell` dengan scope yang dibatasi (T-203, `capabilities/default.json`): perintah `resolve-node` (`/bin/zsh -lic` dengan argumen tetap) untuk resolusi ADR-008, dan perintah `sidecar` (`/usr/bin/env` dengan dua argumen tervalidasi regex: path absolut `node` dan bundel `sidecar.mjs`). Tidak ada shell bebas dari WebView.
 - Tidak berisi logika bisnis.
 
 ### 4.2 UI — React + TypeScript + Vite
@@ -133,7 +133,8 @@ Package manager: **pnpm workspaces**, scope paket `@laras/*`. Lint dan format: *
 
 - Runtime: **Node.js LTS yang terinstal di Mac pengguna** untuk MVP (lihat ADR-004).
 - Menemukan Node (ADR-008): aplikasi GUI tidak mewarisi PATH terminal, jadi `node` tidak bisa dipanggil dengan nama saja. Sebelum sidecar dijalankan, path absolut Node di-resolve lewat login shell (`/bin/zsh -lic 'command -v node'`), dengan fallback `~/.local/share/fnm/aliases/default/bin/node`, `/opt/homebrew/bin/node`, dan `/usr/local/bin/node`. Hasilnya disimpan di pengaturan dan bisa diubah manual. Path fnm "multishell" tidak dipakai karena berubah setiap shell.
-- Bundling: kode TypeScript dibundel menjadi satu file JS (tsup) yang disertakan sebagai resource aplikasi.
+- Bundling: kode TypeScript dibundel menjadi satu file JS (tsup, `packages/sidecar/dist/sidecar.mjs`, T-203) yang disertakan sebagai resource aplikasi. Paket workspace ikut dibundel, dependency npm tetap di `node_modules`; file yang dibaca saat runtime (prompt `.md` lewat `promptUrl`, `PANDUAN.md` gaya) disalin ke sebelah bundel. Saat pengembangan, UI menjalankan bundel di repo.
+- Titik masuk `src/main.ts` (T-202): server RPC stdio, folder data dari `LARAS_DATA_DIR` (default ARCH 8.1), fixture dari `LARAS_FIXTURES_DIR`; `pnpm sidecar` menjalankannya dari sumber.
 - Tanggung jawab: antrean job, pipeline, adapter CLI, template engine, renderer, QA, storage.
 
 ### 4.5 Adapter CLI

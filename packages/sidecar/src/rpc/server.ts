@@ -76,6 +76,7 @@ export function serveRpc(options: {
     if (message.kind === "invalid") return void fail(message.id, message.error);
     if (message.kind !== "request") return log(`Pesan ${message.kind} dari UI diabaikan`);
     const { id, method, params } = message.message;
+    log(`RPC ${method}`);
     if (!isRpcMethod(method)) {
       return void fail(id, {
         code: RpcErrorCode.methodNotFound,

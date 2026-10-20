@@ -1,7 +1,39 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Izin minimal jendela utama",
+  "description": "Izin minimal jendela utama: jendela, dan menjalankan sidecar lewat scope shell sempit (T-203)",
   "windows": ["main"],
-  "permissions": ["core:default", "core:window:allow-start-dragging"]
+  "permissions": [
+    "core:default",
+    "core:window:allow-start-dragging",
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "name": "resolve-node",
+          "cmd": "/bin/zsh",
+          "args": ["-lic", "printf '__LARAS_NODE__%s\\n' \"$(command -v node)\""]
+        }
+      ]
+    },
+    {
+      "identifier": "shell:allow-spawn",
+      "allow": [
+        {
+          "name": "sidecar",
+          "cmd": "/usr/bin/env",
+          "args": [
+            {
+              "validator": "/[A-Za-z0-9._/-]+/node"
+            },
+            {
+              "validator": "/[A-Za-z0-9._/-]+/packages/sidecar/dist/sidecar\\.mjs"
+            }
+          ]
+        }
+      ]
+    },
+    "shell:allow-stdin-write",
+    "shell:allow-kill"
+  ]
 }

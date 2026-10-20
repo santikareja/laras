@@ -11,6 +11,7 @@ import type {
 import sharp from "sharp";
 import { runCodex } from "../cli/codex.ts";
 import type { SpawnLines } from "../cli/stream.ts";
+import { promptUrl } from "../prompts/index.ts";
 import { styleImageDirection } from "../prompts/style-context.ts";
 import { analyzeCutout, normalizeCutout } from "./cutout.ts";
 
@@ -82,10 +83,7 @@ function entry(
   return { id, path: relative(ctx.jobDir, path).split(sep).join("/"), ...size, source };
 }
 
-const PROMPT_TEMPLATES = {
-  photo: new URL("../prompts/asset-image.md", import.meta.url),
-  cutout: new URL("../prompts/asset-cutout.md", import.meta.url),
-};
+const PROMPT_TEMPLATES = { photo: promptUrl("asset-image"), cutout: promptUrl("asset-cutout") };
 const SUBJECT_WORDS = { person: "person", object: "product or object" } as const;
 
 // Cut-out sah bila sebagian gambar benar-benar transparan; Codex tanpa permintaan transparan

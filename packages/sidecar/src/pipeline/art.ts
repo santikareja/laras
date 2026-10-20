@@ -6,6 +6,7 @@ import { TEXT_ZONES } from "@laras/templates";
 import sharp from "sharp";
 import { runCodex } from "../cli/codex.ts";
 import type { SpawnLines } from "../cli/stream.ts";
+import { promptUrl } from "../prompts/index.ts";
 import { styleImageDirection } from "../prompts/style-context.ts";
 import {
   type AssetEntry,
@@ -29,10 +30,7 @@ const ZONE_WORDS: Record<TextZone, string> = {
   "bawah-kanan": "lower-right third",
 };
 
-const PROMPTS = {
-  art: new URL("../prompts/asset-art.md", import.meta.url),
-  extract: new URL("../prompts/asset-extract.md", import.meta.url),
-};
+const PROMPTS = { art: promptUrl("asset-art"), extract: promptUrl("asset-extract") };
 
 // Isi dari output AI dibuang tag delimiternya agar tidak bisa menutup blok data lebih awal.
 const data = (value: string, tag: string) =>
