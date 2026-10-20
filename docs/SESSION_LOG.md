@@ -1,5 +1,13 @@
 # SESSION LOG
 
+## Sesi #9, 2026-10-20
+- Task: T-139 (penutupan), T-136, E-201 (T-201, T-202, T-203)
+- Hasil T-139: dasar subjek `feed-konsep-terang` boleh terpotong 14% atas keputusan pemilik; K3 disetujui, T-139 ditutup. Commit didorong ke GitHub atas permintaan pemilik.
+- Hasil T-136: penyebab `pnpm dev` macet terverifikasi dari log `tccd` dan `fseventsd`: pemantau fsevents Vite di `~/Documents` memicu dialog izin folder Documents untuk Claude.app, dan `FSEventStreamCreate` tertahan sampai dijawab. Izin sudah tersimpan; tanpa perubahan kode.
+- Hasil E-201: rencana disetujui pemilik (token `--type-*`, fixture disalin ke folder data, dependency baru). T-201 kontrak RPC; T-202 server RPC stdio, runner, folder data, rangkaian pipeline dipindah dari spike ke `pipeline/wiring.ts`; T-203 plugin shell dengan scope tervalidasi, bundel tsup, klien RPC UI, jalankan ulang sidecar. 757 test, tanpa kuota.
+- Masalah dan solusinya: catatan lama bahwa shell agent tidak punya fsevents ternyata keliru (dikoreksi). Sidecar lewat tsx tanpa `--tsconfig tsconfig.base.json` gagal "React is not defined" (skrip `pnpm sidecar` memakai flag itu). Dry-run tanpa gaya melanggar posisi logo Kopi sehingga contoh revisi ditolak; runner mengirim ulang tanpa gambar baru. Path prompt `.md` yang tidak seragam akan rusak setelah bundling; disatukan lewat `promptUrl`.
+- Commit: 7576790, 2ebf2bf, 536991f, 9626bd5, docs: update status sesi #9
+
 ## Sesi #8, 2026-10-18
 - Task: T-105, T-106, T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116, T-118, T-117, T-120, T-121, T-122, T-119, T-123, T-128, T-132, T-130, T-131, T-134, T-133, T-135, T-124, T-125, T-126, T-127, T-137, T-140, T-139, T-141
 - Commit akhir: 16034cb sampai 2b9e0d6 (didorong ke GitHub), docs: update status sesi #8
