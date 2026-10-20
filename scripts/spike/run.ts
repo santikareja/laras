@@ -1,5 +1,6 @@
 // `pnpm spike -- --brand <slug> --brief "<teks>" [--variants N] [--template <id>] [--dry-run]
-//  [--style <id|none>] [--style-variant <id>] [--max-claude N] [--max-codex N] [--model <model>]`.
+//  [--style <id|none>] [--style-variant <id>] [--max-claude N] [--max-codex N] [--model <model>]
+//  [--reuse-plan <folder job>]`.
 // Tanpa --style dipakai gaya default project.json brand. MEMAKAI KUOTA kecuali --dry-run.
 import { parseArgs } from "node:util";
 import { findStyle } from "../../packages/sidecar/src/prompts/style-context.ts";
@@ -19,6 +20,7 @@ const { values } = parseArgs({
     "max-claude": { type: "string", default: "12" },
     "max-codex": { type: "string", default: "3" },
     model: { type: "string" },
+    "reuse-plan": { type: "string" },
   },
 });
 
@@ -40,6 +42,7 @@ const report = await spike({
   maxClaude: Number(values["max-claude"]),
   maxCodex: Number(values["max-codex"]),
   ...(values.model ? { model: values.model } : {}),
+  ...(values["reuse-plan"] ? { reusePlan: values["reuse-plan"] } : {}),
   signal: controller.signal,
 });
 if (report.jobs.some((job) => job.status !== "done")) process.exitCode = 1;

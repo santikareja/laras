@@ -8,6 +8,7 @@ import { extname, join, resolve } from "node:path";
 import {
   type AssetManifest,
   BrandKit,
+  ContentPlan,
   CopyGuide,
   designLimits,
   type JobEvent,
@@ -60,6 +61,9 @@ export type SpikeOptions = {
   maxClaude: number;
   maxCodex: number;
   model?: string;
+  // Folder job lama yang plan dan copy-nya dipakai ulang (evaluasi T-141): job baru mulai dari
+  // tahap layout dengan isi yang sama, sehingga perbandingan hanya mengubah visual.
+  reusePlan?: string;
   outDir?: string;
   signal?: AbortSignal;
   log?: (line: string) => void;
@@ -233,6 +237,8 @@ export async function spike(options: SpikeOptions): Promise<SpikeReport> {
     log(
       `Spike ${briefId} · ${options.brand} · ${styleLabel} · ${options.variants} varian${options.dryRun ? " · DRY-RUN" : ""}`,
     );
+    if (options.reusePlan)
+      await reusePlan(options.reusePlan, jobDir(projectDir, `${briefId}-v1`), options.variants);
     const results = await runBrief(input, deps);
     const report = await buildReport(results, {
       briefId,
@@ -445,4 +451,17 @@ function reportMarkdown(report: SpikeReport): string {
     lines.push("", ...job.pngs.map((png) => `- ${png}`), "");
   }
   return `${lines.join("\n")}\n`;
+}
+
+// Plan dan copy job lama disalin ke job varian 1; engine membacanya sebagai langkah tersimpan.
+// Rencana harus berisi tepat satu angle per varian, kalau tidak engine diam-diam membuat plan baru.
+async function reusePlan(source: string, target: string, variants: number) {
+  const plan = ContentPlan.parse(JSON.parse(await readFile(join(source, "01-plan.json"), "utf8")));
+  if (plan.angles.length !== variants) {
+    throw new Error(`Plan ${source} berisi ${plan.angles.length} angle, bukan ${variants}`);
+  }
+  await mkdir(target, { recursive: true });
+  for (const file of ["01-plan.json", "02-copy.json"]) {
+    await copyFile(join(source, file), join(target, file));
+  }
 }
