@@ -22,16 +22,26 @@ const BACKGROUND = {
 } as const;
 const FLOOR = "16%";
 // Sudut kosong untuk label gaya, berseberangan dengan logo.
-const LABEL_CORNER = { "bottom-right": "bottom-left", "top-left": "bottom-right" } as const;
+const LABEL_CORNER = {
+  "bottom-right": "bottom-left",
+  "top-left": "bottom-right",
+  "top-center": "bottom-left",
+} as const;
 
 // Headline dan satu baris pendukung di tengah atas, dipakai juga oleh feed-foto-konsep.
 export function TopCaption({
   slots,
   dark,
   effect,
+  top = "var(--space-safe)",
+  inline = false,
 }: {
   slots: Record<string, ResolvedSlot>;
   dark: boolean;
+  // Jarak caption dari tepi atas; bawaan safe margin.
+  top?: string;
+  // Caption mengalir di kolom induk (feed-satu-objek), bukan diposisikan absolut.
+  inline?: boolean;
   // Efek teks gaya untuk headline (mis. glow Cyberpunk); tanpa gaya tidak ada.
   effect?: TextEffect | undefined;
 }) {
@@ -41,11 +51,10 @@ export function TopCaption({
       data-qa-element="group"
       data-qa-name="teks"
       style={{
-        position: "absolute",
-        // Satu jarak tepi untuk caption dan logo (P11, T-131).
-        top: "var(--space-safe)",
-        left: "15%",
-        right: "15%",
+        ...(inline
+          ? { padding: "0 15%" }
+          : // Satu jarak tepi untuk caption dan logo (P11, T-131).
+            { position: "absolute", top, left: "15%", right: "15%" }),
         display: "grid",
         gap: space(3),
         justifyItems: "center",
@@ -86,9 +95,11 @@ export function PlacedLogo({ src, at }: { src: string; at: string }) {
         position: "absolute",
         ...(at === "top-left"
           ? { top: "var(--space-safe)", left: "var(--space-safe)" }
-          : at === "bottom-right"
-            ? { bottom: "var(--space-safe)", right: "var(--space-safe)" }
-            : { bottom: "var(--space-safe)", left: 0, right: 0 }),
+          : at === "top-center"
+            ? { top: "var(--space-safe)", left: 0, right: 0 }
+            : at === "bottom-right"
+              ? { bottom: "var(--space-safe)", right: "var(--space-safe)" }
+              : { bottom: "var(--space-safe)", left: 0, right: 0 }),
         display: "flex",
         justifyContent: "center",
       }}
@@ -100,7 +111,7 @@ export function PlacedLogo({ src, at }: { src: string; at: string }) {
 
 function SatuObjekSlide({ slots, options, style }: SlideProps) {
   const dark = options.tone === "primary" || options.tone === "dark";
-  const logoAt = options.logo ?? "bottom-center";
+  const logoAt = options.logo ?? "top-center";
   const image = slot(slots, "image", "image");
   const tone = BACKGROUND[(options.tone ?? "neutral") as keyof typeof BACKGROUND];
   return (
@@ -116,18 +127,38 @@ function SatuObjekSlide({ slots, options, style }: SlideProps) {
     >
       <StyleBackdrop style={style} floor={FLOOR} />
       <FloorShadow dark={dark} />
+      {/* Caption turun dari tepi atas (logo punya ruang di atasnya) dan objek mengisi sisa kolom
+          sampai lantai, sehingga teks dan objek berdekatan tanpa bisa bertabrakan (T-139). */}
       <div
-        style={{ position: "absolute", left: "20%", right: "20%", bottom: FLOOR, height: "50%" }}
+        style={{
+          position: "absolute",
+          top: "18%",
+          bottom: FLOOR,
+          left: 0,
+          right: 0,
+          display: "grid",
+          gridTemplateRows: "auto minmax(0, 1fr)",
+          rowGap: space(6),
+        }}
       >
-        <Photo
-          slot="image"
-          src={image.src}
-          fit="contain"
-          treatment={styleTreatment(style)}
-          focus={image.subject?.focus}
-        />
+        <TopCaption slots={slots} dark={dark} effect={styleEffect(style, "headline")} inline />
+        <div
+          style={{
+            position: "relative",
+            alignSelf: "end",
+            height: "min(100%, 620px)",
+            margin: "0 20%",
+          }}
+        >
+          <Photo
+            slot="image"
+            src={image.src}
+            fit="contain"
+            treatment={styleTreatment(style)}
+            focus={image.subject?.focus}
+          />
+        </div>
       </div>
-      <TopCaption slots={slots} dark={dark} effect={styleEffect(style, "headline")} />
       <PlacedLogo src={slot(slots, "logo", "logo").src} at={logoAt} />
       <StyleOverlay
         style={style}
@@ -194,8 +225,8 @@ export const satuObjek: Template = {
       },
       {
         name: "logo",
-        values: ["bottom-center", "bottom-right", "top-left"],
-        default: "bottom-center",
+        values: ["top-center", "bottom-center", "bottom-right", "top-left"],
+        default: "top-center",
         description: "Letak logo, mengikuti aturan brand",
       },
     ],

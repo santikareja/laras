@@ -1,12 +1,4 @@
-import {
-  Button,
-  CanvasFrame,
-  Icon,
-  type IconName,
-  Logo,
-  Photo,
-  Text,
-} from "../primitives/index.ts";
+import { CanvasFrame, Icon, type IconName, Logo, Photo, Rule, Text } from "../primitives/index.ts";
 import {
   type ColorToken,
   color,
@@ -51,7 +43,12 @@ const ICONS: IconName[] = ["calendar", "clock", "pin", "check", "star"];
 function SubjekLingkarSlide({ slots, options, style }: SlideProps) {
   const flip = options.flip === "yes";
   const near = flip ? "right" : "left";
-  const side = options.susunan === "atas" ? "atas" : "samping";
+  const image = slot(slots, "image", "image");
+  // Subjek lebar (mis. orang bersama hewan) menjadi kecil di kolom samping, jadi selalu memakai
+  // susunan atas agar subjek menonjol (catatan pemilik T-139).
+  const box = image.subject?.box;
+  const wide = box ? (box.right - box.left) / ((box.bottom - box.top) * 1.25) > 0.75 : false;
+  const side = options.susunan === "atas" || wide ? "atas" : "samping";
   const field: ColorToken =
     options.tone === "secondary"
       ? "secondary"
@@ -65,7 +62,6 @@ function SubjekLingkarSlide({ slots, options, style }: SlideProps) {
   const logoBottom = options.logo === "bottom";
   const mirror = (x: number) => (flip ? CANVAS.width - x : x);
 
-  const image = slot(slots, "image", "image");
   const info = optionalSlot(slots, "info", "text");
   const sorotan = optionalSlot(slots, "sorotan", "text");
   const cta = optionalSlot(slots, "cta", "text");
@@ -228,28 +224,35 @@ function SubjekLingkarSlide({ slots, options, style }: SlideProps) {
           {slot(slots, "headline", "text").value}
         </Text>
         {sorot}
+        {cta && (
+          // CTA berupa baris teks bergaris aksen tepat di bawah headline, bukan tombol pill dengan
+          // ikon panah (catatan pemilik T-139: tombol terasa kaku dan AI-slop).
+          <div
+            style={{
+              display: "grid",
+              gap: space(2),
+              justifyItems: flip ? "end" : "start",
+              marginTop: space(4),
+            }}
+          >
+            <Text slot="cta" font="body" size={2} color={ink} strong>
+              {cta.value}
+            </Text>
+            <Rule
+              color={swirl === "neutral-light" ? "neutral-light" : "accent"}
+              length={96}
+              weight={6}
+            />
+          </div>
+        )}
       </div>
 
       {!logoBottom && (
         <div style={{ position: "absolute", top: MARGIN, [near]: MARGIN }}>{logo}</div>
       )}
-      <div
-        style={{
-          position: "absolute",
-          bottom: MARGIN,
-          [near]: MARGIN,
-          display: "grid",
-          justifyItems: flip ? "end" : "start",
-          gap: space(4),
-        }}
-      >
-        {cta && (
-          <Button slot="cta" shape="pill" iconShape="circle">
-            {cta.value}
-          </Button>
-        )}
-        {logoBottom && logo}
-      </div>
+      {logoBottom && (
+        <div style={{ position: "absolute", bottom: MARGIN, [near]: MARGIN }}>{logo}</div>
+      )}
     </div>
   );
 }
@@ -313,7 +316,7 @@ export const subjekLingkar: Template = {
         values: ["samping", "atas"],
         default: "samping",
         description:
-          "samping: teks di sisi, subjek seluruh badan; atas: teks di atas, subjek setengah badan",
+          "samping: teks di sisi, subjek seluruh badan; atas: teks di atas, subjek setengah badan. Subjek lebar (orang bersama hewan, kelompok) selalu memakai susunan atas",
       },
       {
         name: "tone",
