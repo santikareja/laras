@@ -43,6 +43,10 @@
         "img-src": "'self' asset: http://asset.localhost data: blob:",
         "font-src": "'self' data:",
         "connect-src": "'self' ipc: http://ipc.localhost ws://localhost:1420"
+      },
+      "assetProtocol": {
+        "enable": true,
+        "scope": ["$HOME/Library/Application Support/Laras/projects/**"]
       }
     }
   },

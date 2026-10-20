@@ -32,6 +32,8 @@
   --color-canvas: var(--surface-canvas);
   --color-selected: var(--surface-selected);
   --color-disabled: var(--text-disabled);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
 
   --radius-md: var(--radius-control);
   --radius-lg: var(--radius-card);
@@ -39,6 +41,17 @@
 
   --font-sans: var(--font-ui);
   --font-display: var(--font-brand);
+
+  /* Denyut Bilah Laras yang berjalan (DESIGN 9): opacity 0.45 ke 1, berulang. */
+  --animate-denyut: laras-denyut var(--dur-pulse) var(--ease-in-out) infinite alternate;
+  @keyframes laras-denyut {
+    from {
+      opacity: 0.45;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 
   /* Peran tipografi DESIGN 4: kelas text-caption sampai text-display. */
   --text-caption: var(--type-caption);

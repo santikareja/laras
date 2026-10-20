@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useStudio } from "../../stores/studio.ts";
 import { INSPECTOR_ID, Inspector } from "./Inspector.tsx";
+import { Preview } from "./Preview.tsx";
 import { SIDEBAR_ID, Sidebar } from "./Sidebar.tsx";
 import { StatusBar } from "./StatusBar.tsx";
 import { INSPECTOR_TOGGLE_ID, SIDEBAR_TOGGLE_ID, Toolbar } from "./Toolbar.tsx";
@@ -36,8 +37,10 @@ export function StudioLayout() {
           <Toolbar />
           <div className="flex min-h-0 flex-1">
             <Sidebar />
-            {/* Kanvas selalu netral (DESIGN 3); preview desain menyusul di T-205. */}
-            <main aria-label="Kanvas" className="min-w-0 flex-1 bg-canvas" />
+            {/* Kanvas selalu netral (DESIGN 3). */}
+            <main aria-label="Kanvas" className="min-w-0 flex-1 bg-canvas">
+              <Preview />
+            </main>
           </div>
         </div>
         <Inspector />

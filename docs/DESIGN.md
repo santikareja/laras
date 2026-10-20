@@ -564,6 +564,8 @@ Nama `accent` di shadcn/ui berarti latar hover menu dan tombol ghost, bukan warn
 | `canvas` | `--surface-canvas` |
 | `selected` | `--surface-selected` |
 | `disabled` | `--text-disabled` |
+| `success` | `--success` |
+| `warning` | `--warning` |
 
 Palet warna dan skala ukuran teks bawaan Tailwind dikosongkan (`--color-*: initial`, `--text-*: initial`), sehingga hanya nama di tabel ini yang menghasilkan kelas.
 
